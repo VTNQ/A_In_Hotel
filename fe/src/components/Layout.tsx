@@ -13,7 +13,7 @@ const Layout=()=>{
                     </div>
                 </div>
                 <div className="flex items-center gap-6 mt-4 md:mt-0">
-                    <a href="#" className="flex items-center text-purple-700">
+                    <a href="#" className="flex items-center text-purple-700 hover">
                         
                     </a>
                 </div>
