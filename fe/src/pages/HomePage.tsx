@@ -1,10 +1,14 @@
 import BookingFilters from "../components/Home/BookingFilters";
+import FeaturedAmenities from "../components/Home/FeaturedAmenities";
+import Footer from "../components/Home/Footer";
 import GreenGlobeSection from "../components/Home/GreenGlobeSection";
 import Hero360VirtualTour from "../components/Home/Hero360VirtualTour";
 import HeroSection from "../components/Home/HeroSection";
 import HotelFeature from "../components/Home/HotelFeature";
 import HotelHighlightSection from "../components/Home/HotelHighlightSection";
 import ImageSlider from "../components/Home/ImageSlider";
+import InfoCards from "../components/Home/InfoCards";
+import LocationSection from "../components/Home/LocationSection";
 import MeetingEventsSlider from "../components/Home/MeetingEventsSlider";
 import OfferSlider from "../components/Home/OffersSlider";
 import RoomSection from "../components/Home/RoomSection";
@@ -31,6 +35,10 @@ const HomePage = () => {
   <WeddingSlider/>
   <GreenGlobeSection/>
   <Hero360VirtualTour/>
+  <FeaturedAmenities/>
+  <LocationSection/>
+  <InfoCards/>
+  <Footer/>
 </>
  )
 };
