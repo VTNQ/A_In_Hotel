@@ -38,7 +38,7 @@ const HomePage = () => {
   <FeaturedAmenities/>
   <LocationSection/>
   <InfoCards/>
-  <Footer/>
+  
 </>
  )
 };
