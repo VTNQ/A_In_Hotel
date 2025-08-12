@@ -1,4 +1,9 @@
 import { Menu } from "lucide-react";
+import { NavLink } from "react-router-dom";
+const baseItem =
+  "hover:text-purple-700 pb-1 transition";
+const activeItem =
+  "text-purple-700 border-b-2 border-purple-500";
 
 const Navbar = () => {
   return (
@@ -24,7 +29,16 @@ const Navbar = () => {
           <li><a href="#" className="hover:text-purple-700">Premium Rooms</a></li>
           <li><a href="#" className="hover:text-purple-700">Dining</a></li>
           <li><a href="#" className="hover:text-purple-700">Experiences</a></li>
-          <li><a href="#" className="hover:text-purple-700">Events</a></li>
+          <li>
+            <NavLink
+              to="/event-promotion"
+              className={({ isActive }) =>
+                `${baseItem} ${isActive ? activeItem : ""}`
+              }
+            >
+              Events & Promotion
+            </NavLink>
+          </li>
         </ul>
 
         {/* Đăng nhập */}
@@ -40,3 +54,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
+
