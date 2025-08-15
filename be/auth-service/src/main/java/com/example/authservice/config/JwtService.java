@@ -18,14 +18,14 @@ public class JwtService {
     private final long JWT_EXPIRATION = 1000 * 60 * MINUTE_EXPIRATION;
 
     private static final long REFRESH_TOKEN_VALIDITY = 1000000000;
-    public String generateToken(String username, String role) {
+    public String generateToken(String id, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", "ROLE_" + role);
         claims.put("refresh_time",new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY));
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(id)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

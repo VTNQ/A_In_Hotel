@@ -15,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,12 +28,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfiguration implements WebMvcConfigurer {
     private final JwtService jwtService;
     private final AccountService accountService;
+    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
     private final JwtFilter jwtFilter;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-    public SecurityConfiguration(@Lazy JwtService jwtService, @Lazy AccountService accountService, @Lazy JwtFilter jwtFilter) {
+    public SecurityConfiguration(
+            @Lazy JwtService jwtService,
+            @Lazy AccountService accountService,
+            @Lazy JwtFilter jwtFilter,
+            @Lazy OAuth2SuccessHandler oAuth2SuccessHandler,
+            @Lazy OAuth2UserService<OAuth2UserRequest,OAuth2User>oauth2UserService
+    ) {
         this.jwtService = jwtService;
         this.accountService = accountService;
         this.jwtFilter = jwtFilter;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+        this.oAuth2UserService = oauth2UserService;
     }
 
     @Bean
@@ -42,6 +55,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(u -> u.userService(oAuth2UserService)) // <<— đúng generic
+                        .successHandler(oAuth2SuccessHandler)
+                )
+
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
