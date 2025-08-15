@@ -43,7 +43,7 @@ const Navbar = () => {
 
         {/* Đăng nhập */}
         <a
-          href="#"
+          href="/Login"
           className="hidden md:inline-block border border-black px-4 py-1 rounded-full text-sm hover:bg-black hover:text-white transition"
         >
           Sign in or Join
