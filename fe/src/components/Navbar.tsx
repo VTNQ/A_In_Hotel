@@ -25,7 +25,7 @@ const Navbar = () => {
         <ul className="hidden md:flex space-x-6 text-sm text-gray-700">
           <li><a href="#" className="hover:text-purple-700">Overview</a></li>
           <li><a href="#" className="hover:text-purple-700">Gallery</a></li>
-          <li><a href="/room" className="text-purple-700 border-b-2 border-purple-500 pb-1">Rooms</a></li>
+          <li><NavLink to="/room" className="text-purple-700 border-b-2 border-purple-500 pb-1">Rooms</NavLink></li>
           <li><a href="#" className="hover:text-purple-700">Premium Rooms</a></li>
           <li><a href="#" className="hover:text-purple-700">Dining</a></li>
           <li><a href="#" className="hover:text-purple-700">Experiences</a></li>
