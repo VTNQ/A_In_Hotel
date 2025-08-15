@@ -1,4 +1,3 @@
-import React from "react";
 const HotelFeature = () => {
     return (
         <div className="px-4 py-16 max-w-7xl mx-auto">

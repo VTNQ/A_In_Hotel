@@ -1,4 +1,3 @@
-import React from "react"
 const GreenGlobeSection = () => {
     return (
         <section className="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-10">
