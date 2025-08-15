@@ -3,8 +3,8 @@ import { useState } from "react";
 
 const slides = [
   "https://cache.marriott.com/is/image/marriotts7prod/si-sgnsi-saigon-opera-house-23848:Feature-Hor?wid=1920&fit=constrain",
-  "https://cache.marriott.com/is/image/marriotts7prod/sgnsi-lobby-0047-hor-clsc:Feature-Hor?wid=1920&fit=constrain",
-  "https://cache.marriott.com/is/image/marriotts7prod/sgnsi-guestroom-king-cityview-0034:Feature-Hor?wid=1920&fit=constrain",
+  "https://cache.marriott.com/is/image/marriotts7prod/si-sgnsi-saigon-opera-house-23848:Feature-Hor?wid=1920&fit=constrain",
+  "https://cache.marriott.com/is/image/marriotts7prod/si-sgnsi-saigon-opera-house-23848:Feature-Hor?wid=1920&fit=constrain",
 ];
 
 const HeroSection = () => {

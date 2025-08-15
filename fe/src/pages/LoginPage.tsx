@@ -1,5 +1,6 @@
 // src/pages/LoginPage.tsx
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const LOGO_URL =
   "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
@@ -159,9 +160,9 @@ export default function LoginPage() {
 
               <p className="mt-6 text-center text-sm text-gray-600">
                 Don’t have an account?{" "}
-                <a href="/Register" className="font-medium text-[#b08a66] hover:underline">
+                <NavLink to="/Register" className="font-medium text-[#b08a66] hover:underline">
                   Sign up
-                </a>
+                </NavLink>
               </p>
             </form>
           </div>
