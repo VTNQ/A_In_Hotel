@@ -32,10 +32,10 @@ const ROOMS: Room[] = [
     title: "Guest room",
     beds: "2 Twin",
     accessible: true,
-    image: "https://images.unsplash.com/photo-1560185007-c5ca9d2ccee3?q=80&w=1600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1600&auto=format&fit=crop",
     images: [
-      "https://images.unsplash.com/photo-1560185007-c5ca9d2ccee3?q=80&w=1600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505691723518-36a5ac3b2d51?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1600&auto=format&fit=crop",
     ],
     description:
       "Guest room, 2 Twin, 35sqm/377sqft, Desk, City view, Complimentary Wi‑Fi, Coffee/tea maker.",

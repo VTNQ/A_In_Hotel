@@ -14,11 +14,14 @@ const Navbar = () => {
           <button className="md:hidden">
             <Menu className="w-6 h-6 text-black" />
           </button>
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Sheraton_Logo.svg/512px-Sheraton_Logo.svg.png"
-            alt="Sheraton Logo"
-            className="w-10 h-10 object-contain"
-          />
+          <NavLink to='/'>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Sheraton_Logo.svg/512px-Sheraton_Logo.svg.png"
+              alt="Sheraton Logo"
+              className="w-10 h-10 object-contain"
+            />
+          </NavLink>
+
         </div>
 
         {/* Menu desktop */}
@@ -26,7 +29,7 @@ const Navbar = () => {
           <li><a href="#" className="hover:text-purple-700">Overview</a></li>
           <li><a href="#" className="hover:text-purple-700">Gallery</a></li>
           <li><NavLink to="/room" className="text-purple-700 border-b-2 border-purple-500 pb-1">Rooms</NavLink></li>
-          <li><a href="#" className="hover:text-purple-700">Premium Rooms</a></li>
+          <li><NavLink to="/event-promotion" className="hover:text-purple-700">Premium Rooms</NavLink></li>
           <li><a href="#" className="hover:text-purple-700">Dining</a></li>
           <li><a href="#" className="hover:text-purple-700">Experiences</a></li>
           <li>
@@ -42,12 +45,12 @@ const Navbar = () => {
         </ul>
 
         {/* Đăng nhập */}
-        <a
-          href="/Login"
+        <NavLink
+          to="/Login"
           className="hidden md:inline-block border border-black px-4 py-1 rounded-full text-sm hover:bg-black hover:text-white transition"
         >
           Sign in or Join
-        </a>
+        </NavLink>
       </div>
     </nav>
   );
