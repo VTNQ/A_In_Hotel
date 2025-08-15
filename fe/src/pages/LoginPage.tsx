@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 const LOGO_URL =
-  "/image/logo/ain-logo.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
+  "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
 const BG_URL =
   "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg"; // ảnh nền bạn gửi
 
