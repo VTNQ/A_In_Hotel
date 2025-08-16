@@ -1,6 +1,6 @@
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
-import React, { useState } from "react";
+import  { useState } from "react";
 const images = [
     "https://cache.marriott.com/is/image/marriotts7prod/si-sgnsi-banh-mi-88-23335:Classic-Hor?wid=856&fit=constrain",
     "https://cache.marriott.com/is/image/marriotts7prod/si-sgnsi-lifestyle-photo-hcmc-1-16184:Classic-Hor?wid=856&fit=constrain",

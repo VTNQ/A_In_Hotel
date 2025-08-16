@@ -1,6 +1,5 @@
 import BookingFilters from "../components/Home/BookingFilters";
 import FeaturedAmenities from "../components/Home/FeaturedAmenities";
-import Footer from "../components/Home/Footer";
 import GreenGlobeSection from "../components/Home/GreenGlobeSection";
 import Hero360VirtualTour from "../components/Home/Hero360VirtualTour";
 import HeroSection from "../components/Home/HeroSection";
@@ -38,7 +37,7 @@ const HomePage = () => {
   <FeaturedAmenities/>
   <LocationSection/>
   <InfoCards/>
-  <Footer/>
+  
 </>
  )
 };
