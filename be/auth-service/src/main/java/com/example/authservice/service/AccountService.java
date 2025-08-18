@@ -6,4 +6,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface AccountService extends UserDetailsService {
     Account save(AccountDTO account);
+    Account getAccountFromToken(String token);
+    Account findByEmail(String email);
 }
