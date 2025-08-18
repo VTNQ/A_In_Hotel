@@ -1,6 +1,7 @@
 import { Routes,Route } from 'react-router-dom'
 import Layout from './components/layouts/Layout'
-import HomePage from './pages/HomePage'
+import HomePage from './pages/HomePage';
+import HomeAdminPage from "./components/SuperAdmin/HomePage";
 import EventPromotionPage from './pages/EventPromotionPage'
 import RoomPage from './pages/RoomPage'
 import LoginPage from './pages/LoginPage'
@@ -19,7 +20,9 @@ function App() {
     <Route path='/Login' element={<LoginPage/>}/>
     <Route path="/Register" element={<RegisterPage/>} />
     </Route>
-     <Route path='/leftBar' element={<AdminLayout/>}/>
+     <Route path='/admin' element={<AdminLayout/>}>
+     <Route path='' element={<HomeAdminPage/>}/>
+     </Route>
   </Routes>
   )
 }

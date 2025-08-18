@@ -1,4 +1,4 @@
-package com.example.authservice.config;
+package com.example.brandservice.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -10,7 +10,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 @Component
 public class JwtService {
     private final String JWT_KEY = "HarlestXakasjdhh12sadadwqdasdeascfasddacxajkasdjndhwnas";

@@ -69,11 +69,29 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     }
 
     @Override
+    public Account getAccountFromToken(String token) {
+        try {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            String username = jwtService.extractUsername(token);
+            return accountRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token", e);
+        }
+    }
+
+    @Override
+    public Account findByEmail(String email) {
+        return accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByEmail(email);
         return account.orElseThrow(() -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Account not exist"));
     }
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
@@ -96,7 +114,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         String roleName = account.getRole() != null ? account.getRole().getName() : "ROLE_USER";
         Collection<? extends GrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority(roleName));
-        String token = jwtService.generateToken(account.getId().toString(), account.getRole().getName());
+        String token = jwtService.generateToken(account.getEmail());
         Map<String, Object> attrs = new HashMap<>();
         attrs.put("email", email);
         attrs.put("token", token);
@@ -107,4 +125,5 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         );
 
     }
+
 }
