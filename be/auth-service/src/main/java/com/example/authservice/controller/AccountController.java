@@ -95,7 +95,8 @@ public class AccountController {
             }
             String email= jwtService.extractEmail(refreshToken);
             Long userId= jwtService.extractUserId(refreshToken);
-            String newAccessToken= jwtService.generateAccessToken(email,userId);
+            String role= jwtService.extractRole(refreshToken);
+            String newAccessToken= jwtService.generateAccessToken(email,userId,role);
             long exipiresInAcess=jwtService.getAccessTokenExpiration();
             Map<String,Object>response=new HashMap<>();
             response.put("accessToken",newAccessToken);
@@ -104,6 +105,26 @@ public class AccountController {
         }catch (JwtException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ExceptionResponse("Invalid refresh token: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/is-admin")
+    public ResponseEntity<?>isAdmin(Long userId){
+        try {
+            Account account=accountService.findById(userId);
+            if(account==null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ExceptionResponse("User not found"));
+            }
+            boolean isAdmin = "ADMIN".equalsIgnoreCase(account.getRole().getName());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", userId);
+            response.put("isAdmin", isAdmin);
+
+            return ResponseEntity.ok(new RequestResponse(response, "Check role success"));
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
     @PostMapping("/login")
@@ -117,12 +138,12 @@ public class AccountController {
             );
             if (authentication.isAuthenticated()) {
                 Account account = (Account) authentication.getPrincipal();
-                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId());
-                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId());
+                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId(),account.getRole().getName());
+                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId(),account.getRole().getName());
                 long expiresInAccess=jwtService.getAccessTokenExpiration();
                 long expiresInRefreshToken=jwtService.getRefreshTokenExpiration();
                 return ResponseEntity.ok(new RequestResponse(
-                        new TokenResponse(accessToken,refreshToken,expiresInAccess,expiresInRefreshToken)
+                        new TokenResponse(refreshToken,accessToken,expiresInAccess,expiresInRefreshToken)
                 ));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

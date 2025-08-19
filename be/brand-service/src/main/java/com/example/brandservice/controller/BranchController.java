@@ -5,6 +5,7 @@ import com.example.brandservice.dto.RequestResponse;
 import com.example.brandservice.dto.request.BranchRequest;
 import com.example.brandservice.exception.ExceptionResponse;
 import com.example.brandservice.service.BranchService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,9 @@ public class BranchController {
     @Autowired
     private BranchService branchService;
     @PostMapping("/create")
-    public ResponseEntity<?>create(@RequestBody BranchRequest branchRequest, @RequestHeader("Authorization")String authorization) {
+    public ResponseEntity<?>create(@RequestBody BranchRequest branchRequest, @RequestHeader("Authorization") String authHeader) {
         try {
-            branchService.save(branchRequest,authorization);
+            branchService.save(branchRequest,authHeader);
             return ResponseEntity.ok(new RequestResponse("Branch created successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -28,9 +29,9 @@ public class BranchController {
         }
     }
     @PutMapping("update/{id}")
-    public ResponseEntity<?>update(@RequestBody BranchRequest branchRequest, @PathVariable Long id,@RequestHeader("Authorization")String authorization) {
+    public ResponseEntity<?>update(@RequestBody BranchRequest branchRequest, @PathVariable Long id,@RequestHeader("Authorization") String authHeader) {
         try {
-            branchService.update(branchRequest,authorization,id);
+            branchService.update(branchRequest,id,authHeader);
             return ResponseEntity.ok(new RequestResponse("Branch updated successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

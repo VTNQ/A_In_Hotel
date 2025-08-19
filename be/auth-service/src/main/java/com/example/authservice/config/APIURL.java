@@ -5,8 +5,12 @@ public class APIURL {
             "/api/account/register",
             "/oauth2/**",
             "/api/account/login",
-            "/api/account/refresh"
+            "/api/account/refresh",
 
+
+    };
+    public static final String[] URL_ADMIN_GET={
+            "/api/account/is-admin",
     };
     public static final String[] URL_ANONYMOUS_GET = {
             "/api/account/role",

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,15 +31,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
-                String email = jwtService.extractUsername(token);
+                String email = jwtService.extractEmail(token);
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    String role = authServiceClient.getUserRole(email);
+                    if (jwtService.validateToken(token, email)) {
+                        String role = jwtService.extractRole(token);
 
-                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(email, null, authorities);
+                        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(email, null, authorities);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+
                 }
             } catch (Exception e) {
                 // Ghi log hoặc xử lý lỗi nếu cần thiết

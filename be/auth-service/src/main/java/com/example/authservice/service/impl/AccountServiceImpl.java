@@ -88,6 +88,11 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     }
 
     @Override
+    public Account findById(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByEmail(email);
         return account.orElseThrow(() -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Account not exist"));
