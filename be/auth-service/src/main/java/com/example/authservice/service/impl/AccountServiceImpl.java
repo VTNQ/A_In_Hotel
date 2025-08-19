@@ -74,7 +74,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
             if (token.startsWith("Bearer ")) {
                 token = token.substring(7);
             }
-            String username = jwtService.extractUsername(token);
+            String username = jwtService.extractEmail(token);
             return accountRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
         } catch (Exception e) {
@@ -114,10 +114,9 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         String roleName = account.getRole() != null ? account.getRole().getName() : "ROLE_USER";
         Collection<? extends GrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority(roleName));
-        String token = jwtService.generateToken(account.getEmail());
         Map<String, Object> attrs = new HashMap<>();
         attrs.put("email", email);
-        attrs.put("token", token);
+
         return new DefaultOAuth2User(
                 authorities,
                 attrs,

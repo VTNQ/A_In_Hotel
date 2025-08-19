@@ -12,6 +12,7 @@ import com.example.authservice.kafka.event.UserRegisteredEvent;
 import com.example.authservice.kafka.producer.UserEventProducer;
 import com.example.authservice.mapper.AccountMapper;
 import com.example.authservice.service.AccountService;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/account")
@@ -77,7 +81,31 @@ public class AccountController {
                     .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
-
+    @PostMapping("/refresh")
+    public ResponseEntity<?>refreshToken(@RequestBody Map<String, String> map) {
+        String refreshToken=map.get("refreshToken");
+        if(refreshToken==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ExceptionResponse("Refresh Token is required"));
+        }
+        try {
+            if(jwtService.isTokenExpired(refreshToken)){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ExceptionResponse("Refresh Token is expired"));
+            }
+            String email= jwtService.extractEmail(refreshToken);
+            Long userId= jwtService.extractUserId(refreshToken);
+            String newAccessToken= jwtService.generateAccessToken(email,userId);
+            long exipiresInAcess=jwtService.getAccessTokenExpiration();
+            Map<String,Object>response=new HashMap<>();
+            response.put("accessToken",newAccessToken);
+            response.put("expiresInAccessToken",exipiresInAcess);
+            return ResponseEntity.ok(new RequestResponse(response));
+        }catch (JwtException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ExceptionResponse("Invalid refresh token: " + e.getMessage()));
+        }
+    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
@@ -89,8 +117,13 @@ public class AccountController {
             );
             if (authentication.isAuthenticated()) {
                 Account account = (Account) authentication.getPrincipal();
-                String token = jwtService.generateToken(account.getEmail());
-                return ResponseEntity.ok(new TokenResponse(token));
+                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId());
+                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId());
+                long expiresInAccess=jwtService.getAccessTokenExpiration();
+                long expiresInRefreshToken=jwtService.getRefreshTokenExpiration();
+                return ResponseEntity.ok(new RequestResponse(
+                        new TokenResponse(accessToken,refreshToken,expiresInAccess,expiresInRefreshToken)
+                ));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ExceptionResponse("Invalid username or password"));
