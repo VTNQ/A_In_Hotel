@@ -9,10 +9,12 @@ import com.example.brandservice.entity.Branch;
 import com.example.brandservice.mapper.BranchMapper;
 import com.example.brandservice.repository.BranchRepository;
 import com.example.brandservice.service.BranchService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -29,39 +31,42 @@ public class BrandServiceImpl implements BranchService {
     public void save(BranchRequest branch, String token) {
         try {
             log.info("save branch:{}", branch);
-            RequestResponse<AccountDTO> me = authServiceClient.getMyInfo(token);
-            Long userId = Optional.ofNullable(me)
-                    .map(RequestResponse::getData)
-                    .map(AccountDTO::getId)
-                    .orElseThrow(() -> new IllegalStateException("Không lấy được id user từ auth-service"));
+            RequestResponse<Map<String, Object>> res = authServiceClient.isAdmin(branch.getIdUser(),token);
+            Boolean isAdmin = (Boolean) res.getData().get("isAdmin");
+
+            if (!Boolean.TRUE.equals(isAdmin)) {
+                throw new RuntimeException("Bạn không có quyền ADMIN để tạo branch");
+            }
+
             Branch branchEntity = branchMapper.toEntity(branch);
-            branchEntity.setIdUser(userId);
             brandRepository.save(branchEntity);
         } catch (Exception e) {
             e.printStackTrace();
             log.warn("fail save branch:{}", e.getMessage());
+            throw  e;
 
         }
     }
 
     @Override
-    public void update(BranchRequest branch, String token, Long id) {
+    public void update(BranchRequest branch, Long id,String token) {
     try {
         Optional<Branch> optional = brandRepository.findById(id);
         if(optional.isPresent()) {
             Branch branchEntity = optional.get();
+            RequestResponse<Map<String, Object>> res = authServiceClient.isAdmin(branch.getIdUser(),token);
+            Boolean isAdmin = (Boolean) res.getData().get("isAdmin");
+
+            if (!Boolean.TRUE.equals(isAdmin)) {
+                throw new RuntimeException("Bạn không có quyền ADMIN để tạo branch");
+            }
             branchEntity=branchMapper.toEntity(branch);
-            RequestResponse<AccountDTO> me = authServiceClient.getMyInfo(token);
-            Long userId = Optional.ofNullable(me)
-                    .map(RequestResponse::getData)
-                    .map(AccountDTO::getId)
-                    .orElseThrow(() -> new IllegalStateException("Không lấy được id user từ auth-service"));
-            branchEntity.setIdUser(userId);
             brandRepository.save(branchEntity);
         }
     }catch (Exception e) {
         e.printStackTrace();
         log.warn("fail save branch:{}", e.getMessage());
+        throw  e;
     }
     }
 

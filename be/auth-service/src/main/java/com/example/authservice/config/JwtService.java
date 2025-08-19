@@ -28,18 +28,19 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String email, Long userId) {
-        return buildToken(email, userId, accessTokenExpiration);
+    public String generateAccessToken(String email, Long userId,String role) {
+        return buildToken(email, userId,role, accessTokenExpiration);
     }
 
-    public String generateRefreshToken(String email, Long userId) {
-        return buildToken(email, userId, refreshTokenExpiration);
+    public String generateRefreshToken(String email, Long userId,String role) {
+        return buildToken(email, userId,role, refreshTokenExpiration);
     }
 
-    private String buildToken(String email, Long userId, Long expiration) {
+    private String buildToken(String email, Long userId,String role, Long expiration) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("id", userId)
+                .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -53,7 +54,9 @@ public class JwtService {
     public Long extractUserId(String token) {
         return extractClaims(token).get("id", Long.class);
     }
-
+    public String extractRole(String token) {
+        return extractClaims(token).get("role", String.class);
+    }
     public Date extractExpiration(String token) {
         return extractClaims(token).getExpiration();
     }
