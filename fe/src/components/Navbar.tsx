@@ -1,65 +1,83 @@
+import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
-import { NavLink } from "react-router-dom";
-const baseItem =
-  "hover:text-purple-700 pb-1 transition";
-const activeItem =
-  "text-purple-700 border-b-2 border-purple-500";
 
-const Navbar = () => {
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo + Menu mobile */}
-        <div className="flex items-center space-x-4">
-          <button className="md:hidden">
-            <Menu className="w-6 h-6 text-black" />
-          </button>
-          <NavLink to='/'>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Sheraton_Logo.svg/512px-Sheraton_Logo.svg.png"
-              alt="Sheraton Logo"
-              className="w-10 h-10 object-contain"
-            />
-          </NavLink>
-
+    <header
+      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[rgba(58,49,37,0.3)] text-white transition-all duration-300 ${isScrolled ? "py-3 shadow-md" : "py-5"
+        }`}
+    >
+      <div className="max-w-[1920px] mx-auto flex items-center justify-between px-[100px]">
+        {/* Left Section */}
+        <div className="flex items-center space-x-6">
+          <span className="flex items-center space-x-2 text-sm">
+            <span>📞</span>
+            <span>032 696 5110</span>
+          </span>
+          <nav className="hidden md:flex items-center space-x-10 text-sm">
+            <a href="#" className="hover:text-yellow-300 transition">
+              A-IN HOTEL ▾
+            </a>
+            <a href="#" className="hover:text-yellow-300 transition">ROOM & SUITE</a>
+            <a href="#" className="hover:text-yellow-300 transition">DINING</a>
+          </nav>
         </div>
 
-        {/* Menu desktop */}
-        <ul className="hidden md:flex space-x-6 text-sm text-gray-700">
-          <li><a href="#" className="hover:text-purple-700">Overview</a></li>
-          <li><a href="#" className="hover:text-purple-700">Gallery</a></li>
-          <li><NavLink to="/room" className={({ isActive }) =>
-            `${baseItem} ${isActive ? activeItem : ""}`
-          }>Rooms</NavLink></li>
-          <li><a href="#" className="hover:text-purple-700">Premium Rooms</a></li>
-          <li><a href="#" className="hover:text-purple-700">Dining</a></li>
-          <li><a href="#" className="hover:text-purple-700">Experiences</a></li>
-          <li>
-            <NavLink
-              to="/event-promotion"
-              className={({ isActive }) =>
-                `${baseItem} ${isActive ? activeItem : ""}`
-              }
-            >
-              Events & Promotion
-            </NavLink>
-          </li>
-        </ul>
+        {/* Logo */}
+        <div className="text-center flex flex-col items-center">
+          {/* Logo */}
+          <img src="/image/Vector.png" alt="A-IN HOTEL" className="h-10 w-auto mb-1" />
+          {/* Text */}
+          <h1 className="font-bold tracking-wide text-lg">A-IN HOTEL</h1>
+        </div>
 
-        {/* Đăng nhập */}
-        <NavLink
-          to="/Login"
-          className="hidden md:inline-block border border-black px-4 py-1 rounded-full text-sm hover:bg-black hover:text-white transition"
+
+        {/* Right Section */}
+        <nav className="hidden md:flex items-center space-x-10 text-sm">
+          <a href="#" className="hover:text-yellow-300 transition">EVENT</a>
+          <a href="#" className="hover:text-yellow-300 transition">PROMOTION</a>
+          <a href="#" className="hover:text-yellow-300 transition">AIR BNB</a>
+          <a href="#" className="hover:text-yellow-300 transition">CAMPING</a>
+          <img
+            src="/image/Map Point.png"
+            alt="Location"
+            className="h-5 w-5 object-contain"
+          />
+
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 focus:outline-none"
         >
-          Sign in or Join
-        </NavLink>
+          <Menu />
+        </button>
       </div>
-    </nav>
+
+      {/* Mobile Dropdown */}
+      {isOpen && (
+        <div className="md:hidden flex flex-col items-center bg-[rgba(58,49,37,0.95)] backdrop-blur-lg py-4 space-y-4 text-sm">
+          <a href="#" className="hover:text-yellow-300">A-IN HOTEL</a>
+          <a href="#" className="hover:text-yellow-300">ROOM & SUITE</a>
+          <a href="#" className="hover:text-yellow-300">DINING</a>
+          <a href="#" className="hover:text-yellow-300">EVENT</a>
+          <a href="#" className="hover:text-yellow-300">PROMOTION</a>
+          <a href="#" className="hover:text-yellow-300">AIR BNB</a>
+          <a href="#" className="hover:text-yellow-300">CAMPING</a>
+        </div>
+      )}
+    </header>
   );
-};
-
-export default Navbar;
-
-
-
-
+}

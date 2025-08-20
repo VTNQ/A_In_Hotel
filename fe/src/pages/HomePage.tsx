@@ -2,7 +2,7 @@ import BookingFilters from "../components/Home/BookingFilters";
 import FeaturedAmenities from "../components/Home/FeaturedAmenities";
 import GreenGlobeSection from "../components/Home/GreenGlobeSection";
 import Hero360VirtualTour from "../components/Home/Hero360VirtualTour";
-import HeroSection from "../components/Home/HeroSection";
+import HeroSection from "../components/HeroSection";
 import HotelFeature from "../components/Home/HotelFeature";
 import HotelHighlightSection from "../components/Home/HotelHighlightSection";
 import ImageSlider from "../components/Home/ImageSlider";
@@ -20,7 +20,8 @@ import WeddingSlider from "../components/Home/WeddingSlider";
 const HomePage = () => {
  return(
   <>
-  <BookingFilters />
+  {/* <BookingFilters />
+  <HeroSection/> */}
   <HeroSection/>
   <HotelFeature/>
   <RoomSlider/>
