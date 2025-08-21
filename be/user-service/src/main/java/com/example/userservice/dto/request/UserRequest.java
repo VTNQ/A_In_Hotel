@@ -1,6 +1,7 @@
 package com.example.userservice.dto.request;
 
-import com.example.userservice.Enum.Gender;
+import com.example.commonutils.Enum.Gender;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
