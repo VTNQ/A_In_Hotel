@@ -1,7 +1,9 @@
 package com.example.authservice.service.impl;
 
+import com.example.authservice.client.UserServiceClient;
 import com.example.authservice.config.JwtService;
 import com.example.authservice.dto.request.AccountDTO;
+import com.example.authservice.dto.request.UserRequest;
 import com.example.authservice.entity.Account;
 import com.example.authservice.entity.Role;
 import com.example.authservice.exception.ErrorHandler;
@@ -36,20 +38,21 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
-
+    private final UserServiceClient userServiceClient;
     // Constructor injection (Spring tự động inject)
     public AccountServiceImpl(AccountRepository accountRepository,
                               PasswordEncoder passwordEncoder,
-                              RoleRepository roleRepository, JwtService jwtService) {
+                              RoleRepository roleRepository, JwtService jwtService,UserServiceClient userServiceClient) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.jwtService = jwtService;
+        this.userServiceClient = userServiceClient;
     }
 
     @Override
     @Transactional
-    public Account save(AccountDTO account) {
+    public void save(AccountDTO account) {
         try {
             log.info("save account:{}", account);
             Role role = roleRepository.getReferenceById(account.getIdRole());
@@ -59,12 +62,21 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
                     .password(passwordEncoder.encode(account.getPassword()))
                     .role(role)
                     .build();
-
+            accountRepository.save(account1);
+            UserRequest userRequest=new UserRequest();
+            userRequest.setAccountId(account1.getId());
+            userRequest.setBirthday(account.getBirthday());
+            userRequest.setGender(account.getGender());
+            userRequest.setAvatarUrl(account.getAvatarUrl()!=null?account.getAvatarUrl():"");
+            userRequest.setPhone(account.getPhone());
+            userRequest.setFullName(account.getFullName());
+            userServiceClient.register(userRequest);
             log.info("Account saved successfully for user with id: {}", account1.getId());
-            return accountRepository.save(account1);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEmailException("Email đã tồn tại:" + account.getEmail());
 
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

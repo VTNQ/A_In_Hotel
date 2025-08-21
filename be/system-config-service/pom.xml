@@ -41,7 +41,7 @@
             <artifactId>rsql-jpa</artifactId>
             <version>6.0.27</version>
         </dependency>
-
+       
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

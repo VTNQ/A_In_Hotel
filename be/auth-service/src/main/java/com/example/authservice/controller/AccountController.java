@@ -8,8 +8,6 @@ import com.example.authservice.dto.response.AccountResponse;
 import com.example.authservice.dto.response.TokenResponse;
 import com.example.authservice.entity.Account;
 import com.example.authservice.exception.ExceptionResponse;
-import com.example.authservice.kafka.event.UserRegisteredEvent;
-import com.example.authservice.kafka.producer.UserEventProducer;
 import com.example.authservice.mapper.AccountMapper;
 import com.example.authservice.service.AccountService;
 import io.jsonwebtoken.JwtException;
@@ -38,22 +36,12 @@ public class AccountController {
     private AccountMapper accountMapper;
     @Autowired
     private JwtService jwtService;
-    @Autowired
-    private UserEventProducer userEventProducer;
-    @Value("${app.kafka.topic.user-registered}")
-    private String userRegisteredTopic;
+
 
     @PostMapping("/register")
     public ResponseEntity<?> create(@RequestBody AccountDTO accountDTO) {
-       Account account= accountService.save(accountDTO);
-        UserRegisteredEvent event = UserRegisteredEvent
-                .builder()
-                .accountId(account.getId())
-                .fullName(null)
-                .phone(null)
-                .avatarUrl(null)
-                .build();
-        userEventProducer.publishUserRegistered(userRegisteredTopic, event);
+       accountService.save(accountDTO);
+
         return ResponseEntity.ok(new RequestResponse("Đăng ký tài khoản thành công"));
     }
     @GetMapping("/role")
