@@ -17,7 +17,7 @@ public interface HotelMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", constant = "ACTIVE")
-    @Mapping(target = "code", expression = "java(com.example.brandservice.mapper.BranchMapper.generateBranchCode())")
+    @Mapping(target = "code", expression = "java(com.example.brandservice.mapper.HotelMapper.generateBranchCode())")
     Hotel toEntity(HotelRequest branch);
 
     static String generateBranchCode() {
