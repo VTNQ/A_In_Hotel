@@ -147,12 +147,10 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
                 throw new IllegalStateException("user-service trả về rỗng");
             }
 
-            Map<Long, User> userById = resp.getData().getContent().stream()
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toMap(User::getId, Function.identity(), (a, b) -> a));
+          List<User>user=resp.getData().getContent();
 
             // ✨ Gọi mapper đã gói sẵn
-            Page<AccountDTO> accountDTOS = accountMapper.toResponse(accountPage, userById);
+            Page<AccountDTO> accountDTOS = accountMapper.toResponse(accountPage, user);
             return accountDTOS;
 
             // TODO: return accountDTOS hoặc wrap vào Response tuỳ controller

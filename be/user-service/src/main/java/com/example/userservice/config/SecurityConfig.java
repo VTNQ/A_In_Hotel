@@ -25,6 +25,7 @@ public class SecurityConfig {
 
 
                         .requestMatchers( HttpMethod.POST,APIURL.URL_ANONYMOUS_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
 
                         .anyRequest().authenticated()
                 )

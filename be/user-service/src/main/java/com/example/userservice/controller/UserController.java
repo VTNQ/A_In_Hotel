@@ -40,7 +40,9 @@ public class UserController {
                                     @RequestParam(required = false) String search,
                                     @RequestParam(required = false) boolean all) {
         try {
-            return ResponseEntity.ok(new RequestResponse(new PageResponse<>(userService.getALl(page, size, sort, filter, search, all))));
+            var resultPage = userService.getALl(page, size, sort, filter, search, all);
+            var body = new RequestResponse<>(new PageResponse<>(resultPage), "Lấy danh sách user thành công");
+            return ResponseEntity.ok(body);
         }catch (Exception e){
             return ResponseEntity.ok(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
