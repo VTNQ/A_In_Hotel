@@ -16,5 +16,6 @@ public class APIURL {
             "/api/account/role",
             "/api/account/me",
             "/oauth2/**",
+            "/api/account/getAll"
     };
 }

@@ -2,12 +2,16 @@ package com.example.authservice.dto.response;
 
 import com.example.authservice.Enum.Gender;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     private Long id;
     private Long accountId;
@@ -18,13 +22,4 @@ public class User {
     private LocalDate birthday;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = createdAt;
-    }
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

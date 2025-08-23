@@ -59,11 +59,11 @@ public class JwtService {
     public Date extractExpiration(String token) {
         return extractClaims(token).getExpiration();
     }
-    public Long getAccessTokenExpiration() {
-        return accessTokenExpiration;
+    public Long getAccessTokenExpiryAt() {
+        return System.currentTimeMillis() + accessTokenExpiration;
     }
-    public Long getRefreshTokenExpiration() {
-        return refreshTokenExpiration;
+    public Long getRefreshTokenExpiryAt() {
+        return System.currentTimeMillis() + refreshTokenExpiration;
     }
     // ================== VALIDATE ===================
     public boolean validateToken(String token,UserDetails userDetails) {

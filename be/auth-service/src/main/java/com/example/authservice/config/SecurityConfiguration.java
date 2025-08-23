@@ -20,7 +20,12 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -37,7 +42,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             @Lazy AccountService accountService,
             @Lazy JwtFilter jwtFilter,
             @Lazy OAuth2SuccessHandler oAuth2SuccessHandler,
-            @Lazy OAuth2UserService<OAuth2UserRequest,OAuth2User>oauth2UserService
+            @Lazy OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService
     ) {
         this.jwtService = jwtService;
         this.accountService = accountService;
@@ -49,12 +54,13 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
-                        .requestMatchers(HttpMethod.GET,APIURL.URL_ADMIN_GET).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_ADMIN_GET).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
@@ -68,6 +74,21 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config
+                .setAllowedOrigins(List.of(
+                        "http://localhost:5173"
+                ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
