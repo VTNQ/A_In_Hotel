@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
 
-                        .requestMatchers( "/api/user/register").permitAll()
+                        .requestMatchers( HttpMethod.POST,APIURL.URL_ANONYMOUS_POST).permitAll()
 
                         .anyRequest().authenticated()
                 )

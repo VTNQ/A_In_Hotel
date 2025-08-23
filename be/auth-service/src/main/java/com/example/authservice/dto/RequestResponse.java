@@ -9,13 +9,14 @@ import java.time.LocalDateTime;
  * Mặc định,phản hồi có trạng thái response
  */
 @Data
-public class RequestResponse {
+public class RequestResponse<T> {
     /**
-     * Trạng thái phản hồi,mặc định là "success"
+     * Trạng thái phản hồi, mặc định là "success".
      */
     private final String status = "success";
+
     /**
-     * Thời điểm phản hồi được tạo
+     * Thời điểm phản hồi được tạo.
      */
     private String timestamp;
 
@@ -23,18 +24,19 @@ public class RequestResponse {
      * Thông điệp mô tả phản hồi.
      */
     private String message;
+
     /**
      * Dữ liệu phản hồi có thể chứa đối tượng bất kỳ.
      */
-    private Object data;
+    private T data;
 
     /**
-     * Constructor nhận cả dữ liệu và thông điệp
+     * Constructor nhận cả dữ liệu và thông điệp.
      *
-     * @param data    dữ liệu phản hồi
-     * @param message Thông điệp phản hồi
+     * @param data    Dữ liệu phản hồi.
+     * @param message Thông điệp phản hồi.
      */
-    public RequestResponse(Object data, String message) {
+    public RequestResponse(T data, String message) {
         this.timestamp = LocalDateTime.now().toString();
         this.message = message;
         this.data = data;
@@ -45,7 +47,7 @@ public class RequestResponse {
      *
      * @param data Dữ liệu phản hồi.
      */
-    public RequestResponse(Object data) {
+    public RequestResponse(T data) {
         this(data, null);
     }
 

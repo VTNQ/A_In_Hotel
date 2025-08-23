@@ -57,7 +57,10 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET,APIURL.URL_ADMIN_GET).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
 
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

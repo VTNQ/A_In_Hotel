@@ -2,9 +2,11 @@ package com.example.authservice.repository;
 
 import com.example.authservice.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
-public interface AccountRepository extends JpaRepository<Account,Long> {
+@Repository
+public interface AccountRepository extends JpaRepository<Account,Long>, JpaSpecificationExecutor<Account> {
     Optional<Account>findByEmail(String email);
 }
