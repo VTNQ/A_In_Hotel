@@ -2,6 +2,10 @@ package com.example.userservice.repository;
 
 import com.example.userservice.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+   Optional<User> findByAccountId(Long accountId);
 }

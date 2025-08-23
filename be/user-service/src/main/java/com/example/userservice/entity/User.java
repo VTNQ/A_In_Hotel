@@ -1,6 +1,7 @@
 package com.example.userservice.entity;
 
-import com.example.userservice.Enum.Gender;
+
+import com.example.commonutils.Enum.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
