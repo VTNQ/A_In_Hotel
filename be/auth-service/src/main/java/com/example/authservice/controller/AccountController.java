@@ -5,6 +5,7 @@ import com.example.authservice.dto.RequestResponse;
 import com.example.authservice.dto.request.AccountDTO;
 import com.example.authservice.dto.request.LoginDTO;
 import com.example.authservice.dto.response.AccountResponse;
+import com.example.authservice.dto.response.PageResponse;
 import com.example.authservice.dto.response.TokenResponse;
 import com.example.authservice.entity.Account;
 import com.example.authservice.exception.ExceptionResponse;
@@ -93,6 +94,20 @@ public class AccountController {
         }catch (JwtException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ExceptionResponse("Invalid refresh token: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/getAll")
+    public ResponseEntity<?>getAll(@RequestParam(defaultValue = "1") int page,
+                                   @RequestParam(defaultValue = "5") int size,
+                                   @RequestParam(defaultValue = "id,desc") String sort,
+                                   @RequestParam(required = false) String filter,
+                                   @RequestParam(required = false) String search,
+                                   @RequestParam(defaultValue = "false") boolean all){
+        try {
+            return ResponseEntity.ok(new RequestResponse<>(new PageResponse(accountService.findAll(page, size, sort, filter, search, all))));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
     @GetMapping("/is-admin")

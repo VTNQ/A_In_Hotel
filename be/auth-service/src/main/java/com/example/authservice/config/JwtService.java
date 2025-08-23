@@ -15,14 +15,13 @@ import java.util.Map;
 
 @Component
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtSecret="a-string-secret-at-least-256-bits-long";
 
-    @Value("${jwt.access-expiration}")
-    private long accessTokenExpiration;
 
-    @Value("${jwt.refresh-expiration}")
-    private long refreshTokenExpiration;
+    private long accessTokenExpiration=900000;
+
+
+    private long refreshTokenExpiration=604800000;
 
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
