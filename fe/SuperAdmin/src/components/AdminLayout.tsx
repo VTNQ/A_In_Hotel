@@ -39,6 +39,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { clearTokens, getTokens, isAccessExpired, isRefreshExpired } from "../util/auth";
 import SessionExpiredModal from "./SessionExpiredModal";
+import { AlertProvider } from "./alert-context";
 
 /**
  * AdminLayout
@@ -48,7 +49,7 @@ import SessionExpiredModal from "./SessionExpiredModal";
  * - Hỗ trợ Dark mode toggle
  */
 export default function AdminLayout() {
- const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -172,11 +173,14 @@ export default function AdminLayout() {
       <div className="flex">
         <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
         <main className="flex-1 p-6">
-          <Outlet />
+          <AlertProvider>
+            <Outlet />
+          </AlertProvider>
+
         </main>
-       
+
       </div>
-         <SessionExpiredModal open={showModal} />
+      <SessionExpiredModal open={showModal} />
     </div>
   );
 }
@@ -206,7 +210,7 @@ const SECTIONS: SectionSpec[] = [
   {
     title: "Dashboards",
     items: [
-      { label: "Hotel", icon: Hotel, active: true ,path: '/Home/AddHotel'},
+      { label: "Hotel", icon: Hotel, active: true, path: '/Home/hotel' },
       { label: "Analytics", icon: BarChart2 },
       { label: "Ecommerce", icon: ShoppingBag },
       { label: "CRM", icon: HandCoins },
@@ -355,7 +359,7 @@ function SidebarItem({ item, collapsed, depth }: { item: ItemSpec; collapsed: bo
         ? "bg-indigo-600 text-white shadow hover:bg-indigo-600/90"
         : "text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800",
   ].join(" ");
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleClick = () => {
     if (hasChildren) {
       // toggle mở submenu

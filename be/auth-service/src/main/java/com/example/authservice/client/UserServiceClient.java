@@ -10,17 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(name = "user-service",url = "http://localhost:8083")
 public interface UserServiceClient {
     @PostMapping("/api/user/register")
     RequestResponse register(@RequestBody UserRequest userRequest);
     @GetMapping("/api/user/getAll")
-    RequestResponse<PageResponse<User>> getAll(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id,desc") String sort,
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "false") boolean all
+    RequestResponse<List<User>> getAll(
+           @RequestParam("ids")List<Long> ids
     );
 }

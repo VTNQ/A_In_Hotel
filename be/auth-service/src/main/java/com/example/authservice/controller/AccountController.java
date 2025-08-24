@@ -115,7 +115,7 @@ public class AccountController {
                     .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
-    @GetMapping("/is-admin")
+    @GetMapping("/is-Superadmin")
     public ResponseEntity<?>isAdmin(Long userId){
         try {
             Account account=accountService.findById(userId);
@@ -123,7 +123,7 @@ public class AccountController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ExceptionResponse("User not found"));
             }
-            boolean isAdmin = "ADMIN".equalsIgnoreCase(account.getRole().getName());
+            boolean isAdmin = "SUPERADMIN".equalsIgnoreCase(account.getRole().getName());
 
             Map<String, Object> response = new HashMap<>();
             response.put("userId", userId);

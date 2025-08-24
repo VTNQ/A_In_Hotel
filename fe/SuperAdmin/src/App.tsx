@@ -4,6 +4,8 @@ import LoginPage from './page/LoginPage'
 import HomePage from './components/HomePage'
 import AdminLayout from './components/AdminLayout'
 import AddHotel from './components/Hotel/AddHotel'
+import ListHotel from './components/Hotel/ListHotel'
+
 
 
 
@@ -16,7 +18,8 @@ function App() {
         <Route path='/' element={<LoginPage/>}/>
         <Route path='Home' element={<AdminLayout/>}>
         <Route index  element={<HomePage/>}/>
-        <Route path='AddHotel' element={<AddHotel/>}/>
+        <Route path='hotel/create' element={<AddHotel/>}/>
+        <Route path='Hotel' element={<ListHotel/>}/>
         </Route>
     </Routes>
     </>

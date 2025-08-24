@@ -60,7 +60,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
-                        .requestMatchers(HttpMethod.GET, APIURL.URL_ADMIN_GET).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
