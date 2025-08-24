@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -47,21 +48,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getALl(int page, int size, String sort, String filter, String search, boolean all) {
+    public List<User> getAll(List<Long> accountId) {
         try {
-            page = Math.max(page, 1);
-            size = Math.min(Math.max(size, 1), 200);
-            Specification<User>users=Specification.where(null);
-            if (filter != null && !filter.isBlank()) {
-                users = users.and(RSQLJPASupport.<User>toSpecification(filter));
-            }
-            if (search != null && !search.isBlank()) {
-                users = users.and(RSQLJPASupport.<User>toSpecification(search));
-            }
-            Pageable pageable = all
-                    ? Pageable.unpaged()
-                    : PageRequest.of(page - 1, size, SortHelper.parseSort(sort));
-            return userRepository.findAll(users,pageable);
+          return userRepository.findAllByAccountId(accountId);
         }catch (Exception e){
             log.error("getAll user error:{}",e.getMessage());
             throw new RuntimeException("getAll user error");

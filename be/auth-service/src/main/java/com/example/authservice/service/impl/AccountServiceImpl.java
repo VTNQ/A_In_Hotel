@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -52,10 +53,11 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     private final JwtService jwtService;
     private final UserServiceClient userServiceClient;
     private final AccountMapper accountMapper;
+
     // Constructor injection (Spring tự động inject)
     public AccountServiceImpl(AccountRepository accountRepository,
                               PasswordEncoder passwordEncoder,
-                              RoleRepository roleRepository, JwtService jwtService,UserServiceClient userServiceClient,
+                              RoleRepository roleRepository, JwtService jwtService, UserServiceClient userServiceClient,
                               AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
@@ -78,11 +80,11 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
                     .role(role)
                     .build();
             accountRepository.save(account1);
-            UserRequest userRequest=new UserRequest();
+            UserRequest userRequest = new UserRequest();
             userRequest.setAccountId(account1.getId());
             userRequest.setBirthday(account.getBirthday());
             userRequest.setGender(account.getGender());
-            userRequest.setAvatarUrl(account.getAvatarUrl()!=null?account.getAvatarUrl():"");
+            userRequest.setAvatarUrl(account.getAvatarUrl() != null ? account.getAvatarUrl() : "");
             userRequest.setPhone(account.getPhone());
             userRequest.setFullName(account.getFullName());
             userServiceClient.register(userRequest);
@@ -90,7 +92,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEmailException("Email đã tồn tại:" + account.getEmail());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -122,38 +124,43 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     @Override
     public Page<AccountDTO> findAll(int page, int size, String sort, String filter, String search, boolean all) {
         try {
-            page = Math.max(page, 1);
-            size = Math.min(Math.max(size, 1), 200);
-
-            Specification<Account> spec = Specification.where(null);
-            if (filter != null && !filter.isBlank()) {
-                spec = spec.and(RSQLJPASupport.<Account>toSpecification(filter));
+            List<Account> accounts = accountRepository.findAll();
+            if (accounts.isEmpty()) {
+                return Page.empty();
             }
-            if (search != null && !search.isBlank()) {
-                spec = spec.and(RSQLJPASupport.<Account>toSpecification(search));
+            List<Long> userIds = accounts.stream()
+                    .map(Account::getId)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(Collectors.toList());
+            RequestResponse<List<User>> response = userServiceClient.getAll(userIds);
+            List<User> users = response != null && response.getData() != null ? response.getData() : List.of();
+            List<AccountDTO> dtos = accountMapper.toResponse(accounts, users);
+            Specification<AccountDTO> dtoSpec = Specification.where(null);
+            if (filter != null && !filter.isEmpty()) {
+                dtoSpec = dtoSpec.and(RSQLJPASupport.<AccountDTO>toSpecification(filter));
             }
-
-            Pageable pageable = all
-                    ? Pageable.unpaged()
-                    : PageRequest.of(page - 1, size, SortHelper.parseSort(sort));
-
-            Page<Account> accountPage = accountRepository.findAll(spec, pageable);
-
-            // Gọi user-service
-            RequestResponse<PageResponse<User>> resp =
-                    userServiceClient.getAll(page, size, sort, filter, search, all);
-
-            if (resp == null || resp.getData() == null || resp.getData().getContent() == null) {
-                throw new IllegalStateException("user-service trả về rỗng");
+            if (search != null && !search.isEmpty()) {
+                dtoSpec = dtoSpec.and(RSQLJPASupport.<AccountDTO>toSpecification(search));
             }
 
-          List<User>user=resp.getData().getContent();
+            List<AccountDTO> filtered = dtos.stream()
+                    .filter(dto -> filter == null || filter.isBlank() ||
+                            (dto.getEmail() != null && dto.getEmail().contains(filter)) ||
+                            (dto.getFullName() != null && dto.getFullName().contains(filter)))
+                    .filter(dto -> search == null || search.isBlank() ||
+                            (dto.getEmail() != null && dto.getEmail().toLowerCase().contains(search.toLowerCase())) ||
+                            (dto.getFullName() != null && dto.getFullName().toLowerCase().contains(search.toLowerCase())))
+                    .toList();
+            Comparator<AccountDTO> comparator = SortHelper.parseSort(sort);
+            if (comparator != null) {
+                filtered = filtered.stream().sorted(comparator).toList();
+            }
+            int from = Math.max(0, (page - 1) * size);
+            int to = all ? filtered.size() : Math.min(filtered.size(), from + size);
+            List<AccountDTO> pageContent = from <= to ? filtered.subList(from, to) : filtered;
+            return new PageImpl<>(pageContent, PageRequest.of(page - 1, size), filtered.size());
 
-            // ✨ Gọi mapper đã gói sẵn
-            Page<AccountDTO> accountDTOS = accountMapper.toResponse(accountPage, user);
-            return accountDTOS;
-
-            // TODO: return accountDTOS hoặc wrap vào Response tuỳ controller
         } catch (Exception e) {
             log.error("error occurred while trying to find all accounts: {}", e.getMessage(), e);
             throw new RuntimeException("get list error:", e);
@@ -166,6 +173,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         Optional<Account> account = accountRepository.findByEmail(email);
         return account.orElseThrow(() -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Account not exist"));
     }
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
@@ -196,7 +204,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
                 });
 
         // Tạo JWT token
-        String token = jwtService.generateAccessToken(account.getEmail(),account.getId(),account.getRole().getName());
+        String token = jwtService.generateAccessToken(account.getEmail(), account.getId(), account.getRole().getName());
 
         Map<String, Object> attrs = new HashMap<>(oAuth2User.getAttributes());
         attrs.put("token", token);

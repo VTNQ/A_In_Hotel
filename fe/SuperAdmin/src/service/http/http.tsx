@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
 import { BASE_API } from '../../setting/constant/app';
+import { getTokens } from '@/util/auth';
 
 // ✅ Mở rộng AxiosRequestConfig để thêm field skipAuth
 declare module 'axios' {
@@ -17,7 +18,7 @@ const Http = axios.create({
 
 Http.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('token');
+    const token = getTokens()?.accessToken;
 
     if (!config.skipAuth && token && token !== 'undefined') {
       if (config.headers && typeof config.headers.set === 'function') {

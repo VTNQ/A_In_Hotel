@@ -1,35 +1,29 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp, X } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type Size = "sm" | "md" | "lg"
+type Size = "sm" | "md" | "lg";
 
-/* ========== Root primitives ========== */
 function Select(props: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  return <SelectPrimitive.Root {...props} />
+  return <SelectPrimitive.Root {...props} />;
 }
 
-function SelectValue(props: React.ComponentProps<typeof SelectPrimitive.Value>) {
-  return <SelectPrimitive.Value {...props} />
-}
-
-/* ========== Trigger ========== */
 function SelectTrigger({
   className,
   size = "md",
   fullWidth = true,
   error,
-  rightAdornment,
   children,
+  rightAdornment,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: Size
-  fullWidth?: boolean
-  error?: boolean
-  rightAdornment?: React.ReactNode
+  size?: Size;
+  fullWidth?: boolean;
+  error?: boolean;
+  rightAdornment?: React.ReactNode;
 }) {
   return (
     <SelectPrimitive.Trigger
@@ -51,15 +45,15 @@ function SelectTrigger({
       {...props}
     >
       <div className="min-w-0 flex-1">{children}</div>
+      {/* nút clear / icon khác */}
       {rightAdornment}
       <SelectPrimitive.Icon asChild>
         <ChevronDown className="opacity-60" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
-  )
+  );
 }
 
-/* ========== Content ========== */
 function SelectContent({
   className,
   children,
@@ -76,22 +70,25 @@ function SelectContent({
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
-          "w-[var(--radix-select-trigger-width)]", // 👈 full width theo trigger
+          "w-[var(--radix-select-trigger-width)]",
           className
         )}
         {...props}
       >
-        <SelectScrollUpButton />
+        <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 text-muted-foreground">
+          <ChevronUp className="size-4" />
+        </SelectPrimitive.ScrollUpButton>
         <SelectPrimitive.Viewport className="max-h-[320px] p-1">
           {children}
         </SelectPrimitive.Viewport>
-        <SelectScrollDownButton />
+        <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 text-muted-foreground">
+          <ChevronDown className="size-4" />
+        </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
-  )
+  );
 }
 
-/* ========== Item, Label, Separator ========== */
 function SelectItem({
   className,
   children,
@@ -114,68 +111,25 @@ function SelectItem({
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
-  )
-}
-
-function SelectLabel(props: React.ComponentProps<typeof SelectPrimitive.Label>) {
-  return (
-    <SelectPrimitive.Label
-      className="px-2 py-1.5 text-xs text-muted-foreground"
-      {...props}
-    />
-  )
-}
-
-function SelectSeparator(props: React.ComponentProps<typeof SelectPrimitive.Separator>) {
-  return <SelectPrimitive.Separator className="my-1 h-px bg-border" {...props} />
-}
-
-/* ========== Scroll buttons ========== */
-function SelectScrollUpButton(props: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
-  return (
-    <SelectPrimitive.ScrollUpButton
-      className="flex items-center justify-center py-1 text-muted-foreground"
-      {...props}
-    >
-      <ChevronUp className="size-4" />
-    </SelectPrimitive.ScrollUpButton>
-  )
-}
-
-function SelectScrollDownButton(props: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
-  return (
-    <SelectPrimitive.ScrollDownButton
-      className="flex items-center justify-center py-1 text-muted-foreground"
-      {...props}
-    >
-      <ChevronDown className="size-4" />
-    </SelectPrimitive.ScrollDownButton>
-  )
-}
-
-/* ========== Helper & Field wrapper ========== */
-function SelectHelper({ description, error }: { description?: React.ReactNode; error?: string }) {
-  if (error) return <p className="mt-1.5 text-xs text-destructive">{error}</p>
-  if (description) return <p className="mt-1.5 text-xs text-muted-foreground">{description}</p>
-  return null
+  );
 }
 
 type SelectFieldProps<T> = {
-  items: T[]
-  value?: string | null
-  onChange?: (val: string | null, item?: T) => void
-  placeholder?: string
-  label?: React.ReactNode
-  description?: React.ReactNode
-  error?: string
-  size?: Size
-  fullWidth?: boolean
-  disabled?: boolean
-  clearable?: boolean
-  getValue: (item: T) => string
-  getLabel: (item: T) => React.ReactNode
-  emptyText?: string
-}
+  items: T[];
+  value?: string | null;
+  onChange?: (val: string | null, item?: T) => void;
+  placeholder?: string;
+  label?: React.ReactNode;
+  description?: React.ReactNode;
+  error?: string;
+  size?: Size;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  clearable?: boolean;
+  getValue: (item: T) => string;
+  getLabel: (item: T) => React.ReactNode;
+  emptyText?: string;
+};
 
 function SelectField<T>({
   items,
@@ -196,26 +150,43 @@ function SelectField<T>({
   const selected = React.useMemo(
     () => items.find((i) => getValue(i) === (value ?? "")),
     [items, value, getValue]
-  )
+  );
 
-  const rightAdornment = clearable && value ? (
-    <button
-      type="button"
-      className="group -mr-1 rounded p-1 hover:bg-muted/60"
-      onClick={(e) => {
-        e.stopPropagation()
-        onChange?.(null, undefined)
-      }}
-    >
-      <X className="size-4 opacity-60 group-hover:opacity-100" />
-    </button>
-  ) : null
+  // nút clear: span chứ không phải button
+  const rightAdornment =
+    clearable && value ? (
+      <span
+        role="button"
+        tabIndex={0}
+        className="group -mr-1 rounded p-1 hover:bg-muted/60 cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onChange?.(null, undefined);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            e.preventDefault();
+            onChange?.(null, undefined);
+          }
+        }}
+      >
+        <X className="size-4 opacity-60 group-hover:opacity-100" />
+      </span>
+    ) : null;
 
   return (
     <div className={cn(fullWidth && "w-full")}>
       {label && <label className="mb-1.5 block text-sm font-medium">{label}</label>}
 
-      <Select value={value ?? ""} onValueChange={(v) => onChange?.(v || null)}>
+      <Select
+        value={value ?? ""}
+        onValueChange={(v) => {
+          const item = items.find((i) => getValue(i) === v) as T | undefined;
+          onChange?.(v || null, item);
+        }}
+      >
         <SelectTrigger
           size={size}
           fullWidth={fullWidth}
@@ -223,9 +194,9 @@ function SelectField<T>({
           error={!!error}
           rightAdornment={rightAdornment}
         >
-          <SelectValue placeholder={placeholder}>
+          <SelectPrimitive.Value placeholder={placeholder}>
             {selected ? getLabel(selected) : null}
-          </SelectValue>
+          </SelectPrimitive.Value>
         </SelectTrigger>
 
         <SelectContent>
@@ -234,33 +205,27 @@ function SelectField<T>({
               {emptyText}
             </SelectItem>
           ) : (
-            items.map((item) => {
-              const v = getValue(item)
-              return (
-                <SelectItem key={v} value={v}>
-                  {getLabel(item)}
-                </SelectItem>
-              )
-            })
+            items.map((item) => (
+              <SelectItem key={getValue(item)} value={getValue(item)}>
+                {getLabel(item)}
+              </SelectItem>
+            ))
           )}
         </SelectContent>
       </Select>
 
-      <SelectHelper description={description} error={error} />
+      {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
+      {description && !error && (
+        <p className="mt-1.5 text-xs text-muted-foreground">{description}</p>
+      )}
     </div>
-  )
+  );
 }
 
-/* ========== Export ========== */
 export {
   Select,
   SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
   SelectField,
-}
+};

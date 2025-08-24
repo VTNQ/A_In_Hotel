@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -33,15 +35,10 @@ public class UserController {
         }
     }
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAll(@RequestParam(defaultValue = "1") int page,
-                                    @RequestParam(defaultValue = "5") int size,
-                                    @RequestParam(defaultValue = "id,desc") String sort,
-                                    @RequestParam(required = false) String filter,
-                                    @RequestParam(required = false) String search,
-                                    @RequestParam(required = false) boolean all) {
+    public ResponseEntity<?> getAll(@RequestParam("ids") List<Long> ids) {
         try {
-            var resultPage = userService.getALl(page, size, sort, filter, search, all);
-            var body = new RequestResponse<>(new PageResponse<>(resultPage), "Lấy danh sách user thành công");
+            var resultPage = userService.getAll(ids);
+            var body = new RequestResponse<>(resultPage, "Lấy danh sách user thành công");
             return ResponseEntity.ok(body);
         }catch (Exception e){
             return ResponseEntity.ok(new ExceptionResponse("An error occurred: " + e.getMessage()));

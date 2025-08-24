@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Clock from "./Clock";
 import SideSlats from "./SideSlats";
-import { login } from "../../setting/api/Authenticate";
+import { login } from "../../service/api/Authenticate";
 import { saveTokens } from "../../util/auth";
 import { useNavigate } from "react-router-dom";
 import { AlertModal, type AlertType } from "../AlertModal";

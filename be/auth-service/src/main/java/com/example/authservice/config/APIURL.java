@@ -9,8 +9,8 @@ public class APIURL {
 
 
     };
-    public static final String[] URL_ADMIN_GET={
-            "/api/account/is-admin",
+    public static final String[] URL_SUPERADMIN_GET={
+            "/api/account/is-Superadmin",
     };
     public static final String[] URL_ANONYMOUS_GET = {
             "/api/account/role",
