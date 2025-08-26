@@ -4,6 +4,7 @@ import com.example.authservice.client.UserServiceClient;
 import com.example.authservice.config.JwtService;
 import com.example.authservice.dto.request.AccountDTO;
 import com.example.authservice.dto.request.UserRequest;
+import com.example.authservice.dto.response.AccountResponse;
 import com.example.authservice.dto.response.User;
 import com.example.authservice.entity.Account;
 import com.example.authservice.entity.Role;
@@ -14,6 +15,7 @@ import com.example.authservice.repository.AccountRepository;
 import com.example.authservice.repository.RoleRepository;
 import com.example.authservice.service.AccountService;
 import com.example.authservice.util.SortHelper;
+
 import com.example.commonutils.api.RequestResponse;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.transaction.Transactional;
@@ -24,8 +26,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +41,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -215,5 +220,41 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         );
 
     }
+
+    @Override
+    public List<AccountResponse> getAllAdmins() {
+        List<Account> admins = accountRepository.findByRole_Name("ADMIN");
+        return admins.stream()
+                .map(accountMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteAdmin(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin không tồn tại"));
+        if (!"ADMIN".equalsIgnoreCase(account.getRole().getName())) {
+            throw new IllegalArgumentException("Không phải admin, không thể xoá");
+        }
+        accountRepository.delete(account);
+    }
+
+    @Override
+    public AccountResponse updateAdmin(Long id, AccountDTO accountDTO) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin không tồn tại"));
+
+        if (!"ADMIN".equalsIgnoreCase(account.getRole().getName())) {
+            throw new IllegalArgumentException("Không phải admin, không thể sửa");
+        }
+
+        account.setEmail(accountDTO.getEmail() != null ? accountDTO.getEmail() : account.getEmail());
+        account.setPassword(accountDTO.getPassword() != null ? passwordEncoder.encode(accountDTO.getPassword()) : account.getPassword());
+        accountRepository.save(account);
+
+        return accountMapper.toResponse(account);
+    }
+
+
 
 }
