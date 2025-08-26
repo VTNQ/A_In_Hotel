@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -160,5 +161,37 @@ public class AccountController {
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
 
+    }
+
+    @GetMapping("/admins")
+    public ResponseEntity<List<AccountResponse>> getAllAdmins() {
+        List<AccountResponse> admins = accountService.getAllAdmins();
+        return ResponseEntity.ok(admins);
+    }
+
+    // Xoá ADMIN theo id
+    @DeleteMapping("/admins/{id}")
+    public ResponseEntity<RequestResponse<Void>> deleteAdmin(@PathVariable Long id) {
+        try {
+            accountService.deleteAdmin(id);
+            return ResponseEntity.ok(RequestResponse.success("Xoá admin thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error("Không thể xoá admin: " + e.getMessage()));
+        }
+    }
+
+    // Sửa ADMIN
+    @PutMapping("/admins/{id}")
+    public ResponseEntity<RequestResponse<AccountResponse>> updateAdmin(
+            @PathVariable Long id,
+            @RequestBody AccountDTO accountDTO) {
+        try {
+            AccountResponse updated = accountService.updateAdmin(id, accountDTO);
+            return ResponseEntity.ok(RequestResponse.success(updated, "Cập nhật admin thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error("Không thể cập nhật admin: " + e.getMessage()));
+        }
     }
 }
