@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, APIURL.URL_SUPERADMIN_PUT).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.DELETE, APIURL.URL_SUPERADMIN_DELETE).hasRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.GET,APIURL.URL_ANONYMOUS_GET).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);

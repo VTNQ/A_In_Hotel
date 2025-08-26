@@ -2,9 +2,13 @@ package com.example.userservice.config;
 
 public class APIURL {
     public static final String[] URL_ANONYMOUS_POST = {
-            "/api/user/register",
+            "/users/register",
     };
     public static final String[] URL_ANONYMOUS_GET = {
-            "/api/user/getAll",
+            "/users/getAll",
+            "/docs",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
     };
 }

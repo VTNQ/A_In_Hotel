@@ -1,20 +1,18 @@
 package com.example.authservice.controller;
 
 import com.example.authservice.config.JwtService;
-import com.example.authservice.dto.RequestResponse;
 import com.example.authservice.dto.request.AccountDTO;
 import com.example.authservice.dto.request.LoginDTO;
 import com.example.authservice.dto.response.AccountResponse;
-import com.example.authservice.dto.response.PageResponse;
 import com.example.authservice.dto.response.TokenResponse;
 import com.example.authservice.entity.Account;
-import com.example.authservice.exception.ExceptionResponse;
 import com.example.authservice.mapper.AccountMapper;
 import com.example.authservice.service.AccountService;
+import com.example.commonutils.api.PageResponse;
+import com.example.commonutils.api.RequestResponse;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/account")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AccountController {
     @Autowired
@@ -40,23 +37,22 @@ public class AccountController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@RequestBody AccountDTO accountDTO) {
+    public ResponseEntity<RequestResponse<Void>> create(@RequestBody AccountDTO accountDTO) {
        accountService.save(accountDTO);
-
-        return ResponseEntity.ok(new RequestResponse("Đăng ký tài khoản thành công"));
+        return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
     }
     @GetMapping("/role")
-    public ResponseEntity<?> getUserRole(@RequestParam("email") String email) {
+    public ResponseEntity<RequestResponse<String>> getUserRole(@RequestParam("email") String email) {
         try {
             Account account = accountService.findByEmail(email);
             if (account == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ExceptionResponse("User not found"));
+                        .body(RequestResponse.error("User not found"));
             }
-            return ResponseEntity.ok(account.getRole().getName());
+            return ResponseEntity.ok(RequestResponse.success(account.getRole().getName()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @GetMapping("/me")
@@ -64,23 +60,24 @@ public class AccountController {
         try {
             Account account=accountService.getAccountFromToken(authHeader);
             AccountResponse accountDTO= accountMapper.toResponse(account);
-            return ResponseEntity.ok(new RequestResponse(accountDTO,"lấy account Theo token thành công"));
+            return ResponseEntity.ok(RequestResponse.success(accountDTO,"lấy account Theo token thành công"));
+
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @PostMapping("/refresh")
-    public ResponseEntity<?>refreshToken(@RequestBody Map<String, String> map) {
+    public ResponseEntity<RequestResponse<Map<String,Object>>>refreshToken(@RequestBody Map<String, String> map) {
         String refreshToken=map.get("refreshToken");
         if(refreshToken==null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("Refresh Token is required"));
+                    .body(RequestResponse.error("Refresh Token is required"));
         }
         try {
             if(jwtService.isTokenExpired(refreshToken)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new ExceptionResponse("Refresh Token is expired"));
+                        .body(RequestResponse.error("Refresh Token is expired"));
             }
             String email= jwtService.extractEmail(refreshToken);
             Long userId= jwtService.extractUserId(refreshToken);
@@ -91,37 +88,37 @@ public class AccountController {
             Map<String,Object>response=new HashMap<>();
             response.put("accessToken",newAccessToken);
             response.put("accessTokenExpiryAt",accessTokenExpiryAt);
-            return ResponseEntity.ok(new RequestResponse(response));
+            return ResponseEntity.ok(RequestResponse.success(response));
         }catch (JwtException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ExceptionResponse("Invalid refresh token: " + e.getMessage()));
+                    .body(RequestResponse.error("Invalid refresh token: " + e.getMessage()));
         }
     }
     @GetMapping("/getAll")
-    public ResponseEntity<?>getAll(@RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "5") int size,
-                                   @RequestParam(defaultValue = "id,desc") String sort,
-                                   @RequestParam(required = false) String filter,
-                                   @RequestParam(required = false) String search,
-                                   @RequestParam(defaultValue = "false") boolean all){
+    public ResponseEntity<RequestResponse<PageResponse<AccountDTO>>>getAll(@RequestParam(defaultValue = "1") int page,
+                                                               @RequestParam(defaultValue = "5") int size,
+                                                               @RequestParam(defaultValue = "id,desc") String sort,
+                                                               @RequestParam(required = false) String filter,
+                                                               @RequestParam(required = false) String search,
+                                                               @RequestParam(defaultValue = "false") boolean all){
         try {
             return ResponseEntity.ok(
-                    new RequestResponse(
+                    RequestResponse.success(
                             new PageResponse<>(accountService.findAll(page, size, sort, filter, search, all))
                     )
             );
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @GetMapping("/is-Superadmin")
-    public ResponseEntity<?>isAdmin(Long userId){
+    public ResponseEntity<RequestResponse<Map<String,Object>>>isAdmin(Long userId){
         try {
             Account account=accountService.findById(userId);
             if(account==null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ExceptionResponse("User not found"));
+                        .body(RequestResponse.error("User not found"));
             }
             boolean isAdmin = "SUPERADMIN".equalsIgnoreCase(account.getRole().getName());
 
@@ -129,14 +126,14 @@ public class AccountController {
             response.put("userId", userId);
             response.put("isAdmin", isAdmin);
 
-            return ResponseEntity.ok(new RequestResponse(response, "Check role success"));
+            return ResponseEntity.ok(RequestResponse.success(response, "Check role success"));
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<RequestResponse<TokenResponse>> login(@RequestBody LoginDTO loginDTO) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -151,16 +148,16 @@ public class AccountController {
                 long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
                 long refreshTokenExpiryAt=jwtService.getRefreshTokenExpiryAt();
                 String role=jwtService.extractRole(accessToken);
-                return ResponseEntity.ok(new RequestResponse(
+                return ResponseEntity.ok(RequestResponse.success(
                         new TokenResponse(refreshToken,accessToken,accessTokenExpiryAt,refreshTokenExpiryAt,role)
                 ));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new ExceptionResponse("Invalid username or password"));
+                        .body(RequestResponse.error("Invalid username or password"));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
 
     }

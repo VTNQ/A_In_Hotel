@@ -1,6 +1,6 @@
 package com.example.hotelservice.client;
 
-import com.example.hotelservice.dto.RequestResponse;
+import com.example.commonutils.api.RequestResponse;
 import com.example.hotelservice.dto.response.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,7 @@ import java.util.List;
 @FeignClient(name = "user-service",url = "http://localhost:8083")
 public interface UserServiceClient {
 
-    @GetMapping("/api/user/getAll")
+    @GetMapping("/service/user/users/getAll")
     RequestResponse<List<User>> getAll(
            @RequestParam("ids")List<Long> ids
     );

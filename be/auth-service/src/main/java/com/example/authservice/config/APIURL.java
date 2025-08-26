@@ -2,20 +2,24 @@ package com.example.authservice.config;
 
 public class APIURL {
     public static final String[] URL_ANONYMOUS_POST = {
-            "/api/account/register",
+            "/register",
 
-            "/api/account/login",
-            "/api/account/refresh",
+            "/login",
+            "/refresh",
 
 
     };
     public static final String[] URL_SUPERADMIN_GET={
-            "/api/account/is-Superadmin",
+            "/is-Superadmin",
     };
     public static final String[] URL_ANONYMOUS_GET = {
-            "/api/account/role",
-            "/api/account/me",
+            "/role",
+            "/docs",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/me",
             "/oauth2/**",
-            "/api/account/getAll"
+            "/getAll"
     };
 }

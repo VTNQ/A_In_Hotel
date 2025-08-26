@@ -23,8 +23,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,APIURL.URL_SUPERADMIN_PUT).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.POST,APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
-
-                        .requestMatchers(HttpMethod.GET,APIURL.URL_SUPERADMIN_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET,APIURL.URL_ANONYMOUS_GET).permitAll()
+                        .requestMatchers(HttpMethod.GET,APIURL.URL_ANONYMOUS_POST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);

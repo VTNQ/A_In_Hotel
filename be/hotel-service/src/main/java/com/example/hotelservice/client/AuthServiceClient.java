@@ -1,6 +1,6 @@
 package com.example.hotelservice.client;
 
-import com.example.hotelservice.dto.RequestResponse;
+import com.example.commonutils.api.RequestResponse;
 import com.example.hotelservice.dto.response.AccountDTO;
 import com.example.hotelservice.dto.response.User;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,12 +13,12 @@ import java.util.Map;
 
 @FeignClient(name = "authservice",url = "http://localhost:8585")
 public interface AuthServiceClient {
-    @GetMapping("/api/account/role")
+    @GetMapping("/service/auth/role")
     String getUserRole(@RequestParam("email")String email);
-    @GetMapping("/api/user/getAll")
+    @GetMapping("/api/auth/getAll")
     RequestResponse<List<User>> getAll(@RequestParam("ids") List<Long> ids);
-    @GetMapping("/api/account/me")
+    @GetMapping("/service/auth/me")
     RequestResponse<AccountDTO> getMyInfo(@RequestHeader("Authorization")String authorization);
-    @GetMapping("/api/account/is-Superadmin")
-    RequestResponse<Map<String, Object>> isAdmin(@RequestParam("userId") Long userId,@RequestHeader("Authorization")String authorization);
+    @GetMapping("/service/auth/is-Superadmin")
+    RequestResponse<Map<String, Object>> isAdmin(@RequestParam("userId") Long userId, @RequestHeader("Authorization")String authorization);
 }
