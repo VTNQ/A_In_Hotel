@@ -1,8 +1,8 @@
 export type Tokens={
     accessToken:string;
-    refreshToken:string;
+    refreshToken?:string;
     accessTokenAt:number;
-    refreshTokenAt:number;
+    refreshTokenAt?:number;
 }
 const LS_KEY="auth/tokens";
 export function saveTokens(t:Tokens){
@@ -28,9 +28,4 @@ export function isAccessExpired(): boolean {
   const t = getTokens();
   if (!t) return true;
   return toMillis(t.accessTokenAt)  <= Date.now();
-}
-export function isRefreshExpired(): boolean {
-  const t = getTokens();
-  if (!t) return true;
-  return toMillis(t.refreshTokenAt) <= Date.now();
 }

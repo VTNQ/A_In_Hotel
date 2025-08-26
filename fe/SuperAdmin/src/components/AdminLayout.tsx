@@ -37,9 +37,10 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { clearTokens, getTokens, isAccessExpired, isRefreshExpired } from "../util/auth";
+import { clearTokens, getTokens, isAccessExpired, saveTokens} from "../util/auth";
 import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
+import { refresh } from "@/service/api/Authenticate";
 
 /**
  * AdminLayout
@@ -61,20 +62,21 @@ export default function AdminLayout() {
   const prevPath = prevPathRef.current;
 
   const inHomeArea = pathname.toLowerCase().startsWith("/home");
-
-  // 1) Kiểm tra ngay khi mount & khi route đổi
-  useEffect(() => {
-    // Refresh token hết hạn -> logout ngay
-    if (isRefreshExpired()) {
-      clearTokens();
-      navigate("/", { replace: true });
-      // cập nhật prev sau khi điều hướng
-      prevPathRef.current = pathname;
-      return;
-    }
+useEffect(() => {
+  const handleAuthCheck = async () => {
 
     if (isAccessExpired()) {
-      if (inHomeArea) {
+      try {
+        // Gọi refresh token API
+        const res = await refresh();
+        if (res?.data?.accessToken) {
+          saveTokens({
+            accessToken: res.data.accessToken,
+         accessTokenAt: res.data.accessTokenExpiryAt,
+          });
+          setShowModal(false); // ẩn popup nếu đang show
+        } else {
+       if (inHomeArea) {
         // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
         const cameFromOutsideHome =
           !prevPath || !prevPath.toLowerCase().startsWith("/home");
@@ -91,22 +93,28 @@ export default function AdminLayout() {
         clearTokens();
         navigate("/", { replace: true });
       }
+        }
+      } catch (e) {
+        // Lỗi refresh => logout
+        clearTokens();
+        navigate("/", { replace: true });
+      }
     } else {
       setShowModal(false);
     }
 
-    // Cập nhật prev path SAU khi xử lý xong lần này
     prevPathRef.current = pathname;
-  }, [pathname, inHomeArea, navigate]);
+  };
+
+  handleAuthCheck();
+}, [pathname, inHomeArea, navigate]);
+
+
 
   // 2) Interval check + khi tab focus lại (trường hợp treo máy)
   useEffect(() => {
     const check = () => {
-      if (isRefreshExpired()) {
-        clearTokens();
-        navigate("/", { replace: true });
-        return;
-      }
+ 
       if (isAccessExpired()) {
         // Chỉ show popup nếu đang ở trong /home/**
         if (inHomeArea) setShowModal(true);

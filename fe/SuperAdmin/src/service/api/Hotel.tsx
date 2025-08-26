@@ -2,7 +2,7 @@ import type { GetAllOptions } from "@/type/GetAllOptions";
 import Http from "../http/http";
 
 export const AddHotel=async(hotelData:any) => {
-    return await Http.post('/api/hotel/create',hotelData);
+    return await Http.post('/service/hotel/hotels/create',hotelData);
  }
  export const getAllHotel=async(options:GetAllOptions={}) => {
      const {
@@ -13,7 +13,7 @@ export const AddHotel=async(hotelData:any) => {
     search,
     all = false,
   } = options;
-  const res = await Http.get("/api/hotel/getAll", {
+  const res = await Http.get("/service/hotel/hotels/getAll", {
     params: { page, size, sort, filter, search, all },
   });
   return res.data;
@@ -24,5 +24,5 @@ export const UpdateStatusHotel = async (hotelId: number, status: "ACTIVE" | "INA
   });
 };
 export const updateHotel=async(hotelId:number,hotelData:any) => {
-    return await Http.put(`/api/hotel/update/${hotelId}`,hotelData);
+    return await Http.put(`/service/hotel/hotels/update/${hotelId}`,hotelData);
 }

@@ -4,11 +4,18 @@ import { getTokens } from "@/util/auth";
 
 export const login=async(username:string, password:string) => {
    const response = await Http.post(
-    '/api/account/login',
+    '/service/auth/login',
     { username, password },
     { skipAuth: true, withCredentials: true }
   );
   return response.data;
+}
+export const refresh=async()=>{
+  return await Http.post(
+    '/service/auth/refresh',
+    { refreshToken: getTokens()?.refreshToken },
+    { skipAuth: true, withCredentials: true }
+  );
 }
 export const getAll = async (options: GetAllOptions = {}) => {
   const {
@@ -19,14 +26,14 @@ export const getAll = async (options: GetAllOptions = {}) => {
     search,
     all = false,
   } = options;
-  const res = await Http.get("/api/account/getAll", {
+  const res = await Http.get("/api/auth/getAll", {
     params: { page, size, sort, filter, search, all },
   });
   return res.data;
 };
 export const refreshToken=async() => {
   return await Http.post(
-    '/api/account/refresh-token',
+    '/service/account/refresh-token',
     {refreshToken:getTokens()?.refreshToken}
   )
 }
