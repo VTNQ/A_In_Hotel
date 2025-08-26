@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     @Autowired
     private CategoryMapper categoryMapper;
+
+
     private static final List<String> SEARCH_FIELDS = List.of("name", "slug");
 
     @Override

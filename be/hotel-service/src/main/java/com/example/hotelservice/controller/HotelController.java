@@ -1,12 +1,15 @@
 package com.example.hotelservice.controller;
 
+import com.example.commonutils.api.PageResponse;
+import com.example.commonutils.api.RequestResponse;
 import com.example.hotelservice.Enum.HotelStatus;
-import com.example.hotelservice.dto.RequestResponse;
 import com.example.hotelservice.dto.request.HotelRequest;
 import com.example.hotelservice.dto.request.HotelUpdate;
-import com.example.hotelservice.dto.response.PageResponse;
+import com.example.hotelservice.dto.response.HotelResponse;
 import com.example.hotelservice.exception.ExceptionResponse;
 import com.example.hotelservice.service.HotelService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,53 +17,55 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/hotel")
+@RequestMapping("/hotels")
+@Tag(name = "Hotel")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HotelController {
     @Autowired
     private HotelService hotelService;
+    @Operation(summary = "Thêm khách sạn")
     @PostMapping("/create")
-    public ResponseEntity<?>create(@RequestBody HotelRequest hotelRequest, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<RequestResponse<Void>>create(@RequestBody HotelRequest hotelRequest, @RequestHeader("Authorization") String authHeader) {
         try {
             hotelService.save(hotelRequest,authHeader);
-            return ResponseEntity.ok(new RequestResponse("Hotel created successfully"));
+            return ResponseEntity.ok(RequestResponse.success("Hotel created successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @PutMapping("update/{id}")
-    public ResponseEntity<?>update(@RequestBody HotelUpdate hotelRequest, @PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<RequestResponse<Void>>update(@RequestBody HotelUpdate hotelRequest, @PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         try {
             hotelService.update(hotelRequest,id,authHeader);
-            return ResponseEntity.ok(new RequestResponse("Hotel updated successfully"));
+            return ResponseEntity.ok(RequestResponse.success("Hotel updated successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
     @PutMapping("updateStatus/{id}")
     public ResponseEntity<?>updateStatus(@RequestBody HotelStatus hotelStatus, @PathVariable Long id) {
         try {
             hotelService.updateStatus(hotelStatus,id);
-            return ResponseEntity.ok(new RequestResponse("Hotel updated Status successfully"));
+            return ResponseEntity.ok(RequestResponse.success("Hotel updated Status successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
     @GetMapping("getAll")
-    public ResponseEntity<?>getAll(@RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "5") int size,
-                                   @RequestParam(defaultValue = "id,desc") String sort,
-                                   @RequestParam(required = false) String filter,
-                                   @RequestParam(required = false) String search,
-                                   @RequestParam(required = false) boolean all){
+    public ResponseEntity<RequestResponse<PageResponse<HotelResponse>>>getAll(@RequestParam(defaultValue = "1") int page,
+                                                                              @RequestParam(defaultValue = "5") int size,
+                                                                              @RequestParam(defaultValue = "id,desc") String sort,
+                                                                              @RequestParam(required = false) String filter,
+                                                                              @RequestParam(required = false) String search,
+                                                                              @RequestParam(required = false) boolean all){
         try {
-            return ResponseEntity.ok(new PageResponse<>(hotelService.getAll(page, size, sort, filter, search, all)));
+            return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(hotelService.getAll(page, size, sort, filter, search, all))));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get All Config: " + e.getMessage()));
         }
     }
 }

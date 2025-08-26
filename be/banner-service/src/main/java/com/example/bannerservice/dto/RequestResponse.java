@@ -1,19 +1,26 @@
 package com.example.bannerservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Lớp DTO dùng để chuẩn hóa phản hồi API
  * Mặc định,phản hồi có trạng thái response
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RequestResponse<T> {
     /**
      * Trạng thái phản hồi, mặc định là "success".
      */
-    private final String status = "success";
+    private String status;
 
     /**
      * Thời điểm phản hồi được tạo.
@@ -30,35 +37,26 @@ public class RequestResponse<T> {
      */
     private T data;
 
-    /**
-     * Constructor nhận cả dữ liệu và thông điệp.
-     *
-     * @param data    Dữ liệu phản hồi.
-     * @param message Thông điệp phản hồi.
-     */
-    public RequestResponse(T data, String message) {
-        this.timestamp = LocalDateTime.now().toString();
-        this.message = message;
-        this.data = data;
+    public static <T> RequestResponse<T> success(T data, String message) {
+        return RequestResponse.<T>builder()
+                .status("success")
+                .timestamp(OffsetDateTime.now().toString())
+                .message(message)
+                .data(data)
+                .build();
     }
-
-    /**
-     * Constructor chỉ nhận dữ liệu, thông điệp mặc định là null.
-     *
-     * @param data Dữ liệu phản hồi.
-     */
-    public RequestResponse(T data) {
-        this(data, null);
+    public static <T> RequestResponse<T> success(String message) {
+        return success(null, message);
     }
-
-    /**
-     * Constructor chỉ nhận thông điệp, dữ liệu mặc định là null.
-     *
-     * @param message Thông điệp phản hồi.
-     */
-    public RequestResponse(String message) {
-        this.timestamp = LocalDateTime.now().toString();
-        this.message = message;
-        this.data = null;
+    public static <T> RequestResponse<T> success(T data) {
+        return success(data, "success");
+    }
+    public static <T> RequestResponse<T> error(String message) {
+        return RequestResponse.<T>builder()
+                .status("error")
+                .timestamp(OffsetDateTime.now().toString())
+                .message(message)
+                .data(null)
+                .build();
     }
 }

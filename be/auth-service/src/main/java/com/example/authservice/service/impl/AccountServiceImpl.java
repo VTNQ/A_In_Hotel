@@ -2,10 +2,8 @@ package com.example.authservice.service.impl;
 
 import com.example.authservice.client.UserServiceClient;
 import com.example.authservice.config.JwtService;
-import com.example.authservice.dto.RequestResponse;
 import com.example.authservice.dto.request.AccountDTO;
 import com.example.authservice.dto.request.UserRequest;
-import com.example.authservice.dto.response.PageResponse;
 import com.example.authservice.dto.response.User;
 import com.example.authservice.entity.Account;
 import com.example.authservice.entity.Role;
@@ -16,15 +14,14 @@ import com.example.authservice.repository.AccountRepository;
 import com.example.authservice.repository.RoleRepository;
 import com.example.authservice.service.AccountService;
 import com.example.authservice.util.SortHelper;
+import com.example.commonutils.api.RequestResponse;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,7 +38,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j

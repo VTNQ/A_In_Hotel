@@ -1,9 +1,9 @@
 package com.example.hotelservice.service.impl;
 
+import com.example.commonutils.api.RequestResponse;
 import com.example.hotelservice.Enum.HotelStatus;
 import com.example.hotelservice.client.AuthServiceClient;
 import com.example.hotelservice.client.UserServiceClient;
-import com.example.hotelservice.dto.RequestResponse;
 import com.example.hotelservice.dto.request.HotelRequest;
 
 import com.example.hotelservice.dto.request.HotelUpdate;
