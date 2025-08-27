@@ -8,31 +8,36 @@
     <artifactId>common-utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-utils</name>
-    <description>common-utils</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+    <description>Common utilities: DTOs, exceptions, constants</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>17</java.version> <!-- dùng LTS thay vì 23 -->
     </properties>
 
     <dependencies>
-        <!-- RSQL JPA -->
+        <!-- RSQL JPA (nếu thực sự cần cho utils, cân nhắc để sang module khác) -->
         <dependency>
             <groupId>io.github.perplexhub</groupId>
             <artifactId>rsql-jpa</artifactId>
             <version>6.0.27</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>6.1.5</version>
+        </dependency>
+
+        <!-- Spring Web (chỉ để dùng HttpStatus) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Lombok -->
@@ -47,6 +52,17 @@
     <build>
         <plugins>
             <!-- Maven Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire (test runner) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

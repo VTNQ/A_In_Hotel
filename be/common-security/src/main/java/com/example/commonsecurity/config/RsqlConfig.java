@@ -1,4 +1,4 @@
-package com.example.bannerservice.config;
+package com.example.commonsecurity.config;
 
 import io.github.perplexhub.rsql.RSQLCommonSupport;
 import jakarta.persistence.EntityManager;

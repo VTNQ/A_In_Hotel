@@ -1,25 +1,25 @@
-package com.example.systemconfigservice.config;
+package com.example.commonsecurity.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-
 @Component
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtSecret="a-string-secret-at-least-256-bits-long";
 
-    @Value("${jwt.access-expiration}")
-    private long accessTokenExpiration;
 
-    @Value("${jwt.refresh-expiration}")
-    private long refreshTokenExpiration;
+    private long accessTokenExpiration=900000;
+
+
+    private long refreshTokenExpiration=604800000;
+
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
