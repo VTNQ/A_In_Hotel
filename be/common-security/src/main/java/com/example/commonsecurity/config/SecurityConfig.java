@@ -30,7 +30,6 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll()
 //                        .requestMatchers(HttpMethod.PUT, APIURL.URL_ANONYMOUS_PUT).permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, APIURL.URL_ANONYMOUS_DELETE).permitAll()
-                        .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
                         .requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.PUT, APIURL.URL_SUPERADMIN_PUT).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.DELETE, APIURL.URL_SUPERADMIN_DELETE).hasRole("SUPERADMIN")

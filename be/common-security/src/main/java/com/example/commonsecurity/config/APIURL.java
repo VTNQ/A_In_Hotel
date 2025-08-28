@@ -1,24 +1,7 @@
 package com.example.commonsecurity.config;
 
 public class APIURL {
-    //    public static final String[]URL_ANONYMOUS_POST= {
-//
-//    };
-    public static final String[] URL_ANONYMOUS_GET = {
-            "/docs",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/banners/getAll",
-            "/banner-categories/getAll",
-            "/banner-categories/getById/{id}",
-    };
-    //    public static final String[]URL_ANONYMOUS_DELETE= {
-//
-//    };
-//    public static final String[]URL_ANONYMOUS_PUT= {
-//
-//    };
+
     public static final String[] URL_SUPERADMIN_POST = {
             "/system-configs/create",
             "/hotels/create",

@@ -9,7 +9,8 @@ public enum ErrorCode {
     CONFLICT(409,"Xung đột dữ liệu"),
     UNPROCESSABLE_ENTITY(422,"Không xử lý được yêu cầu do dữ liệu không hợp lệ"),
     //Lỗi 5X
-    INTERNAL_ERROR(500,"Lỗi hệ thống nội bộ");
+    INTERNAL_ERROR(500,"Lỗi hệ thống nội bộ"),
+    SERVICE_UNAVAILABLE(503,"Dịch vụ hiện không khả dụng, vui lòng thử lại sau");
     private final int code;
     private final String description;
     ErrorCode(int code, String description) {

@@ -10,15 +10,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<RequestResponse<Object>>handleException(BaseException ex){
+    public ResponseEntity<RequestResponse<Object>> handleException(BaseException ex) {
         return ResponseEntity
                 .status(ex.getStatus())
-                .body(RequestResponse.error(ex.getErrorCode().getCode(),ex.getMessage()));
+                .body(RequestResponse.error(ex.getErrorCode().getCode(), ex.getMessage()));
     }
-    @ExceptionHandler
+
+    @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<RequestResponse<Object>> handleNotFound(NoResourceFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(RequestResponse.error(ErrorCode.NOT_FOUND.getCode(),
@@ -26,8 +28,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RequestResponse<Object>>handleValidation(MethodArgumentNotValidException ex){
+    public ResponseEntity<RequestResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(RequestResponse.error(ex.getStatusCode().value(),ex.getMessage()));
+                .body(RequestResponse.error(ex.getStatusCode().value(), ex.getMessage()));
     }
 }
