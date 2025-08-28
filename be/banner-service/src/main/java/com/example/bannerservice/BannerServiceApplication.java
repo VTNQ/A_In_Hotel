@@ -4,7 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication
+@SpringBootApplication(
+        scanBasePackages = {
+                "com.example.bannerservice",
+                "com.example.commonsecurity"
+        }
+)
 @EnableFeignClients
 public class BannerServiceApplication {
 

@@ -23,7 +23,7 @@ public class OpenApiConfig {
                         .version("v1")
                         .description("API cho hệ thống Profile User")
                         .contact(new Contact().name("WebVibe").email("tranp6648@gmail.com")))
-                .addServersItem(new Server().url("http://localhost:8083"))
+                .addServersItem(new Server().url("http://localhost:8083/service/user"))
 
                 // Security: JWT Bearer
                 .components(new Components()

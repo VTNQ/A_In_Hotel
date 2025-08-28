@@ -11,11 +11,13 @@
         <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/brand-service/pom.xml" />
         <option value="$PROJECT_DIR$/blog-service/pom.xml" />
-        <option value="$PROJECT_DIR$/brand-service/pom.xml" />
         <option value="$PROJECT_DIR$/hotel-service/pom.xml" />
         <option value="$PROJECT_DIR$/system-config-service/pom.xml" />
         <option value="$PROJECT_DIR$/common-utils/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/banner-service/pom.xml" />
+        <option value="$PROJECT_DIR$/file-service/pom.xml" />
+        <option value="$PROJECT_DIR$/common-security/pom.xml" />
       </list>
     </option>
   </component>

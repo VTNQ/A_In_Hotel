@@ -42,4 +42,12 @@ public class RequestResponse<T> {
                 .data(null)
                 .build();
     }
+    public static <T> RequestResponse<T> error(int code, String message) {
+        return RequestResponse.<T>builder()
+                .status(String.valueOf(code))
+                .timestamp(OffsetDateTime.now().toString())
+                .message(message)
+                .data(null)
+                .build();
+    }
 }

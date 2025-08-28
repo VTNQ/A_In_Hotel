@@ -65,11 +65,16 @@ public class SystemConfigController {
         try {
             PageResponse<SystemConfig> pageData =
                     new PageResponse<>(systemConfigService.getAll(page, size, sort, filter, search, all));
+                RequestResponse<PageResponse<SystemConfig>> response = RequestResponse.success(pageData);
+            if (pageData == null) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                        .body(RequestResponse.error("Không có dữ liệu"));
+            }
 
-            return ResponseEntity.ok(RequestResponse.success(pageData));
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error( "Get All Config: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error("Get All Config: " + e.getMessage()));
         }
     }
 
