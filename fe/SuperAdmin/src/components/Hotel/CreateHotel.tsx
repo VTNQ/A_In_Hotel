@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
  * - Tailwind only, icon bằng lucide-reactch
  * - Nút "Show Code" ở góc phải mỗi card (demo, chưa gắn hành động)
  */
-export default function FormLayouts() {
+export default function CreateHotel() {
     const { showAlert } = useAlert();
      const navigate = useNavigate();
     const [users, setUsers] = useState<UserResponse[]>([]);

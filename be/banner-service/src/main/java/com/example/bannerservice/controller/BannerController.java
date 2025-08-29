@@ -5,6 +5,7 @@ import com.example.bannerservice.dto.request.BannerRequest;
 import com.example.bannerservice.dto.response.PageResponse;
 import com.example.bannerservice.entity.Banner;
 import com.example.bannerservice.service.BannerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/banners")
+@Tag(name = "banner")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BannerController {
     @Autowired
