@@ -1,10 +1,9 @@
-import { useState } from 'react'
 import { Routes,Route } from 'react-router-dom'
 import LoginPage from './page/LoginPage'
 import HomePage from './components/HomePage'
 import AdminLayout from './components/AdminLayout'
-import AddHotel from './components/Hotel/AddHotel'
-import ListHotel from './components/Hotel/ListHotel'
+import AddHotelPage from './page/Hotel/AddHotelPage'
+import HotelPage from './page/Hotel/HotelPage'
 
 
 
@@ -18,8 +17,8 @@ function App() {
         <Route path='/' element={<LoginPage/>}/>
         <Route path='Home' element={<AdminLayout/>}>
         <Route index  element={<HomePage/>}/>
-        <Route path='hotel/create' element={<AddHotel/>}/>
-        <Route path='Hotel' element={<ListHotel/>}/>
+        <Route path='hotel/create' element={<AddHotelPage/>}/>
+        <Route path='Hotel' element={<HotelPage/>}/>
         </Route>
     </Routes>
     </>
