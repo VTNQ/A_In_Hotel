@@ -6,13 +6,11 @@ import com.example.bannerservice.dto.request.BannerRequest;
 import com.example.bannerservice.dto.response.FileUploadMeta;
 import com.example.bannerservice.entity.Banner;
 import com.example.bannerservice.entity.BannerImage;
-import com.example.bannerservice.entity.Category;
 import com.example.bannerservice.exception.ErrorHandler;
 import com.example.bannerservice.mapper.BannerImageMapper;
 import com.example.bannerservice.mapper.BannerMapper;
 import com.example.bannerservice.repository.BannerImageRepository;
 import com.example.bannerservice.repository.BannerRepository;
-import com.example.bannerservice.repository.CategoryRepository;
 import com.example.bannerservice.service.BannerService;
 import com.example.bannerservice.util.SearchHelper;
 import io.github.perplexhub.rsql.RSQLJPASupport;
@@ -41,8 +39,6 @@ public class BannerServiceImpl implements BannerService {
     @Autowired
     private FileUpload fileUpload;
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
     private BannerImageMapper  bannerImageMapper;
     @Autowired
     private BannerImageRepository bannerImageRepository;
@@ -53,26 +49,25 @@ public class BannerServiceImpl implements BannerService {
     @Transactional
     public void save(BannerRequest bannerRequest, MultipartFile mainImage) {
         try {
-            log.info("start to save banner : {}", bannerRequest);
-            Banner banner = bannerMapper.toEntity(bannerRequest);
-
-            setCategories(banner,bannerRequest.getCategoryIds());
-            Banner bannerEntity=bannerRepository.save(banner);
+            BannerImage bannerImage = new BannerImage();
             if(mainImage != null && !mainImage.isEmpty()) {
                 try {
                     RequestResponse<FileUploadMeta> fileUploadMeta=fileUpload.uploadFile(mainImage,"banner/");
-                    BannerImage bannerImage=bannerImageMapper.toBannerImage(fileUploadMeta.getData());
-                    bannerImage.setBanner(bannerEntity);
+                     bannerImage=bannerImageMapper.toBannerImage(fileUploadMeta.getData());
                     bannerImageRepository.save(bannerImage);
                 }catch (Exception e) {
-                    throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi lưu hình ảnh: " + e.getMessage());
+                    throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage(), e);
                 }
             }
+            log.info("start to save banner : {}", bannerRequest);
+            Banner banner = bannerMapper.toEntity(bannerRequest);
 
+            banner.setImage(bannerImage);
+            bannerRepository.save(banner);
             log.info("end to save banner : {}", bannerRequest);
         }catch (Exception e){
-            e.printStackTrace();
-            log.error("save banner error : {}",bannerRequest);
+            log.error("save banner error : {}", bannerRequest, e);
+            throw e;
         }
     }
 
@@ -83,13 +78,12 @@ public class BannerServiceImpl implements BannerService {
             log.info("start to update banner : {}", bannerRequest);
             Banner banner=bannerRepository.getReferenceById(id);
             bannerMapper.updateEntityFromDto(bannerRequest,banner);
-            setCategories(banner,bannerRequest.getCategoryIds());
+
             bannerRepository.save(banner);
             if(image != null && !image.isEmpty()) {
                 try {
                     RequestResponse<FileUploadMeta> fileUploadMeta=fileUpload.uploadFile(image,"banner/");
                     BannerImage bannerImage=bannerImageMapper.toBannerImage(fileUploadMeta.getData());
-                    bannerImage.setBanner(banner);
                     bannerImageRepository.save(bannerImage);
                 }catch (Exception e) {
                     throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi lưu hình ảnh: " + e.getMessage());
@@ -119,27 +113,10 @@ public class BannerServiceImpl implements BannerService {
         }
     }
 
-    private void setCategories(Banner banner, List<Long>categoryIds){
-        if(categoryIds==null)return;
-        List<Long>distinctIds=categoryIds.stream().distinct().toList();
-        List<Category>categories=categoryRepository.findAllById(distinctIds);
-        if(categories.size() != distinctIds.size()){
-            var foundIds=categories.stream().map(Category::getId).collect(Collectors.toSet());
-            var missing=distinctIds.stream().filter(id->!foundIds.contains(id)).collect(Collectors.toList());
-            log.error("categories found or missing ids: {}",missing);
-            throw new EntityNotFoundException("Category not found"+missing);
-
-        }
-        if(banner.getCategories()!=null){
-            for (Category category : banner.getCategories()) {
-                category.getBanners().remove(banner);
-            }
-        }
-        banner.setCategories(new ArrayList<>(categories));
-        for (Category category : categories) {
-            if (category.getBanners().stream().noneMatch(b -> Objects.equals(b.getId(), banner.getId()))) {
-                category.getBanners().add(banner);
-            }
-        }
+    @Override
+    public Banner findById(Long id) {
+        return bannerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Banner not found with id: " + id));
     }
+
 }

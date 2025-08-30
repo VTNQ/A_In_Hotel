@@ -64,18 +64,18 @@ export default function AdminLayout() {
   const inHomeArea = pathname.toLowerCase().startsWith("/home");
 useEffect(() => {
   const handleAuthCheck = async () => {
-
-    if (isAccessExpired()) {
+  console.log(getTokens());
+    if (isAccessExpired() && getTokens()?.refreshToken) {
       try {
-        // Gọi refresh token API
         const res = await refresh();
-        if (res?.data?.accessToken) {
+        if (res?.data?.data?.accessToken) {
           saveTokens({
-            accessToken: res.data.accessToken,
-         accessTokenAt: res.data.accessTokenExpiryAt,
+            accessToken: res.data.data.accessToken,
+         accessTokenAt: res.data.data.accessTokenExpiryAt,
           });
           setShowModal(false); // ẩn popup nếu đang show
         } else {
+        
        if (inHomeArea) {
         // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
         const cameFromOutsideHome =
@@ -99,8 +99,26 @@ useEffect(() => {
         clearTokens();
         navigate("/", { replace: true });
       }
-    } else {
-      setShowModal(false);
+    } else if(isAccessExpired() && !getTokens()?.refreshToken){
+       if (inHomeArea) {
+        // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
+        const cameFromOutsideHome =
+          !prevPath || !prevPath.toLowerCase().startsWith("/home");
+
+        if (cameFromOutsideHome) {
+          clearTokens();
+          navigate("/", { replace: true });
+        } else {
+          // Đang ở trong /home/** rồi và treo máy -> show popup
+          setShowModal(true);
+        }
+      } else {
+        // Không ở /home/** -> về "/" luôn
+        clearTokens();
+        navigate("/", { replace: true });
+      }
+    }else{
+      setShowModal(false)
     }
 
     prevPathRef.current = pathname;
@@ -114,8 +132,8 @@ useEffect(() => {
   // 2) Interval check + khi tab focus lại (trường hợp treo máy)
   useEffect(() => {
     const check = () => {
- 
-      if (isAccessExpired()) {
+
+      if (isAccessExpired() && !getTokens()?.refreshToken)  {
         // Chỉ show popup nếu đang ở trong /home/**
         if (inHomeArea) setShowModal(true);
         else {
@@ -137,7 +155,7 @@ useEffect(() => {
     if (dark) root.classList.add("dark");
     else root.classList.remove("dark");
   }, [dark]);
-  console.log(getTokens());
+
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-100">
       {/* Top Navbar */}
@@ -219,6 +237,7 @@ const SECTIONS: SectionSpec[] = [
     title: "Dashboards",
     items: [
       { label: "Hotel", icon: Hotel, active: true, path: '/Home/hotel' },
+     { label: "Banner", icon: Image, active: false, path: "/Home/banner" },
       { label: "Analytics", icon: BarChart2 },
       { label: "Ecommerce", icon: ShoppingBag },
       { label: "CRM", icon: HandCoins },

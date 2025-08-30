@@ -19,7 +19,7 @@ export const AddHotel=async(hotelData:any) => {
   return res.data;
  }
 export const UpdateStatusHotel = async (hotelId: number, status: "ACTIVE" | "INACTIVE") => {
-  return await Http.put(`/api/hotel/updateStatus/${hotelId}`, status, {
+  return await Http.put(`/service/hotel/hotels/updateStatus/${hotelId}`, status, {
     headers: { "Content-Type": "application/json" }
   });
 };

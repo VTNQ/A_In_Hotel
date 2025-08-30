@@ -1,0 +1,56 @@
+import type { GetAllOptions } from "@/type/GetAllOptions";
+import Http from "../http/http";
+
+export const createBanner=async( bannerDTO: Record<string, any>,image:File | null)=>{
+    try {
+    const formData = new FormData();
+
+    // spread bannerDTO vào FormData
+    for (const [k, v] of Object.entries(bannerDTO)) {
+      formData.append(k, v instanceof Date ? v.toISOString() : String(v));
+    }
+
+    if (image) formData.append("image", image);
+
+    const { data } = await Http.post("/service/banner/banners/create", formData);
+    return data;
+  } catch (err) {
+    console.error("Lỗi khi tạo banner:", err);
+    throw err;
+  }
+}
+export const getBanner=async(options:GetAllOptions={})=>{
+   const {
+    page = 1,
+    size = 5,
+    sort = "id,desc",
+    filter,
+    search,
+    all = false,
+  } = options;
+   const res = await Http.get("/service/banner/banners/getAll", {
+    params: { page, size, sort, filter, search, all },
+  });
+  return res.data;
+}
+export const findById=async(id:number)=>{
+  return (await Http.get(`/service/banner/banners/${id}`)).data; 
+}
+export const updateBanner=async(bannerDTO: Record<string, any>,image:File | null,id:number)=>{
+      try {
+    const formData = new FormData();
+
+    // spread bannerDTO vào FormData
+    for (const [k, v] of Object.entries(bannerDTO)) {
+      formData.append(k, v instanceof Date ? v.toISOString() : String(v));
+    }
+
+    if (image) formData.append("image", image);
+
+    const { data } = await Http.put(`/service/banner/banners/update/${id}`, formData);
+    return data;
+  } catch (err) {
+    console.error("Lỗi khi tạo banner:", err);
+    throw err;
+  }
+}

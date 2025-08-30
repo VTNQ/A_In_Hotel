@@ -9,4 +9,5 @@ public interface BannerService {
     void save(BannerRequest bannerRequest, MultipartFile image);
     void update(Long id,BannerRequest bannerRequest,MultipartFile image);
     Page<Banner>getListBanner(Integer page, Integer size, String sort, String filter, String search, boolean all);
+    Banner findById(Long id);
 }

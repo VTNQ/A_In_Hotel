@@ -112,8 +112,8 @@ const ListHotel: React.FC = () => {
                         ? undefined
                         : `${searchField} like *${search}*`,
             });
-
-            const list: BasicRow[] = (res?.content || []).map((item: any) => ({
+            
+            const list: BasicRow[] = (res?.data?.content || []).map((item: any) => ({
                 id: item.id,
                 code: item.code,
                 name: item.name,
