@@ -60,7 +60,7 @@ const formatDate = (val: string | number) => {
     const d = typeof val === "number" ? new Date(val) : new Date(val);
     return isNaN(d.getTime()) ? "-" : d.toLocaleDateString();
 };
-
+type StatusFilter = "ALL" | Status;
 const SEARCH_PLACEHOLDER: Record<SearchField, string> = {
     default: "Tìm Theo",
     name: "Tìm theo tên khách sạn ...",
@@ -87,7 +87,7 @@ const ListHotel: React.FC = () => {
     // search
     const [searchField, setSearchField] = useState<SearchField>("default");
     const [search, setSearch] = useState("");
-
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
     // edit dialog
     const [editing, setEditing] = useState<BasicRow | null>(null);
     const [form, setForm] = useState<
@@ -112,7 +112,7 @@ const ListHotel: React.FC = () => {
                         ? undefined
                         : `${searchField} like *${search}*`,
             });
-            
+
             const list: BasicRow[] = (res?.data?.content || []).map((item: any) => ({
                 id: item.id,
                 code: item.code,
@@ -177,7 +177,11 @@ const ListHotel: React.FC = () => {
             });
         }
     };
-
+    const filteredRows = useMemo(() => {
+        return statusFilter === "ALL"
+            ? rows
+            : rows.filter((h) => h.status === statusFilter);
+    }, [rows, statusFilter]);
     const cols: Column<BasicRow>[] = useMemo(
         () => [
             { key: "index", header: "#" },
@@ -258,10 +262,10 @@ const ListHotel: React.FC = () => {
             });
             setEditing(null);
             fetchHotels();
-        } catch (error) {
+        } catch (error: any) {
             showAlert({
                 title: "Cập nhật khách sạn thất bại",
-                description: "Vui lòng thử lại sau",
+                description: error?.response.data.message || "Vui lòng thử lại sau",
                 type: "error",
                 autoClose: 4000,
             });
@@ -274,11 +278,50 @@ const ListHotel: React.FC = () => {
                 <h2 className="text-xl font-semibold">Danh sách khách sạn</h2>
 
                 <div className="flex items-center gap-2">
+
+                    <SelectField<{ value: SearchField; label: string }>
+                        items={[
+                            { value: "default", label: "Mặc định" },
+                            { value: "name", label: "Tên khách sạn" },
+                            { value: "code", label: "Mã khách sạn" },
+                            { value: "fullName", label: "Người quản lý" },
+                        ]}
+                        value={searchField}
+                        onChange={(val) => {
+                            setSearchField((val as SearchField) ?? "default");
+                            setUiPage(1);
+                        }}
+                        placeholder="Tìm theo"
+                        size="sm"
+                        fullWidth={false}
+                        getValue={(i) => i.value}
+                        getLabel={(i) => i.label}
+                    />
+                    <SelectField<{ value: "ALL" | Status; label: string }>
+                        items={[
+                            { value: "ALL", label: "Tất cả" },
+                            { value: "ACTIVE", label: "Hoạt động" },
+                            { value: "INACTIVE", label: "Không hoạt động" },
+                        ]}
+                        value={statusFilter}
+                        onChange={(val) => {
+                            setStatusFilter((val as "ALL" | Status) ?? "ALL");
+                            setUiPage(1);
+                        }}
+                        placeholder="Lọc trạng thái"
+                        size="sm"
+                        fullWidth={false}
+                        getValue={(i) => i.value}
+                        getLabel={(i) => i.label}
+                        clearable={false}
+                    />
+                    {/* ✅ Nhập nội dung search */}
                     <Input
                         placeholder={SEARCH_PLACEHOLDER[searchField]}
                         className="w-72"
+                        value={search}
                         onChange={(e) => {
-                            setSearch(e.target.value.trim());
+                            setSearch(e.target.value);
                             setUiPage(1);
                         }}
                     />
@@ -328,8 +371,8 @@ const ListHotel: React.FC = () => {
                                     Đang tải...
                                 </TableCell>
                             </TableRow>
-                        ) : rows.length > 0 ? (
-                            rows.map((row, idx) => (
+                        ) : filteredRows.length > 0 ? (
+                            filteredRows.map((row, idx) => (
                                 <TableRow key={row.id}>
                                     {cols.map((c) => (
                                         <TableCell key={String(c.key)}>

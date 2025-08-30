@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
  */
 export default function CreateHotel() {
     const { showAlert } = useAlert();
-     const navigate = useNavigate();
+    const navigate = useNavigate();
     const [users, setUsers] = useState<UserResponse[]>([]);
     const getUser = async () => {
         try {
@@ -55,10 +55,10 @@ export default function CreateHotel() {
                 idUser: null
             })
             navigate('/Home/hotel');
-        } catch (error) {
+        } catch (error: any) {
             showAlert({
                 title: "Tạo khách sạn thất bại",
-                description: "Vui lòng thử lại sau",
+                description: error?.response.data.message || "Vui lòng thử lại sau",
                 type: "error",
                 autoClose: 4000,
             })

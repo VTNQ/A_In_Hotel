@@ -13,9 +13,9 @@ import java.util.List;
 
 @FeignClient(name = "user-service",url = "http://localhost:8083")
 public interface UserServiceClient {
-    @PostMapping("/service/users/user/register")
+    @PostMapping("/service/user/users/register")
     RequestResponse<Void> register(@RequestBody UserRequest userRequest);
-    @GetMapping("/service/users/user/getAll")
+    @GetMapping("/service/user/users/getAll")
     RequestResponse<List<User>> getAll(
            @RequestParam("ids")List<Long> ids
     );

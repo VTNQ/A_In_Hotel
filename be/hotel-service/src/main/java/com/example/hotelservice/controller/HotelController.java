@@ -10,10 +10,12 @@ import com.example.hotelservice.exception.ExceptionResponse;
 import com.example.hotelservice.service.HotelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,7 +27,14 @@ public class HotelController {
     private HotelService hotelService;
     @Operation(summary = "Thêm khách sạn")
     @PostMapping("/create")
-    public ResponseEntity<RequestResponse<Void>>create(@RequestBody HotelRequest hotelRequest, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody HotelRequest hotelRequest, BindingResult bindingResult, @RequestHeader("Authorization") String authHeader) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage=bindingResult.getFieldErrors().stream()
+                    .map(error->error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Dữ liệu không hợp lệ");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
+        }
         try {
             hotelService.save(hotelRequest,authHeader);
             return ResponseEntity.ok(RequestResponse.success("Hotel created successfully"));
@@ -35,7 +44,14 @@ public class HotelController {
         }
     }
     @PutMapping("update/{id}")
-    public ResponseEntity<RequestResponse<Void>>update(@RequestBody HotelUpdate hotelRequest, @PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<RequestResponse<Void>>update(@Valid @RequestBody HotelUpdate hotelRequest,BindingResult bindingResult, @PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage=bindingResult.getFieldErrors().stream()
+                    .map(error->error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Dữ liệu không hợp lệ");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
+        }
         try {
             hotelService.update(hotelRequest,id,authHeader);
             return ResponseEntity.ok(RequestResponse.success("Hotel updated successfully"));
