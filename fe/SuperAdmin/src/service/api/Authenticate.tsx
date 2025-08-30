@@ -26,7 +26,7 @@ export const getAll = async (options: GetAllOptions = {}) => {
     search,
     all = false,
   } = options;
-  const res = await Http.get("/api/auth/getAll", {
+  const res = await Http.get("/service/auth/getAll", {
     params: { page, size, sort, filter, search, all },
   });
   return res.data;
