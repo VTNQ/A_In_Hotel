@@ -6,11 +6,13 @@ import com.example.bannerservice.dto.response.PageResponse;
 import com.example.bannerservice.entity.Banner;
 import com.example.bannerservice.service.BannerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +25,14 @@ public class BannerController {
     private BannerService bannerService;
 
     @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@ModelAttribute BannerRequest bannerRequest,@RequestParam(value = "image",required=false) MultipartFile image) {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult, @RequestParam(value = "image",required=false) MultipartFile image) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage=bindingResult.getFieldErrors().stream()
+                    .map(error->error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Dữ liệu không hợp lệ");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
+        }
         try {
             bannerService.save(bannerRequest,image);
             return ResponseEntity.ok(RequestResponse.success("Thêm banner thành công"));
@@ -32,9 +41,24 @@ public class BannerController {
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
-
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<RequestResponse<Banner>> getBanner(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(RequestResponse.success(bannerService.findById(id)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
     @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @ModelAttribute BannerRequest bannerRequest,@RequestParam(value = "image",required=false) MultipartFile image) {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,@Valid @ModelAttribute BannerRequest bannerRequest,BindingResult bindingResult,@RequestParam(value = "image",required=false) MultipartFile image) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage=bindingResult.getFieldErrors().stream()
+                    .map(error->error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Dữ liệu không hợp lệ");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
+        }
         try {
             bannerService.update(id, bannerRequest,image);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật banner thành công"));

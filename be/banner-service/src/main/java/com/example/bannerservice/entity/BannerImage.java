@@ -6,15 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "banner_image",
-        indexes = {
-                @Index(name = "idx_bi_banner", columnList = "banner_id")
-        })
+@Table(name = "banner_image")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -34,14 +36,13 @@ public class BannerImage {
     private String imageType;
     @Column(nullable = false)
     private Long sizeBytes;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "banner_id", nullable = false)
-    @JsonBackReference
-    private Banner banner;
 
+
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private Instant updatedAt ;
 
-    private Instant updatedAt = Instant.now();
-    @PreUpdate void onUpdate() { updatedAt = Instant.now(); }
 }

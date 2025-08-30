@@ -14,7 +14,6 @@ import java.util.UUID;
 )
 public interface BannerMapper {
     @Mapping(target = "id",ignore = true)
-    @Mapping(target = "categories",ignore = true)
     Banner toEntity(BannerRequest bannerRequest);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id",ignore = true)

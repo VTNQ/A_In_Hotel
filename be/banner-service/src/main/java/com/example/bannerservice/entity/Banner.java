@@ -1,5 +1,7 @@
 package com.example.bannerservice.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,16 +9,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(
-        name = "banner",
+        name = "`banner`",
         indexes = {
-                @Index(name = "idx_banner_active_time", columnList = "start_at,end_at,priority")
+                @Index(name = "idx_banner_active_time", columnList = "start_at,end_at")
         }
 )
 @Data
@@ -39,13 +45,10 @@ public class Banner {
     @Column(name = "end_at")
     private Instant endAt;
 
-    @Column(nullable = false)
-    @ColumnDefault("100")
-    private Integer priority = 100;
-    @OneToMany(mappedBy = "banner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<BannerImage> images = new ArrayList<>();
-    @Comment("Nút CTA, ví dụ: 'Mua ngay'. Có thể null")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id", referencedColumnName = "id") // FK tới BannerImage
+    private BannerImage image;
+    @Comment("Nút CTA, ví dụ: Mua ngay. Có thể null")
     @Column(name = "cta_label", columnDefinition = "TEXT")
     private String ctaLabel;
 
@@ -53,21 +56,13 @@ public class Banner {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "banner_category",
-            joinColumns = @JoinColumn(name = "banner_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories = new ArrayList<>();
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt;
 
-    private Instant updatedAt = Instant.now();
-
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = Instant.now();
-    }
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+ 
 }

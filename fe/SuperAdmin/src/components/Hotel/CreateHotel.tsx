@@ -70,7 +70,7 @@ export default function CreateHotel() {
             {/* Header */}
             <div className="mx-auto mb-6 flex  items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Form Layouts</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Hotel</h1>
                     <p className="mt-1 text-sm text-gray-500">
                         Hotel <span className="mx-1">»</span> Add Hotel
                     </p>
@@ -92,7 +92,7 @@ export default function CreateHotel() {
                                 <Input value={formData.name} onChange={(val) => setFormData((prev) => ({ ...prev, name: val.target.value }))} placeholder="Nhập tên khách sạn" />
                             </div>
                             <div>
-                                <Label htmlFor="Tên khách sạn">Địa chỉ</Label>
+                                <Label htmlFor="Địa chỉ khách sạn">Địa chỉ</Label>
                                 <Textarea value={formData.address} placeholder="Nhập địa chỉ khách sạn" onChange={(val) => setFormData((prev) => ({ ...prev, address: val.target.value }))} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]" rows={3} />
                             </div>
                             <div>
