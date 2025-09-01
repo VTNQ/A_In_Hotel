@@ -1,4 +1,4 @@
-package phucnghia.blog_service.service.impl;
+package phucnghia.blog_service.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
