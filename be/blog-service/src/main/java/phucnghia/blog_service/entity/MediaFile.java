@@ -1,10 +1,7 @@
 package phucnghia.blog_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "media_files")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MediaFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,22 +21,17 @@ public class MediaFile {
     @Column(name = "file_url", nullable = false)
     private String url;        // đường dẫn file
 
-    private String type;       // image / video
+    @Column(name = "content_type", length = 120)
+    private String contentType; // ví dụ: image/png, video/mp4
+
+    private Long sizeBytes;    // kích thước file
+
+    private String altText;    // mô tả ảnh (SEO)
+
+    @Column(nullable = false)
+    private Boolean active = true; // để soft delete
 
     @ManyToOne
     @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
-
-    // constructor tiện dụng để tạo MediaFile từ URL
-    public MediaFile(Long id, String url, String type, Blog blog) {
-        this.id = id;
-        this.url = url;
-        this.type = type;
-        this.blog = blog;
-        this.fileName = extractFileName(url); // auto lấy tên file
-    }
-
-    private String extractFileName(String url) {
-        return url.substring(url.lastIndexOf("/") + 1);
-    }
 }

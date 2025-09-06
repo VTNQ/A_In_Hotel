@@ -63,13 +63,21 @@ public class BlogServiceImpl implements BlogService {
         List<MediaFile> mediaFiles = (dto.getMediaUrls() == null ? Collections.<String>emptyList() : dto.getMediaUrls())
                 .stream()
                 .filter(url -> url != null && !url.isBlank())
-                .map(url -> new MediaFile(null, url.trim(), detectType(url), blog))
+                .map(url -> MediaFile.builder()
+                        .fileName(extractFileName(url))
+                        .url(url.trim())
+                        .contentType(detectType(url))
+                        .sizeBytes(null)      // nếu FE gửi size thì set vào
+                        .altText(null)        // nếu FE gửi altText thì set vào
+                        .active(true)
+                        .blog(blog)
+                        .build())
                 .toList();
         blog.setMediaFiles(mediaFiles);
 
         // Lịch đăng
         if (dto.getPublishAt() != null && dto.getPublishAt().isAfter(LocalDateTime.now())) {
-            blog.setStatus(BlogStatus.SCHEDULED); // hoặc đổi sang PENDING nếu bạn KHÔNG thêm enum
+            blog.setStatus(BlogStatus.SCHEDULED);
             blog.setPublishAt(dto.getPublishAt());
         } else {
             blog.setStatus(BlogStatus.DRAFT);
@@ -110,7 +118,15 @@ public class BlogServiceImpl implements BlogService {
             blog.getMediaFiles().clear(); // orphanRemoval xóa media cũ
             List<MediaFile> newMedias = dto.getMediaUrls().stream()
                     .filter(url -> url != null && !url.isBlank())
-                    .map(url -> new MediaFile(null, url.trim(), detectType(url), blog))
+                    .map(url -> MediaFile.builder()
+                            .fileName(extractFileName(url))
+                            .url(url.trim())
+                            .contentType(detectType(url))
+                            .sizeBytes(null)
+                            .altText(null)
+                            .active(true)
+                            .blog(blog)
+                            .build())
                     .toList();
             blog.getMediaFiles().addAll(newMedias);
         }
@@ -118,7 +134,7 @@ public class BlogServiceImpl implements BlogService {
         // Lịch đăng (chỉ cập nhật khi FE gửi)
         if (dto.getPublishAt() != null) {
             if (dto.getPublishAt().isAfter(LocalDateTime.now())) {
-                blog.setStatus(BlogStatus.SCHEDULED); // hoặc PENDING nếu không thêm enum
+                blog.setStatus(BlogStatus.SCHEDULED);
                 blog.setPublishAt(dto.getPublishAt());
             } else {
                 blog.setStatus(BlogStatus.DRAFT);
@@ -126,7 +142,6 @@ public class BlogServiceImpl implements BlogService {
             }
         }
 
-        // blog là entity managed, nhưng save để return nhất quán
         return blogMapper.toResponse(blogRepository.save(blog));
     }
 
@@ -152,8 +167,19 @@ public class BlogServiceImpl implements BlogService {
     private String detectType(String url) {
         String u = url.toLowerCase();
         if (u.endsWith(".mp4") || u.endsWith(".mov") || u.contains("youtube") || u.contains("vimeo")) {
-            return "video";
+            return "video/mp4";
         }
-        return "image";
+        if (u.endsWith(".png")) return "image/png";
+        if (u.endsWith(".jpg") || u.endsWith(".jpeg")) return "image/jpeg";
+        if (u.endsWith(".gif")) return "image/gif";
+        return "application/octet-stream";
+    }
+
+    private String extractFileName(String url) {
+        try {
+            return url.substring(url.lastIndexOf('/') + 1);
+        } catch (Exception e) {
+            return url; // fallback nếu không parse được
+        }
     }
 }

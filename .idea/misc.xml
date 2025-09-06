@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/be/hotel-service/pom.xml" />
         <option value="$PROJECT_DIR$/be/banner-service/pom.xml" />
         <option value="$PROJECT_DIR$/be/system-config-service/pom.xml" />
+        <option value="$PROJECT_DIR$/be/common-security/pom.xml" />
       </list>
     </option>
   </component>
