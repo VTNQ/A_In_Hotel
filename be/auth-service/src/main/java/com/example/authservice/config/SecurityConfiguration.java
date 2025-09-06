@@ -63,7 +63,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
 
                         // chỉ SUPERADMIN mới được phép gọi
-                        .requestMatchers("/api/account/admins").hasRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.GET,APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
 
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
