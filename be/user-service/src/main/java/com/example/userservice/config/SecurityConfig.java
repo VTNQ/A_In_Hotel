@@ -1,5 +1,6 @@
-package com.example.commonsecurity.config;
+package com.example.userservice.config;
 
+import com.example.commonutils.api.APIURL;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,16 +12,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtService jwtService;
 
-    public SecurityConfig(final JwtAuthorizationFilter jwtAuthorizationFilter) {
-        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
-        this.jwtAuthenticationEntryPoint = new JwtAuthenticationEntryPoint();
-        this.jwtAccessDeniedHandler = new JwtAccessDeniedHandler();
-
+    public SecurityConfig(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
+
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtService);
+    }
+
+    @Bean
+    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAccessDeniedHandler jwtAccessDeniedHandler() {
+        return new JwtAccessDeniedHandler();
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,10 +53,10 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(jwtAccessDeniedHandler())
                 )
-                .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

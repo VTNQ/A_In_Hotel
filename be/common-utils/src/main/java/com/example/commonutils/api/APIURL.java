@@ -1,4 +1,4 @@
-package com.example.commonsecurity.config;
+package com.example.commonutils.api;
 
 public class APIURL {
 

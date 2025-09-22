@@ -1,4 +1,4 @@
-package com.example.commonsecurity.config;
+package com.example.userservice.config;
 
 import com.example.commonutils.api.RequestResponse;
 import com.example.commonutils.exception.ErrorCode;
