@@ -1,4 +1,4 @@
-package com.example.commonsecurity.config;
+package com.example.userservice.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

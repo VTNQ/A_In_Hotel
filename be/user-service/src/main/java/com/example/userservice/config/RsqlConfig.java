@@ -1,4 +1,4 @@
-package com.example.commonsecurity.config;
+package com.example.userservice.config;
 
 import io.github.perplexhub.rsql.RSQLCommonSupport;
 import jakarta.persistence.EntityManager;
