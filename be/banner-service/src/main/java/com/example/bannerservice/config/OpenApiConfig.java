@@ -22,7 +22,7 @@ public class OpenApiConfig {
                         .description("API cho hệ thống Banner")
                         .contact(new Contact().name("WebVibe").email("tranp6648@gmail.com"))
                 )
-                .addServersItem(new Server().url("http://localhost:8282/service/banner"))
+                .addServersItem(new Server().url("https://banner.ainhotelvn.com/service/banner"))
                 .components(new Components()
                         .addSecuritySchemes(scheme,
                                 new SecurityScheme()
