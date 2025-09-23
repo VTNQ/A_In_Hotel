@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
-        scanBasePackages = {"phucnghia.blog_service", "com.example.commonsecurity"}
 )
 public class BlogServiceApplication {
 
