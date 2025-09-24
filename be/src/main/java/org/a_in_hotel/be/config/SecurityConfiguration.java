@@ -36,6 +36,7 @@ public class SecurityConfiguration {
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
     private final JwtFilter jwtFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     public SecurityConfiguration(
             @Lazy JwtService jwtService,
             @Lazy AccountService accountService,
@@ -49,9 +50,11 @@ public class SecurityConfiguration {
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.oAuth2UserService = oauth2UserService;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -60,7 +63,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
 
                         // chỉ SUPERADMIN mới được phép gọi
-                        .requestMatchers(HttpMethod.GET,APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
 
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
@@ -81,11 +84,13 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config
                 .setAllowedOrigins(List.of(
+                        "https://portal.ainhotelvn.com",
                         "http://localhost:5173"
                 ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -96,6 +101,7 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -103,6 +109,7 @@ public class SecurityConfiguration {
         authenticationProvider.setPasswordEncoder(passwordEncoder()); // Sử dụng mã hóa mật khẩu
         return authenticationProvider;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // Mã hóa mật khẩu bằng BCrypt
