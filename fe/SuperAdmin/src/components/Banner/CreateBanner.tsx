@@ -31,8 +31,6 @@ const CreateBanner = () => {
     };
     const handleEndDate = (d?: Date) =>
         setFormData((p) => ({ ...p, endDate: d }));
-    const handleBannerImage = (files: File[] | null) =>
-        setFormData((p) => ({ ...p, bannerImage: files && files[0] ? files[0] : null }));
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
