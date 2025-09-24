@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+import type {  InternalAxiosRequestConfig } from 'axios';
 
 import { BASE_API } from '../../setting/constant/app';
 import { getTokens } from '@/util/auth';

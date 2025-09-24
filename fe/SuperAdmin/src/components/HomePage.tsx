@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
-import { DollarSign, Eye, Wallet2, TrendingUp, Download, MoreHorizontal, ChevronDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { DollarSign, Eye, Wallet2, TrendingUp, MoreHorizontal, ChevronDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import {
   ResponsiveContainer,
-  LineChart,
   Line,
   XAxis,
   YAxis,

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Mail, Lock, User2, Code2 } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
