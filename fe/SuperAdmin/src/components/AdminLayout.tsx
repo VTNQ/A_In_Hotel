@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { clearTokens, getTokens, isAccessExpired, saveTokens} from "../util/auth";
+import { clearTokens, getTokens, isAccessExpired, saveTokens } from "../util/auth";
 import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
 import { refresh } from "@/service/api/Authenticate";
@@ -62,70 +62,70 @@ export default function AdminLayout() {
   const prevPath = prevPathRef.current;
 
   const inHomeArea = pathname.toLowerCase().startsWith("/home");
-useEffect(() => {
-  const handleAuthCheck = async () => {
-  console.log(getTokens());
-    if (isAccessExpired() && getTokens()?.refreshToken) {
-      try {
-        const res = await refresh();
-        if (res?.data?.data?.accessToken) {
-          saveTokens({
-            accessToken: res.data.data.accessToken,
-         accessTokenAt: res.data.data.accessTokenExpiryAt,
-          });
-          setShowModal(false); // ẩn popup nếu đang show
-        } else {
-        
-       if (inHomeArea) {
-        // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-        const cameFromOutsideHome =
-          !prevPath || !prevPath.toLowerCase().startsWith("/home");
+  useEffect(() => {
+    const handleAuthCheck = async () => {
+      console.log(getTokens());
+      if (isAccessExpired() && getTokens()?.refreshToken) {
+        try {
+          const res = await refresh();
+          if (res?.data?.data?.accessToken) {
+            saveTokens({
+              accessToken: res.data.data.accessToken,
+              accessTokenAt: res.data.data.accessTokenExpiryAt,
+            });
+            setShowModal(false); // ẩn popup nếu đang show
+          } else {
 
-        if (cameFromOutsideHome) {
+            if (inHomeArea) {
+              // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
+              const cameFromOutsideHome =
+                !prevPath || !prevPath.toLowerCase().startsWith("/home");
+
+              if (cameFromOutsideHome) {
+                clearTokens();
+                navigate("/", { replace: true });
+              } else {
+                // Đang ở trong /home/** rồi và treo máy -> show popup
+                setShowModal(true);
+              }
+            } else {
+              // Không ở /home/** -> về "/" luôn
+              clearTokens();
+              navigate("/", { replace: true });
+            }
+          }
+        } catch (e) {
+          // Lỗi refresh => logout
           clearTokens();
           navigate("/", { replace: true });
-        } else {
-          // Đang ở trong /home/** rồi và treo máy -> show popup
-          setShowModal(true);
         }
-      } else {
-        // Không ở /home/** -> về "/" luôn
-        clearTokens();
-        navigate("/", { replace: true });
-      }
-        }
-      } catch (e) {
-        // Lỗi refresh => logout
-        clearTokens();
-        navigate("/", { replace: true });
-      }
-    } else if(isAccessExpired() && !getTokens()?.refreshToken){
-       if (inHomeArea) {
-        // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-        const cameFromOutsideHome =
-          !prevPath || !prevPath.toLowerCase().startsWith("/home");
+      } else if (isAccessExpired() && !getTokens()?.refreshToken) {
+        if (inHomeArea) {
+          // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
+          const cameFromOutsideHome =
+            !prevPath || !prevPath.toLowerCase().startsWith("/home");
 
-        if (cameFromOutsideHome) {
+          if (cameFromOutsideHome) {
+            clearTokens();
+            navigate("/", { replace: true });
+          } else {
+            // Đang ở trong /home/** rồi và treo máy -> show popup
+            setShowModal(true);
+          }
+        } else {
+          // Không ở /home/** -> về "/" luôn
           clearTokens();
           navigate("/", { replace: true });
-        } else {
-          // Đang ở trong /home/** rồi và treo máy -> show popup
-          setShowModal(true);
         }
       } else {
-        // Không ở /home/** -> về "/" luôn
-        clearTokens();
-        navigate("/", { replace: true });
+        setShowModal(false)
       }
-    }else{
-      setShowModal(false)
-    }
 
-    prevPathRef.current = pathname;
-  };
+      prevPathRef.current = pathname;
+    };
 
-  handleAuthCheck();
-}, [pathname, inHomeArea, navigate]);
+    handleAuthCheck();
+  }, [pathname, inHomeArea, navigate]);
 
 
 
@@ -133,7 +133,7 @@ useEffect(() => {
   useEffect(() => {
     const check = () => {
 
-      if (isAccessExpired() && !getTokens()?.refreshToken)  {
+      if (isAccessExpired() && !getTokens()?.refreshToken) {
         // Chỉ show popup nếu đang ở trong /home/**
         if (inHomeArea) setShowModal(true);
         else {
@@ -236,8 +236,9 @@ const SECTIONS: SectionSpec[] = [
   {
     title: "Dashboards",
     items: [
-      { label: "Hotel", icon: Hotel, active: true, path: '/Home/hotel' },
-     { label: "Banner", icon: Image, active: false, path: "/Home/banner" },
+      { label: "Home", icon: Home, active: true, path: "/Home" },
+      { label: "Hotel", icon: Hotel, path: '/Home/hotel' },
+      { label: "Banner", icon: Image, active: false, path: "/Home/banner" },
       { label: "Analytics", icon: BarChart2 },
       { label: "Ecommerce", icon: ShoppingBag },
       { label: "CRM", icon: HandCoins },

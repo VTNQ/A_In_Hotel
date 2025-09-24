@@ -20,7 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/hotels")
+@RequestMapping("/api/hotels")
 @Tag(name = "Hotel")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HotelController {

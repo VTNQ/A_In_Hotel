@@ -49,7 +49,7 @@ public class BannerServiceImpl implements BannerService {
             BannerImage bannerImage = new BannerImage();
             if (image != null && !image.isEmpty()) {
                 try {
-                    FileUploadMeta file = generalService.saveFile(image, "banner/");
+                    FileUploadMeta file = generalService.saveFile(image, "banner");
                     bannerImage = bannerImageMapper.toBannerImage(file);
                     bannerImageRepository.save(bannerImage);
                 } catch (Exception e) {

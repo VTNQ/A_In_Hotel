@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { useAlert } from "../alert-context";
 import { findById, updateBanner } from "@/service/api/Banner";
 import { isBefore, startOfToday } from "date-fns";
+import { File_URL } from "@/setting/constant/app";
 
 type BannerForm = {
     title: string;
@@ -21,12 +22,12 @@ type BannerForm = {
     bannerImage: File | null; // ảnh mới (nếu chọn)
 };
 
-const FILE_BASE = "http://localhost:8484/api/file/";
+
 const toImgSrc = (u?: string) => {
     if (!u) return "/placeholder-image.png";
     if (/^https?:\/\//i.test(u)) return u;
     const clean = u.replace(/^\/+/, "");
-    return `${FILE_BASE}${clean}`;
+    return `${File_URL}${clean}`;
 };
 
 const EditBanner: React.FC = () => {

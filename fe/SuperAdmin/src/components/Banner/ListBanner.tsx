@@ -16,6 +16,7 @@ import { SelectField } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import { getBanner } from "@/service/api/Banner";
 import { cn } from "@/lib/utils";
+import { File_URL } from "@/setting/constant/app";
 
 /** ------------ Types & helpers ------------ */
 type Status = "ACTIVE" | "INACTIVE";
@@ -50,12 +51,12 @@ const formatDate = (val: string | number) => {
   return isNaN(d.getTime()) ? "-" : d.toLocaleDateString();
 };
 
-const FILE_BASE = "http://localhost:8484/api/file/";
+
 const toImgSrc = (u?: string) => {
   if (!u) return "/placeholder-image.png";
   if (/^https?:\/\//i.test(u)) return u;
   const clean = u.replace(/^\/+/, "");
-  return `${FILE_BASE}${clean}`;
+  return `${File_URL}${clean}`;
 };
 
 /** ------------ Thumbnail + Lightbox ------------ */

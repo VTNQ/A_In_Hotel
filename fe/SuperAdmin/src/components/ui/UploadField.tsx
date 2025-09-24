@@ -243,7 +243,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
             </>
           ) : (
             <>
-              <img src={defaultPreviewUrl} alt="Mặc định" className="h-20 w-20 opacity-60" />
+              <img src={defaultPreviewUrl} alt="Mặc định"  className="h-full w-full object-cover" />
               <button type="button" onClick={openPicker}
                 className="absolute bottom-2 right-2 grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-slate-300">
                 <Camera className="h-4 w-4 text-slate-700" />
