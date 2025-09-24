@@ -80,7 +80,12 @@ export default function Login() {
       <Clock />
       {/* Logo cố định trên giữa, không chặn click */}
       <header className="fixed bottom-[80vh] left-[98vh] -translate-x-1/2 z-40 pointer-events-none">
-        <img src="/Group 1.png" alt="A-IN HOTEL" className="h-[150px] md:h-[177px] w-[380.908px] " />
+        <img
+          src="/Group 1.png"
+          alt="A-IN HOTEL"
+          className="h-[50px] md:h-[100px] w-auto"
+        />
+
       </header>
 
       {/* SCENE */}
@@ -94,43 +99,90 @@ export default function Login() {
         />
 
         {/* Bàn */}
-        <div className="relative w-[900px] max-w-[92vw] h-[100px] z-10">
+        <div className="relative w-[56rem] max-w-[92vw] h-24 z-10">
+          {/* Mặt bàn */}
           <div className="absolute left-0 right-0 top-0 h-6 bg-[#5677ef] rounded"></div>
-          <div className="absolute left-[80px] top-[22px] h-5 w-[120px] bg-[#11243d] rounded"></div>
-          <div className="absolute right-[80px] top-[22px] h-5 w-[120px] bg-[#11243d] rounded"></div>
 
-          <div className="absolute left-[140px] top-6 w-2 h-[200px] bg-[#b9c9ff] rotate-8 rounded"></div>
-          <div className="absolute left-[240px] top-6 w-2 h-[200px] bg-[#b9c9ff] -rotate-8 rounded"></div>
-          <div className="absolute left-[170px] top-[150px] w-[120px] h-3 bg-[#b9c9ff] rounded"></div>
+          {/* Thanh đen dưới mặt bàn */}
+          <div className="absolute left-39 z-10 top-5 h-5 w-30 bg-[#11243d] rounded"></div>
+          <div className="absolute right-19 z-10 top-5 h-5 w-30 bg-[#11243d] rounded"></div>
 
-          <div className="absolute right-[240px] top-6 w-2 h-[200px] bg-[#b9c9ff] rotate-8 rounded"></div>
-          <div className="absolute right-[140px] top-6 w-2 h-[200px] bg-[#b9c9ff] -rotate-8 rounded"></div>
-          <div className="absolute right-[170px] top-[150px] w-[120px] h-3 bg-[#b9c9ff] rounded"></div>
+          {/* Chân trái */}
+          {/* Chân trái (dùng hình) */}
+          <div className="absolute left-40 top-5 w-36 h-52">
+            {/* Thanh chéo trái */}
+            <img
+              src="/Rectangle 17.png"
+              alt="left leg"
+              className="absolute top-0 left-1 h-full object-contain  origin-top"
+            />
+            {/* Thanh chéo phải */}
+            <img
+              src="/Rectangle 18.png"
+              alt="right leg"
+              className="absolute top-0 right-8 h-full object-contain  origin-top"
+            />
+            {/* Thanh ngang */}
+            <img
+              src="/Rectangle 16.png"
+              alt="cross bar"
+              className="absolute top-36 left-5 right-0 w-18 h-2 object-contain"
+            />
+          </div>
 
-          {/* Form: hạ xuống chút để cách logo hơn */}
-          <div className="absolute -top-[220px] md:-top-[284px] left-1/2 -translate-x-1/2 z-30 w-[360px] md:w-[420px]">
+
+          {/* Chân phải */}
+          {/* Chân phải (dùng hình) */}
+          <div className="absolute  right-36 top-8 w-36 h-52">
+            {/* Thanh chéo trái */}
+            <img
+              src="/Rectangle 17.png"
+              alt="right leg left-bar"
+              className="absolute top-0 left-24 h-full object-contain  origin-top"
+            />
+            {/* Thanh chéo phải */}
+            <img
+              src="/Rectangle 18.png"
+              alt="right leg right-bar"
+              className="absolute top-0 left-37 h-full object-contain origin-top"
+            />
+            {/* Thanh ngang */}
+            <img
+              src="/Rectangle 16.png"
+              alt="cross bar"
+              className="absolute top-36 left-29 w-18  h-2 object-contain"
+            />
+          </div>
+
+
+          {/* Form nằm trên bàn */}
+          <div className="absolute -top-56 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
             <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
-             p-5 transition-colors focus-within:border-black mt-[2vh]">
+      p-5 transition-colors focus-within:border-black mt-[2vh]">
               <form className="space-y-4" onSubmit={handleLogin}>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">User email</label>
+                  <label className="block text-sm font-medium text-slate-700">
+                    User email
+                  </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your Email"
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none   focus:ring-1 focus:ring-[#42578E]"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Password</label>
+                  <label className="block text-sm font-medium text-slate-700">
+                    Password
+                  </label>
                   <input
                     type="password"
                     placeholder="Enter password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none   focus:ring-1 focus:ring-[#42578E]"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                     required
                   />
                 </div>
@@ -139,12 +191,17 @@ export default function Login() {
                     <input type="checkbox" className="h-4 w-4 text-indigo-600 border-slate-300" />
                     Remember password
                   </label>
-                  <a href="#" className="text-sm text-indigo-600 hover:underline">Forgot password?</a>
+                  <a href="#" className="text-sm text-indigo-600 hover:underline">
+                    Forgot password?
+                  </a>
                 </div>
-                <button type="submit" className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
-                  ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                  : "bg-[#7C7C7C] cursor-not-allowed"
-                  }`}>
+                <button
+                  type="submit"
+                  className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
+                    ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+                    : "bg-[#7C7C7C] cursor-not-allowed"
+                    }`}
+                >
                   Login
                 </button>
               </form>
@@ -155,16 +212,16 @@ export default function Login() {
                 title={modalCfg?.title ?? ""}
                 description={modalCfg?.description}
                 closable
-                autoClose={modalCfg?.type === "success" ? 1600 : undefined} // tự đóng sau 1.6s nếu thành công
+                autoClose={modalCfg?.type === "success" ? 1600 : undefined}
                 primaryAction={{
                   label: "OK",
                   autoFocus: true,
                 }}
               />
-
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
