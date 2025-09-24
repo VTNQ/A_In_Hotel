@@ -26,7 +26,7 @@ public class GeneralService {
     public GeneralService(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
-
+    private static final String PREFIX = "HOTEL";
     public FileUploadMeta saveFile(MultipartFile file, String subDirectory) throws IOException, IOException{
        try {
            boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
@@ -78,5 +78,9 @@ public class GeneralService {
        }catch (Exception e){
            throw new RemoteException("Không thể upload file:"+e.getMessage(),e);
        }
+    }
+    public  String generateByUUID() {
+        String uuidPart = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        return PREFIX + "-" + uuidPart;
     }
 }

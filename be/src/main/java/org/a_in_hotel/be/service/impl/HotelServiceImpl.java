@@ -11,6 +11,7 @@ import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.HotelMapper;
 import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.service.HotelService;
+import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,8 @@ public class HotelServiceImpl implements HotelService {
     private HotelRepository hotelRepository;
     @Autowired
     private HotelMapper hotelMapper;
+    @Autowired
+    private GeneralService generalService;
     private static final List<String> SEARCH_FIELDS = List.of("name","fullName","code");
 
     @Override
@@ -38,6 +41,7 @@ public class HotelServiceImpl implements HotelService {
             log.info("save branch:{}", hotel);
 
             Hotel hotelEntity = hotelMapper.toEntity(hotel);
+            hotelEntity.setCode(generalService.generateByUUID());
             hotelRepository.save(hotelEntity);
         } catch (Exception e) {
             e.printStackTrace();
