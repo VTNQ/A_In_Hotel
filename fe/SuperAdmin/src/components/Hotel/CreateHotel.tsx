@@ -115,7 +115,7 @@ export default function CreateHotel() {
                                     getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
                                 />
                             </div>
-                            <Button type="submit" >Submit</Button>
+                            <Button type="submit" >Lưu</Button>
                         </form>
                     </div>
                 </div>
