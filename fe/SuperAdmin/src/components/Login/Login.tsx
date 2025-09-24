@@ -110,7 +110,7 @@ export default function Login() {
           {/* Form: hạ xuống chút để cách logo hơn */}
           <div className="absolute -top-[220px] md:-top-[284px] left-1/2 -translate-x-1/2 z-30 w-[360px] md:w-[420px]">
             <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
-             p-5 transition-colors focus-within:border-black">
+             p-5 transition-colors focus-within:border-black mt-[2vh]">
               <form className="space-y-4" onSubmit={handleLogin}>
                 <div>
                   <label className="block text-sm font-medium text-slate-700">User email</label>
