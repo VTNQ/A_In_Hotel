@@ -1,8 +1,9 @@
 export type GetAllOptions = {
-  page?: number;
-  size?: number;
-  sort?: string;
-  filter?: string;
-  search?: string;
-  all?: boolean;
+  page?:number;
+    size?:number;
+    sort?:string;
+    filter?:string;
+    searchField?:string;
+    searchValue?:string
+    all?:boolean;
 };

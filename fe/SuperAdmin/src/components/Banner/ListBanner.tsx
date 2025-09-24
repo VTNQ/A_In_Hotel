@@ -141,7 +141,7 @@ const ListBanner: React.FC = () => {
         page: uiPage,
         size: pageSize,
         sort: sortKey ? `${String(sortKey)},${sortDir}` : "id,asc",
-        search: encodeURIComponent(search.trim()),
+        searchValue: encodeURIComponent(search.trim()),
       });
       const list: BasicRow[] = (res?.data?.content || []).map((item: any) => ({
         id: item.id,
