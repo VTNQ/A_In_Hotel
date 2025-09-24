@@ -105,10 +105,8 @@ const ListHotel: React.FC = () => {
         page: uiPage,
         size: pageSize,
         sort: sortKey ? `${sortKey},${sortDir}` : "id,asc",
-        search:
-          searchField === "default"
-            ? undefined
-            : `${searchField} like *${search}*`,
+        searchField:searchField ==="default"?undefined:searchField,
+        searchValue:search
       });
 
       const list: BasicRow[] = (res?.data?.content || []).map((item: any) => ({
@@ -125,6 +123,7 @@ const ListHotel: React.FC = () => {
       setRows(list);
     } catch (e: any) {
       setError(e?.message || "Không thể tải dữ liệu");
+      setRows([])
     } finally {
       setLoading(false);
     }
