@@ -90,7 +90,7 @@ public class SecurityConfiguration {
         CorsConfiguration config = new CorsConfiguration();
         config
                 .setAllowedOrigins(List.of(
-                        "https://portal.ainhotelvn.com",
+                        "https://superadmin.ainhotelvn.com",
                         "http://localhost:5173"
                 ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
