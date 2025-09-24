@@ -1,1 +1,1 @@
-export const BASE_API = "http://localhost:8089";
+export const BASE_API = "https://superadmin.ainhotelvn.com";
