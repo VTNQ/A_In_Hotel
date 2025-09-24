@@ -12,7 +12,7 @@ export const createBanner=async( bannerDTO: Record<string, any>,image:File | nul
 
     if (image) formData.append("image", image);
 
-    const { data } = await Http.post("/service/banner/banners/create", formData);
+    const { data } = await Http.post("/api/banners/create", formData);
     return data;
   } catch (err) {
     console.error("Lỗi khi tạo banner:", err);
@@ -28,13 +28,13 @@ export const getBanner=async(options:GetAllOptions={})=>{
     search,
     all = false,
   } = options;
-   const res = await Http.get("/service/banner/banners/getAll", {
+   const res = await Http.get("/api/banners/getAll", {
     params: { page, size, sort, filter, search, all },
   });
   return res.data;
 }
 export const findById=async(id:number)=>{
-  return (await Http.get(`/service/banner/banners/${id}`)).data; 
+  return (await Http.get(`/api/banners/${id}`)).data; 
 }
 export const updateBanner=async(bannerDTO: Record<string, any>,image:File | null,id:number)=>{
       try {
@@ -47,7 +47,7 @@ export const updateBanner=async(bannerDTO: Record<string, any>,image:File | null
 
     if (image) formData.append("image", image);
 
-    const { data } = await Http.put(`/service/banner/banners/update/${id}`, formData);
+    const { data } = await Http.put(`/api/banners/update/${id}`, formData);
     return data;
   } catch (err) {
     console.error("Lỗi khi tạo banner:", err);

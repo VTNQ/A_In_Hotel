@@ -13,16 +13,16 @@ export const AddHotel=async(hotelData:any) => {
     search,
     all = false,
   } = options;
-  const res = await Http.get("/service/hotel/hotels/getAll", {
+  const res = await Http.get("/api/hotels/getAll", {
     params: { page, size, sort, filter, search, all },
   });
   return res.data;
  }
 export const UpdateStatusHotel = async (hotelId: number, status: "ACTIVE" | "INACTIVE") => {
-  return await Http.put(`/service/hotel/hotels/updateStatus/${hotelId}`, status, {
+  return await Http.put(`/api/hotels/updateStatus/${hotelId}`, status, {
     headers: { "Content-Type": "application/json" }
   });
 };
 export const updateHotel=async(hotelId:number,hotelData:any) => {
-    return await Http.put(`/service/hotel/hotels/update/${hotelId}`,hotelData);
+    return await Http.put(`/api/hotels/update/${hotelId}`,hotelData);
 }
