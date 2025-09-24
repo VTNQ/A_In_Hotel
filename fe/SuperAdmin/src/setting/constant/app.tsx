@@ -1,1 +1,1 @@
-export const BASE_API = "https://superadmin.ainhotelvn.com";
+export const BASE_API = "https://api.ainhotelvn.com";
