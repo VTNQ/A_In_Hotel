@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Home,
   BarChart2,
   ShoppingBag,
   HandCoins,
