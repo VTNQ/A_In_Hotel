@@ -33,7 +33,7 @@ public class HotelServiceImpl implements HotelService {
     private HotelMapper hotelMapper;
     @Autowired
     private GeneralService generalService;
-    private static final List<String> SEARCH_FIELDS = List.of("name","fullName","code");
+    private static final List<String> SEARCH_FIELDS = List.of("name","code");
 
     @Override
     public void save(HotelRequest hotel) {
