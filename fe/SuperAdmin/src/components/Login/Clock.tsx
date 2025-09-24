@@ -1,6 +1,3 @@
-
-import React, { useState } from "react";
-
 // Clock Component
 const Clock = () => {
   return (
