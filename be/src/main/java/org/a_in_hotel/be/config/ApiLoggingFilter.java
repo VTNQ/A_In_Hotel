@@ -48,7 +48,12 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         }
         String responseBody = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8).trim();
         if (!responseBody.isBlank()) {
-            logMap.put("responseBody", responseBody);
+            try {
+                JsonNode responseJson = objectMapper.readTree(responseBody);
+                logMap.put("responseBody", responseJson); // giữ JSON object
+            } catch (Exception e) {
+                logMap.put("responseBody", responseBody);
+            }
         }
         responseWrapper.copyBodyToResponse();
 
@@ -74,7 +79,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 
         log.info("[API] {}", logMap);
     }
-    private String sanitizeBody(String body) {
+    private JsonNode sanitizeBody(String body) {
         try {
             JsonNode root = objectMapper.readTree(body);
 
@@ -82,22 +87,17 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
                 ObjectNode obj = (ObjectNode) root;
                 if (obj.has("password")) {
                     String original = obj.get("password").asText();
-
-                    // Nếu có giá trị thì che lại
                     if (original != null && !original.isBlank()) {
                         obj.put("password", passwordEncoder.encode(original));
                     }
                 }
             }
-
-            return objectMapper.writeValueAsString(root);
+            return root; // Trả về JsonNode thay vì String
         } catch (Exception e) {
-            // fallback: nếu không phải JSON thì regex mask
-            return body.replaceAll(
-                    "\"password\"\\s*:\\s*\"[^\"]*\"",
-                    "\"password\":\"***\""
-            );
+            // fallback: nếu không phải JSON thì trả raw string
+            return objectMapper.createObjectNode().put("raw", body);
         }
     }
+
 
 }
