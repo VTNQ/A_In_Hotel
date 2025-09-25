@@ -32,7 +32,7 @@ public class Account implements UserDetails {
     @Schema(description = "Id account", example = "123")
     private Long id;
 
-    @Schema(description = "Mật khẩu của Account")
+    @Schema(description = "Mật khẩu của Account",nullable = true)
     @Column(nullable = false)
     private String password;
 
