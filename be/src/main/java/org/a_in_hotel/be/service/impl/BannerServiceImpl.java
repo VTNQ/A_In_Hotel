@@ -114,4 +114,26 @@ public class BannerServiceImpl implements BannerService {
         return bannerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Banner not found with id: " + id));
     }
+
+    @Override
+    public void delete(Long id) {
+        try {
+            log.info("start to delete banner : {}", id);
+            Banner banner=bannerRepository.findById(id)
+                    .orElseThrow(()->new EntityNotFoundException("Banner not found with id: " + id));
+            BannerImage bannerImage=banner.getImage();
+            if(bannerImage!=null){
+                try {
+                    generalService.deleFile(bannerImage.getUrl());
+                    bannerImageRepository.delete(bannerImage);
+                }catch (Exception e){
+                    log.warn("Không thể xóa ảnh trên MinIO hoặc DB cho banner {}: {}", id, e.getMessage());
+                }
+            }
+            bannerRepository.delete(banner);
+            log.info("end to delete banner : {}", id);
+        }catch (Exception e){
+            log.error("delete banner error : {}",e.getMessage());
+        }
+    }
 }
