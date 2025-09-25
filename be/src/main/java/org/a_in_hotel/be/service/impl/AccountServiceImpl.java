@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         try {
             log.info("save account:{}", accountDTO);
             Account account = accountMapper.toEntity(accountDTO);
-            account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+            account.setPassword(accountDTO.getPassword()!=null?passwordEncoder.encode(accountDTO.getPassword()):null);
             accountRepository.save(account);
             log.info("save account:{}", account);
         }catch (Exception e){

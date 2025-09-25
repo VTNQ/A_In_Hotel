@@ -79,6 +79,21 @@ public class GeneralService {
            throw new RemoteException("Không thể upload file:"+e.getMessage(),e);
        }
     }
+    public void deleFile(String filePath){
+        try {
+            String objectName=filePath.startsWith("/")
+                    ? filePath.substring(1+bucketName.length()+1)
+                    : filePath;
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            );
+        }catch (Exception e){
+            throw new RuntimeException("Không thể xóa file:"+e.getMessage(),e);
+        }
+    }
     public  String generateByUUID() {
         String uuidPart = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         return PREFIX + "-" + uuidPart;
