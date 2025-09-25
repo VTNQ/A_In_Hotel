@@ -9,3 +9,6 @@ services:
       SPRING_DATASOURCE_USERNAME: avnadmin
       SPRING_DATASOURCE_PASSWORD: AVNS_O-jK8HGG8RAfgfyxA5s
       SERVER_PORT: 8585
+      LOGGING_FILE_NAME: /var/log/ainhotel/app.log
+    volumes:
+      - /var/log/ainhotel:/var/log/ainhotel
