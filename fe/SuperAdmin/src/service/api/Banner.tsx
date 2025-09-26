@@ -55,3 +55,6 @@ export const updateBanner=async(bannerDTO: Record<string, any>,image:File | null
     throw err;
   }
 }
+export const deleteBanner = async (id: number | string) => {
+  return await Http.delete(`/api/banners/${id}`);
+};

@@ -7,6 +7,7 @@ import HotelPage from './page/Hotel/HotelPage'
 import AddBannerPage from './page/Banner/AddBannerPage'
 import BannerPage from './page/Banner/BannerPagge'
 import EditBannerPage from './page/Banner/EditBannerPage'
+import RegisterPage from './page/RegisterPage'
 
 
 
@@ -19,6 +20,7 @@ function App() {
     <>
     <Routes>
         <Route path='/' element={<LoginPage/>}/>
+        <Route path='/register' element={<RegisterPage/>}/>
         <Route path='Home' element={<AdminLayout/>}>
         <Route index  element={<HomePage/>}/>
         <Route path='hotel/create' element={<AddHotelPage/>}/>

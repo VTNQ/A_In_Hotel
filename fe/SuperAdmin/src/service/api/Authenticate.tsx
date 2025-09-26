@@ -32,3 +32,8 @@ export const getAll = async (options: GetAllOptions = {}) => {
   });
   return res.data;
 };
+export const register=async(register:any)=>{
+  return await Http.post("/api/account/register",register,{
+    skipAuth: true, withCredentials: true
+  })
+}
