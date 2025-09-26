@@ -8,15 +8,15 @@ import { register } from "@/service/api/Authenticate";
 
 
 export default function Register() {
-    
-    const [email, setEmail] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [gender, setGender] = useState<"MALE" | "FEMALE" >("MALE");
-    const [phone, setPhone] = useState("");
-   
+
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [gender, setGender] = useState<"MALE" | "FEMALE">("MALE");
+  const [phone, setPhone] = useState("");
+
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const isFilled = email.trim() !== "" ;
+  const isFilled = email.trim() !== "";
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCfg, setModalCfg] = useState<{
@@ -42,21 +42,21 @@ export default function Register() {
       setError("Vui lòng nhập đầy đủ email và mật khẩu!");
       return;
     }
-    const registerDto={
-        email:email,
-        idRole:1,
-        gender:gender,
-        fullName:fullName,
-        phone:phone
+    const registerDto = {
+      email: email,
+      idRole: 1,
+      gender: gender,
+      fullName: fullName,
+      phone: phone
     }
     try {
       const response = await register(registerDto);
-     
+
       setSuccess(`${response.data.message}`)
-    setEmail("");
-    setFullName("");
-    setGender("MALE");
-    setPhone("");
+      setEmail("");
+      setFullName("");
+      setGender("MALE");
+      setPhone("");
     } catch (err) {
       console.log(err);
       setError("Đăng nhập thất bại. Vui lòng thử lại.");
@@ -165,7 +165,7 @@ export default function Register() {
             <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
       p-5 transition-colors focus-within:border-black mt-[2vh]">
               <form className="space-y-4" onSubmit={handleRegister}>
-              <div>
+                <div>
                   <label className="block text-sm font-medium text-slate-700">Email</label>
                   <input
                     type="email"
@@ -213,8 +213,13 @@ export default function Register() {
                     required
                   />
                 </div>
+                <div className="flex items-center justify-between">
+                  <a href="/login" className="text-sm text-indigo-600 hover:underline">
+                    Already have an account? Login
+                  </a>
+                </div>
 
-        
+
                 <button
                   type="submit"
                   className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
