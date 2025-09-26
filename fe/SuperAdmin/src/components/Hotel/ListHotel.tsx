@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge, ChevronDown, ChevronUp, Pencil } from "lucide-react";
+import { Badge, ChevronDown, ChevronUp, Pencil, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -105,8 +105,8 @@ const ListHotel: React.FC = () => {
         page: uiPage,
         size: pageSize,
         sort: sortKey ? `${sortKey},${sortDir}` : "id,asc",
-        searchField:searchField ==="default"?undefined:searchField,
-        searchValue:search
+        searchField: searchField === "default" ? undefined : searchField,
+        searchValue: search
       });
 
       const list: BasicRow[] = (res?.data?.content || []).map((item: any) => ({
@@ -314,16 +314,19 @@ const ListHotel: React.FC = () => {
             getLabel={(i) => i.label}
             clearable={false}
           />
+          <div className="relative w-72">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Input
+              placeholder={SEARCH_PLACEHOLDER[searchField]}
+              className="pl-9"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setUiPage(1);
+              }}
+            />
+          </div>
 
-          <Input
-            placeholder={SEARCH_PLACEHOLDER[searchField]}
-            className="w-72"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setUiPage(1);
-            }}
-          />
 
           <Button asChild>
             <a href="/Home/hotel/create">+ Thêm khách sạn</a>
@@ -375,8 +378,8 @@ const ListHotel: React.FC = () => {
                       {c.key === "index"
                         ? (uiPage - 1) * pageSize + idx + 1
                         : c.cell
-                        ? c.cell(row)
-                        : (row as any)[c.key]}
+                          ? c.cell(row)
+                          : (row as any)[c.key]}
                     </TableCell>
                   ))}
                 </TableRow>

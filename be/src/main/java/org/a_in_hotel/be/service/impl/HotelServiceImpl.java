@@ -13,7 +13,9 @@ import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +24,19 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
 @Service
 public class HotelServiceImpl implements HotelService {
+    private static final Map<String, String> FIELD_NAME_VI = Map.of(
+            "code", "Mã khách sạn",
+            "name", "Tên khách sạn",
+            "email", "Email",
+            "phone", "Số điện thoại"
+    );
+
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
@@ -43,11 +53,23 @@ public class HotelServiceImpl implements HotelService {
             Hotel hotelEntity = hotelMapper.toEntity(hotel);
             hotelEntity.setCode(generalService.generateByUUID());
             hotelRepository.save(hotelEntity);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.warn("fail save branch:{}", e.getMessage());
-            throw e;
+        } catch (DataIntegrityViolationException e) {
+            String field = "unknown";
+            if (e.getCause() instanceof ConstraintViolationException cve) {
+                String constraint = cve.getConstraintName();
+                if (constraint != null) {
+                    // cắt theo dấu '.' rồi lấy phần cuối
+                    String[] parts = constraint.split("\\.");
+                    String rawField = parts[parts.length - 1];
+                    field = FIELD_NAME_VI.getOrDefault(rawField, rawField);
+                }
+            }
 
+            log.warn("Duplicate entry for field: {}", field);
+            throw new IllegalArgumentException("Dữ liệu bị trùng ở trường: " + field, e);
+        }catch (Exception e) {
+            log.error("Unexpected error saving branch", e);
+            throw e;
         }
     }
 

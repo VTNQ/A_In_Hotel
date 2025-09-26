@@ -19,4 +19,7 @@ public class APIURL {
             "/oauth2/**",
             "/getAll"
     };
+    public static final String[] URL_SUPERADMIN_POST={
+            "/api/hotels/create"
+    };
 }
