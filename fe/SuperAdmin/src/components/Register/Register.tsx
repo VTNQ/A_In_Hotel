@@ -214,7 +214,7 @@ export default function Register() {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <a href="/login" className="text-sm text-indigo-600 hover:underline">
+                  <a href="/" className="text-sm text-indigo-600 hover:underline">
                     Already have an account? Login
                   </a>
                 </div>
