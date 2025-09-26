@@ -41,7 +41,7 @@ public class HotelController {
             return ResponseEntity.ok(RequestResponse.success("Hotel created successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error( e.getMessage()));
+                    .body(RequestResponse.error(e.getMessage()));
         }
     }
     @PutMapping("update/{id}")

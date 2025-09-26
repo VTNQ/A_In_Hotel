@@ -12,17 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CategoryDTO {
-    private Long id;
 
     @NotBlank
     @Size(max = 120)
     private String name;
 
-    @Size(max = 160)
-    private String slug;
-
-    @Size(max = 500)
-    private String description;
-
-    private Boolean active;
 }

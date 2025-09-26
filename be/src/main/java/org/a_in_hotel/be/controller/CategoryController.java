@@ -2,8 +2,12 @@ package org.a_in_hotel.be.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
+import org.a_in_hotel.be.dto.response.RequestResponse;
+import org.a_in_hotel.be.entity.Account;
+import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.service.CategoryService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +20,23 @@ public class CategoryController {
 
     // 👉 Tạo mới category
     @PostMapping
-    public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO dto) {
-        return ResponseEntity.ok(categoryService.create(dto));
+    public ResponseEntity<RequestResponse<Void>> create(@RequestBody CategoryDTO dto) {
+        categoryService.create(dto);
+        return ResponseEntity.ok(RequestResponse.success("Thêm category thành công"));
     }
 
     // 👉 Cập nhật category theo id
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable Long id,
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,
                                               @RequestBody CategoryDTO dto) {
-        return ResponseEntity.ok(categoryService.update(id, dto));
+        try {
+            categoryService.update(id, dto);
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật blog thành công"));
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+
     }
 
     // 👉 Xóa cứng category
@@ -43,25 +55,28 @@ public class CategoryController {
 
     // 👉 Lấy category theo id
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.get(id));
+    public ResponseEntity<RequestResponse<Category>> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(RequestResponse.success(categoryService.get(id)));
     }
 
     // 👉 Lấy category theo name
     @GetMapping("/by-name/{name}")
-    public ResponseEntity<CategoryDTO> getByName(@PathVariable String name) {
-        return ResponseEntity.ok(categoryService.getByName(name));
+    public ResponseEntity<RequestResponse<Category>> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(RequestResponse.success(categoryService.getByName(name)));
     }
 
     // 👉 Search categories
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> search(
-            @RequestParam(required = false) String q,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,desc") String sort
+    public ResponseEntity<Page<Category>> search(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id,desc") String sort,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String searchField,
+            @RequestParam(required = false) String searchValue,
+            @RequestParam(required = false) boolean all
     ) {
-        return ResponseEntity.ok(categoryService.search(q, page, size, sort));
+        return ResponseEntity.ok(categoryService.search(page, size, sort, filter, searchField, searchValue, all));
     }
 }
 

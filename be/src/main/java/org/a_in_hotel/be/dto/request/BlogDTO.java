@@ -15,6 +15,5 @@ public class BlogDTO {
     private String content;
     private Long categoryId;
     private List<String> tags;      // tên tag
-    private List<String> mediaUrls; // ảnh/video
     private LocalDateTime publishAt;
 }
