@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Slf4j
 @Component
 public class ApiLoggingFilter extends OncePerRequestFilter {
@@ -77,7 +80,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
             }
         }
 
-        log.info("[API] {}", logMap);
+        log.info("[API]", kv("apiLog", logMap));
     }
     private JsonNode sanitizeBody(String body) {
         try {

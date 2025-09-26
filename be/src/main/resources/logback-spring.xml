@@ -10,7 +10,8 @@
                 <threadName/>
                 <loggerName/>
                 <line/>
-                <message/>
+                <!-- Dùng arguments thay cho message -->
+                <arguments/>
             </providers>
         </encoder>
     </appender>
@@ -29,7 +30,7 @@
                 <threadName/>
                 <loggerName/>
                 <line/>
-                <message/>
+                <arguments/>
             </providers>
         </encoder>
     </appender>
