@@ -104,7 +104,7 @@ export default function Register() {
         />
 
         {/* Bàn */}
-        <div className="relative w-[56rem] max-w-[92vw] h-24 z-10 top-11">
+        <div className="relative w-[56rem] max-w-[92vw] h-24 z-10 top-17">
           {/* Mặt bàn */}
           <div className="absolute left-0 right-0 top-0 h-6 bg-[#5677ef] rounded"></div>
 
@@ -161,7 +161,7 @@ export default function Register() {
 
 
           {/* Form nằm trên bàn */}
-          <div className="absolute -top-56 md:-top-107 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
+          <div className="absolute -top-56 md:-top-113 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
             <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
       p-5 transition-colors focus-within:border-black mt-[2vh]">
               <form className="space-y-4" onSubmit={handleRegister}>
