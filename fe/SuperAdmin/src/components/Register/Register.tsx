@@ -4,7 +4,7 @@ import SideSlats from "./SideSlats";
 import { useNavigate } from "react-router-dom";
 import { AlertModal, type AlertType } from "../AlertModal";
 import { register } from "@/service/api/Authenticate";
-import { useAlert } from "../alert-context";
+
 
 
 export default function Register() {
