@@ -5,13 +5,13 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
-                <timestamp/>
-                <level/>
-                <threadName/>
-                <loggerName/>
-                <line/>
-                <!-- Dùng arguments thay cho message -->
-                <arguments/>
+                <timestamp/>         <!-- @timestamp -->
+                <logLevel/>          <!-- level: INFO, WARN, ERROR -->
+                <threadName/>        <!-- thread_name -->
+                <loggerName/>        <!-- logger_name -->
+                <callerData/>        <!-- file, class, line number -->
+                <message/>           <!-- message -->
+                <arguments/>         <!-- structured arguments -->
             </providers>
         </encoder>
     </appender>
@@ -26,10 +26,11 @@
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp/>
-                <level/>
+                <logLevel/>
                 <threadName/>
                 <loggerName/>
-                <line/>
+                <callerData/>
+                <message/>
                 <arguments/>
             </providers>
         </encoder>

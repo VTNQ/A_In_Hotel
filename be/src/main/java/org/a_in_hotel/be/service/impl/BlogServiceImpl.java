@@ -1,21 +1,35 @@
 package org.a_in_hotel.be.service.impl;
 
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BlogStatus;
 import org.a_in_hotel.be.dto.request.BlogDTO;
 import org.a_in_hotel.be.dto.response.BlogResponse;
+import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.entity.Blog;
 import org.a_in_hotel.be.entity.Category;
-import org.a_in_hotel.be.entity.MediaFile;
+import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.entity.Tag;
 import org.a_in_hotel.be.exception.BlogNotFoundException;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.BlogMapper;
+import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.BlogRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
+import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.TagRepository;
 import org.a_in_hotel.be.service.BlogService;
+import org.a_in_hotel.be.util.GeneralService;
+import org.a_in_hotel.be.util.SearchHelper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDateTime;
@@ -24,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,11 +46,14 @@ public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageMapper imageMapper;
+    private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
+    private final GeneralService generalService;
     private final BlogMapper blogMapper;
-
+    private static final List<String> SEARCH_FIELDS = List.of("title");
     @Override
-    public BlogResponse create(BlogDTO dto) {
+    public void create(BlogDTO dto, MultipartFile file) {
         if (dto.getCategoryId() == null) {
             throw new IllegalArgumentException("categoryId is required");
         }
@@ -59,22 +77,17 @@ public class BlogServiceImpl implements BlogService {
                         .orElseGet(() -> tagRepository.save(new Tag(null, name.trim()))))
                 .collect(Collectors.toSet());
         blog.setTags(tags);
-
-        // Media (null-safe)
-        List<MediaFile> mediaFiles = (dto.getMediaUrls() == null ? Collections.<String>emptyList() : dto.getMediaUrls())
-                .stream()
-                .filter(url -> url != null && !url.isBlank())
-                .map(url -> MediaFile.builder()
-                        .fileName(extractFileName(url))
-                        .url(url.trim())
-                        .contentType(detectType(url))
-                        .sizeBytes(null)      // nếu FE gửi size thì set vào
-                        .altText(null)        // nếu FE gửi altText thì set vào
-                        .active(true)
-                        .blog(blog)
-                        .build())
-                .toList();
-        blog.setMediaFiles(mediaFiles);
+        if(file !=null && !file.isEmpty()) {
+            try {
+                FileUploadMeta fileUploadMeta=generalService.saveFile(file,"blog/");
+                Image image=imageMapper.toBannerImage(fileUploadMeta);
+                imageRepository.save(image);
+                blog.setImage(image);
+            }catch (Exception e) {
+                throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Lỗi khi lưu hình ảnh: " + e.getMessage());
+            }
+        }
 
         // Lịch đăng
         if (dto.getPublishAt() != null && dto.getPublishAt().isAfter(LocalDateTime.now())) {
@@ -84,12 +97,11 @@ public class BlogServiceImpl implements BlogService {
             blog.setStatus(BlogStatus.DRAFT);
             blog.setPublishAt(null);
         }
-
-        return blogMapper.toResponse(blogRepository.save(blog));
+        blogRepository.save(blog);
     }
 
     @Override
-    public BlogResponse update(Long id, BlogDTO dto) {
+    public void update(Long id, BlogDTO dto,MultipartFile file) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException(id));
 
@@ -113,23 +125,15 @@ public class BlogServiceImpl implements BlogService {
                     .collect(Collectors.toSet());
             blog.setTags(tags);
         }
-
-        // Media (chỉ cập nhật khi FE gửi)
-        if (dto.getMediaUrls() != null) {
-            blog.getMediaFiles().clear(); // orphanRemoval xóa media cũ
-            List<MediaFile> newMedias = dto.getMediaUrls().stream()
-                    .filter(url -> url != null && !url.isBlank())
-                    .map(url -> MediaFile.builder()
-                            .fileName(extractFileName(url))
-                            .url(url.trim())
-                            .contentType(detectType(url))
-                            .sizeBytes(null)
-                            .altText(null)
-                            .active(true)
-                            .blog(blog)
-                            .build())
-                    .toList();
-            blog.getMediaFiles().addAll(newMedias);
+        if(file !=null && !file.isEmpty()) {
+            try {
+                FileUploadMeta fileUploadMeta=generalService.saveFile(file,"blog");
+                Image image=imageMapper.toBannerImage(fileUploadMeta);
+                imageRepository.save(image);
+                blog.setImage(image);
+            }catch (Exception e) {
+                throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,"Lỗi khi lưu hình ảnh: " + e.getMessage());
+            }
         }
 
         // Lịch đăng (chỉ cập nhật khi FE gửi)
@@ -142,45 +146,53 @@ public class BlogServiceImpl implements BlogService {
                 blog.setPublishAt(null);
             }
         }
-
-        return blogMapper.toResponse(blogRepository.save(blog));
+        blogRepository.save(blog);
     }
 
     @Override
     public void delete(Long id) {
-        if (!blogRepository.existsById(id)) throw new BlogNotFoundException(id);
-        blogRepository.deleteById(id);
+        try {
+            log.info("start to delete blog : {}", id);
+            Blog blog = blogRepository.findById(id)
+                    .orElseThrow(() -> new BlogNotFoundException(id));
+            Image image = blog.getImage();
+            if (image != null) {
+                try {
+                    generalService.deleFile(image.getUrl());
+                    imageRepository.delete(image);
+                } catch (Exception e) {
+                    log.warn("Không thể xóa ảnh trên MinIO hoặc DB cho blog {}: {}", id, e.getMessage());
+                }
+            }
+            blogRepository.delete(blog);
+            log.info("end to delete blog : {}", id);
+        } catch (Exception e) {
+            log.error("delete blog error : {}", e.getMessage());
+        }
     }
 
     @Override
-    public List<BlogResponse> findAll() {
-        return blogRepository.findAll().stream().map(blogMapper::toResponse).toList();
+    public Page<Blog> findAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+            try {
+                log.info("start to get List Blog ");
+                Specification<Blog>sortable= RSQLJPASupport.toSort(sort);
+                Specification<Blog>filterable= RSQLJPASupport.toSpecification(filter);
+                Specification<Blog>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
+                Pageable pageable=all ? PageRequest.of(page,size):PageRequest.of(page-1,size);
+                return blogRepository.
+                        findAll(sortable.and(filterable).and(searchable),pageable);
+            }catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+                return null;
+            }
     }
 
     @Override
-    public BlogResponse findById(Long id) {
+    public Blog findById(Long id) {
         return blogRepository.findById(id)
-                .map(blogMapper::toResponse)
                 .orElseThrow(() -> new BlogNotFoundException(id));
     }
 
-    // helper
-    private String detectType(String url) {
-        String u = url.toLowerCase();
-        if (u.endsWith(".mp4") || u.endsWith(".mov") || u.contains("youtube") || u.contains("vimeo")) {
-            return "video/mp4";
-        }
-        if (u.endsWith(".png")) return "image/png";
-        if (u.endsWith(".jpg") || u.endsWith(".jpeg")) return "image/jpeg";
-        if (u.endsWith(".gif")) return "image/gif";
-        return "application/octet-stream";
-    }
 
-    private String extractFileName(String url) {
-        try {
-            return url.substring(url.lastIndexOf('/') + 1);
-        } catch (Exception e) {
-            return url; // fallback nếu không parse được
-        }
-    }
 }

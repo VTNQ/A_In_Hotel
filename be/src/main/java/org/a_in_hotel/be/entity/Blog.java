@@ -47,7 +47,7 @@ public class Blog {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    // Blog có nhiều MediaFile
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MediaFile> mediaFiles = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "image_id",nullable = false)
+    private Image image;
 }

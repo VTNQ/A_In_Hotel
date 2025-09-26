@@ -42,7 +42,7 @@ public class Banner {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id", referencedColumnName = "id") // FK tới BannerImage
-    private BannerImage image;
+    private Image image;
     @Comment("Nút CTA, ví dụ: Mua ngay. Có thể null")
     @Column(name = "cta_label", columnDefinition = "TEXT")
     private String ctaLabel;

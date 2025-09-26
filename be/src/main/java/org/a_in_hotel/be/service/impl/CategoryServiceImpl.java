@@ -1,40 +1,47 @@
 package org.a_in_hotel.be.service.impl;
 
 
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
 import org.a_in_hotel.be.repository.CategoryRepository;
 import org.a_in_hotel.be.service.CategoryService;
+import org.a_in_hotel.be.util.SearchHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repo;
     private final CategoryMapper mapper;
-
+    private static final List<String> SEARCH_FIELDS = List.of("name");
     @Override
-    public CategoryDTO create(CategoryDTO dto) {
+    public void create(CategoryDTO dto) {
         Category entity = mapper.toEntity(dto);
-        return mapper.toDTO(repo.save(entity));
+        repo.save(entity);
     }
 
     @Override
-    public CategoryDTO update(Long id, CategoryDTO dto) {
+    public void update(Long id, CategoryDTO dto) {
         Category entity = repo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found: " + id));
         mapper.updateEntityFromDTO(dto, entity);
-        return mapper.toDTO(repo.save(entity));
+        repo.save(entity);
     }
 
     @Override
@@ -54,27 +61,35 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO get(Long id) {
+    public Category get(Long id) {
         return repo.findById(id)
-                .map(mapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("Category not found: " + id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO getByName(String name) {
+    public Category getByName(String name) {
         return repo.findByName(name)
-                .map(mapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("Category not found, name=" + name));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<CategoryDTO> search(String q, int page, int size, String sort) {
-        Pageable pageable = PageRequest.of(page, size, parseSort(sort, "id,desc"));
-        return repo.search((q == null || q.isBlank()) ? null : q.trim(), pageable)
-                .map(mapper::toDTO);
+    public Page<Category> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+        try {
+            log.info("start to get list categories");
+            Specification<Category>sortable= RSQLJPASupport.toSort(sort);
+            Specification<Category>filterable= RSQLJPASupport.toSpecification(filter);
+            Specification<Category>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
+            Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+            return repo
+                    .findAll(sortable.and(filterable).and(searchable),pageable);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return null;
+        }
     }
+
 
     private Sort parseSort(String sort, String fallback) {
         String s = (sort == null || sort.isBlank()) ? fallback : sort;

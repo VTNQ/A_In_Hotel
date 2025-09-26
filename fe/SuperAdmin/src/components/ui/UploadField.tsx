@@ -28,7 +28,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   accept,
   maxSizeMB = 2,
   maxFiles = 5,
-  defaultPreviewUrl = "/placeholder-image.png",
+  defaultPreviewUrl = "/default.webp",
   value,
   onChange,
   zoomScale = 2,

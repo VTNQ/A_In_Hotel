@@ -12,11 +12,11 @@ import java.time.Instant;
 
 @Entity
 @Data
-@Table(name = "banner_image")
+@Table(name = "image")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BannerImage {
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
