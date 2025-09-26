@@ -64,7 +64,7 @@ public class SecurityConfiguration {
 
                         // chỉ SUPERADMIN mới được phép gọi
                         .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
-
+                        .requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN")
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
 

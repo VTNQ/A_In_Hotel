@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronUp, Pencil, Search as SearchIcon, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, Search, Search as SearchIcon, X } from "lucide-react";
 import { SelectField } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import { deleteBanner, getBanner } from "@/service/api/Banner";
@@ -225,7 +225,7 @@ const ListBanner: React.FC = () => {
         key: "actions",
         header: "Thao tác",
         cell: (row) => (
-          <div className="flex gap-2">
+          <div className="flex items-center justify-center gap-2">
           <Button size="sm" variant="outline" asChild>
             <Link to={`/Home/banner/edit/${row.id}`}>
               <Pencil className="mr-1 h-4 w-4" /> Sửa
@@ -294,15 +294,7 @@ const ListBanner: React.FC = () => {
         <h2 className="text-xl font-semibold">Danh sách banner</h2>
 
         <div className="flex items-center gap-2">
-          <Input
-            placeholder="Tìm theo tên banner..."
-            className="w-72"
-            onChange={(e) => {
-              setSearch(e.target.value.trim());
-              setUiPage(1);
-            }}
-          />
-          <SelectField<{ value: "ALL" | Status; label: string }>
+        <SelectField<{ value: "ALL" | Status; label: string }>
             items={[
               { value: "ALL", label: "Tất cả" },
               { value: "ACTIVE", label: "Hoạt động" },
@@ -320,6 +312,19 @@ const ListBanner: React.FC = () => {
             getLabel={(i) => i.label}
             clearable={false}
           />
+          <div className="relative w-72">
+            <Search className="absolute left-4 top-1/2 -translate-1/2 text-gray-400" size={18}/>
+            <Input
+            placeholder="Tìm theo tên banner..."
+            className="pl-9"
+            onChange={(e) => {
+              setSearch(e.target.value.trim());
+              setUiPage(1);
+            }}
+          />
+          </div>
+         
+         
           <Button asChild>
             <Link to="/Home/banner/create">+ Thêm banner</Link>
           </Button>
