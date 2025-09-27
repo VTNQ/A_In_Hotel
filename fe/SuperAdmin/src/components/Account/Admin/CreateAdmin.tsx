@@ -7,7 +7,7 @@ import { SelectField } from "@/components/ui/select";
 import UploadField from "@/components/ui/UploadField";
 import { register } from "@/service/api/Authenticate";
 import { format } from "date-fns";
-import { Gender, type SuperAdminForm } from "@/type/Account/SuperAdmin/SuperAdminForm";
+import { type Gender, type SuperAdminForm } from "@/type/Account/SuperAdmin/SuperAdminForm";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react"; // spinner icon
 
@@ -18,7 +18,7 @@ const CreateAdmin = () => {
     email: "",
 
     fullName: "",
-    gender: Gender.MALE,
+    gender: "MALE",
     phone: "",
     birthday: undefined,
     image: null,
@@ -57,16 +57,16 @@ const CreateAdmin = () => {
         title: response.message,
         type: "success",
         autoClose: 4000,
-    })
-    setFormData({
+      })
+      setFormData({
         email: "",
 
         fullName: "",
-        gender: Gender.MALE,
+        gender: "MALE",
         phone: "",
         birthday: undefined,
         image: null,
-    })
+      })
     } catch (error: any) {
       showAlert({
         title: "Tạo tài khoản thất bại",
@@ -85,7 +85,7 @@ const CreateAdmin = () => {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
           <p className="mt-1 text-sm text-gray-500">
-          Admin <span className="mx-1">»</span> Tạo tài khoản Admin
+            Admin <span className="mx-1">»</span> Tạo tài khoản Admin
           </p>
         </div>
       </div>
@@ -148,21 +148,20 @@ const CreateAdmin = () => {
               <div>
                 <Label className="mb-3">Giới tính</Label>
                 <SelectField
-                  items={[Gender.MALE, Gender.FEMALE]}
+                  items={["MALE", "FEMALE"]}
                   value={formData.gender}
                   onChange={(val) => {
                     setFormData((prev) => ({
                       ...prev,
-                      gender: (val as Gender) ?? Gender.MALE,
+                      gender: (val as Gender) ?? "MALE",
                     }));
                   }}
                   placeholder="Chọn giới tính"
                   getValue={(item) => item}
-                  getLabel={(item) =>
-                    item === Gender.MALE ? "Nam" : "Nữ"
-                  }
+                  getLabel={(item) => (item === "MALE" ? "Nam" : "Nữ")}
                   clearable={false}
                 />
+
               </div>
 
               {/* Avatar */}
