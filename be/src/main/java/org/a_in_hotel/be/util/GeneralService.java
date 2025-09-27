@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,18 @@ public class GeneralService {
         this.minioClient = minioClient;
     }
     private static final String PREFIX = "HOTEL";
+    public String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(chars.length());
+            sb.append(chars.charAt(index));
+        }
+
+        return sb.toString();
+    }
     public FileUploadMeta saveFile(MultipartFile file, String subDirectory) throws IOException, IOException{
        try {
            boolean found = minioClient.bucketExists(BucketExistsArgs.builder()

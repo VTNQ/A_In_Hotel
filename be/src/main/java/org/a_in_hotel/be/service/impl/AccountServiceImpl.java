@@ -5,11 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.request.AccountDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
+import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.entity.Account;
+import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.mapper.AccountMapper;
+import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.AccountRepository;
+import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.RoleRepository;
 import org.a_in_hotel.be.service.AccountService;
+import org.a_in_hotel.be.util.EmailService;
+import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +30,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,20 +47,40 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     @Autowired
     private JwtService jwtService;
     @Autowired
+    private GeneralService generalService;
+    @Autowired
     private RoleRepository  roleRepository;
-    private static final List<String> SEARCH_FIELDS = List.of("email","fullName","phone","gender");
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private ImageMapper imageMapper;
+    @Autowired
+    private EmailService emailService;
+    private static final List<String> SEARCH_FIELDS = List.of("email","fullName","phone");
     @Override
     public Account findByEmail(String email) {
         return accountRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
     @Override
-    public void save(AccountDTO accountDTO) {
+    public void save(AccountDTO accountDTO, MultipartFile file) {
         try {
+            String password=generalService.generateRandomPassword(8);
             log.info("save account:{}", accountDTO);
             Account account = accountMapper.toEntity(accountDTO);
-            account.setPassword(accountDTO.getPassword()!=null?passwordEncoder.encode(accountDTO.getPassword()):null);
+            if (file != null && !file.isEmpty()) {
+                try {
+                    FileUploadMeta avatar = generalService.saveFile(file, "avatar");
+                    Image image =imageMapper.toBannerImage(avatar);
+                    imageRepository.save(image);
+                    account.setImage(image);
+                } catch (Exception e) {
+                    throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage(), e);
+                }
+            }
+            account.setPassword(passwordEncoder.encode(password));
             accountRepository.save(account);
+            emailService.sendRegistrationEmail(accountDTO.getEmail(),accountDTO.getFullName(),accountDTO.getEmail(),password);
             log.info("save account:{}", account);
         }catch (Exception e){
             log.error("save error:{}",e.getMessage());
@@ -90,22 +117,6 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public AccountResponse updateAdmin(Long id, AccountDTO accountDTO) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Admin không tồn tại"));
-
-        if (!"ADMIN".equalsIgnoreCase(account.getRole().getName())) {
-            throw new IllegalArgumentException("Không phải admin, không thể sửa");
-        }
-
-        account.setEmail(accountDTO.getEmail() != null ? accountDTO.getEmail() : account.getEmail());
-        account.setPassword(accountDTO.getPassword() != null ? passwordEncoder.encode(accountDTO.getPassword()) : account.getPassword());
-        accountRepository.save(account);
-
-        return accountMapper.toResponse(account);
     }
 
     @Override
