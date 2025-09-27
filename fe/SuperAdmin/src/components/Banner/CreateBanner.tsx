@@ -86,7 +86,7 @@ const CreateBanner = () => {
                     <div className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <Label htmlFor="Tiêu đề Banner">Tiêu đề</Label>
+                                <Label htmlFor="Tiêu đề">Tiêu đề</Label>
                                 <Input name="title" placeholder="Nhập tiêu đề banner" value={formData.title} onChange={handleTextChange} className="mt-3" />
                             </div>
                             <div>

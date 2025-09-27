@@ -239,6 +239,14 @@ const SECTIONS: SectionSpec[] = [
       { label: "Home", icon: Home, active: true, path: "/Home" },
       { label: "Hotel", icon: Hotel, path: '/Home/hotel' },
       { label: "Banner", icon: Image, active: false, path: "/Home/banner" },
+      {
+        label: "Account",
+        icon: Users,
+        children: [
+          { label: "Admin Manager", icon: Briefcase, path: "/Home/Admin" },
+          { label:"Child SuperAdmin Manager",icon:Lock,path:"/Home/ChildSuperAdmin"}
+        ],
+      },
       { label: "Analytics", icon: BarChart2 },
       { label: "Ecommerce", icon: ShoppingBag },
       { label: "CRM", icon: HandCoins },

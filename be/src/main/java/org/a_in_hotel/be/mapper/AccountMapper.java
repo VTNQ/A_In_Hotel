@@ -23,5 +23,6 @@ public interface AccountMapper {
     }
     @Mapping(target = "email", source = "email")
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "avatarUrl", source = "image.url")
     AccountResponse toResponse(Account account);
 }
