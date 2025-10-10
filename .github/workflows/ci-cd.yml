@@ -98,6 +98,7 @@ jobs:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           key: ${{ env.SERVER_SSH_KEY }}
+          port: 24700
           script: |
             cd /home/${{ env.SERVER_USER }}/A_In_Hotel
             docker pull ${DOCKER_USERNAME}/ainhotel-be:latest
