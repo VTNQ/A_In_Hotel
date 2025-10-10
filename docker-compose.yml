@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   backend:
-    build: .
+    build: ./be
     container_name: ainhotel-be
     ports:
       - "8585:8585"
@@ -11,6 +11,13 @@ services:
       SPRING_DATASOURCE_USERNAME: avnadmin
       SPRING_DATASOURCE_PASSWORD: AVNS_O-jK8HGG8RAfgfyxA5s
       SERVER_PORT: 8585
-      LOGGING_FILE_NAME: /var/log/ainhotel/app.log
-    volumes:
-      - /var/log/ainhotel:/var/log/ainhotel
+    restart: always
+
+  frontend:
+    build: ./fe/SuperAdmin
+    container_name: ainhotel-fe
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: always

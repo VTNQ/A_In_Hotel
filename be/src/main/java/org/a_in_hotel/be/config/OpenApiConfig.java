@@ -17,9 +17,9 @@ public class OpenApiConfig {
         final String scheme = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Movie Manager Api")
+                        .title("Hotel Manager Api")
                         .version("1.0")
-                        .description("API cho hệ thống movie")
+                        .description("API cho hệ thống hotel")
                         .contact(new Contact().name("WebVibe").email("tranp6648@gmail.com"))
                 )
                 .addServersItem(new Server().url("https://api.ainhotelvn.com"))

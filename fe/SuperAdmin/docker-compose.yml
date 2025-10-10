@@ -1,9 +1,0 @@
-version: '3.9'
-
-services:
-  fe-superadmin:
-    build: .
-    container_name: fe-superadmin
-    ports:
-      - "5173:80"   # container Nginx listen 80, expose ra host 5173
-    restart: always
