@@ -123,18 +123,13 @@ jobs:
           key: ${{ env.SERVER_SSH_KEY }}
           port: ${{ env.SERVER_PORT }}
           script: |
-            echo "=== 🔧 Cleaning old containers and networks ==="
+            echo "=== 🧹 Cleaning old backend container (fast mode) ==="
             cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
 
-            # Dừng và xóa container cũ để tránh lỗi port 8585
-            docker stop $(docker ps -aq) || true
-            docker rm $(docker ps -aq) || true
+            # Dừng container backend cũ nếu đang chạy (tránh lỗi port)
+            docker ps -q --filter "name=ainhotel-be" | grep -q . && docker stop ainhotel-be && docker rm ainhotel-be || true
 
-            # Dọn network & image cũ
-            docker network prune -f || true
-            docker system prune -f || true
-
-            # Dọn log cũ để CI/CD có thể ghi log mới
+            # Dọn log cũ
             sudo truncate -s 0 /var/log/ainhotel/app.log || true
 
             echo "=== 📦 Pulling latest Docker images ==="
