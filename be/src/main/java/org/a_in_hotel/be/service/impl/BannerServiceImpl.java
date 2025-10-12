@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.BannerRequest;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.entity.Banner;
-import org.a_in_hotel.be.entity.BannerImage;
+import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.exception.ErrorHandler;
-import org.a_in_hotel.be.mapper.BannerImageMapper;
+import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.mapper.BannerMapper;
-import org.a_in_hotel.be.repository.BannerImageRepository;
+import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.BannerRepository;
 import org.a_in_hotel.be.service.BannerService;
 import org.a_in_hotel.be.util.GeneralService;
@@ -33,9 +33,9 @@ public class BannerServiceImpl implements BannerService {
     @Autowired
     private GeneralService generalService;
     @Autowired
-    private BannerImageRepository bannerImageRepository;
+    private ImageRepository bannerImageRepository;
     @Autowired
-    private BannerImageMapper bannerImageMapper;
+    private ImageMapper bannerImageMapper;
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
@@ -46,7 +46,7 @@ public class BannerServiceImpl implements BannerService {
     @Transactional
     public void save(BannerRequest bannerRequest, MultipartFile image) {
         try {
-            BannerImage bannerImage = new BannerImage();
+            Image bannerImage = new Image();
             if (image != null && !image.isEmpty()) {
                 try {
                     FileUploadMeta file = generalService.saveFile(image, "banner");
@@ -74,17 +74,19 @@ public class BannerServiceImpl implements BannerService {
             log.info("start to update banner : {}", bannerRequest);
             Banner banner=bannerRepository.getReferenceById(id);
             bannerMapper.updateEntityFromDto(bannerRequest,banner);
-
-            bannerRepository.save(banner);
             if(image != null && !image.isEmpty()) {
                 try {
-                    FileUploadMeta fileUploadMeta=generalService.saveFile(image,"banner/");
-                    BannerImage bannerImage=bannerImageMapper.toBannerImage(fileUploadMeta);
+                    FileUploadMeta fileUploadMeta=generalService.saveFile(image,"banner");
+                    Image bannerImage=bannerImageMapper.toBannerImage(fileUploadMeta);
                     bannerImageRepository.save(bannerImage);
+                    banner.setImage(bannerImage);
                 }catch (Exception e) {
                     throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi lưu hình ảnh: " + e.getMessage());
                 }
             }
+
+            bannerRepository.save(banner);
+
             log.info("end to update banner : {}", bannerRequest);
         }catch (Exception e){
             e.printStackTrace();
@@ -113,5 +115,27 @@ public class BannerServiceImpl implements BannerService {
     public Banner findById(Long id) {
         return bannerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Banner not found with id: " + id));
+    }
+
+    @Override
+    public void delete(Long id) {
+        try {
+            log.info("start to delete banner : {}", id);
+            Banner banner=bannerRepository.findById(id)
+                    .orElseThrow(()->new EntityNotFoundException("Banner not found with id: " + id));
+            Image bannerImage=banner.getImage();
+            if(bannerImage!=null){
+                try {
+                    generalService.deleFile(bannerImage.getUrl());
+                    bannerImageRepository.delete(bannerImage);
+                }catch (Exception e){
+                    log.warn("Không thể xóa ảnh trên MinIO hoặc DB cho banner {}: {}", id, e.getMessage());
+                }
+            }
+            bannerRepository.delete(banner);
+            log.info("end to delete banner : {}", id);
+        }catch (Exception e){
+            log.error("delete banner error : {}",e.getMessage());
+        }
     }
 }

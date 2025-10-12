@@ -2,6 +2,7 @@ package org.a_in_hotel.be.controller;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.PageResponse;
@@ -15,11 +16,14 @@ import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +41,23 @@ public class AccountController {
     private AccountMapper accountMapper;
     @Autowired
     private JwtService jwtService;
-    @PostMapping("/register")
-    public ResponseEntity<RequestResponse<Void>> create(@RequestBody AccountDTO accountDTO) {
-        accountService.save(accountDTO);
-        return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
+    @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute AccountDTO accountDTO, BindingResult result,@RequestParam(value = "image", required = false) MultipartFile image) {
+        if (result.hasErrors()) {
+            String errorMessage = result.getFieldErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Dữ liệu không hợp lệ");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
+        }
+        try {
+            accountService.save(accountDTO,image);
+            return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+
     }
     @GetMapping("/role")
     public ResponseEntity<RequestResponse<String>> getUserRole(@RequestParam("email") String email) {
@@ -87,18 +104,7 @@ public class AccountController {
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
-    @PutMapping("/admins/{id}")
-    public ResponseEntity<RequestResponse<AccountResponse>> updateAdmin(
-            @PathVariable Long id,
-            @RequestBody AccountDTO accountDTO) {
-        try {
-            AccountResponse updated = accountService.updateAdmin(id, accountDTO);
-            return ResponseEntity.ok(RequestResponse.success(updated, "Cập nhật admin thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("Không thể cập nhật admin: " + e.getMessage()));
-        }
-    }
+
     @PostMapping("/refresh")
     public ResponseEntity<RequestResponse<Map<String,Object>>>refreshToken(@RequestBody Map<String, String> map) {
         String refreshToken=map.get("refreshToken");

@@ -2,7 +2,7 @@ import type { GetAllOptions } from "@/type/GetAllOptions";
 import Http from "../http/http";
 
 export const AddHotel=async(hotelData:any) => {
-    return await Http.post('/service/hotel/hotels/create',hotelData);
+    return await Http.post('/api/hotels/create',hotelData);
  }
  export const getAllHotel=async(options:GetAllOptions={}) => {
      const {

@@ -32,7 +32,7 @@ public class Account implements UserDetails {
     @Schema(description = "Id account", example = "123")
     private Long id;
 
-    @Schema(description = "Mật khẩu của Account")
+    @Schema(description = "Mật khẩu của Account",nullable = true)
     @Column(nullable = false)
     private String password;
 
@@ -47,8 +47,9 @@ public class Account implements UserDetails {
     @Schema(description = "Tên đầy đủ", example = "Trần Nguyễn Thanh Phong")
     private String fullName;
 
-    @Schema(description = "Avatar của Account", example = "http://localhost:8083/v3/api-docs")
-    private String avatarUrl;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "avatar_id", referencedColumnName = "id") // FK tới BannerImage
+    private Image image;
 
     @Schema(description = "Số điện thoại", example = "0924517309")
     private String phone;

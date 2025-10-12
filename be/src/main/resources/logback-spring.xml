@@ -1,0 +1,43 @@
+<configuration>
+    <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
+
+    <!-- Console JSON logger -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>         <!-- @timestamp -->
+                <logLevel/>          <!-- level: INFO, WARN, ERROR -->
+                <threadName/>        <!-- thread_name -->
+                <loggerName/>        <!-- logger_name -->
+                <callerData/>        <!-- file, class, line number -->
+                <message/>           <!-- message -->
+                <arguments/>         <!-- structured arguments -->
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- File JSON logger -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/ainhotel/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/ainhotel/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <logLevel/>
+                <threadName/>
+                <loggerName/>
+                <callerData/>
+                <message/>
+                <arguments/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

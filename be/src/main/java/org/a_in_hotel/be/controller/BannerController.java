@@ -89,4 +89,16 @@ public class BannerController {
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<RequestResponse<Void>> delete(@PathVariable Long id) {
+        try {
+            bannerService.delete(id);
+            return ResponseEntity.ok(
+                    RequestResponse.success("Xóa banner thành công")
+            );
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
 }

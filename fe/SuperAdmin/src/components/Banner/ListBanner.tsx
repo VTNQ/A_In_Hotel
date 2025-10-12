@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronUp, Pencil, Search as SearchIcon, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, Search, Search as SearchIcon, X } from "lucide-react";
 import { SelectField } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { getBanner } from "@/service/api/Banner";
+import { deleteBanner, getBanner } from "@/service/api/Banner";
 import { cn } from "@/lib/utils";
 import { File_URL } from "@/setting/constant/app";
+import { useAlert } from "../alert-context";
 
 /** ------------ Types & helpers ------------ */
 type Status = "ACTIVE" | "INACTIVE";
@@ -111,7 +112,7 @@ const ListBanner: React.FC = () => {
   const [rows, setRows] = useState<BasicRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const { showAlert } = useAlert();
   // paging & sort
   const [uiPage, setUiPage] = useState(1);
   const [pageSize] = useState(5);
@@ -224,11 +225,52 @@ const ListBanner: React.FC = () => {
         key: "actions",
         header: "Thao tác",
         cell: (row) => (
+          <div className="flex items-center justify-center gap-2">
           <Button size="sm" variant="outline" asChild>
             <Link to={`/Home/banner/edit/${row.id}`}>
               <Pencil className="mr-1 h-4 w-4" /> Sửa
             </Link>
           </Button>
+          <Button
+        size="sm"
+        variant="destructive"
+        onClick={() => {
+          showAlert({
+            title: "Xác nhận xóa",
+            description: (
+              <>
+                Bạn có chắc muốn xóa banner <b>{row.name}</b> không? <br />
+                Hành động này không thể hoàn tác.
+              </>
+            ),
+            type: "warning",
+            primaryAction: {
+              label: "Xóa",
+              onClick: async () => {
+                try {
+                 
+                  await deleteBanner(row.id);
+                  await fetchBanners();
+                } catch (e: any) {
+                  showAlert({
+                    title: "Lỗi",
+                    description: e?.message || "Không thể xóa banner",
+                    type: "error",
+                    autoClose: 3000,
+                  });
+                }
+              },
+            },
+            secondaryAction: {
+              label: "Hủy",
+              onClick: () => {}, // chỉ đóng modal
+            },
+          });
+        }}
+      >
+        <X className="mr-1 h-4 w-4" /> Xóa
+      </Button>
+        </div>
         ),
       },
     ],
@@ -252,15 +294,7 @@ const ListBanner: React.FC = () => {
         <h2 className="text-xl font-semibold">Danh sách banner</h2>
 
         <div className="flex items-center gap-2">
-          <Input
-            placeholder="Tìm theo tên banner..."
-            className="w-72"
-            onChange={(e) => {
-              setSearch(e.target.value.trim());
-              setUiPage(1);
-            }}
-          />
-          <SelectField<{ value: "ALL" | Status; label: string }>
+        <SelectField<{ value: "ALL" | Status; label: string }>
             items={[
               { value: "ALL", label: "Tất cả" },
               { value: "ACTIVE", label: "Hoạt động" },
@@ -278,6 +312,19 @@ const ListBanner: React.FC = () => {
             getLabel={(i) => i.label}
             clearable={false}
           />
+          <div className="relative w-72">
+            <Search className="absolute left-4 top-1/2 -translate-1/2 text-gray-400" size={18}/>
+            <Input
+            placeholder="Tìm theo tên banner..."
+            className="pl-9"
+            onChange={(e) => {
+              setSearch(e.target.value.trim());
+              setUiPage(1);
+            }}
+          />
+          </div>
+         
+         
           <Button asChild>
             <Link to="/Home/banner/create">+ Thêm banner</Link>
           </Button>

@@ -1,51 +1,56 @@
-// components/Footer.tsx
+"use client";
+
 export default function Footer() {
   return (
-    <footer className="bg-[#3a3a3a] text-white py-10 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* LEFT */}
+    <footer className="bg-[#f9f6f2] text-[#3A3125] pt-16">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-6 pb-10">
+        {/* COLUMN 1 */}
         <div>
-          <h2 className="text-lg font-light tracking-widest uppercase">
-            SHERATON® SAIGON GRAND OPERA HOTEL
-          </h2>
-          <div className="border-t border-gray-500 w-12 my-4"></div>
-          <ul className="space-y-2">
-            <li><a href="#" className="hover:underline">Overview</a></li>
-            <li><a href="#" className="hover:underline">Gallery</a></li>
-            <li><a href="#" className="hover:underline">Rooms</a></li>
-            <li><a href="#" className="hover:underline">Premium Rooms</a></li>
-            <li><a href="#" className="hover:underline">Dining</a></li>
+          <h3 className="text-xl font-bold mb-4 tracking-wide">A IN HOTEL</h3>
+          <p className="text-sm leading-relaxed text-[#4e4438]">
+            Every unforgettable journey begins with a personal connection. By
+            getting in touch with us, you open the door to tailored experiences —
+            from curated travel packages and special privileges to personalized
+            assistance that anticipates your every need.
+          </p>
+          <p className="text-sm leading-relaxed mt-3 text-[#4e4438]">
+            Share your details with our concierge team today, and allow us to
+            craft an experience that is as unique and distinguished as you are.
+          </p>
+        </div>
+
+        {/* COLUMN 2 */}
+        <div>
+          <h4 className="text-lg font-bold mb-4 tracking-wide">DESTINATION</h4>
+          <ul className="space-y-2 text-sm text-[#4e4438]">
+            <li>Every unforgettable journey begins</li>
+            <li>Every unforgettable journey begins</li>
+            <li>Every unforgettable journey begins</li>
           </ul>
         </div>
 
-        {/* MIDDLE */}
+        {/* COLUMN 3 */}
         <div>
-          <div className="border-t border-gray-500 w-12 mb-4"></div>
-          <ul className="space-y-2">
-            <li><a href="#" className="hover:underline">Experiences</a></li>
-            <li><a href="#" className="hover:underline">Events</a></li>
-          </ul>
+          <h4 className="text-lg font-bold mb-4 tracking-wide">HOTLINE</h4>
+          <p className="text-sm text-[#4e4438]">+090465238</p>
         </div>
 
-        {/* RIGHT */}
+        {/* COLUMN 4 */}
         <div>
-          <div className="border-t border-gray-500 w-12 mb-4"></div>
-          <p>88 DONG KHOI, SAIGON WARD,<br />HO CHI MINH CITY, VIETNAM</p>
-          <p className="mt-2">FAX: +84 283-8272929</p>
+          <h4 className="text-lg font-bold mb-4 tracking-wide">CONTACT</h4>
+          <div className="text-sm text-[#4e4438] space-y-1 border border-[#b38a58] p-3 rounded-md">
+            <p>04533, 30 Eulji-ro, Jung-gu, Seoul, Republic of Korea</p>
+            <p>+82-2-771-1000</p>
+            <p>CEO JUNG HO SUCK</p>
+            <p>Business Registration No. 104-81-25980</p>
+            <p>Communications Sales Report No. Jung-gu 02802</p>
+          </div>
         </div>
       </div>
 
-      {/* BOTTOM */}
-      <div className="mt-8 border-t border-gray-700 pt-4 flex flex-col md:flex-row items-center justify-between">
-        <p className="text-sm">Follow Sheraton Saigon Grand Opera Hotel</p>
-        <div className="flex space-x-4 mt-2 md:mt-0">
-          <a href="#" className="hover:text-gray-300">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" className="hover:text-gray-300">
-            <i className="fab fa-instagram"></i>
-          </a>
-        </div>
+      {/* COPYRIGHT */}
+      <div className="bg-[#3A3125] text-white text-center py-3 text-sm">
+        © 2025 A In Hotel
       </div>
     </footer>
   );

@@ -3,7 +3,6 @@ package org.a_in_hotel.be.mapper;
 import org.a_in_hotel.be.dto.request.BlogDTO;
 import org.a_in_hotel.be.dto.response.BlogResponse;
 import org.a_in_hotel.be.entity.Blog;
-import org.a_in_hotel.be.entity.MediaFile;
 import org.a_in_hotel.be.entity.Tag;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,6 @@ public class BlogMapper {
 
         res.setTags(blog.getTags() == null ? Collections.emptySet()
                 : blog.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
-
-        res.setMediaUrls(blog.getMediaFiles() == null ? Collections.emptyList()
-                : blog.getMediaFiles().stream().map(MediaFile::getUrl).toList());
-
         res.setStatus(blog.getStatus());
         res.setPublishAt(blog.getPublishAt());
         return res;

@@ -1,81 +1,186 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Globe } from "lucide-react";
+
+type LangKey = "en" | "vi" | "kr" | "jp" | "cn";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [lang, setLang] = useState<LangKey>("en");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const flagMap: Record<LangKey, string> = {
+    en: "https://flagcdn.com/w20/gb.png",
+    vi: "https://flagcdn.com/w20/vn.png",
+    kr: "https://flagcdn.com/w20/kr.png",
+    jp: "https://flagcdn.com/w20/jp.png",
+    cn: "https://flagcdn.com/w20/cn.png",
+  };
+
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[rgba(58,49,37,0.3)] text-white transition-all duration-300 ${isScrolled ? "py-3 shadow-md" : "py-5"
+      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md text-white transition-all duration-300 ${isScrolled ? "py-2 bg-[#FFFFFF] backdrop-blur-lg shadow-md"
+          : "py-5 bg-transparent"
         }`}
     >
-      <div className="max-w-[1920px] mx-auto flex items-center justify-between px-[100px]">
-        {/* Left Section */}
-        <div className="flex items-center space-x-6">
-          <span className="flex items-center space-x-2 text-sm">
-            <span>📞</span>
+      {/* ✅ Giảm max width + thêm gap giữa 3 nhóm */}
+      <div className="max-w-[1300px] mx-auto flex items-center justify-between gap-8 px-6 md:px-10">
+        {/* LEFT SECTION */}
+        <div className="flex items-center space-x-5">
+        <span
+            className={`flex items-center space-x-2 text-sm transition-colors duration-300 ${
+              isScrolled ? "text-[#3A3125]" : "text-white"
+            }`}
+          >
+            <img
+              src="image/Phone Rounded.png"
+              alt="phone"
+              className={`h-4 w-4 ${isScrolled ? "brightness-0 invert-[0.2]" : "brightness-200"
+                }`}
+            />
             <span>032 696 5110</span>
           </span>
-          <nav className="hidden md:flex items-center space-x-10 text-sm">
-            <a href="#" className="hover:text-yellow-300 transition">
-              A-IN HOTEL ▾
-            </a>
-            <a href="#" className="hover:text-yellow-300 transition">ROOM & SUITE</a>
-            <a href="#" className="hover:text-yellow-300 transition">DINING</a>
+          <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
+            {["A-IN HOTEL ▾", "ROOM & SUITE", "AIR BNB"].map((item, i) => (
+              <a
+                key={i}
+                href="#"
+                className={`transition-colors duration-300 hover:text-[#B38A58] ${isScrolled ? "text-[#3A3125]" : "text-white"
+                  }`}
+              >
+                {item}
+              </a>
+            ))}
           </nav>
         </div>
 
-        {/* Logo */}
-        <div className="text-center flex flex-col items-center">
-          {/* Logo */}
-          <img src="/image/Vector.png" alt="A-IN HOTEL" className="h-10 w-auto mb-1" />
-          {/* Text */}
-          <h1 className="font-bold tracking-wide text-lg">A-IN HOTEL</h1>
+        {/* LOGO */}
+        <div className="flex flex-col items-center mx-1 transition-all duration-300">
+          <img
+            src="/image/Vector.png"
+            alt="A-IN HOTEL"
+            className={`mb-1 transition-all duration-300 ${
+              isScrolled ? "h-8" : "h-10"
+            } ${
+              isScrolled ? "brightness-0 invert-[0.2]" : "brightness-200"
+            }`}
+          />
+          <h1
+            className={`font-bold tracking-wide transition-all duration-300 ${
+              isScrolled ? "text-[#3A3125] text-base" : "text-white text-lg"
+            }`}
+          >
+            A-IN HOTEL
+          </h1>
         </div>
 
+        {/* RIGHT SECTION */}
+        <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
+          {["EVENT", "PROMOTION", "CAMPING", "Log in", "Sign up"].map(
+            (item, i) => (
+              <a
+                key={i}
+                href="#"
+                className={`transition-colors duration-300 hover:text-[#B38A58] ${
+                  isScrolled ? "text-[#3A3125]" : "text-white"
+                }`}
+              >
+                {item}
+              </a>
+            )
+          )}
 
-        {/* Right Section */}
-        <nav className="hidden md:flex items-center space-x-10 text-sm">
-          <a href="#" className="hover:text-yellow-300 transition">EVENT</a>
-          <a href="#" className="hover:text-yellow-300 transition">PROMOTION</a>
-          <a href="#" className="hover:text-yellow-300 transition">AIR BNB</a>
-          <a href="#" className="hover:text-yellow-300 transition">CAMPING</a>
-          <img
-            src="/image/Map Point.png"
-            alt="Location"
-            className="h-5 w-5 object-contain"
-          />
+          {/* LANGUAGE SELECTOR */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsLangOpen(true)}
+          >
+            <button
+              className={`flex items-center border rounded-md px-2 py-1 transition-colors duration-300 ${
+                isScrolled
+                  ? "border-[#3A3125] hover:bg-[#3A3125]/10"
+                  : "border-[#b38a58] hover:bg-[#b38a58]/20"
+              }`}
+            >
+              <img
+                src={flagMap[lang]}
+                alt={lang}
+                className="w-5 h-4 rounded-sm mr-2"
+              />
+              <Globe
+                className={`w-4 h-4 ${
+                  isScrolled ? "text-[#3A3125]" : "text-[#b38a58]"
+                }`}
+              />
+            </button>
 
+            {isLangOpen && (
+              <div
+                onMouseLeave={() => setIsLangOpen(false)}
+                className="absolute right-0 mt-2 flex flex-col bg-white text-gray-800 rounded-md shadow-lg w-28"
+              >
+                {Object.entries(flagMap).map(([code, url]) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      setLang(code as LangKey);
+                      setIsLangOpen(false);
+                    }}
+                    className={`flex items-center px-3 py-2 text-sm hover:bg-gray-100 ${
+                      lang === code ? "bg-gray-100 font-semibold" : ""
+                    }`}
+                  >
+                    <img
+                      src={url}
+                      alt={code}
+                      className="w-5 h-4 rounded-sm mr-2"
+                    />
+                    {code.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden p-2 focus:outline-none"
         >
           <Menu />
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
-      {isOpen && (
+      {/* MOBILE MENU */}
+      {isMenuOpen && (
         <div className="md:hidden flex flex-col items-center bg-[rgba(58,49,37,0.95)] backdrop-blur-lg py-4 space-y-4 text-sm">
-          <a href="#" className="hover:text-yellow-300">A-IN HOTEL</a>
-          <a href="#" className="hover:text-yellow-300">ROOM & SUITE</a>
-          <a href="#" className="hover:text-yellow-300">DINING</a>
-          <a href="#" className="hover:text-yellow-300">EVENT</a>
-          <a href="#" className="hover:text-yellow-300">PROMOTION</a>
-          <a href="#" className="hover:text-yellow-300">AIR BNB</a>
-          <a href="#" className="hover:text-yellow-300">CAMPING</a>
+          <a href="#" className="hover:text-yellow-300">
+            A-IN HOTEL
+          </a>
+          <a href="#" className="hover:text-yellow-300">
+            ROOM & SUITE
+          </a>
+          <a href="#" className="hover:text-yellow-300">
+            DINING
+          </a>
+          <a href="#" className="hover:text-yellow-300">
+            EVENT
+          </a>
+          <a href="#" className="hover:text-yellow-300">
+            PROMOTION
+          </a>
+          <a href="#" className="hover:text-yellow-300">
+            CAMPING
+          </a>
         </div>
       )}
     </header>

@@ -2,7 +2,7 @@ package org.a_in_hotel.be.mapper;
 
 
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
-import org.a_in_hotel.be.entity.BannerImage;
+import org.a_in_hotel.be.entity.Image;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
         imports = {Instant.class, UUID.class},
         builder = @org.mapstruct.Builder(disableBuilder = true)
 )
-public interface BannerImageMapper {
+public interface ImageMapper {
     @Mapping(target = "id",ignore = true)
-    BannerImage toBannerImage(FileUploadMeta fileUploadMeta);
+    Image toBannerImage(FileUploadMeta fileUploadMeta);
 }

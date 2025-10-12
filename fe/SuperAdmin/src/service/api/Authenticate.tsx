@@ -28,7 +28,25 @@ export const getAll = async (options: GetAllOptions = {}) => {
     all = false,
   } = options;
   const res = await Http.get("/api/account/getAll", {
-    params: { page, size, sort, filter, searchField,searchValue, all },
+    params: { page, size, sort, filter, searchField, searchValue, all },
   });
   return res.data;
 };
+export const register = async (register: Record<string, any>, image: File | null) => {
+  try {
+    const formData = new FormData();
+
+    // spread bannerDTO vào FormData
+    for (const [k, v] of Object.entries(register)) {
+      formData.append(k, v instanceof Date ? v.toISOString() : String(v));
+    }
+
+    if (image) formData.append("image", image);
+
+    const { data } = await Http.post(`/api/account/register`, formData);
+    return data;
+  } catch (err) {
+    console.error("Lỗi khi tạo banner:", err);
+    throw err;
+  }
+}
