@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface RoomService {
-    void save(RoomRequest request, List<MultipartFile>image,HttpServletRequest req);
-    void update(Long id, RoomRequest request, List<MultipartFile>image, HttpServletRequest req);
+    void save(RoomRequest request, List<MultipartFile>image);
+    void update(Long id, RoomRequest request, List<MultipartFile>image);
     RoomResponse findById(Long id);
     Page<RoomResponse>getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 }

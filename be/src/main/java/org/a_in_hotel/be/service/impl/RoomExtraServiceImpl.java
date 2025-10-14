@@ -37,10 +37,10 @@ public class RoomExtraServiceImpl implements RoomExtraService {
         this.securityUtils = securityUtils;
     }
     @Override
-    public void save(ExtraServiceRequest request, HttpServletRequest req) {
+    public void save(ExtraServiceRequest request) {
         try {
             log.info("start create extra service");
-            ExtraService extraService =mapper.toEntity(request,securityUtils.getCurrentUserId(req));
+            ExtraService extraService =mapper.toEntity(request,securityUtils.getCurrentUserId());
             repository.save(extraService);
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -64,11 +64,11 @@ public class RoomExtraServiceImpl implements RoomExtraService {
     }
 
     @Override
-    public void update(ExtraServiceRequest request, HttpServletRequest req,Long id) {
+    public void update(ExtraServiceRequest request,Long id) {
         try {
             log.info("start update extra service");
             ExtraService extraService = repository.getReferenceById(id);
-            mapper.updateEntityFromDto(request,extraService,securityUtils.getCurrentUserId(req));
+            mapper.updateEntityFromDto(request,extraService,securityUtils.getCurrentUserId());
             repository.save(extraService);
         }catch (EntityNotFoundException e){
             log.warn("⚠️ Room with id {} not found: {}", id, e.getMessage());
