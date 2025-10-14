@@ -52,6 +52,15 @@ public class ExtraRoomServiceController {
                     .body(RequestResponse.error( "Get All extra room service: " + e.getMessage()));
         }
     }
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<RequestResponse<ExtraServiceResponse>>findById(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(extraService.findById(id)));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get extra room service by id: " + e.getMessage()));
+        }
+    }
     @PutMapping("/update/{id}")
     public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra, BindingResult bindingResult){
         try {
