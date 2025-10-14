@@ -27,7 +27,7 @@ import java.util.List;
 public class RoomController {
     private final RoomService roomService;
 
-    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -37,22 +37,24 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            roomService.save(request,images);
+            roomService.save(request, images);
             return ResponseEntity.ok(RequestResponse.success("Thêm phòng thành công"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
+
     @GetMapping("/findById/{id}")
     public ResponseEntity<RequestResponse<RoomResponse>> findById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(RequestResponse.success(roomService.findById(id)));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
+
     @GetMapping("/getAll")
     public ResponseEntity<RequestResponse<PageResponse<RoomResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
                                                                               @RequestParam(defaultValue = "5") int size,
@@ -74,7 +76,7 @@ public class RoomController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute RoomRequest request, BindingResult bindingResult,@RequestParam(value = "image", required = false) List<MultipartFile> image) {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestParam(value = "image", required = false) List<MultipartFile> image) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -83,11 +85,25 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            roomService.update(id, request,image);
+            roomService.update(id, request, image);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật phòng thành công"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
+
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<RequestResponse<Void>> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+        try {
+            roomService.updateStatus(id, status);
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái phòng thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
+
 }

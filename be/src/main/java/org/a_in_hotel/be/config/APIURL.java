@@ -28,4 +28,8 @@ public class APIURL {
             "/api/extra-room-service/create",
             "/api/rooms/create"
     };
+    public static final String[] URL_ADMIN_PUT={
+            "/api/rooms/updateStatus/**",
+            "/api/extra-room-service/updateStatus/**"
+    };
 }

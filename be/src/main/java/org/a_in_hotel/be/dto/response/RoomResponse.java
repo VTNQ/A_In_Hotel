@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomResponse {
-    private String id;
+    private Long id;
     private String roomNumber;
     private String roomName;
     private String roomCode;

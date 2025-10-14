@@ -71,8 +71,21 @@ public class RoomExtraServiceImpl implements RoomExtraService {
             mapper.updateEntityFromDto(request,extraService,securityUtils.getCurrentUserId());
             repository.save(extraService);
         }catch (EntityNotFoundException e){
-            log.warn("⚠️ Room with id {} not found: {}", id, e.getMessage());
-            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy phòng có ID: " + id);
+            log.warn("⚠️ Room Extra with id {} not found: {}", id, e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy dịch vụ có ID: " + id);
+        }
+    }
+
+    @Override
+    public void updateStatus(Long id, boolean status) {
+        try {
+            log.info("start update extra service status");
+            ExtraService extraService = repository.getReferenceById(id);
+            extraService.setIsActive(status);
+            extraService.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ Room Extra with id {} not found: {}", id, e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy dịch vu có ID: " + id);
         }
     }
 }
