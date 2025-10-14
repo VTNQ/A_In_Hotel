@@ -28,7 +28,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestPart(value = "image", required = false) List<MultipartFile> images, HttpServletRequest req) {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -37,7 +37,7 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            roomService.save(request,images,req);
+            roomService.save(request,images);
             return ResponseEntity.ok(RequestResponse.success("Thêm phòng thành công"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -74,7 +74,7 @@ public class RoomController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute RoomRequest request, BindingResult bindingResult,@RequestParam(value = "image", required = false) List<MultipartFile> image,HttpServletRequest req) {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute RoomRequest request, BindingResult bindingResult,@RequestParam(value = "image", required = false) List<MultipartFile> image) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -83,7 +83,7 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            roomService.update(id, request,image,req);
+            roomService.update(id, request,image);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật phòng thành công"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

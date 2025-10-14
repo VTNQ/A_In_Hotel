@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ExtraRoomServiceController {
     private final RoomExtraService extraService;
     @PostMapping("/create")
-    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody ExtraServiceRequest extra, HttpServletRequest request, BindingResult bindingResult){
+    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody ExtraServiceRequest extra, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -31,7 +31,7 @@ public class ExtraRoomServiceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            extraService.save(extra,request);
+            extraService.save(extra);
             return ResponseEntity.ok(RequestResponse.success("Thêm dịch vụ thành công"));
         }catch (Exception e){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));
@@ -53,7 +53,7 @@ public class ExtraRoomServiceController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra, HttpServletRequest request, BindingResult bindingResult){
+    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra, BindingResult bindingResult){
         try {
             if (bindingResult.hasErrors()) {
                 String errorMessage = bindingResult.getFieldErrors().stream()
@@ -62,7 +62,7 @@ public class ExtraRoomServiceController {
                         .orElse("Dữ liệu không hợp lệ");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
             }
-            extraService.update(extra,request,id);
+            extraService.update(extra,id);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật dịch vụ thành công"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));

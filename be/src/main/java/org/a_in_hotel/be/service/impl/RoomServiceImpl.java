@@ -52,9 +52,9 @@ public class RoomServiceImpl implements RoomService {
     }
     @Override
     @Transactional
-    public void save(RoomRequest request, List<MultipartFile>image, HttpServletRequest req) {
+    public void save(RoomRequest request, List<MultipartFile>image) {
         try {
-            Room room = roomMapper.toEntity(request,securityUtils.getCurrentUserId(req));
+            Room room = roomMapper.toEntity(request,securityUtils.getCurrentUserId());
             roomRepository.save(room);
             List<Image> images = new ArrayList<>();
             for (MultipartFile file : image) {
@@ -80,13 +80,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void update(Long id, RoomRequest request, List<MultipartFile>image,HttpServletRequest req) {
+    public void update(Long id, RoomRequest request, List<MultipartFile>image) {
         try {
             Room existing = roomRepository.findById(id)
                     .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Phòng không tồn tại"));
 
             // Cập nhật thông tin cơ bản
-            roomMapper.updateEntity(request, existing,securityUtils.getCurrentUserId(req));
+            roomMapper.updateEntity(request, existing,securityUtils.getCurrentUserId());
 
             // Nếu có ảnh mới
             if (image != null && !image.isEmpty()) {
