@@ -68,5 +68,16 @@ public class ExtraRoomServiceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));
         }
     }
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<RequestResponse<Void>>updateStatus(@PathVariable Long id,@RequestParam Boolean status){
+        try {
+            extraService.updateStatus(id,status);
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái dịch vụ thành công"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+
+        }
+    }
 
 }

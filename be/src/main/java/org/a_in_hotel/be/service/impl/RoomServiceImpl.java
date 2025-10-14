@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.dto.response.RoomResponse;
@@ -149,6 +150,24 @@ public class RoomServiceImpl implements RoomService {
             log.error("get list room error : {}",e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void updateStatus(Long id, String status) {
+        try {
+            Room room = roomRepository.getReferenceById(id);
+            try {
+                room.setStatus(Enum.valueOf(RoomStatus.class, status.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ: " + status);
+            }
+            room.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+            roomRepository.save(room);
+            log.info("✅ Cập nhật trạng thái phòng (ID = {}) -> {}", id, room.getStatus());
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ Room with id {} not found: {}", id, e.getMessage());
+            e.printStackTrace();
         }
     }
 }

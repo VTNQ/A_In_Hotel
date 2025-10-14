@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.POST,APIURL.URL_ADMIN_POST).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,APIURL.URL_ADMIN_PUT).hasRole("ADMIN")
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
 
