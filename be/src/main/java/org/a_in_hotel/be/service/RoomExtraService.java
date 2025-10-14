@@ -1,0 +1,12 @@
+package org.a_in_hotel.be.service;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
+import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
+import org.springframework.data.domain.Page;
+
+public interface RoomExtraService {
+    void save(ExtraServiceRequest request, HttpServletRequest req);
+    Page<ExtraServiceResponse>getAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
+    void update(ExtraServiceRequest request, HttpServletRequest req,Long id);
+}
