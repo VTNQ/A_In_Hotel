@@ -12,4 +12,5 @@ public interface RoomExtraService {
 
     void update(ExtraServiceRequest request, Long id);
     void updateStatus(Long id,boolean status);
+    ExtraServiceResponse findById(Long id);
 }

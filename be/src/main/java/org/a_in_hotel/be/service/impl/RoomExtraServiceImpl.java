@@ -88,4 +88,16 @@ public class RoomExtraServiceImpl implements RoomExtraService {
             throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy dịch vu có ID: " + id);
         }
     }
+
+    @Override
+    public ExtraServiceResponse findById(Long id) {
+        try {
+            log.info("start get extra service");
+            ExtraService extraService = repository.getReferenceById(id);
+            return mapper.toResponse(extraService);
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ Room Extra with id {} not found: {}", id, e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy dịch vu có ID: " + id);
+        }
+    }
 }
