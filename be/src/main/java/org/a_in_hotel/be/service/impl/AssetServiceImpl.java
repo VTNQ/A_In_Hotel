@@ -5,14 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.AssetStatus;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AssetResponse;
-import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.entity.Asset;
+import org.a_in_hotel.be.entity.Category;
+import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.mapper.AssetMapper;
-import org.a_in_hotel.be.repository.*;
-import org.a_in_hotel.be.spec.AssetSpecifications;
+import org.a_in_hotel.be.repository.AssetRepository;
+import org.a_in_hotel.be.repository.CategoryRepository;
+import org.a_in_hotel.be.repository.RoomRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.criteria.JoinType;
+import org.springframework.data.jpa.domain.Specification;
+
 
 import java.util.Locale;
 import java.util.Optional;
@@ -24,7 +31,6 @@ import java.util.Random;
 public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService {
 
     private final AssetRepository assetRepository;
-    private final AssetHistoryRepository historyRepository;
     private final CategoryRepository categoryRepository;
     private final RoomRepository roomRepository;
     private final AssetMapper assetMapper;
@@ -76,16 +82,8 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
         asset = assetRepository.save(asset);
 
-        historyRepository.save(AssetHistory.builder()
-                .asset(asset)
-                .action("CREATE")
-                .newStatus(asset.getStatus())
-                .newRoomId(asset.getRoom() != null ? asset.getRoom().getId() : null)
-                .note("Created asset")
-                .changedBy(actorEmail)
-                .build());
-
-        // TODO: publish event nếu cần đồng bộ Room Management
+        // Không ghi history – chỉ log
+        log.info("[ASSET][CREATE] id={}, code={}, by={}", asset.getId(), asset.getAssetCode(), actorEmail);
 
         return assetMapper.toResponse(asset);
     }
@@ -95,9 +93,6 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public AssetResponse update(Long id, AssetUpdateRequest req, String actorEmail) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
-
-        AssetStatus oldStatus = asset.getStatus();
-        Long oldRoomId = asset.getRoom() != null ? asset.getRoom().getId() : null;
 
         categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
@@ -110,18 +105,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         asset.setUpdatedBy(actorEmail);
         Asset saved = assetRepository.save(asset);
 
-        historyRepository.save(AssetHistory.builder()
-                .asset(saved)
-                .action("UPDATE")
-                .oldStatus(oldStatus)
-                .newStatus(saved.getStatus())
-                .oldRoomId(oldRoomId)
-                .newRoomId(saved.getRoom() != null ? saved.getRoom().getId() : null)
-                .note(req.getNotes())
-                .changedBy(actorEmail)
-                .build());
-
-        // TODO: publish event nếu cần đồng bộ Room Management
+        log.info("[ASSET][UPDATE] id={}, code={}, by={}", saved.getId(), saved.getAssetCode(), actorEmail);
 
         return assetMapper.toResponse(saved);
     }
@@ -137,16 +121,8 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         asset.setUpdatedBy(actorEmail);
         Asset saved = assetRepository.save(asset);
 
-        historyRepository.save(AssetHistory.builder()
-                .asset(saved)
-                .action("STATUS_CHANGE")
-                .oldStatus(old)
-                .newStatus(saved.getStatus())
-                .note(req.getNote())
-                .changedBy(actorEmail)
-                .build());
-
-        // TODO: publish event nếu cần
+        log.info("[ASSET][STATUS] id={}, code={}, {} -> {}, note={}, by={}",
+                saved.getId(), saved.getAssetCode(), old, saved.getStatus(), req.getNote(), actorEmail);
 
         return assetMapper.toResponse(saved);
     }
@@ -159,26 +135,18 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
         AssetStatus current = asset.getStatus();
         if (current != AssetStatus.DEACTIVATED) {
-            asset.setPreviousStatus(current);
+            asset.setPreviousStatus(current);          // giữ previousStatus nếu bạn đã thêm field này
             asset.setStatus(AssetStatus.DEACTIVATED);
         } else {
-            AssetStatus restore = Optional.ofNullable(asset.getPreviousStatus())
-                    .orElse(AssetStatus.GOOD);
+            AssetStatus restore = Optional.ofNullable(asset.getPreviousStatus()).orElse(AssetStatus.GOOD);
             asset.setStatus(restore);
             asset.setPreviousStatus(null);
         }
         asset.setUpdatedBy(actorEmail);
         Asset saved = assetRepository.save(asset);
 
-        historyRepository.save(AssetHistory.builder()
-                .asset(saved)
-                .action("TOGGLE_DEACTIVATED")
-                .oldStatus(current)
-                .newStatus(saved.getStatus())
-                .changedBy(actorEmail)
-                .build());
-
-        // TODO: publish event nếu cần
+        log.info("[ASSET][TOGGLE] id={}, code={}, {} -> {}, by={}",
+                saved.getId(), saved.getAssetCode(), current, saved.getStatus(), actorEmail);
 
         return assetMapper.toResponse(saved);
     }
@@ -198,13 +166,27 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         int size = Math.max(1, Optional.ofNullable(filter.getSize()).orElse(20));
         Pageable pageable = PageRequest.of(page - 1, size, parseSort(filter.getSort()));
 
-        var spec = AssetSpecifications.filter(
-                filter.getKeyword(),
-                filter.getStatus(),
-                filter.getCategoryId(),
-                filter.getRoomId()
-        );
+        // 1) RSQL filter (có thể null)
+        Specification<Asset> rsqlSpec = RSQLJPASupport.toSpecification(filter.getFilter());
+
+        // 2) Search chung (assetCode/assetName/room.roomNumber/category.name)
+        Specification<Asset> searchSpec = (root, query, cb) -> {
+            if (!StringUtils.hasText(filter.getKeyword())) return null;
+            String kw = "%" + filter.getKeyword().trim().toLowerCase() + "%";
+            var room = root.join("room", JoinType.LEFT);
+            var cat  = root.join("category", JoinType.LEFT);
+            query.distinct(true);
+            return cb.or(
+                    cb.like(cb.lower(root.get("assetCode")), kw),
+                    cb.like(cb.lower(root.get("assetName")), kw),
+                    cb.like(cb.lower(room.get("roomNumber")), kw),
+                    cb.like(cb.lower(cat.get("name")), kw)
+            );
+        };
+
+        Specification<Asset> spec = Specification.where(rsqlSpec).and(searchSpec);
 
         return assetRepository.findAll(spec, pageable).map(assetMapper::toResponse);
     }
+
 }
