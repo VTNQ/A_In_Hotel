@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/assets")
@@ -21,8 +20,7 @@ public class AssetController {
     private final AssetService assetService;
     private final JwtService jwtService;
 
-    // Danh sách + filter + search + pagination (default 20)
-    // Danh sách + filter (RSQL) + search (q) + pagination/sort
+    // ===================== DANH SÁCH =====================
     @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<AssetResponse>>> list(
             @RequestParam(required = false, name = "search") String q,
@@ -31,33 +29,22 @@ public class AssetController {
             @RequestParam(defaultValue = "20") Integer size,
             @RequestParam(defaultValue = "id,desc") String sort
     ) {
-        var req = AssetFilterRequest.builder()
-                .keyword(q)
-                .filter(rsql)
-                .page(page).size(size).sort(sort)
-                .build();
-        var result = assetService.findAll(req);
+        var result = assetService.findAll(page, size, sort, rsql, "asset_name", q, false);
         return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
     }
 
-
-
-    // Tạo mới
+    // ===================== TẠO MỚI =====================
     @PostMapping
-    public ResponseEntity<RequestResponse<AssetResponse>> create(
-            @Valid @RequestBody AssetCreateRequest req,
-            @RequestHeader("Authorization") String authHeader
+    public ResponseEntity<RequestResponse<Void>> create(
+            @Valid @RequestBody AssetCreateRequest req
     ) {
-        String actorEmail = extractEmailFromAuth(authHeader);
-        assetService.create(req, actorEmail); // vẫn tạo & ghi history
-
-
-        return ResponseEntity.status(HttpStatus.CREATED)
+        assetService.save(req);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(RequestResponse.success("Tạo asset thành công"));
     }
 
-
-    // Cập nhật
+    // ===================== CẬP NHẬT =====================
     @PutMapping("/{id}")
     public ResponseEntity<RequestResponse<AssetResponse>> update(
             @PathVariable Long id,
@@ -69,47 +56,39 @@ public class AssetController {
         return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật asset thành công"));
     }
 
-    // Đổi trạng thái (Good/Maintenance/Broken/Deactivated)
+    // ===================== CẬP NHẬT / TOGGLE TRẠNG THÁI =====================
     @PatchMapping("/{id}/status")
-    public ResponseEntity<RequestResponse<AssetResponse>> changeStatus(
+    public ResponseEntity<RequestResponse<AssetResponse>> updateStatus(
             @PathVariable Long id,
-            @Valid @RequestBody AssetStatusUpdateRequest req,
+            @Valid @RequestBody(required = false) AssetStatusUpdateRequest req, // có thể null nếu toggle
             @RequestHeader("Authorization") String authHeader
     ) {
         String actorEmail = extractEmailFromAuth(authHeader);
-        AssetResponse res = assetService.changeStatus(id, req, actorEmail);
-        return ResponseEntity.ok(RequestResponse.success(res, "Đổi trạng thái thành công"));
+
+        // Nếu client không gửi body, tạo request rỗng để toggle
+        if (req == null) req = new AssetStatusUpdateRequest();
+
+        AssetResponse res = assetService.updateStatus(id, req, actorEmail);
+        return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật trạng thái thành công"));
     }
 
-    // Toggle Deactivated (block/unblock)
-    @PatchMapping("/{id}/toggle")
-    public ResponseEntity<RequestResponse<AssetResponse>> toggle(
-            @PathVariable Long id,
-            @RequestHeader("Authorization") String authHeader
-    ) {
-        String actorEmail = extractEmailFromAuth(authHeader);
-        AssetResponse res = assetService.toggleDeactivated(id, actorEmail);
-        return ResponseEntity.ok(RequestResponse.success(res, "Thao tác toggle thành công"));
+    // ===================== CHI TIẾT =====================
+    @GetMapping("/{id}")
+    public ResponseEntity<RequestResponse<AssetResponse>> detail(@PathVariable Long id) {
+        AssetResponse res = assetService.getById(id);
+        return ResponseEntity.ok(RequestResponse.success(res));
     }
 
-        // Chi tiết
-        @GetMapping("/{id}")
-        public ResponseEntity<RequestResponse<AssetResponse>> detail(@PathVariable Long id) {
-            AssetResponse res = assetService.getById(id);
-            return ResponseEntity.ok(RequestResponse.success(res));
-        }
-
-    // Lấy email từ JWT (tham chiếu JwtService của bạn)
+    // ===================== JWT HELPER =====================
     private String extractEmailFromAuth(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return "system@a-in-hotel.com"; // fallback
+            return "system@a-in-hotel.com";
         }
         String token = authHeader.substring(7);
         try {
-            return jwtService.extractEmail(token);  // dùng service thật của bạn
-        } catch (Exception e) {                     // bắt chung, không cần import JwtException
-            // log.warn("Invalid JWT: {}", e.getMessage());
-            return "system@a-in-hotel.com";        // fallback an toàn
+            return jwtService.extractEmail(token);
+        } catch (Exception e) {
+            return "system@a-in-hotel.com";
         }
     }
 }

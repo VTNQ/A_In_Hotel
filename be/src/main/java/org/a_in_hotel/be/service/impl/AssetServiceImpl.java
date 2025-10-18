@@ -7,11 +7,14 @@ import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.entity.Asset;
 import org.a_in_hotel.be.entity.Category;
+import org.a_in_hotel.be.entity.ExtraService;
 import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.mapper.AssetMapper;
 import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
+import org.a_in_hotel.be.util.SearchHelper;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
@@ -34,59 +38,40 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     private final CategoryRepository categoryRepository;
     private final RoomRepository roomRepository;
     private final AssetMapper assetMapper;
+    private final SecurityUtils securityUtils;
+    private static final List<String> SEARCH_FIELDS =  List.of("asset_name", "asset_code");
 
-    private String generateUniqueAssetCode() {
-        Random rnd = new Random();
-        String code;
-        int guard = 0;
-        do {
-            code = "AS" + String.format(Locale.ROOT, "%04d", rnd.nextInt(10000));
-            guard++;
-            if (guard > 100) throw new IllegalStateException("Cannot generate unique asset code.");
-        } while (assetRepository.existsByAssetCode(code));
-        return code;
-    }
-
-    private Sort parseSort(String sort) {
-        if (!StringUtils.hasText(sort)) return Sort.by(Sort.Direction.DESC, "id");
-        String[] parts = sort.split(",");
-        String prop = parts[0].trim();
-        Sort.Direction dir = (parts.length > 1 && "asc".equalsIgnoreCase(parts[1]))
-                ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return Sort.by(dir, prop);
-    }
 
     @Override
     @Transactional
-    public AssetResponse create(AssetCreateRequest req, String actorEmail) {
-        Category cat = categoryRepository.findById(req.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        Room room = null;
-        if (req.getRoomId() != null) {
-            room = roomRepository.findById(req.getRoomId())
-                    .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+    public void save(AssetCreateRequest req) {
+        try {
+            log.info("➡️ Start creating asset: {}", req.getAssetName());
+
+            // ✅ Lấy email người thực hiện từ JWT
+            String actorEmail = securityUtils.getCurrentUserEmail();
+
+            // ✅ Kiểm tra mã tài sản trùng
+            if (req.getAssetCode() != null && assetRepository.existsByAssetCode(req.getAssetCode())) {
+                throw new IllegalArgumentException("Asset code already exists: " + req.getAssetCode());
+            }
+
+            // ✅ Map DTO → Entity
+            Asset asset = assetMapper.toEntity(req);
+            asset.setCreatedBy(actorEmail);
+            asset.setUpdatedBy(actorEmail);
+
+            // ✅ Lưu DB
+            assetRepository.save(asset);
+
+            log.info("✅ Asset created successfully by {}", actorEmail);
+
+        } catch (Exception e) {
+            log.error("❌ Failed to create asset: {}", e.getMessage(), e);
+            throw new RuntimeException("Error creating asset", e);
         }
-
-        Asset asset = assetMapper.toEntity(req);
-        asset.setCategory(cat);
-        asset.setRoom(room);
-
-        if (!StringUtils.hasText(req.getAssetCode())) {
-            asset.setAssetCode(generateUniqueAssetCode());
-        } else if (assetRepository.existsByAssetCode(req.getAssetCode())) {
-            throw new IllegalArgumentException("Asset code already exists");
-        }
-
-        asset.setCreatedBy(actorEmail);
-        asset.setUpdatedBy(actorEmail);
-
-        asset = assetRepository.save(asset);
-
-        // Không ghi history – chỉ log
-        log.info("[ASSET][CREATE] id={}, code={}, by={}", asset.getId(), asset.getAssetCode(), actorEmail);
-
-        return assetMapper.toResponse(asset);
     }
+
 
     @Override
     @Transactional
@@ -112,44 +97,39 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
     @Override
     @Transactional
-    public AssetResponse changeStatus(Long id, AssetStatusUpdateRequest req, String actorEmail) {
+    public AssetResponse updateStatus(Long id, AssetStatusUpdateRequest req, String actorEmail) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
 
-        AssetStatus old = asset.getStatus();
-        asset.setStatus(req.getStatus());
+        AssetStatus oldStatus = asset.getStatus();
+        AssetStatus newStatus = req.getStatus();
+
+        // ✅ Nếu request không gửi status → hiểu là toggle DEACTIVATED
+        if (newStatus == null) {
+            if (oldStatus != AssetStatus.DEACTIVATED) {
+                asset.setPreviousStatus(oldStatus);
+                asset.setStatus(AssetStatus.DEACTIVATED);
+            } else {
+                AssetStatus restore = Optional.ofNullable(asset.getPreviousStatus())
+                        .orElse(AssetStatus.GOOD);
+                asset.setStatus(restore);
+                asset.setPreviousStatus(null);
+            }
+        } else {
+            // ✅ Đổi sang trạng thái cụ thể
+            asset.setPreviousStatus(oldStatus);
+            asset.setStatus(newStatus);
+        }
+
         asset.setUpdatedBy(actorEmail);
         Asset saved = assetRepository.save(asset);
 
         log.info("[ASSET][STATUS] id={}, code={}, {} -> {}, note={}, by={}",
-                saved.getId(), saved.getAssetCode(), old, saved.getStatus(), req.getNote(), actorEmail);
+                saved.getId(), saved.getAssetCode(), oldStatus, saved.getStatus(), req.getNote(), actorEmail);
 
         return assetMapper.toResponse(saved);
     }
 
-    @Override
-    @Transactional
-    public AssetResponse toggleDeactivated(Long id, String actorEmail) {
-        Asset asset = assetRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
-
-        AssetStatus current = asset.getStatus();
-        if (current != AssetStatus.DEACTIVATED) {
-            asset.setPreviousStatus(current);          // giữ previousStatus nếu bạn đã thêm field này
-            asset.setStatus(AssetStatus.DEACTIVATED);
-        } else {
-            AssetStatus restore = Optional.ofNullable(asset.getPreviousStatus()).orElse(AssetStatus.GOOD);
-            asset.setStatus(restore);
-            asset.setPreviousStatus(null);
-        }
-        asset.setUpdatedBy(actorEmail);
-        Asset saved = assetRepository.save(asset);
-
-        log.info("[ASSET][TOGGLE] id={}, code={}, {} -> {}, by={}",
-                saved.getId(), saved.getAssetCode(), current, saved.getStatus(), actorEmail);
-
-        return assetMapper.toResponse(saved);
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -161,32 +141,17 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AssetResponse> findAll(AssetFilterRequest filter) {
-        int page = Math.max(1, filter.getPage());
-        int size = Math.max(1, Optional.ofNullable(filter.getSize()).orElse(20));
-        Pageable pageable = PageRequest.of(page - 1, size, parseSort(filter.getSort()));
-
-        // 1) RSQL filter (có thể null)
-        Specification<Asset> rsqlSpec = RSQLJPASupport.toSpecification(filter.getFilter());
-
-        // 2) Search chung (assetCode/assetName/room.roomNumber/category.name)
-        Specification<Asset> searchSpec = (root, query, cb) -> {
-            if (!StringUtils.hasText(filter.getKeyword())) return null;
-            String kw = "%" + filter.getKeyword().trim().toLowerCase() + "%";
-            var room = root.join("room", JoinType.LEFT);
-            var cat  = root.join("category", JoinType.LEFT);
-            query.distinct(true);
-            return cb.or(
-                    cb.like(cb.lower(root.get("assetCode")), kw),
-                    cb.like(cb.lower(root.get("assetName")), kw),
-                    cb.like(cb.lower(room.get("roomNumber")), kw),
-                    cb.like(cb.lower(cat.get("name")), kw)
-            );
-        };
-
-        Specification<Asset> spec = Specification.where(rsqlSpec).and(searchSpec);
-
-        return assetRepository.findAll(spec, pageable).map(assetMapper::toResponse);
+    public Page<AssetResponse> findAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+        try {
+            log.info("start get asset");
+            Specification<Asset> sortable = RSQLJPASupport.toSort(sort);
+            Specification<Asset> filterable = RSQLJPASupport.toSpecification(filter);
+            Specification<Asset> searchable = SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
+            Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+            return assetRepository.findAll(sortable.and(filterable).and(searchable.and(filterable)), pageable).map(assetMapper::toResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
-
 }
