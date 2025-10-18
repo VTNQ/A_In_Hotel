@@ -22,14 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ExtraRoomServiceController {
     private final RoomExtraService extraService;
     @PostMapping("/create")
-    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody ExtraServiceRequest extra, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
+    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody ExtraServiceRequest extra){
         try {
             extraService.save(extra);
             return ResponseEntity.ok(RequestResponse.success("Thêm dịch vụ thành công"));
@@ -62,15 +55,8 @@ public class ExtraRoomServiceController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra, BindingResult bindingResult){
+    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra){
         try {
-            if (bindingResult.hasErrors()) {
-                String errorMessage = bindingResult.getFieldErrors().stream()
-                        .map(error -> error.getDefaultMessage())
-                        .findFirst()
-                        .orElse("Dữ liệu không hợp lệ");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-            }
             extraService.update(extra,id);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật dịch vụ thành công"));
         }catch (Exception e){

@@ -7,17 +7,10 @@ import HotelPage from './page/Hotel/HotelPage'
 import AddBannerPage from './page/Banner/AddBannerPage'
 import BannerPage from './page/Banner/BannerPagge'
 import EditBannerPage from './page/Banner/EditBannerPage'
-import CreateSuperAdminPage from './page/ChildSuperAdmin/CreateChildSuperAdminPage'
 import CreateAdminPage from './page/Admin/CreateAdminPage'
 import ListAdminPage from './page/Admin/ListAdminPage'
 import ListSuperAdminPage from './page/ChildSuperAdmin/ListChildSuperAdminPage'
 import CreateChildSuperAdminPage from './page/ChildSuperAdmin/CreateChildSuperAdminPage'
-
-
-
-
-
-
 function App() {
 
   return (

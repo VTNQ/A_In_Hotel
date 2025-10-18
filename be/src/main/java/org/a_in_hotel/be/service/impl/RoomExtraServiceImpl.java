@@ -2,7 +2,6 @@ package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
 import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
@@ -30,8 +29,12 @@ public class RoomExtraServiceImpl implements RoomExtraService {
     private final ExtraServiceMapper mapper;
     private final SecurityUtils securityUtils;
     private static final List<String> SEARCH_FIELDS =  List.of("serviceCode", "serviceName");
+
     @Autowired
-    public RoomExtraServiceImpl(ExtraServiceRepository repository, ExtraServiceMapper mapper,SecurityUtils securityUtils) {
+    public RoomExtraServiceImpl(
+            ExtraServiceRepository repository,
+            ExtraServiceMapper mapper,
+            SecurityUtils securityUtils) {
         this.repository = repository;
         this.mapper = mapper;
         this.securityUtils = securityUtils;
