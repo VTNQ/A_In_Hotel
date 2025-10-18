@@ -5,7 +5,7 @@ const Receptionist = () => {
         <SceneElement
             src={receptionist}
             alt='Receptionist'
-            className='bottom-0 left-[23%] w-[280px] z-10 hidden md:block'
+            className='bottom-[0] left-[22%] w-[20%] z-10 hidden md:block'
         />
     )
 }

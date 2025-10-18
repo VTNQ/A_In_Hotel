@@ -124,7 +124,7 @@ const BackgroundLayer = () => {
             <SceneElement
                 src={ReceptionistBoard}
                 alt="Receptionist Board"
-                className='absolute top-[55%] left-[33%] w-[6%]  opacity-95 hidden md:block'
+                className='absolute top-[55%] left-[35%] w-[6%]  opacity-95 hidden md:block'
             />
             <SceneElement
                 src={Vector}
