@@ -16,14 +16,12 @@ public interface AssetMapper {
     @Mapping(target = "room", source = "roomId", qualifiedByName = "mapRoom")
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
-    @Mapping(target = "previousStatus", ignore = true)
     Asset toEntity(AssetCreateRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
     @Mapping(target = "room", source = "roomId", qualifiedByName = "mapRoom")
     @Mapping(target = "updatedBy", ignore = true)
-    @Mapping(target = "previousStatus", ignore = true)
     void updateEntity(@MappingTarget Asset asset, AssetUpdateRequest dto);
 
     @Mapping(target = "categoryId",   source = "category.id")
