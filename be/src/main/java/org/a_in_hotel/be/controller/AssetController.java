@@ -27,9 +27,10 @@ public class AssetController {
             @RequestParam(required = false, name = "filter") String rsql,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20") Integer size,
-            @RequestParam(defaultValue = "id,desc") String sort
+            @RequestParam(defaultValue = "id,desc") String sort,
+            @RequestParam(required = false)boolean all
     ) {
-        var result = assetService.findAll(page, size, sort, rsql, "asset_name", q, false);
+        var result = assetService.findAll(page, size, sort, rsql, "asset_name", q, all);
         return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
     }
 
@@ -48,11 +49,9 @@ public class AssetController {
     @PutMapping("/{id}")
     public ResponseEntity<RequestResponse<AssetResponse>> update(
             @PathVariable Long id,
-            @Valid @RequestBody AssetUpdateRequest req,
-            @RequestHeader("Authorization") String authHeader
+            @Valid @RequestBody AssetUpdateRequest req
     ) {
-        String actorEmail = extractEmailFromAuth(authHeader);
-        AssetResponse res = assetService.update(id, req, actorEmail);
+        AssetResponse res = assetService.update(id, req);
         return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật asset thành công"));
     }
 
@@ -63,12 +62,11 @@ public class AssetController {
             @Valid @RequestBody(required = false) AssetStatusUpdateRequest req, // có thể null nếu toggle
             @RequestHeader("Authorization") String authHeader
     ) {
-        String actorEmail = extractEmailFromAuth(authHeader);
 
         // Nếu client không gửi body, tạo request rỗng để toggle
         if (req == null) req = new AssetStatusUpdateRequest();
 
-        AssetResponse res = assetService.updateStatus(id, req, actorEmail);
+        AssetResponse res = assetService.updateStatus(id, req);
         return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật trạng thái thành công"));
     }
 
@@ -79,16 +77,5 @@ public class AssetController {
         return ResponseEntity.ok(RequestResponse.success(res));
     }
 
-    // ===================== JWT HELPER =====================
-    private String extractEmailFromAuth(String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return "system@a-in-hotel.com";
-        }
-        String token = authHeader.substring(7);
-        try {
-            return jwtService.extractEmail(token);
-        } catch (Exception e) {
-            return "system@a-in-hotel.com";
-        }
-    }
+
 }

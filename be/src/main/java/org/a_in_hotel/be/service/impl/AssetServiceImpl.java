@@ -48,8 +48,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         try {
             log.info("➡️ Start creating asset: {}", req.getAssetName());
 
-            // ✅ Lấy email người thực hiện từ JWT
-            String actorEmail = securityUtils.getCurrentUserEmail();
+
 
             // ✅ Kiểm tra mã tài sản trùng
             if (req.getAssetCode() != null && assetRepository.existsByAssetCode(req.getAssetCode())) {
@@ -58,13 +57,13 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
             // ✅ Map DTO → Entity
             Asset asset = assetMapper.toEntity(req);
-            asset.setCreatedBy(actorEmail);
-            asset.setUpdatedBy(actorEmail);
+            asset.setCreatedBy(securityUtils.getCurrentUserId().toString());
+            asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
 
             // ✅ Lưu DB
             assetRepository.save(asset);
 
-            log.info("✅ Asset created successfully by {}", actorEmail);
+            log.info("✅ Asset created successfully by {}", securityUtils.getCurrentUserEmail().toString());
 
         } catch (Exception e) {
             log.error("❌ Failed to create asset: {}", e.getMessage(), e);
@@ -75,7 +74,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
     @Override
     @Transactional
-    public AssetResponse update(Long id, AssetUpdateRequest req, String actorEmail) {
+    public AssetResponse update(Long id, AssetUpdateRequest req ) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
 
@@ -87,17 +86,17 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         }
 
         assetMapper.updateEntity(asset, req);
-        asset.setUpdatedBy(actorEmail);
+        asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
         Asset saved = assetRepository.save(asset);
 
-        log.info("[ASSET][UPDATE] id={}, code={}, by={}", saved.getId(), saved.getAssetCode(), actorEmail);
+        log.info("[ASSET][UPDATE] id={}, code={}, by={}", saved.getId(), saved.getAssetCode(), securityUtils.getCurrentUserId().toString());
 
         return assetMapper.toResponse(saved);
     }
 
     @Override
     @Transactional
-    public AssetResponse updateStatus(Long id, AssetStatusUpdateRequest req, String actorEmail) {
+    public AssetResponse updateStatus(Long id, AssetStatusUpdateRequest req) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
 
@@ -121,11 +120,11 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
             asset.setStatus(newStatus);
         }
 
-        asset.setUpdatedBy(actorEmail);
+        asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
         Asset saved = assetRepository.save(asset);
 
         log.info("[ASSET][STATUS] id={}, code={}, {} -> {}, note={}, by={}",
-                saved.getId(), saved.getAssetCode(), oldStatus, saved.getStatus(), req.getNote(), actorEmail);
+                saved.getId(), saved.getAssetCode(), oldStatus, saved.getStatus(), req.getNote(), securityUtils.getCurrentUserId().toString());
 
         return assetMapper.toResponse(saved);
     }
