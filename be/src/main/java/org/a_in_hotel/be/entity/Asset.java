@@ -67,5 +67,8 @@ public class Asset {
             this.assetCode = "AS" + String.format("%04d", (int) (Math.random() * 9999));
         }
     }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "previous_status", length = 50)
+    private AssetStatus previousStatus;
 
 }
