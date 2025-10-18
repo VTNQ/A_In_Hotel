@@ -32,3 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 src/main/resources/logback-spring.xml
+# Ignore sensitive config files
+!**/src/main/resources/application.properties
+!**/src/main/resources/logback-spring.xml
