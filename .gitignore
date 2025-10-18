@@ -15,3 +15,5 @@ build/
 # OS generated files
 .DS_Store
 Thumbs.db
+# Ignore application log
+logs/app.log
