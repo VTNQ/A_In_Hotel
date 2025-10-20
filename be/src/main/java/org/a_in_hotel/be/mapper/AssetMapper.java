@@ -6,10 +6,11 @@ import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.entity.Asset;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.entity.Room;
+import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
-public interface AssetMapper {
+public interface AssetMapper  extends CommonMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
@@ -30,17 +31,4 @@ public interface AssetMapper {
     @Mapping(target = "roomName",     source = "room.roomNumber")
     AssetResponse toResponse(Asset entity);
 
-    @Named("mapCategory")
-    default Category mapCategory(Long id) {
-        if (id == null) return null;
-        Category c = new Category(); c.setId(id);
-        return c;
-    }
-
-    @Named("mapRoom")
-    default Room mapRoom(Long id) {
-        if (id == null) return null;
-        Room r = new Room(); r.setId(id);
-        return r;
-    }
 }

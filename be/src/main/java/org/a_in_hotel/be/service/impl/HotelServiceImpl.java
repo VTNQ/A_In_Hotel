@@ -13,6 +13,7 @@ import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,6 +39,8 @@ public class HotelServiceImpl implements HotelService {
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
+    private SecurityUtils securityUtils;
+    @Autowired
     private HotelMapper hotelMapper;
     @Autowired
     private GeneralService generalService;
@@ -60,7 +63,7 @@ public class HotelServiceImpl implements HotelService {
                         throw new IllegalArgumentException(msg);
                     });
 
-            Hotel hotelEntity = hotelMapper.toEntity(hotel);
+            Hotel hotelEntity = hotelMapper.toEntity(hotel,securityUtils.getCurrentUserId());
             hotelEntity.setCode(generalService.generateByUUID());
             hotelRepository.save(hotelEntity);
 
@@ -89,7 +92,7 @@ public class HotelServiceImpl implements HotelService {
                         throw new IllegalArgumentException(msg);
                     });
 
-            hotelMapper.updateEntity(branch, entity);
+            hotelMapper.updateEntity(branch, entity,securityUtils.getCurrentUserId());
             hotelRepository.save(entity);
 
         } catch (DataIntegrityViolationException e) {
@@ -131,7 +134,6 @@ public class HotelServiceImpl implements HotelService {
             Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
             return hotelRepository.findAll(sortable.and(filterable).and(searchable), pageable)
                     .map(hotelMapper::toResponse);
-
         } catch (Exception e) {
             log.error("Failed to fetch hotels", e);
             throw e;

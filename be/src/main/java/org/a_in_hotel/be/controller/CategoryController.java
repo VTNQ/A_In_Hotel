@@ -59,11 +59,6 @@ public class CategoryController {
         return ResponseEntity.ok(RequestResponse.success(categoryService.get(id)));
     }
 
-    // 👉 Lấy category theo name
-    @GetMapping("/by-name/{name}")
-    public ResponseEntity<RequestResponse<Category>> getByName(@PathVariable String name) {
-        return ResponseEntity.ok(RequestResponse.success(categoryService.getByName(name)));
-    }
 
     // 👉 Search categories
     @GetMapping

@@ -4,10 +4,11 @@ import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
 import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
-public interface ExtraServiceMapper {
+public interface ExtraServiceMapper extends CommonMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "request.categoryId", qualifiedByName = "mapCategoryFromId")
@@ -21,13 +22,7 @@ public interface ExtraServiceMapper {
     @Mapping(target = "category", source = "request.categoryId", qualifiedByName = "mapCategoryFromId")
     @Mapping(target = "updatedBy", source = "userId")
     void updateEntityFromDto(ExtraServiceRequest request, @MappingTarget ExtraService dto,Long userId);
-    @Named("mapCategoryFromId")
-    default Category mapCategoryFromId(Long idCategory) {
-        if (idCategory == null) return null;
-        Category category = new Category();
-        category.setId(idCategory);
-        return category;
-    }
+
     @Mapping(target = "categoryName",source = "category.name")
     ExtraServiceResponse toResponse(ExtraService service);
 }
