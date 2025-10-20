@@ -22,6 +22,7 @@ import org.a_in_hotel.be.repository.TagRepository;
 import org.a_in_hotel.be.service.BlogService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,7 @@ public class BlogServiceImpl implements BlogService {
     private final TagRepository tagRepository;
     private final GeneralService generalService;
     private final BlogMapper blogMapper;
+    private final SecurityUtils securityUtils;
     private static final List<String> SEARCH_FIELDS = List.of("title");
     @Override
     public void create(BlogDTO dto, MultipartFile file) {
@@ -58,11 +60,7 @@ public class BlogServiceImpl implements BlogService {
             throw new IllegalArgumentException("categoryId is required");
         }
 
-        Blog blog = new Blog();
-        blog.setTitle(dto.getTitle());
-        blog.setContent(dto.getContent());
-        blog.setCreatedAt(LocalDateTime.now());
-        blog.setUpdatedAt(LocalDateTime.now());
+        Blog blog =blogMapper.toEntity(dto,securityUtils.getCurrentUserId());
 
         // Category
         Category category = categoryRepository.findById(dto.getCategoryId())
@@ -70,17 +68,15 @@ public class BlogServiceImpl implements BlogService {
         blog.setCategory(category);
 
         // Tags (null-safe)
-        Set<Tag> tags = (dto.getTags() == null ? Collections.<String>emptySet() : Set.copyOf(dto.getTags()))
-                .stream()
-                .filter(name -> name != null && !name.isBlank())
-                .map(name -> tagRepository.findByName(name.trim())
-                        .orElseGet(() -> tagRepository.save(new Tag(null, name.trim()))))
+        Set<Tag> tags = blog.getTags().stream()
+                .map(tag -> tagRepository.findByName(tag.getName())
+                        .orElseGet(() -> tagRepository.save(tag)))
                 .collect(Collectors.toSet());
         blog.setTags(tags);
         if(file !=null && !file.isEmpty()) {
             try {
-                FileUploadMeta fileUploadMeta=generalService.saveFile(file,"blog/");
-                Image image=imageMapper.toBannerImage(fileUploadMeta);
+                FileUploadMeta meta = generalService.saveFile(file, "blog/");
+                Image image = imageMapper.toBannerImage(meta);
                 imageRepository.save(image);
                 blog.setImage(image);
             }catch (Exception e) {
@@ -104,10 +100,7 @@ public class BlogServiceImpl implements BlogService {
     public void update(Long id, BlogDTO dto,MultipartFile file) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException(id));
-
-        blog.setTitle(dto.getTitle());
-        blog.setContent(dto.getContent());
-        blog.setUpdatedAt(LocalDateTime.now());
+        blogMapper.updateEntityFromDto(dto, blog,securityUtils.getCurrentUserId());
 
         // Category (chỉ cập nhật khi FE gửi)
         if (dto.getCategoryId() != null) {
@@ -121,7 +114,7 @@ public class BlogServiceImpl implements BlogService {
             Set<Tag> tags = dto.getTags().stream()
                     .filter(name -> name != null && !name.isBlank())
                     .map(name -> tagRepository.findByName(name.trim())
-                            .orElseGet(() -> tagRepository.save(new Tag(null, name.trim()))))
+                            .orElseThrow(() ->new IllegalArgumentException("Category not found: " + dto.getCategoryId()) ))
                     .collect(Collectors.toSet());
             blog.setTags(tags);
         }
@@ -193,6 +186,4 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException(id));
     }
-
-
 }

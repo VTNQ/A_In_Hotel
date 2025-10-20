@@ -47,24 +47,17 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public void save(AssetCreateRequest req) {
         try {
             log.info("➡️ Start creating asset: {}", req.getAssetName());
-
-
-
             // ✅ Kiểm tra mã tài sản trùng
             if (req.getAssetCode() != null && assetRepository.existsByAssetCode(req.getAssetCode())) {
                 throw new IllegalArgumentException("Asset code already exists: " + req.getAssetCode());
             }
-
             // ✅ Map DTO → Entity
             Asset asset = assetMapper.toEntity(req);
             asset.setCreatedBy(securityUtils.getCurrentUserId().toString());
             asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-
             // ✅ Lưu DB
             assetRepository.save(asset);
-
             log.info("✅ Asset created successfully by {}", securityUtils.getCurrentUserEmail().toString());
-
         } catch (Exception e) {
             log.error("❌ Failed to create asset: {}", e.getMessage(), e);
             throw new RuntimeException("Error creating asset", e);

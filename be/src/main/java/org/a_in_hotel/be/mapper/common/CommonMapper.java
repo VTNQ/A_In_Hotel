@@ -1,0 +1,97 @@
+package org.a_in_hotel.be.mapper.common;
+
+import org.a_in_hotel.be.dto.response.ImageRoomResponse;
+import org.a_in_hotel.be.entity.*;
+import org.mapstruct.Named;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public interface CommonMapper {
+    default Set<Tag> mapTagNames(List<String> tagNames) {
+        if (tagNames == null) return null;
+        return tagNames.stream()
+                .filter(name -> name != null && !name.isBlank())
+                .map(name -> {
+                    Tag tag = new Tag();
+                    tag.setName(name.trim());
+                    return tag;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    @Named("mapUserIdToAccount")
+    default Account mapUserIdToAccount(Long IdUser) {
+        if (IdUser == null) return null;
+        Account acc = new Account();
+        acc.setId(IdUser);
+        return acc;
+    }
+
+    @Named("mapRoleFromId")
+    default Role mapRoleFromId(Long idRole) {
+        if (idRole == null) return null;
+        Role role = new Role();
+        role.setId(idRole);
+        return role;
+    }
+
+    @Named("instantToLong")
+    static Long instantToLong(Instant instant) {
+        return instant != null ? instant.toEpochMilli() : null;
+    }
+
+    default Set<String> mapTagsToNames(Set<Tag> tags) {
+        if (tags == null) return null;
+        return tags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+    }
+
+    default List<String> mapImagesToUrls(Blog blog) {
+        if (blog == null || blog.getImage() == null) return List.of();
+        return List.of(blog.getImage().getUrl());
+    }
+
+    @Named("mapCategory")
+    default Category mapCategory(Long id) {
+        if (id == null) return null;
+        Category c = new Category();
+        c.setId(id);
+        return c;
+    }
+
+    @Named("mapRoom")
+    default Room mapRoom(Long id) {
+        if (id == null) return null;
+        Room r = new Room();
+        r.setId(id);
+        return r;
+    }
+
+    @Named("mapRoomTypeFromId")
+    default RoomType mapRoomTypeFromId(Long idRoomType) {
+        if (idRoomType == null) return null;
+        RoomType roomType = new RoomType();
+        roomType.setId(idRoomType);
+        return roomType;
+    }
+
+    @Named("mapCategoryFromId")
+    default Category mapCategoryFromId(Long idCategory) {
+        if (idCategory == null) return null;
+        Category category = new Category();
+        category.setId(idCategory);
+        return category;
+    }
+
+    default List<ImageRoomResponse> mapImages(List<Image> images) {
+        if (images == null) return List.of();
+        return images.stream()
+                .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
+                .map(img -> new ImageRoomResponse(img.getUrl(), img.getAltText()))
+                .collect(Collectors.toList());
+    }
+}
