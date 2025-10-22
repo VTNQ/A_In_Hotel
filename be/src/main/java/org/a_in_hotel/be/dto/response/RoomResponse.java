@@ -21,6 +21,9 @@ public class RoomResponse {
     private Double area;
     private String note;
     private List<ImageRoomResponse> images;
-
+    private BigDecimal hourlyBasePrice;
+    private Integer hourlyBaseDuration;
+    private BigDecimal hourlyAdditionalPrice;
+    private BigDecimal overnightPrice;
 }
 

@@ -3,7 +3,6 @@ package org.a_in_hotel.be.controller;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.RequestResponse;
-import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.service.CategoryService;
 import org.springframework.data.domain.Page;

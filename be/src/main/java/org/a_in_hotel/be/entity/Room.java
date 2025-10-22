@@ -45,6 +45,8 @@ public class Room {
     private Double area;
     @Column(name = "note")
     private String note;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomPriceOption> roomPriceOptions = new ArrayList<>();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

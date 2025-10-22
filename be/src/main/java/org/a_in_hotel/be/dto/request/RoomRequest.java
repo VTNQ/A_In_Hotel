@@ -15,4 +15,10 @@ public class RoomRequest {
     private Integer floor;
     private Double area;
     private String note;
+    private BigDecimal hourlyBasePrice; //ví dụ (2 giờ đầu)
+    private Integer hourlyBaseDuration; // ví dụ: 2(số giờ)
+    private BigDecimal hourlyAdditionalPrice;//ví dụ: 120000 (mỗi giờ sau)
+    // giá ban đêm
+    private BigDecimal overnightPrice;
+
 }

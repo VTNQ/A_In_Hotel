@@ -19,7 +19,6 @@ public class SecurityUtils {
         }
         return jwtService.extractUserId(token);
     }
-
     /**
      * ✅ Lấy email (username) từ JWT token hiện tại
      */
@@ -41,7 +40,6 @@ public class SecurityUtils {
         }
         return jwtService.extractRole(token);
     }
-
     /**
      * ✅ Lấy token hiện tại từ header Authorization
      */
