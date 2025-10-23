@@ -4,19 +4,29 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CategoryType {
-    ROOM, SERVICE, ASSET;
+    ROOM(1),
+    SERVICE(2),
+    ASSET(3);
 
-    // Nhận "room", "Room", "ROOM" đều OK
-    @JsonCreator
-    public static CategoryType from(String value) {
-        if (value == null) return null;
-        return CategoryType.valueOf(value.trim().toUpperCase());
+    private final int value;
+
+    CategoryType(int value) {
+        this.value = value;
     }
 
-    // Trả ra "Room", "Service", "Asset" cho đẹp khi serialize JSON
     @JsonValue
-    public String toJson() {
-        String s = name().toLowerCase();
-        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    public int toValue() {
+        return value;
+    }
+
+    @JsonCreator
+    public static CategoryType fromValue(Integer value) {
+        if (value == null) return null;
+        for (CategoryType type : CategoryType.values()) {
+            if (type.value == value) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown CategoryType value: " + value);
     }
 }
