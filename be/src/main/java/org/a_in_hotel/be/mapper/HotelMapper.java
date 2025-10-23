@@ -5,7 +5,6 @@ import org.a_in_hotel.be.dto.request.HotelUpdate;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Hotel;
-import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
 
 import java.time.Instant;
@@ -21,14 +20,12 @@ import java.util.stream.Collectors;
         imports = {Instant.class, UUID.class},
         builder = @org.mapstruct.Builder(disableBuilder = true) // ⭐ TẮT builder
 )
-public interface HotelMapper  extends CommonMapper {
+public interface HotelMapper {
     @Mapping(target = "id", ignore = true)         // id auto gen
     @Mapping(target = "code", ignore = true)       // code sẽ generate sau
     @Mapping(target = "status", constant = "ACTIVE")
-    @Mapping(source = "request.idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
-    @Mapping(target = "createdBy", source = "userId")
-    @Mapping(target = "updatedBy", source = "userId")
-    Hotel toEntity(HotelRequest request,Long userId);
+    @Mapping(source = "idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
+    Hotel toEntity(HotelRequest request);
     @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "instantToLong")
     @Mapping(source = "account.fullName", target = "fullName")
     @Mapping(source = "account.id", target = "idUser")
@@ -36,7 +33,18 @@ public interface HotelMapper  extends CommonMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)       // không cho update id
     @Mapping(target = "code", ignore = true)     // không cho update code
-    @Mapping(source = "dto.idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
-    @Mapping(target = "updatedBy", source = "userId")
-    void updateEntity(HotelUpdate dto, @MappingTarget Hotel entity,Long userId);
+    @Mapping(source = "idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
+    void updateEntity(HotelUpdate dto, @MappingTarget Hotel entity);
+    @Named("mapUserIdToAccount")
+    default Account mapUserIdToAccount(Long idUser) {
+        if (idUser == null) return null;
+        Account acc = new Account();
+        acc.setId(idUser);
+        return acc;
+    }
+
+    @Named("instantToLong")
+    static Long instantToLong(Instant instant) {
+        return instant != null ? instant.toEpochMilli() : null;
+    }
 }

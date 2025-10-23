@@ -50,15 +50,7 @@ public class SecurityConfiguration {
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.oAuth2UserService = oauth2UserService;
     }
-    @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
-    }
 
-    @Bean
-    public JwtAccessDeniedHandler jwtAccessDeniedHandler() {
-        return new JwtAccessDeniedHandler();
-    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -73,17 +65,11 @@ public class SecurityConfiguration {
                         // chỉ SUPERADMIN mới được phép gọi
                         .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
                         .requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN")
-                        .requestMatchers(HttpMethod.POST,APIURL.URL_ADMIN_POST).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,APIURL.URL_ADMIN_PUT).hasRole("ADMIN")
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
 
                         // tất cả các request khác cần xác thực
                         .anyRequest().permitAll()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint())
-                        .accessDeniedHandler(jwtAccessDeniedHandler())
                 )
                 // OAuth2 config
                 .oauth2Login(oauth -> oauth

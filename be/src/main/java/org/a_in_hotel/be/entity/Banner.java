@@ -59,10 +59,5 @@ public class Banner {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-    @Column(name = "created_by")
-    private String createdBy;
-    @Column(name = "updated_by")
-    private String updatedBy;
-
  
 }
