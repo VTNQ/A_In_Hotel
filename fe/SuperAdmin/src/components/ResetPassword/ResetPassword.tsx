@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { login } from "../../service/api/Authenticate";
-import { saveTokens } from "../../util/auth";
+import  { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { AlertModal, type AlertType } from "../AlertModal";
 import SideSlats from "../Login/SideSlats";
@@ -9,10 +8,7 @@ import Clock from "../Login/Clock";
 
 export default function ResetPassword() {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [success, setSuccess] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const isFilled = email.trim() !== "" && password.trim() !== "";
+
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
     const [modalCfg, setModalCfg] = useState<{
@@ -21,27 +17,7 @@ export default function ResetPassword() {
         description?: string;
     } | null>(null);
 
-    useEffect(() => {
-        if (error) {
-            setModalCfg({
-                type: "error",
-                title: "Lỗi",
-                description: error,
-            });
-            setModalOpen(true);
-        }
-    }, [error]);
-
-    useEffect(() => {
-        if (success) {
-            setModalCfg({
-                type: "success",
-                title: "Thành công",
-                description: success,
-            });
-            setModalOpen(true);
-        }
-    }, [success]);
+  
     const handleModalOpenChange = (open: boolean) => {
         setModalOpen(open);
         if (!open && modalCfg?.type === "success") {
@@ -151,9 +127,7 @@ export default function ResetPassword() {
                                 <div className="flex gap-3 mt-3">
                                     <button
                                         type="submit"
-                                        className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
-                                            ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                                            : "bg-[#7C7C7C] cursor-not-allowed"
+                                        className={`w-full rounded-md py-2 font-semibold text-white transition-colors bg-[#4B62A0] hover:bg-[#3c4e7f]
                                             }`}
                                     >
                                         Send
@@ -228,9 +202,7 @@ export default function ResetPassword() {
 
                         <button
                             type="submit"
-                            className={`w-1/2 rounded-md py-2 font-semibold text-white transition-colors ${isFilled
-                                ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                                : "bg-[#4B62A0] cursor-not-allowed opacity-60"
+                            className={`w-1/2 rounded-md py-2 font-semibold text-white transition-colors bg-[#4B62A0] hover:bg-[#3c4e7f]
                                 }`}
                         >
                             Send
