@@ -288,9 +288,6 @@ export default function Login() {
                       Forgot Password?
                     </a>
                   </div>
-
-
-
                 </form>
 
                 <AlertModal

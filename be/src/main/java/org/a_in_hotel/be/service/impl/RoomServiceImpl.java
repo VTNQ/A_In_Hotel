@@ -15,6 +15,7 @@ import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.mapper.RoomMapper;
 import org.a_in_hotel.be.repository.ImageRepository;
+import org.a_in_hotel.be.repository.RoomPriceOptionRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.service.RoomService;
 import org.a_in_hotel.be.util.GeneralService;
@@ -36,6 +37,7 @@ import java.util.List;
 @Service
 public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
+    private final RoomPriceOptionRepository roomPriceOptionRepository;
     private final RoomRepository roomRepository;
     private static final List<String> SEARCH_FIELDS = List.of("roomNumber","roomName");
     private final GeneralService generalService;
@@ -43,13 +45,20 @@ public class RoomServiceImpl implements RoomService {
     private final SecurityUtils securityUtils;
     private ImageMapper roomImageMapper;
     @Autowired
-    public RoomServiceImpl(RoomMapper roomMapper, RoomRepository roomRepository,GeneralService generalService,ImageRepository roomImageRepository,ImageMapper roomImageMapper,SecurityUtils securityUtils) {
+    public RoomServiceImpl(RoomMapper roomMapper,
+                           RoomRepository roomRepository,
+                           GeneralService generalService,
+                           ImageRepository roomImageRepository,
+                           ImageMapper roomImageMapper,
+                           SecurityUtils securityUtils,
+                           RoomPriceOptionRepository roomPriceOptionRepository) {
         this.roomMapper = roomMapper;
         this.roomRepository = roomRepository;
         this.generalService=generalService;
         this.roomImageRepository=roomImageRepository;
         this.roomImageMapper=roomImageMapper;
         this.securityUtils=securityUtils;
+        this.roomPriceOptionRepository=roomPriceOptionRepository;
     }
     @Override
     @Transactional
@@ -74,6 +83,7 @@ public class RoomServiceImpl implements RoomService {
             }
             roomImageRepository.saveAll(images);
             room.setImages(images);
+            roomPriceOptionRepository.saveAll(room.getRoomPriceOptions());
         }catch (Exception e){
             log.error("save room error : {}",e.getMessage());
             e.printStackTrace();
@@ -117,7 +127,7 @@ public class RoomServiceImpl implements RoomService {
                 existing.getImages().clear();
                 existing.getImages().addAll(images);
             }
-
+            roomMapper.updateRoomPriceOptions(request,existing,securityUtils.getCurrentUserId());
             roomRepository.save(existing);
 
         } catch (Exception e) {

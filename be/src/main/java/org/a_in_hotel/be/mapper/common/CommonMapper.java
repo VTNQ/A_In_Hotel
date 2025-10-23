@@ -1,9 +1,11 @@
 package org.a_in_hotel.be.mapper.common;
 
+import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.dto.response.ImageRoomResponse;
 import org.a_in_hotel.be.entity.*;
 import org.mapstruct.Named;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
@@ -93,5 +95,28 @@ public interface CommonMapper {
                 .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
                 .map(img -> new ImageRoomResponse(img.getUrl(), img.getAltText()))
                 .collect(Collectors.toList());
+    }
+    default BigDecimal getBigDecimalPrice(Room room, PriceType type, String field){
+        if(room.getRoomPriceOptions() == null) return null;
+        return room.getRoomPriceOptions().stream()
+                .filter(otp->otp.getPriceType() == type.getCode())
+                .findFirst()
+                .map(opt->switch (field){
+                    case "basePrice" -> opt.getBasePrice();
+                    case "additionalPrice" -> opt.getAdditionalPrice();
+                    default -> null;
+                })
+                .orElse(null);
+    }
+    default Integer getIntegerPrice(Room room,PriceType type,String field){
+        if(room.getRoomPriceOptions() == null) return null;
+        return room.getRoomPriceOptions().stream()
+                .filter(otp->otp.getPriceType() == type.getCode())
+                .findFirst()
+                .map(opt->switch (field){
+                    case "baseDurationHours" -> opt.getBaseDurationHours();
+                    default -> null;
+                })
+                .orElse(null);
     }
 }
