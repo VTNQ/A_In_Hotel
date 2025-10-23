@@ -16,7 +16,6 @@ import org.a_in_hotel.be.repository.BannerRepository;
 import org.a_in_hotel.be.service.BannerService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
-import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +39,6 @@ public class BannerServiceImpl implements BannerService {
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
-    private SecurityUtils securityUtils;
-    @Autowired
     private BannerMapper bannerMapper;
     private static final List<String> SEARCH_FIELDS = List.of("name");
 
@@ -60,7 +57,7 @@ public class BannerServiceImpl implements BannerService {
                 }
             }
             log.info("start to save banner : {}", bannerRequest);
-            Banner banner = bannerMapper.toEntity(bannerRequest,securityUtils.getCurrentUserId());
+            Banner banner = bannerMapper.toEntity(bannerRequest);
 
             banner.setImage(bannerImage);
             bannerRepository.save(banner);
@@ -76,7 +73,7 @@ public class BannerServiceImpl implements BannerService {
         try {
             log.info("start to update banner : {}", bannerRequest);
             Banner banner=bannerRepository.getReferenceById(id);
-            bannerMapper.updateEntityFromDto(bannerRequest,banner,securityUtils.getCurrentUserId());
+            bannerMapper.updateEntityFromDto(bannerRequest,banner);
             if(image != null && !image.isEmpty()) {
                 try {
                     FileUploadMeta fileUploadMeta=generalService.saveFile(image,"banner");
