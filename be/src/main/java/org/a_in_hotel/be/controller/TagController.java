@@ -39,20 +39,17 @@ public class TagController {
         return ResponseEntity.ok(tagService.get(id));
     }
 
-    // 👉 Lấy tag theo name
-    @GetMapping("/by-name/{name}")
-    public ResponseEntity<TagDTO> getByName(@PathVariable String name) {
-        return ResponseEntity.ok(tagService.getByName(name));
-    }
-
     // 👉 Search tag
     @GetMapping
     public ResponseEntity<Page<TagDTO>> search(
-            @RequestParam(required = false) String q,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,desc") String sort
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id,desc") String sort,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String searchField,
+            @RequestParam(required = false) String searchValue,
+            @RequestParam(required = false) boolean all
     ) {
-        return ResponseEntity.ok(tagService.search(q, page, size, sort));
+        return ResponseEntity.ok(tagService.search(page, size, sort, filter, searchField, searchValue, all));
     }
 }
