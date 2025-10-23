@@ -23,7 +23,7 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "asset_code", nullable = false, unique = true, length = 20)
-       private String assetCode;
+    private String assetCode;
 
     @Column(name = "asset_name", nullable = false, length = 255)
     private String assetName;
