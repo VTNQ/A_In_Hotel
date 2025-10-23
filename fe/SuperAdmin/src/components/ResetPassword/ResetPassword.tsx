@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import  {  useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { AlertModal, type AlertType } from "../AlertModal";
@@ -11,19 +11,7 @@ export default function ResetPassword() {
 
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalCfg, setModalCfg] = useState<{
-        type: AlertType;
-        title: string;
-        description?: string;
-    } | null>(null);
 
-  
-    const handleModalOpenChange = (open: boolean) => {
-        setModalOpen(open);
-        if (!open && modalCfg?.type === "success") {
-            navigate("/Home");
-        }
-    };
     return (
         // + thêm padding-top để chừa chỗ cho logo
         <div className="relative min-h-screen bg-white md:bg-[#EBEBEB] flex items-center justify-center overflow-hidden pt-48 md:pt-56">
@@ -142,19 +130,7 @@ export default function ResetPassword() {
                                 </div>
 
                             </form>
-                            <AlertModal
-                                open={modalOpen}
-                                onOpenChange={handleModalOpenChange}
-                                type={modalCfg?.type ?? "info"}
-                                title={modalCfg?.title ?? ""}
-                                description={modalCfg?.description}
-                                closable
-                                autoClose={modalCfg?.type === "success" ? 1600 : undefined}
-                                primaryAction={{
-                                    label: "OK",
-                                    autoFocus: true,
-                                }}
-                            />
+                           
                         </div>
                     </div>
                     <div className="block md:hidden absolute -top-40 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-full">
@@ -183,19 +159,6 @@ export default function ResetPassword() {
                                     </div>
                                 </form>
 
-                                <AlertModal
-                                    open={modalOpen}
-                                    onOpenChange={handleModalOpenChange}
-                                    type={modalCfg?.type ?? "info"}
-                                    title={modalCfg?.title ?? ""}
-                                    description={modalCfg?.description}
-                                    closable
-                                    autoClose={modalCfg?.type === "success" ? 1600 : undefined}
-                                    primaryAction={{
-                                        label: "OK",
-                                        autoFocus: true,
-                                    }}
-                                />
                             </div>
 
                         </div>
