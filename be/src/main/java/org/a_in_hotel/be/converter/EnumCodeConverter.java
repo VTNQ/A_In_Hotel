@@ -2,30 +2,33 @@ package org.a_in_hotel.be.converter;
 
 import jakarta.persistence.AttributeConverter;
 
-public class EnumCodeConverter <E extends Enum<E>> implements AttributeConverter<E, Integer> {
-    private final Class<E> enumClass;
-
-    public EnumCodeConverter(Class<E> enumClass) {
-        this.enumClass = enumClass;
-    }
+public interface EnumCodeConverter<E extends Enum<E>> extends AttributeConverter<E, Integer> {
 
     @Override
-    public Integer convertToDatabaseColumn(E attribute) {
+    default Integer convertToDatabaseColumn(E attribute) {
         if (attribute == null) return null;
         try {
             return (Integer) attribute.getClass().getMethod("getCode").invoke(attribute);
         } catch (Exception e) {
-            throw new IllegalStateException("Enum " + enumClass.getSimpleName() + " must have getCode() method", e);
+            throw new IllegalStateException(
+                    "Enum " + attribute.getClass().getSimpleName() + " must have getCode() method", e);
         }
     }
 
     @Override
-    public E convertToEntityAttribute(Integer dbData) {
+    default E convertToEntityAttribute(Integer dbData) {
         if (dbData == null) return null;
         try {
-            return (E) enumClass.getMethod("fromCode", int.class).invoke(null, dbData);
+            // lớp con phải override getEnumClass()
+            return (E) getEnumClass().getMethod("fromCode", int.class).invoke(null, dbData);
         } catch (Exception e) {
-            throw new IllegalStateException("Enum " + enumClass.getSimpleName() + " must have fromCode(int) method", e);
+            throw new IllegalStateException(
+                    "Enum " + getEnumClass().getSimpleName() + " must have fromCode(int) method", e);
         }
     }
+
+    /**
+     * Lớp triển khai cần trả về class của enum
+     */
+    Class<E> getEnumClass();
 }

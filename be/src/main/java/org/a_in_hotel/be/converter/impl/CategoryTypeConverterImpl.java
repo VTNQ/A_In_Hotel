@@ -5,8 +5,9 @@ import org.a_in_hotel.be.Enum.CategoryType;
 import org.a_in_hotel.be.converter.EnumCodeConverter;
 
 @Converter(autoApply = true)
-public class CategoryTypeConverterImpl extends EnumCodeConverter<CategoryType> {
-    public CategoryTypeConverterImpl() {
-        super(CategoryType.class);
+public class CategoryTypeConverterImpl implements EnumCodeConverter<CategoryType> {
+    @Override
+    public Class<CategoryType> getEnumClass() {
+        return CategoryType.class;
     }
 }
