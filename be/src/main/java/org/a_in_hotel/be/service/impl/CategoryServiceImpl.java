@@ -11,7 +11,6 @@ import org.a_in_hotel.be.mapper.CategoryMapper;
 import org.a_in_hotel.be.repository.CategoryRepository;
 import org.a_in_hotel.be.service.CategoryService;
 import org.a_in_hotel.be.util.SearchHelper;
-import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,10 +30,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repo;
     private final CategoryMapper mapper;
     private static final List<String> SEARCH_FIELDS = List.of("name");
-    private final SecurityUtils securityUtils;
     @Override
     public void create(CategoryDTO dto) {
-        Category entity = mapper.toEntity(dto,securityUtils.getCurrentUserId());
+        Category entity = mapper.toEntity(dto);
         repo.save(entity);
     }
 
@@ -42,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void update(Long id, CategoryDTO dto) {
         Category entity = repo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found: " + id));
-        mapper.updateEntityFromDTO(dto, entity,securityUtils.getCurrentUserId());
+        mapper.updateEntityFromDTO(dto, entity);
         repo.save(entity);
     }
 
@@ -69,6 +67,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Category getByName(String name) {
+        return repo.findByName(name)
+                .orElseThrow(() -> new NotFoundException("Category not found, name=" + name));
+    }
+
+    @Override
     public Page<Category> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
         try {
             log.info("start to get list categories");
@@ -83,5 +88,12 @@ public class CategoryServiceImpl implements CategoryService {
             log.error(e.getMessage());
             return null;
         }
+    }
+
+
+    private Sort parseSort(String sort, String fallback) {
+        String s = (sort == null || sort.isBlank()) ? fallback : sort;
+        String[] p = s.split(",");
+        return Sort.by(Sort.Direction.fromString(p.length > 1 ? p[1] : "asc"), p[0]);
     }
 }
