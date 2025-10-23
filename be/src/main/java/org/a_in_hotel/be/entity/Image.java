@@ -40,8 +40,5 @@ public class Image {
     @UpdateTimestamp
     @Column(nullable = false)
     private Instant updatedAt ;
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
-    @Column(name = "entity_id", nullable = false)
-    private Long entityId;
+
 }

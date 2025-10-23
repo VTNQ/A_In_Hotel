@@ -10,6 +10,7 @@ public interface CategoryService {
     void delete(Long id);            // hard delete
     void softDelete(Long id);        // nếu entity có cờ active
     Category get(Long id);
+    Category getByName(String name);
     Page<Category> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 }
 
