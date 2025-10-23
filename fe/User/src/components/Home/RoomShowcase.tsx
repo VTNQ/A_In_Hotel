@@ -8,31 +8,31 @@ export default function RoomShowcase() {
       id: 1,
       name: "ROYAL SUITE LUX SKY",
       location: "A IN RIVERSIDE",
-      address: "Số 9 Trần Hưng Đạo, Quận 1, TP.HCM",
+      address: "188 - 189 Bến Vân Đồn, P. Khánh Hội, TP.HCM ",
       oldPrice: "540.647 ₫",
-      price: "482.647 ₫/đêm",
+      price: "2.050.000 ₫/đêm",
       rating: 5.0,
       image: "/image/cab5707e-b985-445e-a7b1-6e7431a4b2a3.png",
     },
     {
       id: 2,
-      name: "ROYAL SUITE LUX SKY",
-      location: "A IN RIVERSIDE",
-      address: "Số 9 Trần Hưng Đạo, Quận 1, TP.HCM",
+      name: "VIP",
+      location: "A IN ATISTAR",
+      address: "30 Đường số 14, P. An Nhơn, TP.HCM ",
       oldPrice: "540.647 ₫",
-      price: "482.647 ₫/đêm",
+      price: " 1.100.000 ₫/đêm",
       rating: 5.0,
-      image: "/image/cab5707e-b985-445e-a7b1-6e7431a4b2a3.png",
+      image: "/image/z7147491494347_a3127731f513980714c416cbf4b49917.jpg",
     },
     {
       id: 3,
-      name: "ROYAL SUITE LUX SKY",
-      location: "A IN RIVERSIDE",
-      address: "Số 9 Trần Hưng Đạo, Quận 1, TP.HCM",
+      name: "Royal Suite",
+      location: "A IN GLAMOUR",
+      address: "63/1 - 63/3 Đường số 19, P. An Khánh, TP.HCM",
       oldPrice: "540.647 ₫",
-      price: "482.647 ₫/đêm",
+      price: "1.600.000 ₫/đêm",
       rating: 5.0,
-      image: "/image/cab5707e-b985-445e-a7b1-6e7431a4b2a3.png", // ảnh bạn thêm sau, để tượng trưng
+      image: "/image/z7147496142673_d0fa54bc2d9afa1d93bcb066edd6256c.jpg", // ảnh bạn thêm sau, để tượng trưng
     },
   ];
 
@@ -66,11 +66,11 @@ export default function RoomShowcase() {
               <p className="text-sm text-[#b38a58] font-medium">
                 {room.location}
               </p>
-
-              <div className="flex items-center gap-1 mt-2 text-gray-500 text-sm">
-                <MapPin className="w-4 h-4 text-[#b38a58]" />
-                <span>{room.address}</span>
+              <div className="flex items-center gap-1 mt-2 text-sm text-[#6b5f52]">
+                <MapPin className="w-4 h-4 text-[#b38a58] shrink-0" />
+                <span className="truncate">{room.address}</span>
               </div>
+
 
               <div className="mt-4">
                 <p className="text-sm text-gray-400 line-through">
