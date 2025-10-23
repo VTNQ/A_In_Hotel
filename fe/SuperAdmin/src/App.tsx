@@ -11,14 +11,18 @@ import CreateAdminPage from './page/Admin/CreateAdminPage'
 import ListAdminPage from './page/Admin/ListAdminPage'
 import ListSuperAdminPage from './page/ChildSuperAdmin/ListChildSuperAdminPage'
 import CreateChildSuperAdminPage from './page/ChildSuperAdmin/CreateChildSuperAdminPage'
-import ResetPasswordPage from './page/ResetPasswordPage'
+
+
+
+
+
+
 function App() {
 
   return (
     <>
       <Routes>
         <Route path='/' element={<LoginPage />} />
-        <Route path='/reset' element={<ResetPasswordPage/>}/>
         <Route path='Home' element={<AdminLayout />}>
 
           <Route index element={<HomePage />} />

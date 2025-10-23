@@ -3,6 +3,7 @@ package org.a_in_hotel.be.controller;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.RequestResponse;
+import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.service.CategoryService;
 import org.springframework.data.domain.Page;
@@ -58,6 +59,11 @@ public class CategoryController {
         return ResponseEntity.ok(RequestResponse.success(categoryService.get(id)));
     }
 
+    // 👉 Lấy category theo name
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<RequestResponse<Category>> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(RequestResponse.success(categoryService.getByName(name)));
+    }
 
     // 👉 Search categories
     @GetMapping
