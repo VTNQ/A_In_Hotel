@@ -1,7 +1,4 @@
 import  {  useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-import { AlertModal, type AlertType } from "../AlertModal";
 import SideSlats from "../Login/SideSlats";
 import Clock from "../Login/Clock";
 
@@ -9,8 +6,6 @@ import Clock from "../Login/Clock";
 export default function ResetPassword() {
     const [email, setEmail] = useState("");
 
-    const navigate = useNavigate();
-    const [modalOpen, setModalOpen] = useState(false);
 
     return (
         // + thêm padding-top để chừa chỗ cho logo
