@@ -46,7 +46,7 @@ public interface RoomMapper extends CommonMapper {
         if(request.getHourlyBasePrice() !=null){
             RoomPriceOption hourlyOption = new RoomPriceOption();
             hourlyOption.setRoom(room);
-            hourlyOption.setPriceType(PriceType.HOURLY.getCode());
+            hourlyOption.setPriceType(PriceType.HOURLY);
             hourlyOption.setBasePrice(request.getHourlyBasePrice());
             hourlyOption.setBaseDurationHours(request.getHourlyBaseDuration());
             hourlyOption.setAdditionalPrice(request.getHourlyAdditionalPrice());
@@ -57,7 +57,7 @@ public interface RoomMapper extends CommonMapper {
         if(request.getOvernightPrice() != null){
             RoomPriceOption overnightOption=new RoomPriceOption();
             overnightOption.setRoom(room);
-            overnightOption.setPriceType(PriceType.OVERNIGHT.getCode());
+            overnightOption.setPriceType(PriceType.OVERNIGHT);
             overnightOption.setBasePrice(request.getOvernightPrice());
             overnightOption.setCreatedBy(String.valueOf(userId));
             overnightOption.setUpdatedBy(String.valueOf(userId));
@@ -72,11 +72,11 @@ public interface RoomMapper extends CommonMapper {
         List<RoomPriceOption>existingOptions = room.getRoomPriceOptions();
         List<RoomPriceOption>updatedList = new ArrayList<>();
         if (request.getHourlyBasePrice() != null) {
-            RoomPriceOption hourly = findOptionByType(existingOptions, PriceType.HOURLY.getCode());
+            RoomPriceOption hourly = findOptionByType(existingOptions, PriceType.HOURLY);
             if (hourly == null) {
                 hourly = new RoomPriceOption();
                 hourly.setRoom(room);
-                hourly.setPriceType(PriceType.HOURLY.getCode());
+                hourly.setPriceType(PriceType.HOURLY);
                 hourly.setCreatedBy(String.valueOf(userId));
             }
             hourly.setBasePrice(request.getHourlyBasePrice());
@@ -86,25 +86,25 @@ public interface RoomMapper extends CommonMapper {
             updatedList.add(hourly);
         }
         if (request.getOvernightPrice() != null) {
-            RoomPriceOption overnight = findOptionByType(existingOptions, PriceType.OVERNIGHT.getCode());
+            RoomPriceOption overnight = findOptionByType(existingOptions, PriceType.OVERNIGHT);
             if (overnight == null) {
                 overnight = new RoomPriceOption();
                 overnight.setRoom(room);
-                overnight.setPriceType(PriceType.OVERNIGHT.getCode());
+                overnight.setPriceType(PriceType.OVERNIGHT);
                 overnight.setCreatedBy(String.valueOf(userId));
             }
             overnight.setBasePrice(request.getOvernightPrice());
             overnight.setUpdatedBy(String.valueOf(userId));
             updatedList.add(overnight);
         }
-        List<Integer>requestedTypes = updatedList.stream()
+        List<PriceType>requestedTypes = updatedList.stream()
                 .map(RoomPriceOption::getPriceType)
                 .toList();
         existingOptions.removeIf(option -> !requestedTypes.contains(option.getPriceType()));
         room.getRoomPriceOptions().clear();
         room.getRoomPriceOptions().addAll(updatedList);
     }
-    default RoomPriceOption findOptionByType(List<RoomPriceOption> options, int typeCode) {
+    default RoomPriceOption findOptionByType(List<RoomPriceOption> options, PriceType typeCode) {
         if (options == null) return null;
         for (RoomPriceOption option : options) {
             if (option.getPriceType() == typeCode) {

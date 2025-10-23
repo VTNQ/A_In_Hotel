@@ -99,7 +99,7 @@ public interface CommonMapper {
     default BigDecimal getBigDecimalPrice(Room room, PriceType type, String field){
         if(room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type.getCode())
+                .filter(otp->otp.getPriceType() == type)
                 .findFirst()
                 .map(opt->switch (field){
                     case "basePrice" -> opt.getBasePrice();
@@ -111,7 +111,7 @@ public interface CommonMapper {
     default Integer getIntegerPrice(Room room,PriceType type,String field){
         if(room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type.getCode())
+                .filter(otp->otp.getPriceType() == type)
                 .findFirst()
                 .map(opt->switch (field){
                     case "baseDurationHours" -> opt.getBaseDurationHours();

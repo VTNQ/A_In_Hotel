@@ -8,25 +8,22 @@ public enum CategoryType {
     SERVICE(2),
     ASSET(3);
 
-    private final int value;
+    private final int code;
 
-    CategoryType(int value) {
-        this.value = value;
+    CategoryType(int code) {
+        this.code = code;
     }
 
     @JsonValue
-    public int toValue() {
-        return value;
+    public int getCode() {
+        return code;
     }
 
     @JsonCreator
-    public static CategoryType fromValue(Integer value) {
-        if (value == null) return null;
+    public static CategoryType fromCode(int code) {
         for (CategoryType type : CategoryType.values()) {
-            if (type.value == value) {
-                return type;
-            }
+            if (type.code == code) return type;
         }
-        throw new IllegalArgumentException("Unknown CategoryType value: " + value);
+        throw new IllegalArgumentException("Invalid CategoryType code: " + code);
     }
 }
