@@ -9,8 +9,11 @@ import org.springframework.data.domain.Page;
 
 public interface HotelService {
     void save(HotelRequest branch);
+
     void update(HotelUpdate branch, Long id);
+
     void updateStatus(HotelStatus branchStatus, Long id);
-    Page<HotelResponse>getAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
+
+    Page<HotelResponse> getAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 
 }

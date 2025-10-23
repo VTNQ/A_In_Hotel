@@ -1,0 +1,19 @@
+# Ignore log files
+logs/
+*.log
+
+# IntelliJ IDEA
+.idea/
+
+# Node (nếu có FE)
+node_modules/
+
+# Maven/Gradle build output
+target/
+build/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+# Ignore application log
+logs/app.log
