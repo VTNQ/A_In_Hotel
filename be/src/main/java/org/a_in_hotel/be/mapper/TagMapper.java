@@ -2,16 +2,15 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.dto.request.TagDTO;
 import org.a_in_hotel.be.entity.Tag;
-import org.mapstruct.*;
-
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface TagMapper {
     TagDTO toDTO(Tag entity);
-    @Mapping(target = "createdBy", source = "userId")
-    @Mapping(target = "updatedBy", source = "userId")
-    Tag toEntity(TagDTO dto,Long userId);
+    Tag toEntity(TagDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "updatedBy", source = "userId")
-    void updateEntityFromDTO(TagDTO dto, @MappingTarget Tag entity,Long userId);
+    void updateEntityFromDTO(TagDTO dto, @MappingTarget Tag entity);
 }

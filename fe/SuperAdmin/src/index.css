@@ -117,26 +117,3 @@
     @apply bg-background text-foreground;
   }
 }
-@layer utilities {
-  /* Border gradient xanh nhạt */
-  .border-gradient-blue {
-    border-width: 1.5px;
-    border-style: solid;
-    border-image-source: linear-gradient(108.52deg, #B2DCFE 0.55%, #154686 98.39%);
-    border-image-slice: 1;
-    border-radius: 20px;
-    background-clip: padding-box;
-    
-  
-  }
-
-  /* Border gradient xanh đậm */
-  .border-gradient-dark {
-    border-width: 1.5px;
-    border-style: solid;
-    border-color: transparent;
-    border-image: linear-gradient(135deg, #569AF3, #1D4FBC) 1;
-    border-radius: 0.75rem;
-    background-clip: padding-box;
-  }
-}

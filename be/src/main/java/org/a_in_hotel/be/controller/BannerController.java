@@ -52,7 +52,7 @@ public class BannerController {
         }
     }
 
-    @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping("/update/{id}")
     public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult, @RequestParam(value = "image", required = false) MultipartFile image) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()

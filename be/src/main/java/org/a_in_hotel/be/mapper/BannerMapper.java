@@ -2,7 +2,6 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.dto.request.BannerRequest;
 import org.a_in_hotel.be.entity.Banner;
-import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
 
 import java.time.Instant;
@@ -13,17 +12,10 @@ import java.util.UUID;
         imports = {Instant.class, UUID.class},
         builder = @Builder(disableBuilder = true)
 )
-public interface BannerMapper extends CommonMapper {
+public interface BannerMapper {
     @Mapping(target = "id",ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "createdBy", source = "userId")
-    @Mapping(target = "updatedBy", source = "userId")
-    Banner toEntity(BannerRequest bannerRequest,Long userId);
+    Banner toEntity(BannerRequest bannerRequest);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id",ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "updatedBy", source = "userId")
-    void updateEntityFromDto(BannerRequest bannerRequest, @MappingTarget Banner banner,Long userId);
+    void updateEntityFromDto(BannerRequest bannerRequest, @MappingTarget Banner banner);
 }
