@@ -13,6 +13,7 @@ public class RoomResponse {
     private Long id;
     private String roomNumber;
     private String roomName;
+    private String assetName;
     private String roomCode;
     private String roomTypeName;
     private String status;

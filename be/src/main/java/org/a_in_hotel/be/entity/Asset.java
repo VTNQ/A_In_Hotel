@@ -32,8 +32,8 @@ public class Asset {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
 

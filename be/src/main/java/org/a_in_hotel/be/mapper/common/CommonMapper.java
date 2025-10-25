@@ -39,6 +39,13 @@ public interface CommonMapper {
         role.setId(idRole);
         return role;
     }
+    @Named("mapAssetFromId")
+    default Asset mapAssetFromId(Long idAsset) {
+        if (idAsset == null) return null;
+        Asset asset = new Asset();
+        asset.setId(idAsset);
+        return asset;
+    }
 
     @Named("instantToLong")
     static Long instantToLong(Instant instant) {
@@ -65,10 +72,10 @@ public interface CommonMapper {
         return c;
     }
 
-    @Named("mapRoom")
-    default Room mapRoom(Long id) {
+    @Named("mapHotel")
+    default Hotel mapHotel(Long id) {
         if (id == null) return null;
-        Room r = new Room();
+        Hotel r = new Hotel();
         r.setId(id);
         return r;
     }
