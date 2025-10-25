@@ -21,6 +21,7 @@ public interface RoomMapper extends CommonMapper {
     // ========== CREATE ==========
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roomType", source = "request.idRoomType", qualifiedByName = "mapRoomTypeFromId")
+    @Mapping(target = "asset",source = "request.idAsset", qualifiedByName = "mapAssetFromId")
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "roomPriceOptions", expression = "java(mapPriceOptions(request,room,userId))")
@@ -30,10 +31,12 @@ public interface RoomMapper extends CommonMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roomType", source = "request.idRoomType", qualifiedByName = "mapRoomTypeFromId")
+    @Mapping(target = "asset",source = "request.idAsset", qualifiedByName = "mapAssetFromId")
     @Mapping(target = "updatedBy", source = "userId")
     void updateEntity(RoomRequest request, @MappingTarget Room entity, Long userId);
     // ========== RESPONSE ==========
     @Mapping(target = "roomTypeName", source = "roomType.name")
+    @Mapping(target = "assetName", source = "asset.assetName")
     @Mapping(target = "status", expression = "java(room.getStatus().name())")
     @Mapping(target = "images", expression = "java(mapImages(room.getImages()))")
     @Mapping(target = "hourlyBasePrice", expression = "java(getBigDecimalPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"basePrice\"))")

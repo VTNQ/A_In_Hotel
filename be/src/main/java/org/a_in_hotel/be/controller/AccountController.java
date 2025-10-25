@@ -12,8 +12,10 @@ import org.a_in_hotel.be.dto.response.AccountResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.dto.response.TokenResponse;
 import org.a_in_hotel.be.entity.Account;
+import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.service.AccountService;
+import org.a_in_hotel.be.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +41,8 @@ public class AccountController {
     private AccountService accountService;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private HotelService hotelService;
     @Autowired
     private JwtService jwtService;
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -120,7 +124,8 @@ public class AccountController {
             String email= jwtService.extractEmail(refreshToken);
             Long userId= jwtService.extractUserId(refreshToken);
             String role= jwtService.extractRole(refreshToken);
-            String newAccessToken= jwtService.generateAccessToken(email,userId,role);
+            Long hotelId=jwtService.extractHotelId(refreshToken);
+            String newAccessToken= jwtService.generateAccessToken(email,userId,role,hotelId==null?null:hotelId);
             long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
 
             Map<String,Object>response=new HashMap<>();
@@ -143,8 +148,9 @@ public class AccountController {
             );
             if (authentication.isAuthenticated()) {
                 Account account = (Account) authentication.getPrincipal();
-                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId(),account.getRole().getName());
-                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId(),account.getRole().getName());
+                Hotel hotel = hotelService.getHotelByAccountId(account.getId());
+                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId(),account.getRole().getName(),hotel==null?null:hotel.getId());
+                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId(),account.getRole().getName(),hotel==null?null:hotel.getId());
                 long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
                 long refreshTokenExpiryAt=jwtService.getRefreshTokenExpiryAt();
                 String role=jwtService.extractRole(accessToken);
