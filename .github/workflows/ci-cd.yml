@@ -91,6 +91,12 @@ jobs:
           npm install
           npm run build
 
+      - name: ⚛️ Build frontend Admin
+        run: |
+          cd fe/Admin
+          npm install
+          npm run build
+
   docker:
     runs-on: ubuntu-latest
     needs: build
@@ -122,6 +128,12 @@ jobs:
           docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest .
           docker push ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
 
+      - name: 🐳 Build & Push Frontend Admin
+        run: |
+          cd fe/Admin
+          docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-fe-admin:latest .
+          docker push ${{ env.DOCKER_USERNAME }}/ainhotel-fe-admin:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: docker
@@ -142,6 +154,7 @@ jobs:
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
+            docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-admin:latest
 
             echo "=== 🧱 Rebuilding docker-compose ==="
             docker-compose down
