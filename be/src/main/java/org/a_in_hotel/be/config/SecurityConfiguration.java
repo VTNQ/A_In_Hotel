@@ -37,14 +37,19 @@ public class SecurityConfiguration {
     private final JwtFilter jwtFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-    public SecurityConfiguration(@Lazy JwtService jwtService, @Lazy AccountService accountService, @Lazy JwtFilter jwtFilter, @Lazy OAuth2SuccessHandler oAuth2SuccessHandler, @Lazy OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService) {
+    public SecurityConfiguration(
+            @Lazy JwtService jwtService,
+            @Lazy AccountService accountService,
+            @Lazy JwtFilter jwtFilter,
+            @Lazy OAuth2SuccessHandler oAuth2SuccessHandler,
+            @Lazy OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService
+    ) {
         this.jwtService = jwtService;
         this.accountService = accountService;
         this.jwtFilter = jwtFilter;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.oAuth2UserService = oauth2UserService;
     }
-
     @Bean
     public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
         return new JwtAuthenticationEntryPoint();
@@ -54,24 +59,42 @@ public class SecurityConfiguration {
     public JwtAccessDeniedHandler jwtAccessDeniedHandler() {
         return new JwtAccessDeniedHandler();
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(csrf -> csrf.disable()).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> auth
+        http
+                .cors(cors->cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
                         // các endpoint public
-                        .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll().requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
+                        .requestMatchers(HttpMethod.POST, APIURL.URL_ANONYMOUS_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_ANONYMOUS_GET).permitAll()
 
                         // chỉ SUPERADMIN mới được phép gọi
-                        .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN").requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN").requestMatchers(HttpMethod.POST, APIURL.URL_ADMIN_POST).hasRole("ADMIN").requestMatchers(HttpMethod.PUT, APIURL.URL_ADMIN_PUT).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, APIURL.URL_SUPERADMIN_GET).hasRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.POST, APIURL.URL_SUPERADMIN_POST).hasRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.POST,APIURL.URL_ADMIN_POST).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,APIURL.URL_ADMIN_PUT).hasRole("ADMIN")
                         // OAuth2 login chỉ cho đường dẫn oauth2/**
                         .requestMatchers("/oauth2/**").permitAll()
 
                         // tất cả các request khác cần xác thực
-                        .anyRequest().permitAll()).exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint()).accessDeniedHandler(jwtAccessDeniedHandler()))
+                        .anyRequest().permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(jwtAccessDeniedHandler())
+                )
                 // OAuth2 config
-                .oauth2Login(oauth -> oauth.loginPage("/oauth2/authorization/google").userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService)).successHandler(oAuth2SuccessHandler)).authenticationProvider(authenticationProvider())
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/oauth2/authorization/google")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
+                .authenticationProvider(authenticationProvider())
                 // đặt JWT filter trước OAuth2LoginAuthenticationFilter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).addFilterBefore(jwtFilter, OAuth2AuthorizationRequestRedirectFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, OAuth2AuthorizationRequestRedirectFilter.class);
 
         return http.build();
     }
@@ -79,7 +102,12 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://superadmin.ainhotelvn.com", "https://admin.ainhotelvn.com", "http://localhost:5173", "http://localhost:5175"));
+        config.setAllowedOrigins(List.of(
+                "https://superadmin.ainhotelvn.com",
+                "https://admin.ainhotelvn.com",
+                "http://localhost:5173",
+                "http://localhost:5175"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
