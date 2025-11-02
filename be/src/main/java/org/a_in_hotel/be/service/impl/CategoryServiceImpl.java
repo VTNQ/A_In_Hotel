@@ -2,14 +2,20 @@ package org.a_in_hotel.be.service.impl;
 
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
+import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
+import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
+import org.a_in_hotel.be.repository.ExtraServiceRepository;
+import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.service.CategoryService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -18,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +38,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repo;
     private final CategoryMapper mapper;
-    private static final List<String> SEARCH_FIELDS = List.of("name");
+    private static final List<String> SEARCH_FIELDS = List.of("code","name");
     private final SecurityUtils securityUtils;
+    private final RoomRepository roomRepository;
+    private final ExtraServiceRepository extraServiceRepository;
+    private final AssetRepository assetRepository;
     @Override
     public void create(CategoryDTO dto) {
         Category entity = mapper.toEntity(dto,securityUtils.getCurrentUserId());
@@ -70,6 +80,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void updateStatus(Long id, boolean status) {
+        try {
+            log.info("start update category status");
+            Category category = repo.getReferenceById(id);
+            category.setIsActive(status);
+            category.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+            repo.save(category);
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ category with id {} not found: {}", id, e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy category có ID: " + id);
+        }
+    }
+
+    @Override
     public Page<CategoryResponse> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
         try {
             log.info("start to get list categories");
@@ -77,9 +101,17 @@ public class CategoryServiceImpl implements CategoryService {
             Specification<Category>filterable= RSQLJPASupport.toSpecification(filter);
             Specification<Category>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
             Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-            return repo
-                    .findAll(sortable.and(filterable).and(searchable),pageable)
-                    .map(mapper::toDTO);
+            Page<Category> result = repo.findAll(sortable.and(filterable).and(searchable), pageable);
+            result.forEach(category -> {
+                Long capacity = switch (category.getType()) {
+                    case 1 -> roomRepository.countByRoomTypeId(category.getId());
+                    case 2 -> extraServiceRepository.countByCategoryId(category.getId());
+                    case 3 -> assetRepository.countByCategoryId(category.getId());
+                    default -> 0L;
+                };
+                category.setCapacity(capacity);
+            });
+            return result.map(mapper::toDTO);
         }catch (Exception e){
             e.printStackTrace();
             log.error(e.getMessage());

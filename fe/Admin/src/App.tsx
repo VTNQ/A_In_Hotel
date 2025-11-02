@@ -3,6 +3,7 @@ import HomePage from './page/HomePage'
 import ViewExtraServicePage from './page/ExtraService/ViewExtraServicePage'
 import MainLayout from './components/Layout'
 import LoginPage from './page/LoginPage'
+import ViewCategoryPage from './page/Category/ViewCategoryPage'
 
 function App() {
   return(
@@ -12,6 +13,7 @@ function App() {
         <Route path='/Dashboard' element={<MainLayout />}>
           <Route index element={<HomePage />} />
           <Route path="facility/services" element={<ViewExtraServicePage/>} />
+          <Route path='facility/categories' element={<ViewCategoryPage/>}/>
         </Route>
       </Routes>
     </>
