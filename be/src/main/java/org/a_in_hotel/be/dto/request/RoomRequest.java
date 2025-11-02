@@ -11,6 +11,7 @@ public class RoomRequest {
     private String roomName;
     private Integer idRoomType;
     private RoomStatus status;
+    private Long idAsset;
     private BigDecimal defaultRate;
     private Integer floor;
     private Double area;

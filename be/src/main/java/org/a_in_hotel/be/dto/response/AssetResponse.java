@@ -20,8 +20,8 @@ public class AssetResponse {
     private Long categoryId;
     private String categoryName;
 
-    private Long roomId;
-    private String roomName;
+    private Long hotelId;
+    private String hotelName;
 
     private BigDecimal price;
     private Integer quantity;
