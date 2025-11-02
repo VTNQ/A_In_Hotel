@@ -21,7 +21,7 @@ public class AssetCreateRequest {
     @NotNull
     private Long categoryId;
 
-    private Long hotelId; // optional
+    private Long roomId; // optional
 
     @NotNull @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal price;

@@ -6,10 +6,13 @@ import org.a_in_hotel.be.Enum.AssetStatus;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.entity.Asset;
+import org.a_in_hotel.be.entity.Category;
+import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.mapper.AssetMapper;
 import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
-import org.a_in_hotel.be.repository.HotelRepository;
+import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.*;
@@ -33,7 +36,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
     private final AssetRepository assetRepository;
     private final CategoryRepository categoryRepository;
-    private final HotelRepository hotelRepository;
+    private final RoomRepository roomRepository;
     private final AssetMapper assetMapper;
     private final SecurityUtils securityUtils;
     private static final List<String> SEARCH_FIELDS =  List.of("asset_name", "asset_code");
@@ -70,8 +73,8 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
         categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        if (req.getHotelId() != null) {
-            hotelRepository.findById(req.getHotelId())
+        if (req.getRoomId() != null) {
+            roomRepository.findById(req.getRoomId())
                     .orElseThrow(() -> new IllegalArgumentException("Room not found"));
         }
 

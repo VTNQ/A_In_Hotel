@@ -16,9 +16,7 @@ public class ExtraServiceResponse {
     private String serviceCode;
     private String serviceName;
     private String description;
-    private String note;
     private String categoryName;
-    private Integer categoryId;
     private BigDecimal price;
     private String currency;
     private UnitExtraService unit;

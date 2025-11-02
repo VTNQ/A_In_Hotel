@@ -5,7 +5,6 @@ import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
-import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
@@ -70,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<CategoryResponse> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+    public Page<Category> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
         try {
             log.info("start to get list categories");
             Specification<Category>sortable= RSQLJPASupport.toSort(sort);
@@ -78,8 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
             Specification<Category>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
             Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
             return repo
-                    .findAll(sortable.and(filterable).and(searchable),pageable)
-                    .map(mapper::toDTO);
+                    .findAll(sortable.and(filterable).and(searchable),pageable);
         }catch (Exception e){
             e.printStackTrace();
             log.error(e.getMessage());

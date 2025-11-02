@@ -2,7 +2,6 @@ package org.a_in_hotel.be.service;
 
 
 import org.a_in_hotel.be.dto.request.CategoryDTO;
-import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.springframework.data.domain.Page;
 public interface CategoryService {
@@ -11,7 +10,7 @@ public interface CategoryService {
     void delete(Long id);            // hard delete
     void softDelete(Long id);        // nếu entity có cờ active
     Category get(Long id);
-    Page<CategoryResponse> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
+    Page<Category> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 }
 
 

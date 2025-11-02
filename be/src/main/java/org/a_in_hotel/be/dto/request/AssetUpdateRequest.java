@@ -18,7 +18,7 @@ public class AssetUpdateRequest {
     @NotNull
     private Long categoryId;
 
-    private Long hotelId;
+    private Long roomId;
 
     @NotNull @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal price;

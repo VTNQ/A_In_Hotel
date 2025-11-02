@@ -1,7 +1,5 @@
 package org.a_in_hotel.be.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -15,12 +13,6 @@ public enum PriceType {
         this.code = code;
     }
 
-    @JsonValue
-    public int getCode() {
-        return code;
-    }
-
-    @JsonCreator
     public static PriceType fromCode(int code) {
         for (PriceType type : PriceType.values()) {
             if (type.code == code) return type;
