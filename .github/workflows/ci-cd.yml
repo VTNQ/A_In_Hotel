@@ -1,0 +1,150 @@
+name: CI/CD for A_In_Hotel
+
+on:
+  push:
+    branches: [ "deploy_web" ]
+
+env:
+  DOCKER_USERNAME: tranp6648
+  DOCKER_PASSWORD: Anhthang61
+  SERVER_HOST: 202.92.6.60
+  SERVER_USER: tranp6648
+  SERVER_PORT: 24700
+  SERVER_SSH_KEY: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    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
+    -----END OPENSSH PRIVATE KEY-----
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout source
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🧱 Build backend
+        run: |
+          cd be
+          mvn clean package -DskipTests
+
+      - name: ⚛️ Build frontend SuperAdmin
+        run: |
+          cd fe/SuperAdmin
+          npm install
+          npm run build
+
+      - name: ⚛️ Build frontend User
+        run: |
+          cd fe/User
+          npm install
+          npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: 📥 Checkout source
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: 🐳 Build & Push Backend
+        run: |
+          cd be
+          docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest .
+          docker push ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
+
+      - name: 🐳 Build & Push Frontend SuperAdmin
+        run: |
+          cd fe/SuperAdmin
+          docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest .
+          docker push ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
+
+      - name: 🐳 Build & Push Frontend User
+        run: |
+          cd fe/User
+          docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest .
+          docker push ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/deploy_web'
+    steps:
+      - name: 🚀 Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          port: ${{ env.SERVER_PORT }}
+          script: |
+            echo "=== 🧹 Cleaning old containers ==="
+            cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
+
+            echo "=== 📦 Pulling latest Docker images ==="
+            docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
+            docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
+            docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
+
+            echo "=== 🧱 Rebuilding docker-compose ==="
+            docker-compose down
+            docker-compose up -d --build
+
+            echo "=== ✅ Deployment finished successfully ==="
