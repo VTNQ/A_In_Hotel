@@ -2,10 +2,10 @@ import { BedDouble, Building2, FileText, Globe, HelpCircle, LayoutDashboard, Log
 
 export const SECTIONS = [
     {
-        title:null,
-        items:[
-            {label:'Dashboard', icon: LayoutDashboard},
-            {label:'Booking Management',icon:BedDouble},
+        title: null,
+        items: [
+            { label: "Dashboard", icon: LayoutDashboard, path: "/Dashboard" },
+            { label: 'Booking Management', icon: BedDouble },
             {
                 label: "Facility Management",
                 icon: Building2,
@@ -15,16 +15,16 @@ export const SECTIONS = [
                   { label: "Extra Services", path: "/Dashboard/facility/services" },
                   { label: "Category Management",path:"/Dashboard/facility/categories" },
                 ],
-              },
-            {label:'User Management',icon:Users},
-            {label:'Staff Management',icon:UserCog},
-            {label:'Website Post',icon:Globe},
+            },
+            { label: 'User Management', icon: Users },
+            { label: 'Staff Management', icon: UserCog },
+            { label: 'Website Post', icon: Globe },
             { label: "Reportings", icon: FileText },
         ],
     },
     {
-        title:null,
-        items:[
+        title: null,
+        items: [
             { label: "Help & support", icon: HelpCircle },
             { label: "Setting", icon: Settings },
             { label: "log out", icon: LogOut },
