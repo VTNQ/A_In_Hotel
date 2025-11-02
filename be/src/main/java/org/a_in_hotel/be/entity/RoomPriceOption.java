@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.a_in_hotel.be.Enum.PriceType;
-import org.a_in_hotel.be.converter.impl.PriceTypeConverterImpl;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,8 +24,7 @@ public class RoomPriceOption {
     @JoinColumn(name = "room_id",nullable = false)
     private Room room;
     @Column(name = "price_Type",nullable = false)
-    @Convert(converter = PriceTypeConverterImpl.class)
-    private PriceType priceType;
+    private Integer priceType;
     @Column(name = "base_price",nullable = false)
     private BigDecimal basePrice;
     @Column(name = "additional_price")

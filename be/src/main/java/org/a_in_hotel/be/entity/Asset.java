@@ -23,7 +23,7 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "asset_code", nullable = false, unique = true, length = 20)
-    private String assetCode;
+       private String assetCode;
 
     @Column(name = "asset_name", nullable = false, length = 255)
     private String assetName;
@@ -32,8 +32,8 @@ public class Asset {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id")
-    private Hotel hotel;
+    @JoinColumn(name = "room_id")
+    private Room room;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
 

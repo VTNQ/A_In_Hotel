@@ -140,11 +140,6 @@ public class HotelServiceImpl implements HotelService {
         }
     }
 
-    @Override
-    public Hotel getHotelByAccountId(Long accountId) {
-        return hotelRepository.findByAccount_Id(accountId).orElse(null);
-    }
-
     /**
      * Map constraint name từ DB sang field tiếng Việt
      */

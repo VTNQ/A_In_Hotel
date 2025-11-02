@@ -24,19 +24,18 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String email, Long userId,String role,Long hotelId) {
-        return buildToken(email, userId,role, accessExpiration,hotelId);
+    public String generateAccessToken(String email, Long userId,String role) {
+        return buildToken(email, userId,role, accessExpiration);
     }
 
-    public String generateRefreshToken(String email, Long userId,String role,Long hotelId) {
-        return buildToken(email, userId,role, refreshExpiration,hotelId);
+    public String generateRefreshToken(String email, Long userId,String role) {
+        return buildToken(email, userId,role, refreshExpiration);
     }
-    private String buildToken(String email, Long userId,String role, Long expiration,Long hotelId) {
+    private String buildToken(String email, Long userId,String role, Long expiration) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("id", userId)
                 .claim("role", role)
-                .claim("hotelId", hotelId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -51,9 +50,6 @@ public class JwtService {
     }
     public String extractRole(String token) {
         return extractClaims(token).get("role", String.class);
-    }
-    public Long extractHotelId(String token) {
-        return extractClaims(token).get("hotelId", Long.class);
     }
     public Date extractExpiration(String token) {
         return extractClaims(token).getExpiration();

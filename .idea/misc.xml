@@ -15,11 +15,10 @@
         <option value="$PROJECT_DIR$/be/banner-service/pom.xml" />
         <option value="$PROJECT_DIR$/be/system-config-service/pom.xml" />
         <option value="$PROJECT_DIR$/be/common-security/pom.xml" />
-        <option value="$PROJECT_DIR$/be/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="ms-21" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="23" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

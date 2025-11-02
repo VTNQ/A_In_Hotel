@@ -14,21 +14,21 @@ public interface AssetMapper  extends CommonMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
-    @Mapping(target = "hotel", source = "hotelId", qualifiedByName = "mapHotel")
+    @Mapping(target = "room", source = "roomId", qualifiedByName = "mapRoom")
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     Asset toEntity(AssetCreateRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
-    @Mapping(target = "hotel", source = "hotelId", qualifiedByName = "mapHotel")
+    @Mapping(target = "room", source = "roomId", qualifiedByName = "mapRoom")
     @Mapping(target = "updatedBy", ignore = true)
     void updateEntity(@MappingTarget Asset asset, AssetUpdateRequest dto);
 
     @Mapping(target = "categoryId",   source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
-    @Mapping(target = "hotelId", source = "hotel.id")
-    @Mapping(target = "hotelName",source = "hotel.name")
+    @Mapping(target = "roomId", source = "room.id")
+    @Mapping(target = "roomName",     source = "room.roomNumber")
     AssetResponse toResponse(Asset entity);
 
 }

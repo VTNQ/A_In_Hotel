@@ -39,13 +39,6 @@ public interface CommonMapper {
         role.setId(idRole);
         return role;
     }
-    @Named("mapAssetFromId")
-    default Asset mapAssetFromId(Long idAsset) {
-        if (idAsset == null) return null;
-        Asset asset = new Asset();
-        asset.setId(idAsset);
-        return asset;
-    }
 
     @Named("instantToLong")
     static Long instantToLong(Instant instant) {
@@ -72,10 +65,10 @@ public interface CommonMapper {
         return c;
     }
 
-    @Named("mapHotel")
-    default Hotel mapHotel(Long id) {
+    @Named("mapRoom")
+    default Room mapRoom(Long id) {
         if (id == null) return null;
-        Hotel r = new Hotel();
+        Room r = new Room();
         r.setId(id);
         return r;
     }
@@ -106,7 +99,7 @@ public interface CommonMapper {
     default BigDecimal getBigDecimalPrice(Room room, PriceType type, String field){
         if(room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type)
+                .filter(otp->otp.getPriceType() == type.getCode())
                 .findFirst()
                 .map(opt->switch (field){
                     case "basePrice" -> opt.getBasePrice();
@@ -118,7 +111,7 @@ public interface CommonMapper {
     default Integer getIntegerPrice(Room room,PriceType type,String field){
         if(room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type)
+                .filter(otp->otp.getPriceType() == type.getCode())
                 .findFirst()
                 .map(opt->switch (field){
                     case "baseDurationHours" -> opt.getBaseDurationHours();
