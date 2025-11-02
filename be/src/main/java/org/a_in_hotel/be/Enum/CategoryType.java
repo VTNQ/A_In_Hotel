@@ -14,15 +14,9 @@ public enum CategoryType {
         this.code = code;
     }
 
-    @JsonValue
-    public int getCode() {
-        return code;
-    }
-
-    @JsonCreator
     public static CategoryType fromCode(int code) {
-        for (CategoryType type : CategoryType.values()) {
-            if (type.code == code) return type;
+        for (CategoryType t : values()) {
+            if (t.code == code) return t;
         }
         throw new IllegalArgumentException("Invalid CategoryType code: " + code);
     }

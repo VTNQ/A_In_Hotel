@@ -24,5 +24,6 @@ public interface ExtraServiceMapper extends CommonMapper {
     void updateEntityFromDto(ExtraServiceRequest request, @MappingTarget ExtraService dto,Long userId);
 
     @Mapping(target = "categoryName",source = "category.name")
+    @Mapping(target = "categoryId",source = "category.id")
     ExtraServiceResponse toResponse(ExtraService service);
 }
