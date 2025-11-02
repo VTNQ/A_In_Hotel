@@ -11,7 +11,7 @@ function App() {
         <Route path='/' element={<LoginPage/>}/>
         <Route path='/Dashboard' element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="extra-service" element={<ViewExtraServicePage/>} />
+          <Route path="facility/services" element={<ViewExtraServicePage/>} />
         </Route>
       </Routes>
     </>
