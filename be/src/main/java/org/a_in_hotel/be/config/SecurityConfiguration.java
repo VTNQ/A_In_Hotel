@@ -102,17 +102,17 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config
-                .setAllowedOrigins(List.of(
-                        "https://superadmin.ainhotelvn.com",
-                        "http://localhost:5173",
-                        "http://localhost:5175",
-                        "https://admin.ainhotelvn.com"
-                ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+        config.setAllowedOrigins(List.of(
+                "https://superadmin.ainhotelvn.com",
+                "https://admin.ainhotelvn.com",
+                "http://localhost:5173",
+                "http://localhost:5175"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Authorization"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
