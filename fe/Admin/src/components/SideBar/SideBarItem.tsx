@@ -1,7 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react"
-import type { MenuItem } from "../../type/MenuItem";
-
+import type { MenuItem } from "../../type";
 const SideBarItem = ({ item }: { item: MenuItem }) => {
     const [open, setOpen] = useState(false);
     const Icon = item.icon;
