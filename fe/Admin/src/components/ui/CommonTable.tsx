@@ -115,7 +115,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
       <div className="flex justify-between items-center px-4 py-3 border-t border-gray-300 bg-gray-50 text-sm text-gray-600">
         <p>
           Showing {startIndex + 1}–
-          {Math.min(startIndex + itemsPerPage, data.length)} of {data.length} results
+          {Math.min(startIndex + itemsPerPage, data.length)} of {itemsPerPage} results
         </p>
         <div className="flex gap-2 items-center">
           <button

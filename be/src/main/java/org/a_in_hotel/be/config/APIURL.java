@@ -31,6 +31,7 @@ public class APIURL {
     };
     public static final String[] URL_ADMIN_PUT={
             "/api/room-types/update/**",
+            "/api/extra-room-service/update/**",
             "/api/room-types/updateStatus/**",
             "/api/rooms/updateStatus/**",
             "/api/extra-room-service/updateStatus/**"

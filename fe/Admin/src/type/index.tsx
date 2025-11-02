@@ -31,6 +31,11 @@ export interface ExtraServiceFormModalProps {
     onSuccess: () => void;
     category: any[];
 }
+export interface CategoryFormModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
+}
 export interface ActionHandlers {
     onView?: (rows: any) => void;
     onEdit?: (row: any) => void;

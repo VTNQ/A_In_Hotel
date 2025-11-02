@@ -16,6 +16,7 @@ public interface CategoryMapper extends CommonMapper {
     CategoryResponse toDTO(Category entity);
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
+    @Mapping(target = "isActive",ignore = true)
     Category toEntity(CategoryDTO dto,Long userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -12,8 +12,8 @@ export const SECTIONS = [
                 children: [
                   { label: "Room Management" },
                   { label: "Amenities & Asset Tracking" },
-                  { label: "Extra Services" },
-                  { label: "Category Management" },
+                  { label: "Extra Services", path: "/Dashboard/facility/services" },
+                  { label: "Category Management",path:"/Dashboard/facility/categories" },
                 ],
               },
             {label:'User Management',icon:Users},

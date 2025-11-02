@@ -22,6 +22,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "category_code",nullable = false, unique = true, length = 50)
+    private String code;
     @Column(nullable = false)
     private Integer type;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
@@ -32,8 +34,18 @@ public class Category {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+    @Column(name = "is_active")
+    private Boolean isActive = true;
     @Column(name = "created_by")
     private String createdBy;
     @Column(name = "updated_by")
     private String updatedBy;
+    @Transient
+    private Long capacity;
+    @PrePersist
+    public void prePersist() {
+        if(this.code == null || this.code.isEmpty()) {
+            this.code = "CT" + String.format("%04d", (int) (Math.random() * 9999));
+        }
+    }
 }

@@ -203,7 +203,7 @@ const ViewAssetPage = () => {
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-700">
-              View Extra Service
+               Extra Service
             </h1>
             <button
               onClick={() => setShowModal(true)}
@@ -284,7 +284,7 @@ const ViewAssetPage = () => {
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <CommonTable columns={columns} data={data} itemsPerPage={5} />
+            <CommonTable columns={columns} data={data} itemsPerPage={10} />
           )}
 
           {/* Modals */}

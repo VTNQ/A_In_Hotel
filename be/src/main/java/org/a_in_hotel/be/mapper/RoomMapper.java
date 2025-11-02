@@ -2,18 +2,14 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.dto.request.RoomRequest;
-import org.a_in_hotel.be.dto.response.ImageRoomResponse;
 import org.a_in_hotel.be.dto.response.RoomResponse;
-import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.entity.RoomPriceOption;
-import org.a_in_hotel.be.entity.RoomType;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface RoomMapper extends CommonMapper {

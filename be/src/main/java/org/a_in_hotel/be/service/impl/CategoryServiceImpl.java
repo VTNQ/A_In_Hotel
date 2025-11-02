@@ -9,7 +9,10 @@ import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
+import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
+import org.a_in_hotel.be.repository.ExtraServiceRepository;
+import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.service.CategoryService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -33,6 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper mapper;
     private static final List<String> SEARCH_FIELDS = List.of("name");
     private final SecurityUtils securityUtils;
+    private final RoomRepository roomRepository;
+    private final ExtraServiceRepository extraServiceRepository;
+    private final AssetRepository assetRepository;
     @Override
     public void create(CategoryDTO dto) {
         Category entity = mapper.toEntity(dto,securityUtils.getCurrentUserId());
@@ -77,9 +83,17 @@ public class CategoryServiceImpl implements CategoryService {
             Specification<Category>filterable= RSQLJPASupport.toSpecification(filter);
             Specification<Category>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
             Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-            return repo
-                    .findAll(sortable.and(filterable).and(searchable),pageable)
-                    .map(mapper::toDTO);
+            Page<Category> result = repo.findAll(sortable.and(filterable).and(searchable), pageable);
+            result.forEach(category -> {
+                Long capacity = switch (category.getType()) {
+                    case 1 -> roomRepository.countByRoomTypeId(category.getId());
+                    case 2 -> extraServiceRepository.countByCategoryId(category.getId());
+                    case 3 -> assetRepository.countByCategoryId(category.getId());
+                    default -> 0L;
+                };
+                category.setCapacity(capacity);
+            });
+            return result.map(mapper::toDTO);
         }catch (Exception e){
             e.printStackTrace();
             log.error(e.getMessage());

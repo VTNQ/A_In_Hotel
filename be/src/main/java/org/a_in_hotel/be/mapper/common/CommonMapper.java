@@ -81,9 +81,9 @@ public interface CommonMapper {
     }
 
     @Named("mapRoomTypeFromId")
-    default RoomType mapRoomTypeFromId(Long idRoomType) {
+    default Category mapRoomTypeFromId(Long idRoomType) {
         if (idRoomType == null) return null;
-        RoomType roomType = new RoomType();
+        Category roomType = new Category();
         roomType.setId(idRoomType);
         return roomType;
     }
