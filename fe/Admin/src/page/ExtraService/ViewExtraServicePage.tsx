@@ -21,35 +21,45 @@ const ViewAssetPage = () => {
   const [statusFilter, setStatusFilter] = useState(""); // "true" | "false" | ""
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showDeactivated, setShowDeactivated] = useState(false); // 🔹 checkbox state
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const [sortKey, setSortKey] = useState<string>("id");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   // 🔹 Fetch data
-   const fetchData = async () => {
-        setLoading(true);
-        let filters: string[] = [];
-        // Nếu có status (true / false)
-        if (statusFilter) {
-            filters.push(`isActive==${statusFilter}`);
-        }
+  const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
+    setLoading(true);
+    let filters: string[] = [];
+    // Nếu có status (true / false)
+    if (statusFilter) {
+      filters.push(`isActive==${statusFilter}`);
+    }
 
-        // Nếu có category (id)
-        if (categoryFilter) {
-            filters.push(`category.id==${categoryFilter}`);
-        }
-            if (showDeactivated) {
-        filters.push(`isActive==false`);
+    // Nếu có category (id)
+    if (categoryFilter) {
+      filters.push(`category.id==${categoryFilter}`);
+    }
+    if (showDeactivated) {
+      filters.push(`isActive==false`);
+    }
+    const filterQuery = filters.join(" and ");
+    try {
+      const params = {
+        page: pageNumber, sort: `${key},${order}`,
+        size: 10, searchValue: searchValue, ...(filterQuery ? { filter: filterQuery } : {})
       }
-        const filterQuery = filters.join(" and ");
-        try {
-            const params = { page: 1, size: 10, searchValue: searchValue, ...(filterQuery ? { filter: filterQuery } : {}) }
-            const res = await getAll(params);
-            setData(res.data?.content || []);
-        } catch (err: any) {
-            console.error("Fetch error:", err);
-            setError("Failed to load data.");
-        } finally {
-            setLoading(false);
-        }
-    };
+      const res = await getAll(params);
+      setData(res.data?.content || []);
+      setTotalPages(res?.data?.totalPages || 1);
+      setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
+      setPage(pageNumber);
+    } catch (err: any) {
+      console.error("Fetch error:", err);
+      setError("Failed to load data.");
+    } finally {
+      setLoading(false);
+    }
+  };
   // 🔹 Fetch Category list
   const fetchCategory = async () => {
     try {
@@ -65,13 +75,9 @@ const ViewAssetPage = () => {
       setError("Failed to load category data.");
     }
   };
-
-  // ✅ Gọi lại khi filter thay đổi
   useEffect(() => {
     fetchData();
-  }, [searchValue, statusFilter, categoryFilter, showDeactivated]);
-
-  // ✅ Lần đầu load
+  }, [searchValue, statusFilter, categoryFilter, showDeactivated, sortKey, sortOrder]);
   useEffect(() => {
     fetchData();
     fetchCategory();
@@ -175,9 +181,8 @@ const ViewAssetPage = () => {
             ${row.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
         >
           <span
-            className={`h-2 w-2 rounded-full ${
-              row.isActive ? "bg-green-500" : "bg-red-500"
-            }`}
+            className={`h-2 w-2 rounded-full ${row.isActive ? "bg-green-500" : "bg-red-500"
+              }`}
           ></span>
           {row.isActive ? "Active" : "Inactive"}
         </div>
@@ -203,7 +208,7 @@ const ViewAssetPage = () => {
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-700">
-               Extra Service
+              Extra Service
             </h1>
             <button
               onClick={() => setShowModal(true)}
@@ -284,7 +289,21 @@ const ViewAssetPage = () => {
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <CommonTable columns={columns} data={data} itemsPerPage={10} />
+            <CommonTable
+              columns={columns}
+              data={data}
+              page={page}
+              totalPages={totalPages}
+              totalResults={totalResults}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+              onPageChange={(newPage) => fetchData(newPage)}
+              onSortChange={(key, order) => {
+                setSortKey(key);
+                setSortOrder(order);
+                fetchData(page, key, order);
+              }}
+            />
           )}
 
           {/* Modals */}

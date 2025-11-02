@@ -36,6 +36,9 @@ export interface CategoryFormModalProps {
     onClose: () => void;
     onSuccess: () => void;
 }
+export interface UpdateCategoryFormModalProps extends CategoryFormModalProps {
+    categoryData: any; // dữ liệu category cần sửa
+}
 export interface ActionHandlers {
     onView?: (rows: any) => void;
     onEdit?: (row: any) => void;

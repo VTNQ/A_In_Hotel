@@ -1,19 +1,59 @@
 import { Search } from "lucide-react";
 import ActionMenu from "../../components/ui/ActionMenu";
 import { useEffect, useState } from "react";
-import { getAllCategory } from "../../service/api/Category";
+import { getAllCategory, updateStatus } from "../../service/api/Category";
 import CommonTable from "../../components/ui/CommonTable";
+import CategoryFormModal from "../../components/Category/CategoryFormModal";
+import UpdateCategoryFormModal from "../../components/Category/UpdateCategoryFormModal";
+import { useAlert } from "../../components/alert-context";
 
 const ViewCategoryPage = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const fetchData = async () => {
+    const [showModal, setShowModal] = useState(false);
+    const { showAlert } = useAlert();
+    const [sortKey, setSortKey] = useState<string>("id");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [searchValue, setSearchValue] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [statusFilter, setStatusFilter] = useState("");
+    const [typeFilter, setTypeFilter] = useState("");
+    const [showDeactivated, setShowDeactivated] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalResults, setTotalResults] = useState(0);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+    };
+    const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
         setLoading(true);
         try {
-            const params = { page: 1, size: 10 }
+            let filters: string[] = [];
+            // Nếu có status (true / false)
+            if (statusFilter) {
+                filters.push(`isActive==${statusFilter}`);
+            }
+
+            // Nếu có category (id)
+            if (typeFilter) {
+                filters.push(`type==${typeFilter}`);
+            }
+            if (showDeactivated) {
+                filters.push(`isActive==false`);
+            }
+            const filterQuery = filters.join(" and ");
+            const params = {
+                page: pageNumber, sort: `${key},${order}`,
+                size: 10, searchValue: searchValue, ...(filterQuery ? { filter: filterQuery } : {})
+            }
             const res = await getAllCategory(params);
             setData(res?.content || []);
+            setTotalPages(res?.totalPages || 1);
+            setTotalResults(res?.totalElements || res?.totalItems || 0);
+            setPage(pageNumber);
         } catch (err: any) {
             console.error("Fetch error:", err);
             setError("Failed to load data.");
@@ -21,9 +61,61 @@ const ViewCategoryPage = () => {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        fetchData();
+    }, [searchValue, statusFilter, typeFilter, showDeactivated, sortKey, sortOrder]);
+
     useEffect(() => {
         fetchData();
     }, [])
+    const handleEdit = (row: any) => {
+        setSelectedCategory(row);
+        setShowUpdateModal(true);
+    };
+    const handleCloseModal = () => {
+        setShowUpdateModal(false);
+        setSelectedCategory(null);
+    };
+    const handleDeactivate = async (row: any) => {
+        try {
+            setLoading(true);
+            const response = await updateStatus(row.id, false);
+            const message =
+                response?.data?.message || "Service deactivated successfully!";
+            showAlert({ title: message, type: "success", autoClose: 3000 });
+            fetchData();
+        } catch (err: any) {
+            showAlert({
+                title:
+                    err?.response?.data?.message ||
+                    "Failed to deactivate service. Please try again.",
+                type: "error",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleActive = async (row: any) => {
+        try {
+            setLoading(true);
+            const response = await updateStatus(row.id, true);
+            const message =
+                response?.data?.message || "Service activated successfully!";
+            showAlert({ title: message, type: "success", autoClose: 3000 });
+            fetchData();
+        } catch (err: any) {
+            showAlert({
+                title:
+                    err?.response?.data?.message ||
+                    "Failed to activate service. Please try again.",
+                type: "error",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
     const columns = [
         { key: "code", label: "Category ID", sortable: true },
         { key: "name", label: "Category Name", sortable: true },
@@ -53,6 +145,9 @@ const ViewCategoryPage = () => {
             render: (row: any) => (
                 <ActionMenu
                     row={row}
+                    onEdit={() => handleEdit(row)}
+                    onActivate={() => handleActive(row)}
+                    onDeactivate={() => handleDeactivate(row)}
                 />
             ),
         },
@@ -66,6 +161,7 @@ const ViewCategoryPage = () => {
                             Category Service
                         </h1>
                         <button
+                            onClick={() => setShowModal(true)}
                             className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
                         >
                             + New Category
@@ -76,6 +172,8 @@ const ViewCategoryPage = () => {
                             <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
+                                value={searchValue}
+                                onChange={handleSearchChange}
                                 placeholder="Search by Category ID, Category Name"
                                 className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-82 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                             />
@@ -86,7 +184,8 @@ const ViewCategoryPage = () => {
                             </div>
                             <div className="relative flex-1">
                                 <select
-
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
                                     className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
                                 >
                                     <option value="">All</option>
@@ -101,6 +200,8 @@ const ViewCategoryPage = () => {
                             </div>
                             <div className="relative flex-1">
                                 <select
+                                    value={typeFilter}
+                                    onChange={(e) => setTypeFilter(e.target.value)}
                                     className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none">
                                     <option value="">All</option>
                                     <option value="1">Room</option>
@@ -113,6 +214,8 @@ const ViewCategoryPage = () => {
                         <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
                             <input
                                 type="checkbox"
+                                checked={showDeactivated}
+                                onChange={(e) => setShowDeactivated(e.target.checked)}
                                 className="w-4 h-4 accent-blue-600"
                             />
                             <span>Deactivated</span>
@@ -123,9 +226,41 @@ const ViewCategoryPage = () => {
                     ) : error ? (
                         <p className="text-red-500">{error}</p>
                     ) : (
-                        <CommonTable columns={columns} data={data} itemsPerPage={10} />
-                    )}
+                        <CommonTable
+                            columns={columns}
+                            data={data}
+                            page={page}
+                            totalPages={totalPages}
+                            totalResults={totalResults}
+                            sortKey={sortKey}
+                            sortOrder={sortOrder}
+                            onPageChange={(newPage) => fetchData(newPage)}
+                            onSortChange={(key, order) => {
+                                setSortKey(key);
+                                setSortOrder(order);
+                                fetchData(page, key, order);
+                            }}
+                        />
 
+                    )}
+                    <CategoryFormModal
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                        onSuccess={() => {
+                            fetchData();
+                            setShowModal(false);
+                        }}
+
+                    />
+                    <UpdateCategoryFormModal
+                        isOpen={showUpdateModal}
+                        onClose={handleCloseModal}
+                        onSuccess={() => {
+                            fetchData();
+                            setShowUpdateModal(false);
+                        }}
+                        categoryData={selectedCategory}
+                    />
                 </main>
             </div>
         </div>

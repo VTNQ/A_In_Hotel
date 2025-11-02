@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface Column {
@@ -11,46 +11,36 @@ interface Column {
 interface CommonTableProps {
   columns: Column[];
   data: any[];
+  page: number;
+  totalPages: number;
+  totalResults: number;
   itemsPerPage?: number;
+  sortKey?: string;
+  sortOrder?: "asc" | "desc";
+  onPageChange: (newPage: number) => void;
+  onSortChange?: (key: string, order: "asc" | "desc") => void;
 }
 
 const CommonTable: React.FC<CommonTableProps> = ({
   columns,
   data,
+  page,
+  totalPages,
+  totalResults,
   itemsPerPage = 10,
+  sortKey,
+  sortOrder,
+  onPageChange,
+  onSortChange,
 }) => {
-  const [sortKey, setSortKey] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [page, setPage] = useState(1);
-
   const handleSort = (key: string) => {
-    if (sortKey === key) setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    else {
-      setSortKey(key);
-      setSortOrder("asc");
+    if (!onSortChange) return;
+    if (sortKey === key) {
+      onSortChange(key, sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      onSortChange(key, "asc");
     }
   };
-
-  const sortedData = useMemo(() => {
-    if (!sortKey) return data;
-    return [...data].sort((a, b) => {
-      const av = a[sortKey];
-      const bv = b[sortKey];
-      if (typeof av === "string" && typeof bv === "string") {
-        return sortOrder === "asc"
-          ? av.localeCompare(bv)
-          : bv.localeCompare(av);
-      }
-      if (typeof av === "number" && typeof bv === "number") {
-        return sortOrder === "asc" ? av - bv : bv - av;
-      }
-      return 0;
-    });
-  }, [data, sortKey, sortOrder]);
-
-  const startIndex = (page - 1) * itemsPerPage;
-  const currentData = sortedData.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   return (
     <div className="relative border border-gray-300 bg-white rounded-2xl shadow-sm overflow-visible">
@@ -62,21 +52,27 @@ const CommonTable: React.FC<CommonTableProps> = ({
               <th
                 key={col.key}
                 onClick={() => col.sortable && handleSort(col.key)}
-                className={`px-4 py-3 text-center border-r border-[#6C80C2] 
-                  ${index === 0 ? "rounded-tl-xl" : ""} 
+                className={`px-4 py-3 text-center border-r border-[#6C80C2]
+                  ${index === 0 ? "rounded-tl-xl" : ""}
                   ${index === columns.length - 1 ? "rounded-tr-xl border-r-0" : ""}
                   ${col.sortable ? "cursor-pointer select-none" : ""}
                 `}
               >
                 <div className="flex items-center justify-center gap-1">
                   {col.label}
-                  {col.sortable &&
-                    sortKey === col.key &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp size={14} />
-                    ) : (
-                      <ChevronDown size={14} />
-                    ))}
+                  {col.sortable && (
+                    <>
+                      {sortKey === col.key ? (
+                        sortOrder === "asc" ? (
+                          <ChevronUp size={14} />
+                        ) : (
+                          <ChevronDown size={14} />
+                        )
+                      ) : (
+                        <ChevronDown size={14} className="opacity-40" />
+                      )}
+                    </>
+                  )}
                 </div>
               </th>
             ))}
@@ -85,8 +81,8 @@ const CommonTable: React.FC<CommonTableProps> = ({
 
         {/* Body */}
         <tbody className="divide-y divide-[#EDEEEE]">
-          {currentData.length ? (
-            currentData.map((row, i) => (
+          {data.length ? (
+            data.map((row, i) => (
               <tr
                 key={i}
                 className="hover:bg-gray-50 transition-colors even:bg-gray-50/40"
@@ -111,27 +107,57 @@ const CommonTable: React.FC<CommonTableProps> = ({
         </tbody>
       </table>
 
-      {/* Pagination */}
+      {/* ✅ Pagination */}
       <div className="flex justify-between items-center px-4 py-3 border-t border-gray-300 bg-gray-50 text-sm text-gray-600">
         <p>
-          Showing {startIndex + 1}–
-          {Math.min(startIndex + itemsPerPage, data.length)} of {itemsPerPage} results
+          Showing{" "}
+          {(page - 1) * itemsPerPage + 1}–
+          {Math.min(page * itemsPerPage, totalResults)} of{" "}
+          {totalResults} results
         </p>
-        <div className="flex gap-2 items-center">
+
+
+        {/* Nút phân trang */}
+        <div className="flex items-center gap-1">
           <button
             disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+            onClick={() => onPageChange(page - 1)}
+            className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
           >
-            Prev
+            ‹
           </button>
-          <span className="text-gray-700 font-medium">{page}</span>
+
+          {/* Hiển thị số trang rút gọn */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter(
+              (num) =>
+                num === 1 ||
+                num === totalPages ||
+                (num >= page - 1 && num <= page + 1)
+            )
+            .map((num, index, arr) => (
+              <React.Fragment key={num}>
+                {index > 0 && arr[index - 1] !== num - 1 && (
+                  <span className="px-1 text-gray-500">…</span>
+                )}
+                <button
+                  onClick={() => onPageChange(num)}
+                  className={`px-3 py-1 rounded-md ${num === page
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "hover:bg-gray-100 text-gray-700"
+                    }`}
+                >
+                  {num}
+                </button>
+              </React.Fragment>
+            ))}
+
           <button
             disabled={page === totalPages}
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+            onClick={() => onPageChange(page + 1)}
+            className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
           >
-            Next
+            ›
           </button>
         </div>
       </div>

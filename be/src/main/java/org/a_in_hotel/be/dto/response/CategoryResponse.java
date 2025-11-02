@@ -11,6 +11,7 @@ public class CategoryResponse {
     private String name;
     private String type;
     private Long capacity;
+    private Integer idType;
     private String code;
     private Boolean isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

@@ -2,11 +2,14 @@ package org.a_in_hotel.be.service.impl;
 
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
+import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
 import org.a_in_hotel.be.repository.AssetRepository;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repo;
     private final CategoryMapper mapper;
-    private static final List<String> SEARCH_FIELDS = List.of("name");
+    private static final List<String> SEARCH_FIELDS = List.of("code","name");
     private final SecurityUtils securityUtils;
     private final RoomRepository roomRepository;
     private final ExtraServiceRepository extraServiceRepository;
@@ -73,6 +77,20 @@ public class CategoryServiceImpl implements CategoryService {
     public Category get(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found: " + id));
+    }
+
+    @Override
+    public void updateStatus(Long id, boolean status) {
+        try {
+            log.info("start update category status");
+            Category category = repo.getReferenceById(id);
+            category.setIsActive(status);
+            category.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+            repo.save(category);
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ category with id {} not found: {}", id, e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy category có ID: " + id);
+        }
     }
 
     @Override

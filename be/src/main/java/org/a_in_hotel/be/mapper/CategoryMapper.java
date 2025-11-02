@@ -13,6 +13,7 @@ import org.mapstruct.*;
 )
 public interface CategoryMapper extends CommonMapper {
     @Mapping(target = "type", expression = "java(CategoryType.fromCode(entity.getType()).name())")
+    @Mapping(target = "idType",source = "type")
     CategoryResponse toDTO(Category entity);
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
