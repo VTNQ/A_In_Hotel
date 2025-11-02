@@ -1,129 +1,152 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import SideBar from "../components/SideBar/SideBar";
 import TopBar from "../components/TopBar";
-import { useEffect, useRef, useState } from "react";
-import { clearTokens, getTokens, isAccessExpired, saveTokens } from "../util/auth";
-import { refresh } from "../service/api/Authenticate";
 import { AlertProvider } from "./alert-context";
+import {
+  clearTokens,
+  getTokens,
+  isAccessExpired,
+  saveTokens,
+} from "../util/auth";
+import { refresh } from "../service/api/Authenticate";
 
 const MainLayout = () => {
-    const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-    const { pathname } = useLocation();
+  const [showModal, setShowModal] = useState(false);
 
-    // Theo dõi đường dẫn trước đó
-    const prevPathRef = useRef<string | null>(null);
-    const prevPath = prevPathRef.current;
+  // Theo dõi đường dẫn trước đó
+  const prevPathRef = useRef<string | null>(null);
+  const prevPath = prevPathRef.current;
 
-    const inHomeArea = pathname.toLowerCase().startsWith("/home");
-    useEffect(() => {
-        const handleAuthCheck = async () => {
-            console.log(getTokens());
-            if (isAccessExpired() && getTokens()?.refreshToken) {
-                try {
-                    const res = await refresh();
-                    if (res?.data?.data?.accessToken) {
-                        saveTokens({
-                            accessToken: res.data.data.accessToken,
-                            accessTokenAt: res.data.data.accessTokenExpiryAt,
-                        });
-                        setShowModal(false); // ẩn popup nếu đang show
-                    } else {
+  // Xác định xem đang ở khu vực dashboard
+  const inDashboardArea = pathname.toLowerCase().startsWith("/dashboard");
 
-                        if (inHomeArea) {
-                            // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-                            const cameFromOutsideHome =
-                                !prevPath || !prevPath.toLowerCase().startsWith("/home");
+  useEffect(() => {
+    const handleAuthCheck = async () => {
+      const tokens = getTokens();
 
-                            if (cameFromOutsideHome) {
-                                clearTokens();
-                                navigate("/", { replace: true });
-                            } else {
-                                // Đang ở trong /home/** rồi và treo máy -> show popup
-                                setShowModal(true);
-                            }
-                        } else {
-                            // Không ở /home/** -> về "/" luôn
-                            clearTokens();
-                            navigate("/", { replace: true });
-                        }
-                    }
-                } catch (e) {
-                    // Lỗi refresh => logout
-                    clearTokens();
-                    navigate("/", { replace: true });
-                }
-            } else if (isAccessExpired() && !getTokens()?.refreshToken) {
-                if (inHomeArea) {
-                    // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-                    const cameFromOutsideHome =
-                        !prevPath || !prevPath.toLowerCase().startsWith("/home");
+      // Nếu access token hết hạn
+      if (isAccessExpired()) {
+        // Có refresh token => thử refresh
+        if (tokens?.refreshToken) {
+          try {
+            const res = await refresh();
+            const newAccess = res?.data?.data?.accessToken;
+            const newExpiry = res?.data?.data?.accessTokenExpiryAt;
 
-                    if (cameFromOutsideHome) {
-                        clearTokens();
-                        navigate("/", { replace: true });
-                    } else {
-                        // Đang ở trong /home/** rồi và treo máy -> show popup
-                        setShowModal(true);
-                    }
-                } else {
-                    // Không ở /home/** -> về "/" luôn
-                    clearTokens();
-                    navigate("/", { replace: true });
-                }
+            if (newAccess) {
+              // Lưu lại access token mới
+              saveTokens({
+                accessToken: newAccess,
+                accessTokenAt: newExpiry,
+              });
+              setShowModal(false);
             } else {
-                setShowModal(false)
+              // Refresh thất bại
+              handleSessionExpired();
             }
+          } catch (err) {
+            handleSessionExpired();
+          }
+        } else {
+          // Không có refresh token => logout
+          handleSessionExpired();
+        }
+      } else {
+        // Token còn hạn
+        setShowModal(false);
+      }
 
-            prevPathRef.current = pathname;
-        };
+      // Lưu lại path hiện tại
+      prevPathRef.current = pathname;
+    };
 
-        handleAuthCheck();
-    }, [pathname, inHomeArea, navigate]);
+    const handleSessionExpired = () => {
+      const cameFromOutside =
+        !prevPath || !prevPath.toLowerCase().startsWith("/dashboard");
 
+      if (inDashboardArea) {
+        if (cameFromOutside) {
+          clearTokens();
+          navigate("/", { replace: true });
+        } else {
+          // Đang trong dashboard và bị hết hạn => show popup
+          setShowModal(true);
+        }
+      } else {
+        clearTokens();
+        navigate("/", { replace: true });
+      }
+    };
 
+    handleAuthCheck();
+  }, [pathname, inDashboardArea, navigate]);
 
-    // 2) Interval check + khi tab focus lại (trường hợp treo máy)
-    useEffect(() => {
-        const check = () => {
+  // Interval check định kỳ và khi tab được focus lại
+  useEffect(() => {
+    const check = () => {
+      if (isAccessExpired() && !getTokens()?.refreshToken) {
+        if (inDashboardArea) setShowModal(true);
+        else {
+          clearTokens();
+          navigate("/", { replace: true });
+        }
+      }
+    };
 
-            if (isAccessExpired() && !getTokens()?.refreshToken) {
-                // Chỉ show popup nếu đang ở trong /home/**
-                if (inHomeArea) setShowModal(true);
-                else {
+    const intervalId = setInterval(check, 30_000);
+    window.addEventListener("focus", check);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", check);
+    };
+  }, [inDashboardArea, navigate]);
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <SideBar />
+
+      {/* Nội dung chính */}
+      <div className="flex flex-col flex-1">
+        <TopBar />
+
+        <main className="flex-1 p-6 overflow-y-auto relative">
+          <AlertProvider>
+            <Outlet />
+          </AlertProvider>
+
+          {/* Modal hết hạn đăng nhập */}
+          {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+              <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm text-center">
+                <h2 className="text-lg font-semibold mb-3">
+                  Phiên đăng nhập đã hết hạn
+                </h2>
+                <p className="text-gray-600 mb-5">
+                  Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.
+                </p>
+                <button
+                  onClick={() => {
                     clearTokens();
+                    setShowModal(false);
                     navigate("/", { replace: true });
-                }
-            }
-        };
-        const id = setInterval(check, 30_000);
-        window.addEventListener("focus", check);
-        return () => {
-            clearInterval(id);
-            window.removeEventListener("focus", check);
-        };
-    }, [inHomeArea, navigate]);
-
-    return (
-        <div className="flex h-screen bg-gray-50">
-            {/* Sidebar */}
-            <SideBar />
-
-            {/* Main content */}
-            <div className="flex flex-col flex-1">
-                {/* Topbar */}
-                <TopBar />
-
-                {/* Page content will render here */}
-                <main className="flex-1 p-6 overflow-y-auto">
-                    <AlertProvider>
-                        <Outlet />
-                    </AlertProvider>
-                </main>
+                  }}
+                  className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
+                >
+                  Đăng nhập lại
+                </button>
+              </div>
             </div>
-        </div>
-    );
+          )}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default MainLayout;
