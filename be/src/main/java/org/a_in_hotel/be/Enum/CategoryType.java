@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum CategoryType {
     ROOM(1),
     SERVICE(2),
-    OTHER(3);
+    ASSET(3);
 
     private final int code;
 
