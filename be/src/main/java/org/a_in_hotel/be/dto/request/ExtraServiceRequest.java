@@ -12,6 +12,7 @@ public class ExtraServiceRequest {
     private String description;
     private Long categoryId;
     private BigDecimal price;
+    private String note;
     private String currency;
     private UnitExtraService unit;
     private Boolean isActive;

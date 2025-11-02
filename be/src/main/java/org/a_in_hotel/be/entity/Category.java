@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.a_in_hotel.be.Enum.CategoryType;
-import org.a_in_hotel.be.converter.impl.CategoryTypeConverterImpl;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,9 +22,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(nullable = false, length = 20)
-    @Convert(converter = CategoryTypeConverterImpl.class)
-    private CategoryType type;
+    @Column(nullable = false)
+    private Integer type;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
