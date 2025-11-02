@@ -34,6 +34,9 @@ public class Room {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id",nullable = false)
     private RoomType roomType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asset_id",nullable = false)
+    private Asset asset;
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
     private RoomStatus status;
