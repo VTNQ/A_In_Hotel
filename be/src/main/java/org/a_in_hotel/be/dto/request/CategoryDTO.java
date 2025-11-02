@@ -20,5 +20,5 @@ public class CategoryDTO {
     private String name;
 
     @NotNull
-    private String type;
+    private Integer type;
 }

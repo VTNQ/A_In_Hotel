@@ -52,7 +52,17 @@ public class CategoryController {
         categoryService.softDelete(id);
         return ResponseEntity.noContent().build();
     }
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<RequestResponse<Void>>updateStatus(@PathVariable Long id,@RequestParam Boolean status){
+        try {
+            categoryService.updateStatus(id,status);
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái danh mục thành công"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
 
+        }
+    }
     // 👉 Lấy category theo id
     @GetMapping("/{id}")
     public ResponseEntity<RequestResponse<Category>> getById(@PathVariable Long id) {

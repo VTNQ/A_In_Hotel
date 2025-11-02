@@ -33,7 +33,7 @@ public class Room {
     private String roomName;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id",nullable = false)
-    private RoomType roomType;
+    private Category roomType;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id",nullable = false)
     private Asset asset;
