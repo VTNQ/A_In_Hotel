@@ -31,6 +31,12 @@ export interface ExtraServiceFormModalProps {
     onSuccess: () => void;
     category: any[];
 }
+export interface RoomFormModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
+    category: any[];
+}
 export interface CategoryFormModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -39,15 +45,48 @@ export interface CategoryFormModalProps {
 export interface UpdateCategoryFormModalProps extends CategoryFormModalProps {
     categoryData: any; // dữ liệu category cần sửa
 }
-export interface ActionHandlers {
-    onView?: (rows: any) => void;
-    onEdit?: (row: any) => void;
-    onActivate?: (row: any) => void;
-    onDeactivate?: (row: any) => void;
-}
-export interface ActionMenuProps extends ActionHandlers {
-  row: any;
+
+export interface RoomActionMenuProps {
+    room: {
+        status?: number;
+        [key: string]: any; // Cho phép các field khác (roomCode, name, ...)
+    };
+    onView?: (room: any) => void;
+    onEdit?: (room: any) => void;
+    onActivate?: (room: any) => void;
+    onDeactivate?: (room: any) => void;
+    onMaintenance?: (room: any) => void;
 }
 export interface UpdateExtraServiceFormModalProps extends ExtraServiceFormModalProps {
-  serviceData: any; // dữ liệu service cần sửa
+    serviceData: any; // dữ liệu service cần sửa
+}
+export interface Category {
+    id?: number;
+    name?: string;
+    description?: string;
+    isActive?: boolean;
+    [key: string]: any;
+}
+export interface CategoryActionMenuProps {
+    category: Category;
+    onView?: (category: Category) => void;
+    onEdit?: (category: Category) => void;
+    onActivate?: (category: Category) => void;
+    onDeactivate?: (category: Category) => void;
+}
+export interface ExtraService {
+    id?: number;
+    name?: string;
+    description?: string;
+    price?: number;
+    isActive?: boolean;
+    [key: string]: any;
+}
+
+export interface ExtraServiceActionMenuProps {
+    service: ExtraService;
+    onView?: (service: ExtraService) => void;
+    onEdit?: (service: ExtraService) => void;
+    onActivate?: (service: ExtraService) => void;
+    onDeactivate?: (service: ExtraService) => void;
 }

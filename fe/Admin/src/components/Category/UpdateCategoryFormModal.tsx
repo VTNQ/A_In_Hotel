@@ -57,7 +57,7 @@ const UpdateCategoryFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update extra service. Please try again.",
+                    "Failed to update category. Please try again.",
                 type: "error",
                 autoClose: 4000,
             });

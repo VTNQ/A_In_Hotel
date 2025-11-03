@@ -6,6 +6,7 @@ import CommonTable from "../../components/ui/CommonTable";
 import CategoryFormModal from "../../components/Category/CategoryFormModal";
 import UpdateCategoryFormModal from "../../components/Category/UpdateCategoryFormModal";
 import { useAlert } from "../../components/alert-context";
+import CategoryActionMenu from "../../components/Category/CategoryActionMenu";
 
 const ViewCategoryPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -121,7 +122,7 @@ const ViewCategoryPage = () => {
         { key: "name", label: "Category Name", sortable: true },
         { key: "type", label: "Type", sortable: true },
         { key: "capacity", label: "Capacity", sortable: true },
-        { key: "createdAt", label: "Created Date" },
+        { key: "createdAt", label: "Created Date",sortable: true },
         { key: "updatedAt", label: "Last Updated" },
         {
             key: "status",
@@ -143,20 +144,19 @@ const ViewCategoryPage = () => {
             key: "action",
             label: "Action",
             render: (row: any) => (
-                <ActionMenu
-                    row={row}
-                    onEdit={() => handleEdit(row)}
-                    onActivate={() => handleActive(row)}
-                    onDeactivate={() => handleDeactivate(row)}
+                <CategoryActionMenu
+                category={row}
+                onEdit={() => handleEdit(row)}
+                onActivate={() => handleActive(row)}
+                onDeactivate={() => handleDeactivate(row)}
                 />
             ),
         },
     ]
-    return (
-        <div className="flex h-screen bg-gray-50">
-            <div className="flex flex-col flex-1">
-                <main className="flex-1 p-6 overflow-y-auto">
-                    <div className="flex justify-between items-center mb-6">
+    return ( 
+    <div className="flex flex-col flex-1 bg-gray-50">
+     
+        <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-semibold text-gray-700">
                             Category Service
                         </h1>
@@ -261,8 +261,7 @@ const ViewCategoryPage = () => {
                         }}
                         categoryData={selectedCategory}
                     />
-                </main>
-            </div>
+            
         </div>
     )
 }

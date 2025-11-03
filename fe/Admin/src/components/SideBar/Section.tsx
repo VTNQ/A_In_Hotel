@@ -10,7 +10,7 @@ export const SECTIONS = [
                 label: "Facility Management",
                 icon: Building2,
                 children: [
-                  { label: "Room Management" },
+                  { label: "Room Management",path:"/Dashboard/facility/rooms" },
                   { label: "Amenities & Asset Tracking" },
                   { label: "Extra Services", path: "/Dashboard/facility/services" },
                   { label: "Category Management",path:"/Dashboard/facility/categories" },

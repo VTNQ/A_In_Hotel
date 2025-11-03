@@ -34,16 +34,14 @@ public class Room {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id",nullable = false)
     private Category roomType;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id",nullable = false)
-    private Asset asset;
-    @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
-    private RoomStatus status;
+    private Integer status;
     @Column(name = "default_rate")
     private BigDecimal defaultRate;
     @Column(name = "floor")
     private Integer floor;
+    @Column(name = "capacity")
+    private Integer capacity;
     @Column(name = "area")
     private Double area;
     @Column(name = "note")

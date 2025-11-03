@@ -1,12 +1,14 @@
 package org.a_in_hotel.be.mapper.common;
 
 import org.a_in_hotel.be.Enum.PriceType;
+import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.ImageRoomResponse;
 import org.a_in_hotel.be.entity.*;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,13 +40,6 @@ public interface CommonMapper {
         Role role = new Role();
         role.setId(idRole);
         return role;
-    }
-    @Named("mapAssetFromId")
-    default Asset mapAssetFromId(Long idAsset) {
-        if (idAsset == null) return null;
-        Asset asset = new Asset();
-        asset.setId(idAsset);
-        return asset;
     }
 
     @Named("instantToLong")
@@ -97,33 +92,111 @@ public interface CommonMapper {
     }
 
     default List<ImageRoomResponse> mapImages(List<Image> images) {
-        if (images == null) return List.of();
+        if (images == null || images.isEmpty()) return List.of();
         return images.stream()
                 .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
                 .map(img -> new ImageRoomResponse(img.getUrl(), img.getAltText()))
-                .collect(Collectors.toList());
+                .toList();
     }
-    default BigDecimal getBigDecimalPrice(Room room, PriceType type, String field){
-        if(room.getRoomPriceOptions() == null) return null;
+
+
+    default BigDecimal getBigDecimalPrice(Room room, PriceType type, String field) {
+        if (room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type)
+                .filter(otp -> otp.getPriceType() == type)
                 .findFirst()
-                .map(opt->switch (field){
+                .map(opt -> switch (field) {
                     case "basePrice" -> opt.getBasePrice();
                     case "additionalPrice" -> opt.getAdditionalPrice();
                     default -> null;
                 })
                 .orElse(null);
     }
-    default Integer getIntegerPrice(Room room,PriceType type,String field){
-        if(room.getRoomPriceOptions() == null) return null;
+
+    default Integer getIntegerPrice(Room room, PriceType type, String field) {
+        if (room.getRoomPriceOptions() == null) return null;
         return room.getRoomPriceOptions().stream()
-                .filter(otp->otp.getPriceType() == type)
+                .filter(otp -> otp.getPriceType() == type)
                 .findFirst()
-                .map(opt->switch (field){
+                .map(opt -> switch (field) {
                     case "baseDurationHours" -> opt.getBaseDurationHours();
                     default -> null;
                 })
                 .orElse(null);
+    }
+
+    default List<RoomPriceOption> mapPriceOptions(RoomRequest request, Room room, Long userId) {
+        List<RoomPriceOption> options = new ArrayList<>();
+        if (request.getHourlyBasePrice() != null) {
+            RoomPriceOption hourlyOption = new RoomPriceOption();
+            hourlyOption.setRoom(room);
+            hourlyOption.setPriceType(PriceType.HOURLY);
+            hourlyOption.setBasePrice(request.getHourlyBasePrice());
+            hourlyOption.setBaseDurationHours(2);
+            hourlyOption.setAdditionalPrice(request.getHourlyAdditionalPrice());
+            hourlyOption.setCreatedBy(String.valueOf(userId));
+            hourlyOption.setUpdatedBy(String.valueOf(userId));
+            options.add(hourlyOption);
+        }
+        if (request.getOvernightPrice() != null) {
+            RoomPriceOption overnightOption = new RoomPriceOption();
+            overnightOption.setRoom(room);
+            overnightOption.setPriceType(PriceType.OVERNIGHT);
+            overnightOption.setBasePrice(request.getOvernightPrice());
+            overnightOption.setCreatedBy(String.valueOf(userId));
+            overnightOption.setUpdatedBy(String.valueOf(userId));
+            options.add(overnightOption);
+        }
+        return options;
+    }
+
+    default void updateRoomPriceOptions(RoomRequest request, Room room, Long userId) {
+        if (room.getRoomPriceOptions() == null) {
+            room.setRoomPriceOptions(new ArrayList<>());
+        }
+        List<RoomPriceOption> existingOptions = room.getRoomPriceOptions();
+        List<RoomPriceOption> updatedList = new ArrayList<>();
+        if (request.getHourlyBasePrice() != null) {
+            RoomPriceOption hourly = findOptionByType(existingOptions, PriceType.HOURLY);
+            if (hourly == null) {
+                hourly = new RoomPriceOption();
+                hourly.setRoom(room);
+                hourly.setPriceType(PriceType.HOURLY);
+                hourly.setCreatedBy(String.valueOf(userId));
+            }
+            hourly.setBasePrice(request.getHourlyBasePrice());
+            hourly.setBaseDurationHours(2);
+            hourly.setAdditionalPrice(request.getHourlyAdditionalPrice());
+            hourly.setUpdatedBy(String.valueOf(userId));
+            updatedList.add(hourly);
+        }
+        if (request.getOvernightPrice() != null) {
+            RoomPriceOption overnight = findOptionByType(existingOptions, PriceType.OVERNIGHT);
+            if (overnight == null) {
+                overnight = new RoomPriceOption();
+                overnight.setRoom(room);
+                overnight.setPriceType(PriceType.OVERNIGHT);
+                overnight.setCreatedBy(String.valueOf(userId));
+            }
+            overnight.setBasePrice(request.getOvernightPrice());
+            overnight.setUpdatedBy(String.valueOf(userId));
+            updatedList.add(overnight);
+        }
+        List<PriceType> requestedTypes = updatedList.stream()
+                .map(RoomPriceOption::getPriceType)
+                .toList();
+        existingOptions.removeIf(option -> !requestedTypes.contains(option.getPriceType()));
+        room.getRoomPriceOptions().clear();
+        room.getRoomPriceOptions().addAll(updatedList);
+    }
+
+    default RoomPriceOption findOptionByType(List<RoomPriceOption> options, PriceType typeCode) {
+        if (options == null) return null;
+        for (RoomPriceOption option : options) {
+            if (option.getPriceType() == typeCode) {
+                return option;
+            }
+        }
+        return null;
     }
 }
