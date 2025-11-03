@@ -65,20 +65,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []) as File[];
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...files],
-    }));
-  };
-
-  const removeImage = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
-  };
+ 
   const [mainImageIndex, setMainImageIndex] = useState<number | null>(null);
   return (
     <CommonModal
