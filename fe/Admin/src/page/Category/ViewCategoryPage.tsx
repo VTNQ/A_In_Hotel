@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import ActionMenu from "../../components/ui/ActionMenu";
 import { useEffect, useState } from "react";
 import { getAllCategory, updateStatus } from "../../service/api/Category";
 import CommonTable from "../../components/ui/CommonTable";
