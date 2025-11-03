@@ -14,68 +14,40 @@ import { refresh } from "../service/api/Authenticate";
 const MainLayout = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
   const [showModal, setShowModal] = useState(false);
-
-  // Theo dõi đường dẫn trước đó
   const prevPathRef = useRef<string | null>(null);
   const prevPath = prevPathRef.current;
-
-  // Xác định xem đang ở khu vực dashboard
   const inDashboardArea = pathname.toLowerCase().startsWith("/dashboard");
 
   useEffect(() => {
     const handleAuthCheck = async () => {
       const tokens = getTokens();
-
-      // Nếu access token hết hạn
       if (isAccessExpired()) {
-        // Có refresh token => thử refresh
         if (tokens?.refreshToken) {
           try {
             const res = await refresh();
             const newAccess = res?.data?.data?.accessToken;
             const newExpiry = res?.data?.data?.accessTokenExpiryAt;
-
             if (newAccess) {
-              // Lưu lại access token mới
-              saveTokens({
-                accessToken: newAccess,
-                accessTokenAt: newExpiry,
-              });
+              saveTokens({ accessToken: newAccess, accessTokenAt: newExpiry });
               setShowModal(false);
-            } else {
-              // Refresh thất bại
-              handleSessionExpired();
-            }
-          } catch (err) {
+            } else handleSessionExpired();
+          } catch {
             handleSessionExpired();
           }
-        } else {
-          // Không có refresh token => logout
-          handleSessionExpired();
-        }
-      } else {
-        // Token còn hạn
-        setShowModal(false);
-      }
-
-      // Lưu lại path hiện tại
+        } else handleSessionExpired();
+      } else setShowModal(false);
       prevPathRef.current = pathname;
     };
 
     const handleSessionExpired = () => {
       const cameFromOutside =
         !prevPath || !prevPath.toLowerCase().startsWith("/dashboard");
-
       if (inDashboardArea) {
         if (cameFromOutside) {
           clearTokens();
           navigate("/", { replace: true });
-        } else {
-          // Đang trong dashboard và bị hết hạn => show popup
-          setShowModal(true);
-        }
+        } else setShowModal(true);
       } else {
         clearTokens();
         navigate("/", { replace: true });
@@ -85,7 +57,6 @@ const MainLayout = () => {
     handleAuthCheck();
   }, [pathname, inDashboardArea, navigate]);
 
-  // Interval check định kỳ và khi tab được focus lại
   useEffect(() => {
     const check = () => {
       if (isAccessExpired() && !getTokens()?.refreshToken) {
@@ -96,10 +67,8 @@ const MainLayout = () => {
         }
       }
     };
-
     const intervalId = setInterval(check, 30_000);
     window.addEventListener("focus", check);
-
     return () => {
       clearInterval(intervalId);
       window.removeEventListener("focus", check);
@@ -107,20 +76,20 @@ const MainLayout = () => {
   }, [inDashboardArea, navigate]);
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* ✅ Sidebar cố định */}
       <SideBar />
 
-      {/* Nội dung chính */}
-      <div className="flex flex-col flex-1">
+      {/* ✅ Nội dung chính */}
+      <div className="flex flex-col flex-1 overflow-hidden">
         <TopBar />
 
-        <main className="flex-1 p-6 overflow-y-auto relative">
+        {/* ✅ Chỉ scroll trong phần nội dung, không toàn trang */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
           <AlertProvider>
             <Outlet />
           </AlertProvider>
 
-          {/* Modal hết hạn đăng nhập */}
           {showModal && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
               <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm text-center">

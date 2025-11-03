@@ -164,11 +164,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void updateStatus(Long id, String status) {
+    public void updateStatus(Long id, Integer status) {
         try {
             Room room = roomRepository.getReferenceById(id);
             try {
-                room.setStatus(Enum.valueOf(RoomStatus.class, status.toUpperCase()));
+                room.setStatus(status);
             } catch (IllegalArgumentException e) {
                 throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ: " + status);
             }

@@ -4,6 +4,7 @@ import ViewExtraServicePage from './page/ExtraService/ViewExtraServicePage'
 import MainLayout from './components/Layout'
 import LoginPage from './page/LoginPage'
 import ViewCategoryPage from './page/Category/ViewCategoryPage'
+import ViewRoomPage from './page/Room/ViewRoomPage'
 
 function App() {
   return(
@@ -14,6 +15,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="facility/services" element={<ViewExtraServicePage/>} />
           <Route path='facility/categories' element={<ViewCategoryPage/>}/>
+          <Route path='facility/rooms' element={<ViewRoomPage/>}/>
         </Route>
       </Routes>
     </>

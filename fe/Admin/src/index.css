@@ -1,23 +1,21 @@
 @import "tailwindcss";
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;               /* độ dày thanh cuộn */
+/* 🎨 Custom Scrollbar */
+.custom-scroll::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;  /* nền track */
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f2f3;
+  border-radius: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #2A3A63; /* màu thanh cuộn */
-  border-radius: 9999px;     /* bo tròn */
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #536db2;
+  border-radius: 10px;
+  border: 2px solid #f1f2f3;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #3B4A7A; /* hover sáng hơn */
-}
-
-/* Ẩn thanh cuộn trên Firefox */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #2A3A63 transparent;
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #42578e;
 }

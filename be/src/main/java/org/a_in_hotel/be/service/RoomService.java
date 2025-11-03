@@ -18,5 +18,5 @@ public interface RoomService {
 
     Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 
-    void updateStatus(Long id, String status);
+    void updateStatus(Long id, Integer status);
 }

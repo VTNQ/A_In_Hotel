@@ -96,7 +96,7 @@ public class RoomController {
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<RequestResponse<Void>> updateStatus(
             @PathVariable Long id,
-            @RequestParam String status) {
+            @RequestParam Integer status) {
         try {
             roomService.updateStatus(id, status);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái phòng thành công"));

@@ -22,35 +22,36 @@ const CommonModal: React.FC<CommonModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-lg w-[700px] max-w-full p-6 relative">
-        {/* Close button (X) */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
-        >
-          ✕
-        </button>
-
-        {/* Title */}
-        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">
-          {title}
-        </h2>
-
-        {/* Content */}
-        <div className="space-y-4">{children}</div>
-
-        {/* Footer buttons */}
-        <div className="flex justify-center gap-4 mt-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl w-[750px] max-w-full flex flex-col max-h-[85vh]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
           <button
             onClick={onClose}
-            className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+            className="text-gray-400 hover:text-gray-600 transition"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scroll">
+          {children}
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-4 px-6 py-4 border-t border-gray-200 sticky bottom-0 bg-white">
+          <button
+            onClick={onClose}
+            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onSave}
-            className="px-6 py-2 rounded-lg text-white bg-[#2E3A8C] hover:bg-[#253278] transition"
+            className="px-5 py-2.5 rounded-lg text-white bg-[#2E3A8C] hover:bg-[#253278] transition"
           >
             {saveLabel}
           </button>
