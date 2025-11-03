@@ -31,7 +31,7 @@ public class CategoryController {
                                               @RequestBody CategoryDTO dto) {
         try {
             categoryService.update(id, dto);
-            return ResponseEntity.ok(RequestResponse.success("Cập nhật blog thành công"));
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật danh mục thành công"));
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));

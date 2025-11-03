@@ -1,6 +1,7 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
+/** --- Type định nghĩa cho props --- */
 interface Column {
   key: string;
   label: string;
@@ -21,6 +22,7 @@ interface CommonTableProps {
   onSortChange?: (key: string, order: "asc" | "desc") => void;
 }
 
+/** --- Component chính --- */
 const CommonTable: React.FC<CommonTableProps> = ({
   columns,
   data,
@@ -33,6 +35,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onPageChange,
   onSortChange,
 }) => {
+  /** Xử lý sắp xếp */
   const handleSort = (key: string) => {
     if (!onSortChange) return;
     if (sortKey === key) {
@@ -43,79 +46,84 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   return (
-    <div className="relative border border-gray-300 bg-white rounded-2xl shadow-sm overflow-visible">
-      <table className="w-full text-sm text-gray-700 border-collapse">
-        {/* Header */}
-        <thead className="text-[#F2F2F2] uppercase text-xs font-semibold border-b border-gray-300">
-          <tr className="bg-[#536DB2]">
-            {columns.map((col, index) => (
-              <th
-                key={col.key}
-                onClick={() => col.sortable && handleSort(col.key)}
-                className={`px-4 py-3 text-center border-r border-[#6C80C2]
-                  ${index === 0 ? "rounded-tl-xl" : ""}
-                  ${index === columns.length - 1 ? "rounded-tr-xl border-r-0" : ""}
-                  ${col.sortable ? "cursor-pointer select-none" : ""}
-                `}
-              >
-                <div className="flex items-center justify-center gap-1">
-                  {col.label}
-                  {col.sortable && (
-                    <>
-                      {sortKey === col.key ? (
-                        sortOrder === "asc" ? (
-                          <ChevronUp size={14} />
-                        ) : (
-                          <ChevronDown size={14} />
-                        )
-                      ) : (
-                        <ChevronDown size={14} className="opacity-40" />
-                      )}
-                    </>
-                  )}
-                </div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        {/* Body */}
-        <tbody className="divide-y divide-[#EDEEEE]">
-          {data.length ? (
-            data.map((row, i) => (
-              <tr
-                key={i}
-                className="hover:bg-gray-50 transition-colors even:bg-gray-50/40"
-              >
-                {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-center">
-                    {col.render ? col.render(row) : row[col.key]}
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
+    <div className="border border-gray-300 bg-white rounded-2xl shadow-sm mt-4 relative z-0">
+      {/* ✅ Scroll ngang + cho phép dropdown tràn ra ngoài */}
+      <div className="overflow-x-auto overflow-y-visible relative custom-scroll">
+        <table className="min-w-[2200px] w-full text-sm text-gray-700 border-collapse relative z-0">
+          {/* Header */}
+          <thead className="sticky top-0 bg-[#536DB2] text-[#F2F2F2] uppercase text-xs font-semibold z-10">
             <tr>
-              <td
-                colSpan={columns.length}
-                className="py-6 text-center text-gray-500 italic"
-              >
-                No data available
-              </td>
+              {columns.map((col, index) => (
+                <th
+                  key={col.key}
+                  onClick={() => col.sortable && handleSort(col.key)}
+                  className={`px-4 py-3 text-center border-r border-[#6C80C2] ${
+                    index === 0 ? "rounded-tl-xl" : ""
+                  } ${
+                    index === columns.length - 1
+                      ? "rounded-tr-xl border-r-0"
+                      : ""
+                  } ${col.sortable ? "cursor-pointer select-none" : ""}`}
+                >
+                  <div className="flex items-center justify-center gap-1">
+                    {col.label}
+                    {col.sortable && (
+                      <>
+                        {sortKey === col.key ? (
+                          sortOrder === "asc" ? (
+                            <ChevronUp size={14} />
+                          ) : (
+                            <ChevronDown size={14} />
+                          )
+                        ) : (
+                          <ChevronDown size={14} className="opacity-40" />
+                        )}
+                      </>
+                    )}
+                  </div>
+                </th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
 
-      {/* ✅ Pagination */}
-      <div className="flex justify-between items-center px-4 py-3 border-t border-gray-300 bg-gray-50 text-sm text-gray-600">
+          {/* Body */}
+          <tbody className="divide-y divide-[#EDEEEE]">
+            {data.length ? (
+              data.map((row, i) => (
+                <tr
+                  key={i}
+                  className="hover:bg-gray-50 transition-colors even:bg-gray-50/40"
+                >
+                  {columns.map((col) => (
+                    <td
+                      key={col.key}
+                      className="px-4 py-4 text-center whitespace-nowrap relative z-auto"
+                    >
+                      {col.render ? col.render(row) : row[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="py-6 text-center text-gray-500 italic"
+                >
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center px-4 py-3 border-t border-gray-300 bg-gray-50 text-sm text-gray-600 rounded-b-2xl">
         <p>
-          Showing{" "}
-          {(page - 1) * itemsPerPage + 1}–
-          {Math.min(page * itemsPerPage, totalResults)} of{" "}
-          {totalResults} results
+          Showing {(page - 1) * itemsPerPage + 1}–
+          {Math.min(page * itemsPerPage, totalResults)} of {totalResults} results
         </p>
-
 
         {/* Nút phân trang */}
         <div className="flex items-center gap-1">
@@ -126,8 +134,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
           >
             ‹
           </button>
-
-          {/* Hiển thị số trang rút gọn */}
           {Array.from({ length: totalPages }, (_, i) => i + 1)
             .filter(
               (num) =>
@@ -142,16 +148,16 @@ const CommonTable: React.FC<CommonTableProps> = ({
                 )}
                 <button
                   onClick={() => onPageChange(num)}
-                  className={`px-3 py-1 rounded-md ${num === page
+                  className={`px-3 py-1 rounded-md ${
+                    num === page
                       ? "bg-blue-100 text-blue-700 font-semibold"
                       : "hover:bg-gray-100 text-gray-700"
-                    }`}
+                  }`}
                 >
                   {num}
                 </button>
               </React.Fragment>
             ))}
-
           <button
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}

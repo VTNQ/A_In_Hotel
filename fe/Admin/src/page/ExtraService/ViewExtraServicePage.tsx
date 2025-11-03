@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { getAll, updateStatus } from "../../service/api/ExtraService";
 import { getAllCategory } from "../../service/api/Category";
 import ExtraServiceFormModal from "../../components/ExtraService/ExtraServiceFormModal";
-import ActionMenu from "../../components/ui/ActionMenu";
 import { useAlert } from "../../components/alert-context";
 import UpdateExtraServiceFormModal from "../../components/ExtraService/UpdateExtraServiceFormModal";
+import ExtraServiceActionMenu from "../../components/ExtraService/ExtraServiceActionMenu";
 
-const ViewAssetPage = () => {
+const ViewExtraServicePage = () => {
   const [data, setData] = useState<any[]>([]);
   const [category, setCategory] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -170,7 +170,7 @@ const ViewAssetPage = () => {
         </span>
       ),
     },
-    { key: "createdAt", label: "Created Date" },
+    { key: "createdAt", label: "Created Date", sortable: true },
     { key: "updatedAt", label: "Last Updated" },
     {
       key: "status",
@@ -192,8 +192,8 @@ const ViewAssetPage = () => {
       key: "action",
       label: "Action",
       render: (row: any) => (
-        <ActionMenu
-          row={row}
+        <ExtraServiceActionMenu
+          service={row}
           onDeactivate={handleDeactivate}
           onActivate={handleActive}
           onEdit={() => handleEdit(row)}
@@ -203,133 +203,131 @@ const ViewAssetPage = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <div className="flex flex-col flex-1">
-        <main className="flex-1 p-6 overflow-y-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold text-gray-700">
-              Extra Service
-            </h1>
-            <button
-              onClick={() => setShowModal(true)}
-              className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
-            >
-              + New Extra Service
-            </button>
-          </div>
+    <div className="flex flex-col flex-1 bg-gray-50">
 
-          {/* 🔍 Filters */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search by Name or ID"
-                value={searchValue}
-                onChange={handleSearchChange}
-                className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-72 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              />
-            </div>
-
-            {/* Status */}
-            <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
-              <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">
-                Status
-              </div>
-              <div className="relative flex-1">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
-                >
-                  <option value="">All</option>
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Category */}
-            <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
-              <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm whitespace-nowrap">
-                Category
-              </div>
-              <div className="relative flex-1">
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
-                >
-                  <option value="">All</option>
-                  {category.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* ✅ Deactivated checkbox */}
-            <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showDeactivated}
-                onChange={(e) => setShowDeactivated(e.target.checked)}
-                className="w-4 h-4 accent-blue-600"
-              />
-              <span>Deactivated</span>
-            </label>
-          </div>
-
-          {/* Table */}
-          {loading ? (
-            <p className="text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            <CommonTable
-              columns={columns}
-              data={data}
-              page={page}
-              totalPages={totalPages}
-              totalResults={totalResults}
-              sortKey={sortKey}
-              sortOrder={sortOrder}
-              onPageChange={(newPage) => fetchData(newPage)}
-              onSortChange={(key, order) => {
-                setSortKey(key);
-                setSortOrder(order);
-                fetchData(page, key, order);
-              }}
-            />
-          )}
-
-          {/* Modals */}
-          <ExtraServiceFormModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            onSuccess={() => {
-              fetchData();
-              setShowModal(false);
-            }}
-            category={category}
-          />
-          <UpdateExtraServiceFormModal
-            isOpen={showUpdateModal}
-            onClose={handleCloseModal}
-            onSuccess={() => {
-              fetchData();
-              setShowUpdateModal(false);
-            }}
-            category={category}
-            serviceData={selectedService}
-          />
-        </main>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-700">
+          Extra Service
+        </h1>
+        <button
+          onClick={() => setShowModal(true)}
+          className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
+        >
+          + New Extra Service
+        </button>
       </div>
+
+      {/* 🔍 Filters */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search by Name or ID"
+            value={searchValue}
+            onChange={handleSearchChange}
+            className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-72 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
+
+        {/* Status */}
+        <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
+          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">
+            Status
+          </div>
+          <div className="relative flex-1">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
+            >
+              <option value="">All</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Category */}
+        <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
+          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm whitespace-nowrap">
+            Category
+          </div>
+          <div className="relative flex-1">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
+            >
+              <option value="">All</option>
+              {category.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* ✅ Deactivated checkbox */}
+        <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={showDeactivated}
+            onChange={(e) => setShowDeactivated(e.target.checked)}
+            className="w-4 h-4 accent-blue-600"
+          />
+          <span>Deactivated</span>
+        </label>
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <p className="text-gray-500">Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <CommonTable
+          columns={columns}
+          data={data}
+          page={page}
+          totalPages={totalPages}
+          totalResults={totalResults}
+          sortKey={sortKey}
+          sortOrder={sortOrder}
+          onPageChange={(newPage) => fetchData(newPage)}
+          onSortChange={(key, order) => {
+            setSortKey(key);
+            setSortOrder(order);
+            fetchData(page, key, order);
+          }}
+        />
+      )}
+
+      {/* Modals */}
+      <ExtraServiceFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSuccess={() => {
+          fetchData();
+          setShowModal(false);
+        }}
+        category={category}
+      />
+      <UpdateExtraServiceFormModal
+        isOpen={showUpdateModal}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          fetchData();
+          setShowUpdateModal(false);
+        }}
+        category={category}
+        serviceData={selectedService}
+      />
+
     </div>
   );
 };
 
-export default ViewAssetPage;
+export default ViewExtraServicePage;

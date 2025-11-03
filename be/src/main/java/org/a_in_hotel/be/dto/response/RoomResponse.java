@@ -1,11 +1,14 @@
 package org.a_in_hotel.be.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,10 +16,10 @@ public class RoomResponse {
     private Long id;
     private String roomNumber;
     private String roomName;
-    private String assetName;
     private String roomCode;
+    private Integer capacity;
     private String roomTypeName;
-    private String status;
+    private Integer status;
     private BigDecimal defaultRate;
     private Integer floor;
     private Double area;
@@ -26,5 +29,9 @@ public class RoomResponse {
     private Integer hourlyBaseDuration;
     private BigDecimal hourlyAdditionalPrice;
     private BigDecimal overnightPrice;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private LocalDateTime updatedAt;
 }
 
