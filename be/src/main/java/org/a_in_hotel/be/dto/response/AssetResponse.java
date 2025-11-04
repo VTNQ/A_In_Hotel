@@ -22,12 +22,13 @@ public class AssetResponse {
 
     private Long hotelId;
     private String hotelName;
-
+    private Long roomId;
+    private String roomName;
     private BigDecimal price;
     private Integer quantity;
 
-    private AssetStatus status;
-    private String notes;
+    private Integer status;
+    private String note;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private LocalDateTime createdAt;

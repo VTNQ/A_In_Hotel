@@ -18,8 +18,6 @@ public class AssetUpdateRequest {
     @NotNull
     private Long categoryId;
 
-    private Long hotelId;
-
     @NotNull @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal price;
 
@@ -27,7 +25,7 @@ public class AssetUpdateRequest {
     private Integer quantity;
 
     @NotNull
-    private AssetStatus status;
+    private Integer status=1;
 
     @Size(max = 2000)
     private String notes;

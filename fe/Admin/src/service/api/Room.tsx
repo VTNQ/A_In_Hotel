@@ -1,7 +1,7 @@
 import type { GetAllOptions } from "../../type";
 import Http from "../http/http";
 
-export const getAll = async (options: GetAllOptions = {}) => {
+export const getAllRoom = async (options: GetAllOptions = {}) => {
     const {
         page = 1,
         size = 5,

@@ -46,17 +46,22 @@ const UpdateExtraServiceFormModal = ({
     const handleUpdate = async () => {
         setLoading(true);
         try {
-            const payload = {
-                serviceName: formData.serviceName.trim(),
-                price: Number(formData.price),
-                categoryId: Number(formData.categoryId),
-                unit: formData.unit.trim(),
-                description: formData.description.trim(),
-                currency: "VNĐ",
-                note: formData.note.trim(),
-            };
+            const cleanedData = Object.fromEntries(
+                Object.entries({
+                    serviceName: formData.serviceName.trim(),
+                    price: Number(formData.price),
+                    categoryId: Number(formData.categoryId),
+                    unit: formData.unit.trim(),
+                    description: formData.description.trim(),
+                    currency: "VNĐ",
+                    note: formData.note.trim(),
+                }).map(([key, value]) => [
+                  key,
+                  value?.toString().trim() === "" ? null : value,
+                ])
+              );
 
-            const response = await updateExtraService(Number(formData.id),payload);
+            const response = await updateExtraService(Number(formData.id),cleanedData);
             const message =
                 response?.data?.message || "Extra service updated successfully!";
 

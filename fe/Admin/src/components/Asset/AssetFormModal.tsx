@@ -1,137 +1,123 @@
-import { useState } from "react";
+import { useState } from "react"
+import type { AssetFormModalProps } from "../../type"
 import CommonModal from "../ui/CommonModal";
-import type { ExtraServiceFormModalProps } from "../../type";
-import { addExtraService } from "../../service/api/ExtraService";
 import { useAlert } from "../alert-context";
+import { createAsset } from "../../service/api/Asset";
 
-const ExtraServiceFormModal = ({
+const AssetFormModal = ({
     isOpen,
     onClose,
     onSuccess,
     category,
-}: ExtraServiceFormModalProps) => {
-    const [formData, setFormData] = useState({
-        serviceName: "",
-        price: "",
-        categoryId: "",
-        unit: "",
-        description: "",
-        note: "",
-    });
-
+    room
+}: AssetFormModalProps) => {
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
-
-    // ✅ Xử lý thay đổi input
+    const [formData, setFormData] = useState({
+        assetName: "",
+        categoryId: "",
+        price: "",
+        quantity: "",
+        note: "",
+        roomId: ""
+    });
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
-    // ✅ Xử lý lưu (khi bấm Save)
     const handleSave = async () => {
-        setLoading(true);
+        setLoading(true)
         try {
             const cleanedData = Object.fromEntries(
                 Object.entries({
-                    serviceName: formData.serviceName.trim(),
-                    price: Number(formData.price),
-                    categoryId: Number(formData.categoryId),
-                    unit: formData.unit.trim(),
-                    description: formData.description.trim(),
-                    currency: "VNĐ",
-                    isActive: true,
-                    note: formData.note.trim(),
+                  assetName: formData.assetName,
+                  categoryId: formData.categoryId,
+                  roomId: formData.roomId,
+                  price: formData.price,
+                  quantity: formData.quantity,
+                  note: formData.note,
                 }).map(([key, value]) => [
                   key,
                   value?.toString().trim() === "" ? null : value,
                 ])
               );
-            const response = await addExtraService(cleanedData);
-
-            // ✅ response có thể là AxiosResponse hoặc đã unwrap data
-            const message =
-                response?.data?.message ||
-                "Extra service created successfully!";
-
+            const response = await createAsset(cleanedData);
             showAlert({
-                title: message,
+                title: response?.data?.message || "Asset created successfully.",
                 type: "success",
                 autoClose: 3000,
             });
-
-            // Reset form và callback
             setFormData({
-                serviceName: "",
-                price: "",
+                assetName: "",
                 categoryId: "",
-                unit: "",
-                description: "",
+                price: "",
+                quantity: "",
                 note: "",
+                roomId: ""
             });
-
-            onSuccess?.();
-            onClose();
+            onSuccess();
         } catch (err: any) {
             console.error("Create error:", err);
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create extra service. Please try again.",
+                    "Failed to create asset. Please try again.",
                 type: "error",
                 autoClose: 4000,
             });
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
-
+    }
     return (
         <CommonModal
             isOpen={isOpen}
             onClose={onClose}
-            title="Create New Extra Service"
             onSave={handleSave}
+            title="Create New Asset"
             saveLabel={loading ? "Saving..." : "Save"}
             cancelLabel="Cancel"
         >
             <div className="grid grid-cols-2 gap-4">
-                {/* Service Name */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Service Name <span className="text-red-500">*</span>
+                        Asset Name <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
-                        name="serviceName"
-                        value={formData.serviceName}
+                        name="assetName"
+                        value={formData.assetName}
                         onChange={handleChange}
-                        placeholder="Enter service name"
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
                     />
-                </div>
 
-                {/* Price */}
+                </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Price (VNĐ) <span className="text-red-500">*</span>
+                        Room <span className="text-red-500">*</span>
                     </label>
-                    <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
+                    <select
+                        name="roomId"
+                        value={formData.roomId}
                         onChange={handleChange}
-                        placeholder="Enter price"
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        min={0}
                         required
-                    />
+                    >
+                        <option value="">Select Room</option>
+                        {room.length > 0 ? (
+                            room.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                    {item.roomNumber}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
                 </div>
-
-                {/* Category */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Category <span className="text-red-500">*</span>
@@ -155,43 +141,35 @@ const ExtraServiceFormModal = ({
                         )}
                     </select>
                 </div>
-
-                {/* Unit */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Unit <span className="text-red-500">*</span>
+                        Price <span className="text-red-500">*</span>
                     </label>
-                    <select
-                        name="unit"
-                        value={formData.unit}
+                    <input
+                        type="text"
+                        name="price"
+                        value={formData.price}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
-                    >
-                        <option value="">Select Unit</option>
-                        <option value="PERNIGHT">Per Night</option>
-                        <option value="PERDAY">Per Day</option>
-                        <option value="PERUSE">Per Use</option>
-                        <option value="PERTRIP">Per Trip</option>
-                    </select>
-                </div>
-
-                {/* Description */}
-                <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
-                    </label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="Enter service description"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        rows={3}
                     />
-                </div>
 
-                {/* Note */}
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Quantity
+                    </label>
+                    <input
+                        type="text"
+                        name="quantity"
+                        value={formData.quantity}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        required
+                    />
+
+                </div>
+                
                 <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Note
@@ -207,7 +185,6 @@ const ExtraServiceFormModal = ({
                 </div>
             </div>
         </CommonModal>
-    );
-};
-
-export default ExtraServiceFormModal;
+    )
+}
+export default AssetFormModal

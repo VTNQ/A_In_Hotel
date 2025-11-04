@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "assets")
 @Data
@@ -36,15 +37,16 @@ public class Asset {
     private Hotel hotel;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 50)
-    private AssetStatus status;
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
+    @Column(name = "status", nullable = false)
+    private Integer status;
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -61,14 +63,13 @@ public class Asset {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
     @PrePersist
     public void prePersist() {
-        if(this.assetCode == null || this.assetCode.isEmpty()) {
+        if (this.assetCode == null || this.assetCode.isEmpty()) {
             this.assetCode = "AS" + String.format("%04d", (int) (Math.random() * 9999));
         }
     }
-    @Enumerated(EnumType.STRING)
-    @Column(name = "previous_status", length = 50)
-    private AssetStatus previousStatus;
+
 
 }

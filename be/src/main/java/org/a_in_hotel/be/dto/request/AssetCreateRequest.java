@@ -12,26 +12,21 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class AssetCreateRequest {
-    @Size(max = 20)
-    private String assetCode; // optional; nếu null sẽ tự sinh
-
-    @NotBlank @Size(max = 255)
+    @NotBlank(message = "Asset Name is required")
+    @Size(max = 255)
     private String assetName;
 
-    @NotNull
+    @NotNull(message = "Category is required")
     private Long categoryId;
-
-    private Long hotelId; // optional
+    private Long roomId;
 
     @NotNull @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal price;
 
     @NotNull @Min(0)
     private Integer quantity;
-
-    @NotNull
-    private AssetStatus status;
+    private Integer status=1;
 
     @Size(max = 2000)
-    private String notes;
+    private String note;
 }
