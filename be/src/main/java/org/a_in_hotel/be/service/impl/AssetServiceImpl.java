@@ -1,11 +1,13 @@
 package org.a_in_hotel.be.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.AssetStatus;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.entity.Asset;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.AssetMapper;
 import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
@@ -13,6 +15,7 @@ import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,7 +39,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     private final HotelRepository hotelRepository;
     private final AssetMapper assetMapper;
     private final SecurityUtils securityUtils;
-    private static final List<String> SEARCH_FIELDS =  List.of("asset_name", "asset_code");
+    private static final List<String> SEARCH_FIELDS =  List.of("assetName", "assetCode");
 
 
     @Override
@@ -44,12 +47,8 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public void save(AssetCreateRequest req) {
         try {
             log.info("➡️ Start creating asset: {}", req.getAssetName());
-            // ✅ Kiểm tra mã tài sản trùng
-            if (req.getAssetCode() != null && assetRepository.existsByAssetCode(req.getAssetCode())) {
-                throw new IllegalArgumentException("Asset code already exists: " + req.getAssetCode());
-            }
             // ✅ Map DTO → Entity
-            Asset asset = assetMapper.toEntity(req);
+            Asset asset = assetMapper.toEntity(req,securityUtils);
             asset.setCreatedBy(securityUtils.getCurrentUserId().toString());
             asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
             // ✅ Lưu DB
@@ -64,59 +63,36 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
 
     @Override
     @Transactional
-    public AssetResponse update(Long id, AssetUpdateRequest req ) {
+    public void update(Long id, AssetUpdateRequest req ) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
 
         categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        if (req.getHotelId() != null) {
-            hotelRepository.findById(req.getHotelId())
-                    .orElseThrow(() -> new IllegalArgumentException("Room not found"));
-        }
 
-        assetMapper.updateEntity(asset, req);
+        assetMapper.updateEntity(asset, req,securityUtils);
         asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-        Asset saved = assetRepository.save(asset);
-
-        log.info("[ASSET][UPDATE] id={}, code={}, by={}", saved.getId(), saved.getAssetCode(), securityUtils.getCurrentUserId().toString());
-
-        return assetMapper.toResponse(saved);
+        assetRepository.save(asset);
     }
 
     @Override
     @Transactional
-    public AssetResponse updateStatus(Long id, AssetStatusUpdateRequest req) {
-        Asset asset = assetRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
-
-        AssetStatus oldStatus = asset.getStatus();
-        AssetStatus newStatus = req.getStatus();
-
-        // ✅ Nếu request không gửi status → hiểu là toggle DEACTIVATED
-        if (newStatus == null) {
-            if (oldStatus != AssetStatus.DEACTIVATED) {
-                asset.setPreviousStatus(oldStatus);
-                asset.setStatus(AssetStatus.DEACTIVATED);
-            } else {
-                AssetStatus restore = Optional.ofNullable(asset.getPreviousStatus())
-                        .orElse(AssetStatus.GOOD);
-                asset.setStatus(restore);
-                asset.setPreviousStatus(null);
+    public void updateStatus(Long id, Integer status) {
+        try {
+            Asset asset = assetRepository.getReferenceById(id);
+            try {
+                asset.setStatus(status);
+                asset.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+            } catch (IllegalArgumentException e) {
+                throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ: " + status);
             }
-        } else {
-            // ✅ Đổi sang trạng thái cụ thể
-            asset.setPreviousStatus(oldStatus);
-            asset.setStatus(newStatus);
+
+            assetRepository.save(asset);
+            log.info("✅ Cập nhật assert  (ID = {}) -> {}", id, asset.getStatus());
+        }catch (EntityNotFoundException e){
+            log.warn("⚠️ asset with id {} not found: {}", id, e.getMessage());
+            e.printStackTrace();
         }
-
-        asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-        Asset saved = assetRepository.save(asset);
-
-        log.info("[ASSET][STATUS] id={}, code={}, {} -> {}, note={}, by={}",
-                saved.getId(), saved.getAssetCode(), oldStatus, saved.getStatus(), req.getNote(), securityUtils.getCurrentUserId().toString());
-
-        return assetMapper.toResponse(saved);
     }
 
 

@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAll, updateStatus } from "../../service/api/Room";
+import { getAllRoom, updateStatus } from "../../service/api/Room";
 import CommonTable from "../../components/ui/CommonTable";
 import RoomFormModal from "../../components/Room/RoomFormModal";
 import { getAllCategory } from "../../service/api/Category";
@@ -67,7 +67,7 @@ const ViewRoomPage = () => {
         searchValue: searchValue,
         ...(filterQuery ? { filter: filterQuery } : {})
       };
-      const resp = await getAll(params);
+      const resp = await getAllRoom(params);
       setData(resp.data?.content || []);
       setTotalPages(resp?.data?.totalPages || 1);
       setTotalResults(resp?.data?.totalElements || 0);

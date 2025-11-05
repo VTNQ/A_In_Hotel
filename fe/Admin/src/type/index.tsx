@@ -31,6 +31,16 @@ export interface ExtraServiceFormModalProps {
     onSuccess: () => void;
     category: any[];
 }
+export interface AssetFormModalProps{
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
+    category: any[];
+    room:any[];
+}
+export interface UpdateAssetFormModalProps extends AssetFormModalProps {
+    assetData: any; // dữ liệu asset cần sửa
+}
 export interface RoomFormModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -51,6 +61,17 @@ export interface RoomActionMenuProps {
         status?: number;
         [key: string]: any; // Cho phép các field khác (roomCode, name, ...)
     };
+    onView?: (room: any) => void;
+    onEdit?: (room: any) => void;
+    onActivate?: (room: any) => void;
+    onDeactivate?: (room: any) => void;
+    onMaintenance?: (room: any) => void;
+}
+export interface AssetActionMenuProps {
+    asset: {
+        status?:number;
+        [key: string]: any;
+    }
     onView?: (room: any) => void;
     onEdit?: (room: any) => void;
     onActivate?: (room: any) => void;

@@ -19,6 +19,13 @@ public class SecurityUtils {
         }
         return jwtService.extractUserId(token);
     }
+    public Long getHotelId(){
+        String token = extractToken();
+        if (token == null) {
+            throw new RuntimeException("Token không hợp lệ hoặc không tồn tại!");
+        }
+        return jwtService.extractHotelId(token);
+    }
     /**
      * ✅ Lấy email (username) từ JWT token hiện tại
      */

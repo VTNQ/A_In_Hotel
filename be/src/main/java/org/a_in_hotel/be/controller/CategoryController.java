@@ -1,5 +1,6 @@
 package org.a_in_hotel.be.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
@@ -9,6 +10,7 @@ import org.a_in_hotel.be.service.CategoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +22,7 @@ public class CategoryController {
 
     // 👉 Tạo mới category
     @PostMapping
-    public ResponseEntity<RequestResponse<Void>> create(@RequestBody CategoryDTO dto) {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @RequestBody  CategoryDTO dto) {
         categoryService.create(dto);
         return ResponseEntity.ok(RequestResponse.success("Thêm category thành công"));
     }
@@ -28,7 +30,7 @@ public class CategoryController {
     // 👉 Cập nhật category theo id
     @PutMapping("/{id}")
     public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,
-                                              @RequestBody CategoryDTO dto) {
+                                              @Valid @RequestBody CategoryDTO dto) {
         try {
             categoryService.update(id, dto);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật danh mục thành công"));

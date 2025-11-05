@@ -4,6 +4,7 @@ import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.ImageRoomResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
@@ -66,13 +67,25 @@ public interface CommonMapper {
         c.setId(id);
         return c;
     }
-
+    @Named("mapRoom")
+    default Room mapRoom(Long id) {
+        if (id == null) return null;
+        Room r = new Room();
+        r.setId(id);
+        return r;
+    }
     @Named("mapHotel")
     default Hotel mapHotel(Long id) {
         if (id == null) return null;
         Hotel r = new Hotel();
         r.setId(id);
         return r;
+    }
+    default Hotel mapHotelFromToken(SecurityUtils securityUtils) {
+        Long hotelId = securityUtils.getHotelId();
+        Hotel hotel = new Hotel();
+        hotel.setId(hotelId);
+        return hotel;
     }
 
     @Named("mapRoomTypeFromId")

@@ -57,9 +57,28 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
         type: "error",
         autoClose: 3000
       })
+    }finally{
+      setLoading(false)
     }
   }
-
+  const handleCancel=()=>{
+    setFormData({
+      roomNumber: "",
+      roomName: "",
+      idRoomType: "",
+      defaultRate: "",
+      area: "",
+      capacity: "",
+      floor: "",
+      hourlyBasePrice: "",
+      hourlyAdditionalPrice: "",
+      overnightPrice: "",
+      note: "",
+      images: [] as File[],
+    });
+    setMainImageIndex(null);
+    onClose();
+  }
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -70,7 +89,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
   return (
     <CommonModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleCancel}
       title="Create Room"
       onSave={handleSave}
       saveLabel={loading ? "Saving..." : "Save"}
@@ -114,7 +133,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                   value={formData.roomNumber}
                   onChange={handleChange}
                   placeholder="Enter room number"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   required
                 />
               </div>
@@ -178,7 +197,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Room Type
+                  Room Type <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="idRoomType"
@@ -202,7 +221,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price / Full Day
+                  Price / Full Day <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -210,7 +229,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                   value={formData.defaultRate}
                   onChange={handleChange}
                   placeholder="e.g. 1,000,000"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
             </div>
@@ -322,7 +341,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                 onChange={handleChange}
                 rows={4}
                 placeholder="Any additional info..."
-                className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               ></textarea>
             </div>
           </motion.div>
@@ -346,7 +365,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                   value={formData.hourlyBasePrice}
                   onChange={handleChange}
                   placeholder="e.g. 300,000"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
 
@@ -360,7 +379,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                   value={formData.hourlyAdditionalPrice}
                   onChange={handleChange}
                   placeholder="e.g. 80,000"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
 
@@ -374,7 +393,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
                   value={formData.overnightPrice}
                   onChange={handleChange}
                   placeholder="e.g. 500,000"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
             </div>
