@@ -18,6 +18,7 @@ public class RoomResponse {
     private String roomName;
     private String roomCode;
     private Integer capacity;
+    private Long idRoomType;
     private String roomTypeName;
     private Integer status;
     private BigDecimal defaultRate;

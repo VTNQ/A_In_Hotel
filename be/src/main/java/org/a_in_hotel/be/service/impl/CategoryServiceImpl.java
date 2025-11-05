@@ -16,6 +16,7 @@ import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
+import org.a_in_hotel.be.repository.projection.KeyCount;
 import org.a_in_hotel.be.service.CategoryService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,14 +105,32 @@ public class CategoryServiceImpl implements CategoryService {
             Specification<Category>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
             Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
             Page<Category> result = repo.findAll(sortable.and(filterable).and(searchable), pageable);
-            result.forEach(category -> {
-                Long capacity = switch (category.getType()) {
-                    case 1 -> roomRepository.countByRoomTypeId(category.getId());
-                    case 2 -> extraServiceRepository.countByCategoryId(category.getId());
-                    case 3 -> assetRepository.countByCategoryId(category.getId());
+            List<Category>list=result.getContent();
+            if(list.isEmpty())return result.map(mapper::toDTO);
+            List<Long> roomIds = list.stream().filter(c -> c.getType() == 1).map(Category::getId).toList();
+            List<Long> extraIds = list.stream().filter(c -> c.getType() == 2).map(Category::getId).toList();
+            List<Long> assetIds = list.stream().filter(c -> c.getType() == 3).map(Category::getId).toList();
+            Map<Long, Long> roomMap = roomIds.isEmpty() ? Map.of() :
+                    roomRepository.countByRoomTypeIds(roomIds).stream()
+                            .collect(Collectors.toMap(KeyCount::getKeyId, KeyCount::getCnt));
+
+            Map<Long, Long> extraMap = extraIds.isEmpty() ? Map.of() :
+                    extraServiceRepository.countByCategoryIds(extraIds).stream()
+                            .collect(Collectors.toMap(KeyCount::getKeyId, KeyCount::getCnt));
+
+            Map<Long, Long> assetMap = assetIds.isEmpty() ? Map.of() :
+                    assetRepository.countByCategoryIds(assetIds).stream()
+                            .collect(Collectors.toMap(KeyCount::getKeyId, KeyCount::getCnt));
+
+            // Gán capacity
+            list.forEach(c -> {
+                long cap = switch (c.getType()) {
+                    case 1 -> roomMap.getOrDefault(c.getId(), 0L);
+                    case 2 -> extraMap.getOrDefault(c.getId(), 0L);
+                    case 3 -> assetMap.getOrDefault(c.getId(), 0L);
                     default -> 0L;
                 };
-                category.setCapacity(capacity);
+                c.setCapacity(cap);
             });
             return result.map(mapper::toDTO);
         }catch (Exception e){

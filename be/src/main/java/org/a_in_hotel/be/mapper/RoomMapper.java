@@ -33,6 +33,7 @@ public interface RoomMapper extends CommonMapper {
     void updateEntity(RoomRequest request, @MappingTarget Room entity, Long userId);
     // ========== RESPONSE ==========
     @Mapping(target = "roomTypeName", source = "roomType.name")
+    @Mapping(target = "idRoomType",source = "roomType.id")
     @Mapping(target = "images", expression = "java(mapImages(room.getImages()))")
     @Mapping(target = "hourlyBasePrice", expression = "java(getBigDecimalPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"basePrice\"))")
     @Mapping(target = "hourlyBaseDuration", expression = "java(getIntegerPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"baseDurationHours\"))")

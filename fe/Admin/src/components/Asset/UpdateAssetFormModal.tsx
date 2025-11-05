@@ -1,40 +1,41 @@
 import { useEffect, useState } from "react";
-import type { UpdateExtraServiceFormModalProps } from "../../type";
+import type { UpdateAssetFormModalProps } from "../../type";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
-import { updateExtraService } from "../../service/api/ExtraService";
+import { updateAsset } from "../../service/api/Asset";
 
-const UpdateExtraServiceFormModal = ({
+const UpdateAssetFormModal = ({
     isOpen,
     onClose,
     onSuccess,
     category,
-    serviceData,
-}: UpdateExtraServiceFormModalProps) => {
+    room,
+    assetData
+}: UpdateAssetFormModalProps) => {
     const [formData, setFormData] = useState({
-        id: "",
-        serviceName: "",
-        price: "",
+        assetName: "",
         categoryId: "",
-        unit: "",
-        description: "",
+        price: "",
+        quantity: "",
         note: "",
+        roomId: "",
+        status:"",
     });
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
     useEffect(() => {
-        if (serviceData) {
+        if (assetData) {
             setFormData({
-                id: serviceData.id || "",
-                serviceName: serviceData.serviceName || "",
-                price: serviceData.price || "",
-                categoryId: serviceData.categoryId || "",
-                unit: serviceData.unit || "",
-                description: serviceData.description || "",
-                note: serviceData.note || "",
-            });
+                assetName: assetData.assetName || "",
+                categoryId: assetData.categoryId || "",
+                status:assetData.status || "",
+                price: assetData.price || 0,
+                quantity: assetData.quantity || 0,
+                note: assetData.note || "",
+                roomId: assetData.roomId || ""
+            })
         }
-    }, [serviceData, isOpen]);
+    }, [assetData, isOpen])
     const handleChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -46,103 +47,96 @@ const UpdateExtraServiceFormModal = ({
     const handleUpdate = async () => {
         setLoading(true);
         try {
-            const cleanedData = Object.fromEntries(
-                Object.entries({
-                    serviceName: formData.serviceName.trim(),
-                    price: Number(formData.price),
-                    categoryId: Number(formData.categoryId),
-                    unit: formData.unit.trim(),
-                    description: formData.description.trim(),
-                    currency: "VNĐ",
-                    note: formData.note.trim(),
-                }).map(([key, value]) => [
-                    key,
-                    value?.toString().trim() === "" ? null : value,
-                ])
-            );
-
-            const response = await updateExtraService(Number(formData.id), cleanedData);
-            const message =
-                response?.data?.message || "Extra service updated successfully!";
-
+            const payload = {
+                assetName: formData.assetName,
+                categoryId: formData.categoryId,
+                roomId: formData.roomId,
+                price: formData.price,
+                quantity: formData.quantity,
+                note: formData.note
+            }
+            const response=await updateAsset(assetData.id,payload);
+            const message = response?.data?.message || "Asset updated successfully.";
             showAlert({
-                title: message,
-                type: "success",
-                autoClose: 3000,
-            });
-
-            onSuccess?.();
-            onClose();
+               title: message,
+               type: "success",
+               autoClose: 3000,
+           });
+         
+           onSuccess?.();
+           onClose();
         } catch (err: any) {
             console.error("Update error:", err);
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update extra service. Please try again.",
+                    "Failed to update asset. Please try again.",
                 type: "error",
                 autoClose: 4000,
-            });
-        } finally {
-            setLoading(false);
+            })
+        }finally{
+            setLoading(false)
         }
-    };
-    const handleCancel = () => {
+    }
+    const handleCancel=()=>{
         setFormData({
-            id: "",
-            serviceName: "",
-            price: "",
+            assetName: "",
             categoryId: "",
-            unit: "",
-            description: "",
+            price: "",
+            quantity: "",
             note: "",
+            roomId: "",
+            status:"",
         })
         onClose();
     }
-
     return (
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
-            title="Update Extra Service"
             onSave={handleUpdate}
+            title="Update Asset"
             saveLabel={loading ? "Updating..." : "Update"}
             cancelLabel="Cancel"
         >
             <div className="grid grid-cols-2 gap-4">
-                {/* Service Name */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Service Name <span className="text-red-500">*</span>
+                        Asset Name <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
-                        name="serviceName"
-                        value={formData.serviceName}
+                        name="assetName"
+                        value={formData.assetName}
                         onChange={handleChange}
-                        placeholder="Enter service name"
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
                     />
-                </div>
 
-                {/* Price */}
+                </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Price (VNĐ) <span className="text-red-500">*</span>
+                        Room <span className="text-red-500">*</span>
                     </label>
-                    <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
+                    <select
+                        name="roomId"
+                        value={formData.roomId}
                         onChange={handleChange}
-                        placeholder="Enter price"
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        min={0}
                         required
-                    />
+                    >
+                        <option value="">Select Room</option>
+                        {room.length > 0 ? (
+                            room.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                    {item.roomNumber}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading...</option>
+                        )}
+                    </select>
                 </div>
-
-                {/* Category */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Category <span className="text-red-500">*</span>
@@ -166,43 +160,48 @@ const UpdateExtraServiceFormModal = ({
                         )}
                     </select>
                 </div>
-
-                {/* Unit */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Unit <span className="text-red-500">*</span>
+                        Price <span className="text-red-500">*</span>
                     </label>
-                    <select
-                        name="unit"
-                        value={formData.unit}
+                    <input
+                        type="text"
+                        name="price"
+                        value={formData.price}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
-                    >
-                        <option value="">Select Unit</option>
-                        <option value="PERNIGHT">Per Night</option>
-                        <option value="PERDAY">Per Day</option>
-                        <option value="PERUSE">Per Use</option>
-                        <option value="PERTRIP">Per Trip</option>
+                    />
+
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                    </label>
+                    <select className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                    value={formData.status} name="status" onChange={handleChange}>
+                    <option value="0">All</option>
+                            <option value="1">GOOD</option>
+                            <option value="2">MAINTENANCE</option>
+                            <option value="3">BROKEN</option>
+                            <option value="4">DEACTIVATED</option>
                     </select>
                 </div>
-
-                {/* Description */}
-                <div className="col-span-2">
+                <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
+                        Quantity
                     </label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
+                    <input
+                        type="text"
+                        name="quantity"
+                        value={formData.quantity}
                         onChange={handleChange}
-                        placeholder="Enter service description"
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        rows={3}
+                        required
                     />
+
                 </div>
 
-                {/* Note */}
                 <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Note
@@ -218,6 +217,6 @@ const UpdateExtraServiceFormModal = ({
                 </div>
             </div>
         </CommonModal>
-    );
+    )
 }
-export default UpdateExtraServiceFormModal;
+export default UpdateAssetFormModal;

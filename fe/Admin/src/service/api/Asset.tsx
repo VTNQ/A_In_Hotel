@@ -16,3 +16,13 @@ export const getAllAsset=async(options:GetAllOptions={})=>{
     });
     return resp.data;
 }
+export const createAsset=async(assetData:any)=>{
+    return await Http.post("/api/assets",assetData)
+}
+export const updateAsset=async(id:number,assetData:any)=>{
+    return await Http.put(`/api/assets/${id}`,assetData)
+}
+export const updateStatus=async(id:number,status:number)=>{
+    return await Http.patch(`/api/assets/updateStatus/${id}?status=${status}`)
+
+}

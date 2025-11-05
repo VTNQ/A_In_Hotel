@@ -1,5 +1,6 @@
 package org.a_in_hotel.be.dto.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,10 +16,11 @@ import org.a_in_hotel.be.Enum.CategoryType;
 @Builder
 public class CategoryDTO {
 
-    @NotBlank
+    @NotBlank(message = "Name is required")
     @Size(max = 120)
     private String name;
 
-    @NotNull
+    @NotNull(message = "Type is required")
+    @Min(value = 1,message = "Type is required")
     private Integer type;
 }

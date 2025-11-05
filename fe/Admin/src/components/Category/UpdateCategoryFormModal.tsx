@@ -37,12 +37,17 @@ const UpdateCategoryFormModal = ({
     const handleUpdate = async () => {
         setLoading(true);
         try {
-            const payload = {
-                name: formData.name.trim(),
-                type: formData.type.trim()
-            };
+            const cleanedData = Object.fromEntries(
+                Object.entries({
+                    name: formData.name,
+                    type: formData.type
+                }).map(([key, value]) => [
+                  key,
+                  value?.toString().trim() === "" ? null : value,
+                ])
+              );
             
-            const response = await updateCategory(Number(formData.id),payload);
+            const response = await updateCategory(Number(formData.id),cleanedData);
             const message = response?.data?.message || "Category updated successfully.";
              showAlert({
                 title: message,
@@ -65,10 +70,18 @@ const UpdateCategoryFormModal = ({
             setLoading(false);
         }
     }
+    const handleCancel=()=>{
+        setFormData({
+            id: "",
+            name: "",
+            type: ""
+        })
+        onClose();
+    }
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             onSave={handleUpdate}
             title="Update Category"
             saveLabel={loading ? "Updating..." : "Update"}

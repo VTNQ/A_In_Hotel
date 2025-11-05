@@ -23,14 +23,15 @@ public class AssetController {
     // ===================== DANH SÁCH =====================
     @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<AssetResponse>>> list(
-            @RequestParam(required = false, name = "search") String q,
-            @RequestParam(required = false, name = "filter") String rsql,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id,desc") String sort,
-            @RequestParam(required = false)boolean all
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String searchField,
+            @RequestParam(required = false) String searchValue,
+            @RequestParam(required = false) boolean all
     ) {
-        var result = assetService.findAll(page, size, sort, rsql, "asset_name", q, all);
+        var result = assetService.findAll(page, size, sort, filter, searchField, searchValue, all);
         return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
     }
 
@@ -51,23 +52,18 @@ public class AssetController {
             @PathVariable Long id,
             @Valid @RequestBody AssetUpdateRequest req
     ) {
-        AssetResponse res = assetService.update(id, req);
-        return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật asset thành công"));
+        assetService.update(id, req);
+        return ResponseEntity.ok(RequestResponse.success( "Cập nhật asset thành công"));
     }
 
     // ===================== CẬP NHẬT / TOGGLE TRẠNG THÁI =====================
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<RequestResponse<AssetResponse>> updateStatus(
             @PathVariable Long id,
-            @Valid @RequestBody(required = false) AssetStatusUpdateRequest req, // có thể null nếu toggle
-            @RequestHeader("Authorization") String authHeader
+            @RequestParam Integer status
     ) {
-
-        // Nếu client không gửi body, tạo request rỗng để toggle
-        if (req == null) req = new AssetStatusUpdateRequest();
-
-        AssetResponse res = assetService.updateStatus(id, req);
-        return ResponseEntity.ok(RequestResponse.success(res, "Cập nhật trạng thái thành công"));
+        assetService.updateStatus(id, status);
+        return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái thành công"));
     }
 
     // ===================== CHI TIẾT =====================
