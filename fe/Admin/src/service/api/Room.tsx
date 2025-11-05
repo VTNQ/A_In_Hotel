@@ -19,24 +19,32 @@ export const getAllRoom = async (options: GetAllOptions = {}) => {
 export const createRoom = async (roomData: any) => {
     const formData = new FormData();
     Object.entries(roomData).forEach(([key, value]) => {
-        if (key !== "images") formData.append(key, String(value));
+        if (key !== "images") {
+            if (value !== null && value !== undefined) {
+                formData.append(key, value.toString());
+            }
+        }
     });
-    roomData.images?.forEach((img:File)=>formData.append("image",img))
-    return await Http.post("/api/rooms/create",formData,{
+    roomData.images?.forEach((img: File) => formData.append("image", img))
+    return await Http.post("/api/rooms/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
     })
 }
-export const updateRoom = async (id:number,roomData: any) => {
+export const updateRoom = async (id: number, roomData: any) => {
     const formData = new FormData();
     Object.entries(roomData).forEach(([key, value]) => {
-        if (key !== "images") formData.append(key, String(value));
+        if (key !== "images") {
+            if (value !== null && value !== undefined) {
+                formData.append(key, value.toString());
+            }
+        }
     });
-    roomData.images?.forEach((img:File)=>formData.append("image",img))
-    return await Http.put(`/api/rooms/update/${id}`,formData,{
+    roomData.images?.forEach((img: File) => formData.append("image", img))
+    return await Http.put(`/api/rooms/update/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
     })
 }
-export const updateStatus = async (id:number,status:number)=>{
+export const updateStatus = async (id: number, status: number) => {
     return await Http.patch(`/api/rooms/updateStatus/${id}?status=${status}`)
 
 }

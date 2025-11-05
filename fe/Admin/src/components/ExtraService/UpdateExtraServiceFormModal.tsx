@@ -56,12 +56,12 @@ const UpdateExtraServiceFormModal = ({
                     currency: "VNĐ",
                     note: formData.note.trim(),
                 }).map(([key, value]) => [
-                  key,
-                  value?.toString().trim() === "" ? null : value,
+                    key,
+                    value?.toString().trim() === "" ? null : value,
                 ])
-              );
+            );
 
-            const response = await updateExtraService(Number(formData.id),cleanedData);
+            const response = await updateExtraService(Number(formData.id), cleanedData);
             const message =
                 response?.data?.message || "Extra service updated successfully!";
 
@@ -86,11 +86,23 @@ const UpdateExtraServiceFormModal = ({
             setLoading(false);
         }
     };
+    const handleCancel = () => {
+        setFormData({
+            id: "",
+            serviceName: "",
+            price: "",
+            categoryId: "",
+            unit: "",
+            description: "",
+            note: "",
+        })
+        onClose();
+    }
 
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             title="Update Extra Service"
             onSave={handleUpdate}
             saveLabel={loading ? "Updating..." : "Update"}

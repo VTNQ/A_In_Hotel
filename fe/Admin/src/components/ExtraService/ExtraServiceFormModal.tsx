@@ -29,7 +29,17 @@ const ExtraServiceFormModal = ({
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
+    const handleCancel=()=>{
+        setFormData({
+            serviceName: "",
+            price: "",
+            categoryId: "",
+            unit: "",
+            description: "",
+            note: "",
+        })
+        onClose();
+    }
     // ✅ Xử lý lưu (khi bấm Save)
     const handleSave = async () => {
         setLoading(true);
@@ -91,7 +101,7 @@ const ExtraServiceFormModal = ({
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             title="Create New Extra Service"
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}

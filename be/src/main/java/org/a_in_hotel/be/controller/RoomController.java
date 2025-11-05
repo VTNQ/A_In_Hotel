@@ -28,14 +28,8 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
+
         try {
             roomService.save(request, images);
             return ResponseEntity.ok(RequestResponse.success("Thêm phòng thành công"));

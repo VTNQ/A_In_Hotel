@@ -18,7 +18,8 @@ const UpdateAssetFormModal = ({
         price: "",
         quantity: "",
         note: "",
-        roomId: ""
+        roomId: "",
+        status:"",
     });
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
@@ -27,6 +28,7 @@ const UpdateAssetFormModal = ({
             setFormData({
                 assetName: assetData.assetName || "",
                 categoryId: assetData.categoryId || "",
+                status:assetData.status || "",
                 price: assetData.price || 0,
                 quantity: assetData.quantity || 0,
                 note: assetData.note || "",
@@ -76,10 +78,22 @@ const UpdateAssetFormModal = ({
             setLoading(false)
         }
     }
+    const handleCancel=()=>{
+        setFormData({
+            assetName: "",
+            categoryId: "",
+            price: "",
+            quantity: "",
+            note: "",
+            roomId: "",
+            status:"",
+        })
+        onClose();
+    }
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             onSave={handleUpdate}
             title="Update Asset"
             saveLabel={loading ? "Updating..." : "Update"}
@@ -159,6 +173,19 @@ const UpdateAssetFormModal = ({
                         required
                     />
 
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                    </label>
+                    <select className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                    value={formData.status} name="status" onChange={handleChange}>
+                    <option value="0">All</option>
+                            <option value="1">GOOD</option>
+                            <option value="2">MAINTENANCE</option>
+                            <option value="3">BROKEN</option>
+                            <option value="4">DEACTIVATED</option>
+                    </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">

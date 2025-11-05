@@ -71,10 +71,21 @@ const AssetFormModal = ({
             setLoading(false)
         }
     }
+    const handleCancel=()=>{
+        setFormData({
+            assetName: "",
+            categoryId: "",
+            price: "",
+            quantity: "",
+            note: "",
+            roomId: ""
+        })
+        onClose();
+    }
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             onSave={handleSave}
             title="Create New Asset"
             saveLabel={loading ? "Saving..." : "Save"}

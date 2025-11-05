@@ -22,7 +22,7 @@ public class CategoryController {
 
     // 👉 Tạo mới category
     @PostMapping
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @RequestBody  CategoryDTO dto, BindingResult result) {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @RequestBody  CategoryDTO dto) {
         categoryService.create(dto);
         return ResponseEntity.ok(RequestResponse.success("Thêm category thành công"));
     }
@@ -30,7 +30,7 @@ public class CategoryController {
     // 👉 Cập nhật category theo id
     @PutMapping("/{id}")
     public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,
-                                              @RequestBody CategoryDTO dto) {
+                                              @Valid @RequestBody CategoryDTO dto) {
         try {
             categoryService.update(id, dto);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật danh mục thành công"));

@@ -34,6 +34,7 @@ const UpdateRoomFormModal = ({
         hourlyAdditionalPrice: "",
         overnightPrice: "",
         note: "",
+        status:"",
         images: [] as File[],
         oldImages: [] as string[], // chứa URL ảnh cũ
     });
@@ -51,6 +52,7 @@ const UpdateRoomFormModal = ({
                 defaultRate: roomData.defaultRate || "",
                 area: roomData.area || "",
                 capacity: roomData.capacity || "",
+                status: roomData.status || "",
                 floor: roomData.floor || "",
                 hourlyBasePrice: roomData.hourlyBasePrice || "",
                 hourlyAdditionalPrice: roomData.hourlyAdditionalPrice || "",
@@ -115,11 +117,29 @@ const UpdateRoomFormModal = ({
             setLoading(false);
         }
     };
-
+    const handleCancel=()=>{
+        setFormData({
+            roomNumber: "",
+            roomName: "",
+            idRoomType: "",
+            defaultRate: "",
+            area: "",
+            capacity: "",
+            floor: "",
+            hourlyBasePrice: "",
+            hourlyAdditionalPrice: "",
+            overnightPrice: "",
+            note: "",
+            status:"",
+            images: [] as File[],
+            oldImages: [] as string[],
+        });
+        onClose();
+      }
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             title="Edit Room"
             onSave={handleUpdate}
             saveLabel={loading ? "Saving..." : "Save Changes"}
@@ -181,6 +201,56 @@ const UpdateRoomFormModal = ({
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Room Type
+                                </label>
+                                <select
+                                    name="idRoomType"
+                                    value={formData.idRoomType}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+                                >
+                                    <option value="">Select Room Type</option>
+                                    {category.map((item) => (
+                                        <option key={item.id} value={item.id}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Price / Full Day
+                                </label>
+                                <input
+                                    type="number"
+                                    name="defaultRate"
+                                    value={formData.defaultRate}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Status
+                                </label>
+                                <select 
+                                value={formData.status}
+                                onChange={handleChange}
+                                name="status"
+                                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400">
+                                    <option value="0">Select Status</option>
+                                    <option value="1">Vacant - Dirty</option>
+                                    <option value="2">Occupied</option>
+                                    <option value="3">Available</option>
+                                    <option value="4">Maintenance</option>
+                                    <option value="4">Blocked</option>
+                                    <option value="4">Deactivated</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Capacity
                                 </label>
                                 <input
@@ -218,37 +288,6 @@ const UpdateRoomFormModal = ({
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Room Type
-                                </label>
-                                <select
-                                    name="idRoomType"
-                                    value={formData.idRoomType}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
-                                >
-                                    <option value="">Select Room Type</option>
-                                    {category.map((item) => (
-                                        <option key={item.id} value={item.id}>
-                                            {item.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Price / Full Day
-                                </label>
-                                <input
-                                    type="number"
-                                    name="defaultRate"
-                                    value={formData.defaultRate}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400"
-                                />
-                            </div>
                         </div>
 
                         {/* --- Image Section --- */}
@@ -286,7 +325,7 @@ const UpdateRoomFormModal = ({
                                                 </button>
                                                 {isMain && (
                                                     <span className="absolute bottom-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
-                                                        🏠 Main Image
+                                                         Main Image
                                                     </span>
                                                 )}
                                             </div>

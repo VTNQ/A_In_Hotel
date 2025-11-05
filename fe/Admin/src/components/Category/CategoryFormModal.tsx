@@ -24,7 +24,16 @@ const CategoryFormModal = ({
     const handleSave = async () => {    
         setLoading(true);
         try {
-            const response = await addCategory(formData);
+            const cleanedData = Object.fromEntries(
+                Object.entries({
+                    name: formData.name,
+                    type: formData.type
+                }).map(([key, value]) => [
+                  key,
+                  value?.toString().trim() === "" ? null : value,
+                ])
+              );
+            const response = await addCategory(cleanedData);
             showAlert({
                 title: response?.data?.message||"Category created successfully.",
                 type: "success",
@@ -35,21 +44,30 @@ const CategoryFormModal = ({
                 type: ""
             });
             onSuccess();
-        } catch (error) {
-            console.error("Error creating category:", error);
+        } catch (err:any) {
+            console.error("Create error:", err);
             showAlert({
-                title: "Failed to create category.",
+                title:
+                    err?.response?.data?.message ||
+                    "Failed to create category. Please try again.",
                 type: "error",
-                autoClose: 3000,
+                autoClose: 4000,
             });
         } finally {
             setLoading(false);
         }
     };
+    const handleCancel=()=>{
+        setFormData({
+            name: "",
+            type: ""
+        })
+        onClose();
+    }
     return (
         <CommonModal
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCancel}
             title="Create Category Service"
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}
