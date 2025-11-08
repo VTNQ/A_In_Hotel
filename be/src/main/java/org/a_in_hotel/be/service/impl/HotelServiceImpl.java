@@ -8,8 +8,10 @@ import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.entity.Hotel;
+import org.a_in_hotel.be.entity.Staff;
 import org.a_in_hotel.be.mapper.HotelMapper;
 import org.a_in_hotel.be.repository.HotelRepository;
+import org.a_in_hotel.be.repository.StaffRepository;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
@@ -39,6 +41,8 @@ public class HotelServiceImpl implements HotelService {
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
+    private StaffRepository staffRepository;
+    @Autowired
     private SecurityUtils securityUtils;
     @Autowired
     private HotelMapper hotelMapper;
@@ -55,9 +59,13 @@ public class HotelServiceImpl implements HotelService {
             // Check duplicate account
             hotelRepository.findByAccount_Id(hotel.getIdUser()) // giả sử HotelRequest có idUser = accountId
                     .ifPresent(existingHotel -> {
+                        String ownerName=staffRepository.findByAccountId(existingHotel.getAccount().getId())
+                                .map(Staff::getFullName)
+                                .orElse(existingHotel.getAccount().getEmail());
+
                         String msg = String.format(
                                 "Tạo khách sạn thất bại. Account %s đã quản lý khách sạn %s",
-                                existingHotel.getAccount().getFullName(), existingHotel.getName()
+                                ownerName, existingHotel.getName()
                         );
                         log.warn(msg);
                         throw new IllegalArgumentException(msg);
@@ -84,9 +92,12 @@ public class HotelServiceImpl implements HotelService {
             Hotel entity = hotelRepository.getReferenceById(id);
             hotelRepository.findByAccount_IdAndIdNot(branch.getIdUser(), id) // giả sử HotelRequest có idUser = accountId
                     .ifPresent(existingHotel -> {
+                        String ownerName=staffRepository.findByAccountId(existingHotel.getAccount().getId())
+                                .map(Staff::getFullName)
+                                .orElse(existingHotel.getAccount().getEmail());
                         String msg = String.format(
                                 "Tạo khách sạn thất bại. Account %s đã quản lý khách sạn %s",
-                                existingHotel.getAccount().getFullName(), existingHotel.getName()
+                                ownerName, existingHotel.getName()
                         );
                         log.warn(msg);
                         throw new IllegalArgumentException(msg);
@@ -132,8 +143,9 @@ public class HotelServiceImpl implements HotelService {
             Specification<Hotel> searchable = SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
 
             Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-            return hotelRepository.findAll(sortable.and(filterable).and(searchable), pageable)
-                    .map(hotelMapper::toResponse);
+            return hotelRepository
+                    .findAll(sortable.and(filterable).and(searchable), pageable)
+                    .map(hotel -> hotelMapper.toResponse(hotel, staffRepository));
         } catch (Exception e) {
             log.error("Failed to fetch hotels", e);
             throw e;

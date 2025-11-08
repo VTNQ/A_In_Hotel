@@ -43,11 +43,16 @@ export interface UpdateAssetFormModalProps extends AssetFormModalProps {
 }
 export interface RoomFormModalProps {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: () => void;    
     onSuccess: () => void;
     category: any[];
 }
 export interface CategoryFormModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
+}
+export interface StaffFormModalProps{
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -88,6 +93,12 @@ export interface Category {
     isActive?: boolean;
     [key: string]: any;
 }
+export interface Staff{
+    id?:number;
+    fullName?:string;
+    isActive?:boolean;
+    [key: string]: any;
+}
 export interface CategoryActionMenuProps {
     category: Category;
     onView?: (category: Category) => void;
@@ -108,6 +119,11 @@ export interface ExtraServiceActionMenuProps {
     service: ExtraService;
     onView?: (service: ExtraService) => void;
     onEdit?: (service: ExtraService) => void;
+    onActivate?: (service: ExtraService) => void;
+    onDeactivate?: (service: ExtraService) => void;
+}
+export interface StaffActionMenuProps {
+    staff: Staff;
     onActivate?: (service: ExtraService) => void;
     onDeactivate?: (service: ExtraService) => void;
 }
