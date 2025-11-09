@@ -38,7 +38,8 @@ public class ExtraService {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private  Category category;
-
+    @Column(name = "price_type",nullable = false)
+    private Integer priceType;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
 

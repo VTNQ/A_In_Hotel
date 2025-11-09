@@ -17,6 +17,7 @@ const ExtraServiceFormModal = ({
         unit: "",
         description: "",
         note: "",
+        priceType:"1"
     });
 
     const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ const ExtraServiceFormModal = ({
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    const handleCancel=()=>{
+    const handleCancel = () => {
         setFormData({
             serviceName: "",
             price: "",
@@ -37,6 +38,7 @@ const ExtraServiceFormModal = ({
             unit: "",
             description: "",
             note: "",
+            priceType:"1"
         })
         onClose();
     }
@@ -54,11 +56,12 @@ const ExtraServiceFormModal = ({
                     currency: "VNĐ",
                     isActive: true,
                     note: formData.note.trim(),
+                    priceType:formData.priceType
                 }).map(([key, value]) => [
-                  key,
-                  value?.toString().trim() === "" ? null : value,
+                    key,
+                    value?.toString().trim() === "" ? null : value,
                 ])
-              );
+            );
             const response = await addExtraService(cleanedData);
 
             // ✅ response có thể là AxiosResponse hoặc đã unwrap data
@@ -80,6 +83,7 @@ const ExtraServiceFormModal = ({
                 unit: "",
                 description: "",
                 note: "",
+                priceType:"1"
             });
 
             onSuccess?.();
@@ -123,7 +127,21 @@ const ExtraServiceFormModal = ({
                         required
                     />
                 </div>
-
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Price Type <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="priceType"
+                        value={formData.priceType}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        required
+                    >
+                        <option value="1">Fixed amount (VND)</option>
+                        <option value="2">% of room price</option>
+                    </select>
+                </div>
                 {/* Price */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">

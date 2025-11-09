@@ -23,79 +23,83 @@ import java.util.UUID;
 public class GeneralService {
     @Value("${minio.bucket-name}")
     private String bucketName;
+    @Value("${app.password.characters}")
+    private String passwordCharacters;
     private final MinioClient minioClient;
+
     public GeneralService(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
+
     private static final String PREFIX = "HOTEL";
+
     public String generateRandomPassword(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-
         for (int i = 0; i < length; i++) {
-            int index = random.nextInt(chars.length());
-            sb.append(chars.charAt(index));
+            int index = random.nextInt(passwordCharacters.length());
+            sb.append(passwordCharacters.charAt(index));
         }
-
         return sb.toString();
     }
-    public FileUploadMeta saveFile(MultipartFile file, String subDirectory) throws IOException, IOException{
-       try {
-           boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
-                   .bucket(bucketName)
-                   .build());
-           if(!found){
-               minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-           }
-           String originalName=file.getOriginalFilename();
-           String extension="";
-           if(originalName !=null && originalName.contains(".")){
-               extension=originalName.substring(originalName.lastIndexOf("."));
-           }
-           String uniqueName= UUID.randomUUID().toString()+extension;
-           String fileName = (subDirectory != null && !subDirectory.isEmpty()
-                   ? subDirectory + "/" : "") + uniqueName;
-           try (InputStream inputStream = file.getInputStream()) {
-               minioClient.putObject(
-                       PutObjectArgs.builder()
-                               .bucket(bucketName)
-                               .object(fileName)
-                               .stream(inputStream,file.getSize(),-1)
-                               .contentType(file.getContentType())
-                               .build()
-               );
-           }
-           FileUploadMeta meta = new FileUploadMeta();
-           meta.setUrl("/" + bucketName + "/" + fileName);
-           meta.setAltText(file.getOriginalFilename());
-           meta.setSizeBytes(file.getSize());
-           meta.setImageType(file.getContentType());
-           try (InputStream is = minioClient.getObject(
-                   GetObjectArgs.builder()
-                           .bucket(bucketName)
-                           .object(fileName)
-                           .build()
-           )) {
-               BufferedImage bufferedImage = ImageIO.read(is);
-               if (bufferedImage != null) {
-                   meta.setWidth(bufferedImage.getWidth());
-                   meta.setHeight(bufferedImage.getHeight());
-               }
-           } catch (Exception e) {
-               throw new RuntimeException("Không thể đọc ảnh từ MinIO: " + e.getMessage(), e);
-           }
-           return meta;
-       }catch (MinioException e){
-           throw new RuntimeException("Lỗi MinIo:"+e.getMessage(),e);
-       }catch (Exception e){
-           throw new RemoteException("Không thể upload file:"+e.getMessage(),e);
-       }
-    }
-    public void deleFile(String filePath){
+
+    public FileUploadMeta saveFile(MultipartFile file, String subDirectory) throws IOException, IOException {
         try {
-            String objectName=filePath.startsWith("/")
-                    ? filePath.substring(1+bucketName.length()+1)
+            boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
+                    .bucket(bucketName)
+                    .build());
+            if (!found) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            }
+            String originalName = file.getOriginalFilename();
+            String extension = "";
+            if (originalName != null && originalName.contains(".")) {
+                extension = originalName.substring(originalName.lastIndexOf("."));
+            }
+            String uniqueName = UUID.randomUUID().toString() + extension;
+            String fileName = (subDirectory != null && !subDirectory.isEmpty()
+                    ? subDirectory + "/" : "") + uniqueName;
+            try (InputStream inputStream = file.getInputStream()) {
+                minioClient.putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(fileName)
+                                .stream(inputStream, file.getSize(), -1)
+                                .contentType(file.getContentType())
+                                .build()
+                );
+            }
+            FileUploadMeta meta = new FileUploadMeta();
+            meta.setUrl("/" + bucketName + "/" + fileName);
+            meta.setAltText(file.getOriginalFilename());
+            meta.setSizeBytes(file.getSize());
+            meta.setImageType(file.getContentType());
+            try (InputStream is = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .build()
+            )) {
+                BufferedImage bufferedImage = ImageIO.read(is);
+                if (bufferedImage != null) {
+                    meta.setWidth(bufferedImage.getWidth());
+                    meta.setHeight(bufferedImage.getHeight());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Không thể đọc ảnh từ MinIO: " + e.getMessage(), e);
+            }
+            return meta;
+        } catch (MinioException e) {
+            throw new RuntimeException("Lỗi MinIo:" + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RemoteException("Không thể upload file:" + e.getMessage(), e);
+        }
+    }
+
+    public void deleFile(String filePath) {
+        try {
+            String objectName = filePath.startsWith("/")
+                    ? filePath.substring(1 + bucketName.length() + 1)
                     : filePath;
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
@@ -103,12 +107,14 @@ public class GeneralService {
                             .object(objectName)
                             .build()
             );
-        }catch (Exception e){
-            throw new RuntimeException("Không thể xóa file:"+e.getMessage(),e);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể xóa file:" + e.getMessage(), e);
         }
     }
-    public  String generateByUUID() {
+
+    public String generateByUUID() {
         String uuidPart = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         return PREFIX + "-" + uuidPart;
     }
+
 }

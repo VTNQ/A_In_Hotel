@@ -6,6 +6,7 @@ import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
+import org.a_in_hotel.be.repository.StaffRepository;
 import org.mapstruct.*;
 
 import java.time.Instant;
@@ -30,9 +31,9 @@ public interface HotelMapper  extends CommonMapper {
     @Mapping(target = "updatedBy", source = "userId")
     Hotel toEntity(HotelRequest request,Long userId);
     @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "instantToLong")
-    @Mapping(source = "account.fullName", target = "fullName")
+    @Mapping(source = "account.id", target = "fullName", qualifiedByName = "mapAccountIdToFullName")
     @Mapping(source = "account.id", target = "idUser")
-    HotelResponse toResponse(Hotel hotel);
+    HotelResponse toResponse(Hotel hotel,@Context StaffRepository staffRepository);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)       // không cho update id
     @Mapping(target = "code", ignore = true)     // không cho update code

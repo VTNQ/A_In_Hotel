@@ -142,6 +142,10 @@ const ViewExtraServicePage = () => {
     { key: "serviceName", label: "Service Name", sortable: true },
     { key: "categoryName", label: "Category" },
     {
+      key: "priceType",
+      label: "Price Type",
+    },
+    {
       key: "price",
       label: "Price (VNĐ)",
       render: (row: any) =>
