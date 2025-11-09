@@ -26,6 +26,7 @@ public interface ExtraServiceMapper extends CommonMapper {
 
     @Mapping(target = "categoryName",source = "category.name")
     @Mapping(target = "categoryId",source = "category.id")
+    @Mapping(target = "priceTypeId",source = "priceType")
     @Mapping(
             target = "priceType",
             expression = "java(org.a_in_hotel.be.Enum.ExtraServicePriceType.fromCode(service.getPriceType()).getDescription())"
