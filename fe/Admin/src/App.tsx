@@ -6,6 +6,7 @@ import LoginPage from './page/LoginPage'
 import ViewCategoryPage from './page/Category/ViewCategoryPage'
 import ViewRoomPage from './page/Room/ViewRoomPage'
 import ViewAssetPage from './page/Asset/ViewAssetPage'
+import ViewStaffPage from './page/Staff/ViewStaffPage'
 
 function App() {
   return(
@@ -18,6 +19,7 @@ function App() {
           <Route path='facility/categories' element={<ViewCategoryPage/>}/>
           <Route path='facility/rooms' element={<ViewRoomPage/>}/>
           <Route path='facility/assets' element={<ViewAssetPage/>}/>
+          <Route path='staffs' element={<ViewStaffPage/>}/>
         </Route>
       </Routes>
     </>

@@ -25,7 +25,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Thông tin Account và Profile User")
+@Schema(description = "Thông tin tài khoản đăng nhập")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,30 +44,22 @@ public class Account implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @Schema(description = "Tên đầy đủ", example = "Trần Nguyễn Thanh Phong")
-    private String fullName;
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id", referencedColumnName = "id") // FK tới BannerImage
     private Image image;
-
-    @Schema(description = "Số điện thoại", example = "0924517309")
-    private String phone;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    @Schema(description = "Giới tính", example = "Male")
-    private Gender gender;
-
-    @Schema(description = "Ngày sinh", example = "2003-07-22")
-    private LocalDate birthday;
 
     @Schema(description = "Thời gian tạo", example = "2025-08-22 09:05:46.698643")
     private LocalDateTime createdAt;
 
     @Schema(description = "Thời gian cập nhật", example = "2025-08-22 09:05:46.698643")
     private LocalDateTime updatedAt;
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+    @Column(name = "created_by")
+    private String createdBy;
 
+    @Column(name = "updated_by")
+    private String updatedBy;
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

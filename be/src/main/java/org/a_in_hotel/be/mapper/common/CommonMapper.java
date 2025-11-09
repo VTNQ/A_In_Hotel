@@ -4,7 +4,9 @@ import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.ImageRoomResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.repository.StaffRepository;
 import org.a_in_hotel.be.util.SecurityUtils;
+import org.mapstruct.Context;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
@@ -26,6 +28,13 @@ public interface CommonMapper {
                 })
                 .collect(Collectors.toSet());
     }
+    @Named("capitalizeFirstLetter")
+    default String capitalizeFirstLetter(String value) {
+        if (value == null || value.isEmpty()) return value;
+        value = value.toLowerCase(); // đưa hết về thường trước
+        return value.substring(0, 1).toUpperCase() + value.substring(1);
+
+    }
 
     @Named("mapUserIdToAccount")
     default Account mapUserIdToAccount(Long IdUser) {
@@ -34,7 +43,13 @@ public interface CommonMapper {
         acc.setId(IdUser);
         return acc;
     }
-
+    @Named("mapAccountIdToFullName")
+    default String mapAccountIdToFullName(Long idAccount, @Context StaffRepository staffRepository) {
+        if(idAccount == null) return null;
+        return staffRepository.findByAccountId(idAccount)
+                .map(Staff::getFullName)
+                .orElse(null);
+    }
     @Named("mapRoleFromId")
     default Role mapRoleFromId(Long idRole) {
         if (idRole == null) return null;

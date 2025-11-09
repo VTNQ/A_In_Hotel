@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RequiredArgsConstructor
 public class SecurityUtils {
     private final JwtService jwtService;
+    private String passwordCharacters;
     public Long getCurrentUserId() {
         String token = extractToken();
         if (token == null) {
