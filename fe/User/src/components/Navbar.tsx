@@ -84,7 +84,7 @@ export default function Navbar() {
 
         {/* RIGHT SECTION */}
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-          {["EVENT", "PROMOTION", "CAMPING", "Log in", "Sign up"].map(
+          {["Our Product", "PROMOTION", "CAMPING", "Log in", "Sign up"].map(
             (item, i) => (
               <a
                 key={i}
