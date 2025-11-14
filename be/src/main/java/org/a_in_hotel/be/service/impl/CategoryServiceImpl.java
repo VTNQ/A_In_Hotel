@@ -9,6 +9,7 @@ import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,10 +79,47 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Category get(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Category not found: " + id));
+    public CategoryResponse get(Long id) {
+        try {
+            log.info("Start get category by id: {}", id);
+            Category category = repo.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Category not found: " + id));
+            Long capacity = 0L;
+            switch (category.getType()){
+                case 1 ->{
+                    capacity = roomRepository.countByRoomTypeIds(List.of(category.getId()))
+                            .stream()
+                            .findFirst()
+                            .map(KeyCount::getCnt)
+                            .orElse(0L);
+                    break;
+                }
+                case 2 -> {
+                    capacity = extraServiceRepository.countByCategoryIds(List.of(category.getId()))
+                            .stream()
+                            .findFirst()
+                            .map(KeyCount::getCnt)
+                            .orElse(0L);
+                    break;
+                }
+                case 3 -> {
+                    capacity = assetRepository.countByCategoryIds(List.of(category.getId()))
+                            .stream()
+                            .findFirst()
+                            .map(KeyCount::getCnt)
+                            .orElse(0L);
+                    break;
+                }
+            }
+            category.setCapacity(capacity);
+            return mapper.toDTO(category);
+        }catch (Exception e){
+            log.error("Error get category by id: {}", e.getMessage(), e);
+            throw e;
+        }
     }
+
+
 
     @Override
     public void updateStatus(Long id, boolean status) {

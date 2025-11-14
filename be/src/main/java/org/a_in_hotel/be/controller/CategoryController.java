@@ -67,7 +67,7 @@ public class CategoryController {
     }
     // 👉 Lấy category theo id
     @GetMapping("/{id}")
-    public ResponseEntity<RequestResponse<Category>> getById(@PathVariable Long id) {
+    public ResponseEntity<RequestResponse<CategoryResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(RequestResponse.success(categoryService.get(id)));
     }
 

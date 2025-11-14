@@ -25,3 +25,6 @@ export const addExtraService=async(extraData:any) => {
  export const updateExtraService=async(id:number,extraData:any)=>{
   return await Http.put(`/api/extra-room-service/update/${id}`,extraData)
  }
+ export const findById=async(id:number)=>{
+  return await Http.get(`/api/extra-room-service/findById/${id}`)
+ }

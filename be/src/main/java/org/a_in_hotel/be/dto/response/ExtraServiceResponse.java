@@ -30,5 +30,5 @@ public class ExtraServiceResponse {
     private String createdBy;
     private String updatedBy;
     private String priceType;
-    private int priceTypeId;
+    private Integer extraCharge;
 }
