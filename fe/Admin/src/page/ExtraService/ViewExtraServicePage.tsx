@@ -19,8 +19,7 @@ const ViewExtraServicePage = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState(""); // "true" | "false" | ""
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [showDeactivated, setShowDeactivated] = useState(false); // 🔹 checkbox state
+  const [categoryFilter, setCategoryFilter] = useState(""); // 🔹 checkbox state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
@@ -39,9 +38,7 @@ const ViewExtraServicePage = () => {
     if (categoryFilter) {
       filters.push(`category.id==${categoryFilter}`);
     }
-    if (showDeactivated) {
-      filters.push(`isActive==false`);
-    }
+    
     const filterQuery = filters.join(" and ");
     try {
       const params = {
@@ -77,7 +74,7 @@ const ViewExtraServicePage = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [searchValue, statusFilter, categoryFilter, showDeactivated, sortKey, sortOrder]);
+  }, [searchValue, statusFilter, categoryFilter, sortKey, sortOrder]);
   useEffect(() => {
     fetchData();
     fetchCategory();
@@ -88,7 +85,7 @@ const ViewExtraServicePage = () => {
   };
 
   const handleEdit = (row: any) => {
-    setSelectedService(row);
+    setSelectedService(row.id);
     setShowUpdateModal(true);
   };
 
@@ -116,7 +113,34 @@ const ViewExtraServicePage = () => {
       setLoading(false);
     }
   };
+  const handleToogleBlock = async (row: any) => {
+    const current = row.isActive;
+    const newStatus = current === true ? false : true;
+    const oldStatus = current;
+    setData((prev: any[]) =>
+        prev.map(item =>
+            item.id === row.id ? { ...item, isActive: newStatus } : item
+        )
+    );
+    try {
+        const response=await updateStatus(row.id,newStatus);
+        if (response?.data?.status !== "success") {
+            throw new Error("Update failed");
+        }
+    } catch (err: any) {
+        setData((prev: any[]) =>
+            prev.map(item =>
+                item.id === row.id ? { ...item, isActive: oldStatus } : item
+            )
+        );
 
+        showAlert({
+            title: err?.response?.data?.message || "Failed to update status!",
+            type: "error",
+        });
+    }
+
+}
   const handleActive = async (row: any) => {
     try {
       setLoading(true);
@@ -140,21 +164,24 @@ const ViewExtraServicePage = () => {
   const columns = [
     { key: "serviceCode", label: "Service ID", sortable: true },
     { key: "serviceName", label: "Service Name", sortable: true },
-    { key: "categoryName", label: "Category" },
-    {
-      key: "priceType",
-      label: "Price Type",
-    },
+    { key: "categoryName", label: "Category",sortable: true  },
     {
       key: "price",
       label: "Price (VNĐ)",
       render: (row: any) =>
         `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
+      sortable: true,
     },
-    { key: "unit", label: "Unit" },
+    {
+      key: "extraCharge",
+      label: "Extra Charge (%)",
+    },
+   
+    { key: "unit", label: "Unit",sortable: true, },
     {
       key: "description",
       label: "Description",
+      sortable: true,
       render: (row: any) => (
         <span title={row.description}>
           {row.description?.length > 50
@@ -175,7 +202,7 @@ const ViewExtraServicePage = () => {
       ),
     },
     { key: "createdAt", label: "Created Date", sortable: true },
-    { key: "updatedAt", label: "Last Updated" },
+    { key: "updatedAt", label: "Last Updated" ,sortable: true,},
     {
       key: "status",
       label: "Status",
@@ -192,6 +219,44 @@ const ViewExtraServicePage = () => {
         </div>
       ),
     },
+    {
+      key: "block",
+      label: "Block",
+      render: (row: any) => {
+          const isActive = row.isActive === true;
+          const isInActive = row.isActive === false;
+          const isToggleEnabled = isActive || isInActive;
+
+          return (
+              <label className="flex items-center justify-center cursor-pointer">
+                  <input
+                      type="checkbox"
+                      checked={isInActive}
+                      disabled={!isToggleEnabled}
+                      onChange={() => handleToogleBlock(row)}
+                      className="hidden"
+                  />
+
+                  {/* TOGGLE UI */}
+                  <div
+                      className={`
+                          w-12 h-6 flex items-center rounded-full p-1
+                          transition
+                          ${isInActive ? "bg-gray-300" : "bg-[#2E3A8C]"}
+                          ${!isToggleEnabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                      `}
+                  >
+                      <div
+                          className={`
+                              bg-white w-5 h-5 rounded-full shadow-md transform transition
+                              ${isActive ? "translate-x-6" : "translate-x-0"}
+                          `}
+                      />
+                  </div>
+              </label>
+          );
+      },
+  },
     {
       key: "action",
       label: "Action",
@@ -275,15 +340,7 @@ const ViewExtraServicePage = () => {
         </div>
 
         {/* ✅ Deactivated checkbox */}
-        <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={showDeactivated}
-            onChange={(e) => setShowDeactivated(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
-          />
-          <span>Deactivated</span>
-        </label>
+
       </div>
 
       {/* Table */}
@@ -317,7 +374,7 @@ const ViewExtraServicePage = () => {
           fetchData();
           setShowModal(false);
         }}
-        category={category}
+       
       />
       <UpdateExtraServiceFormModal
         isOpen={showUpdateModal}
@@ -326,8 +383,7 @@ const ViewExtraServicePage = () => {
           fetchData();
           setShowUpdateModal(false);
         }}
-        category={category}
-        serviceData={selectedService}
+        serviceId={selectedService}
       />
 
     </div>

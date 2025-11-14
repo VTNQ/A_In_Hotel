@@ -25,3 +25,6 @@ export const updateCategory = async (id: number, categoryData: any) => {
 export const updateStatus = async (id: number, status: boolean) => {
   return await Http.patch(`/api/categories/updateStatus/${id}?status=${status}`)
 }
+export const findById =async(id:number)=>{
+  return await Http.get(`/api/categories/${id}`)
+}

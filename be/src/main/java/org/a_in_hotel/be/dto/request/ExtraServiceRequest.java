@@ -18,9 +18,9 @@ public class ExtraServiceRequest {
     private Long categoryId;
     @NotNull(message = "Price is required")
     private BigDecimal price;
+    @NotNull(message = "Extra Charge is required")
+    private Integer extraCharge;
     private String note;
-    @NotNull(message = "Price Type is required")
-    private Integer priceType;
     private String currency;
     @NotNull(message = "Unit is required")
     private UnitExtraService unit;

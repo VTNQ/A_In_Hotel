@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ImagePlus } from "lucide-react";
+import { X } from "lucide-react";
 import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { createRoom } from "../../service/api/Room";
 import type { RoomFormModalProps } from "../../type";
+import { getAllCategory } from "../../service/api/Category";
 
-const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalProps) => {
-  const [activeTab, setActiveTab] = useState<"basic" | "advanced">("basic");
-
+const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
+  // ============================
+  // FORM STATE
+  // ============================
   const [formData, setFormData] = useState({
     roomNumber: "",
     roomName: "",
@@ -23,45 +25,78 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
     note: "",
     images: [] as File[],
   });
-  const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState<any[]>([]);
+  const [fetching, setFetching] = useState(false);
   const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
+  const fetchCategories = async () => {
+    try {
+      setFetching(true)
+      const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "1", filter: "isActive==1" });
+      setCategory(res.content || []);
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setFetching(false);
+    }
+  }
+  useEffect(()=>{
+    fetchCategories();
+  },[isOpen])
+  // ============================
+  // POPUP STATE
+  // ============================
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [tempImages, setTempImages] = useState<File[]>([]);
+
+  // ============================
+  // OPEN POPUP
+  // ============================
+  const openImageModal = () => {
+    setTempImages(formData.images); // copy ảnh hiện tại sang popup
+    setImageModalOpen(true);
+  };
+
+
+  // ============================
+  // HANDLE INPUT CHANGE
+  // ============================
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // ============================
+  // SAVE FORM
+  // ============================
   const handleSave = async () => {
     setLoading(true);
     try {
       const response = await createRoom(formData);
+
       showAlert({
         title: response?.data?.message || "Room created successfully!",
         type: "success",
         autoClose: 3000
       });
-      setFormData({
-        roomNumber: "",
-        roomName: "",
-        idRoomType: "",
-        defaultRate: "",
-        area: "",
-        capacity: "",
-        floor: "",
-        hourlyBasePrice: "",
-        hourlyAdditionalPrice: "",
-        overnightPrice: "",
-        note: "",
-        images: [] as File[],
-      });
+
       onSuccess?.();
       onClose();
     } catch (err: any) {
-      console.error("Create error:", err);
       showAlert({
-        title: err?.response?.data?.message || "Failed to create room. Please try again.",
+        title: err?.response?.data?.message || "Failed to create room.",
         type: "error",
         autoClose: 3000
-      })
-    }finally{
-      setLoading(false)
+      });
+    } finally {
+      setLoading(false);
     }
-  }
-  const handleCancel=()=>{
+  };
+
+  // ============================
+  // CANCEL FORM
+  // ============================
+  const handleCancel = () => {
     setFormData({
       roomNumber: "",
       roomName: "",
@@ -74,335 +109,375 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess, category }: RoomFormModalPr
       hourlyAdditionalPrice: "",
       overnightPrice: "",
       note: "",
-      images: [] as File[],
+      images: [],
     });
-    setMainImageIndex(null);
     onClose();
-  }
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
- 
-  const [mainImageIndex, setMainImageIndex] = useState<number | null>(null);
+  if (isOpen && fetching) {
+    return (
+      <CommonModal
+        isOpen={true}
+        onClose={handleCancel}
+        title="Create New Room"
+        saveLabel="Save"
+        cancelLabel="Cancel"
+      >
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
+        </div>
+      </CommonModal>
+    );
+  }
   return (
-    <CommonModal
-      isOpen={isOpen}
-      onClose={handleCancel}
-      title="Create Room"
-      onSave={handleSave}
-      saveLabel={loading ? "Saving..." : "Save"}
-      cancelLabel="Cancel"
-    >
-      {/* Tabs Header */}
-      <div className="flex border-b border-gray-200 mb-6">
-        {["basic", "advanced"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`px-5 py-2 text-sm font-semibold transition-all ${activeTab === tab
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-              }`}
-          >
-            {tab === "basic" ? "Basic Info" : "Advanced Pricing"}
-          </button>
-        ))}
-      </div>
 
-      {/* Tab Content */}
-      <AnimatePresence mode="wait">
-        {activeTab === "basic" ? (
-          <motion.div
-            key="basic"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {/* Basic Info Fields */}
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Room Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="roomNumber"
-                  value={formData.roomNumber}
-                  onChange={handleChange}
-                  placeholder="Enter room number"
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
-                />
-              </div>
+    <>
+      {/* MAIN CREATE ROOM MODAL */}
+      <CommonModal
+        isOpen={isOpen}
+        onClose={handleCancel}
+        title="Create New Room"
+        onSave={handleSave}
+        saveLabel={loading ? "Saving..." : "Save"}
+        cancelLabel="Cancel"
+      >
+        <div className="grid grid-cols-2 gap-10">
 
+          {/* LEFT SIDE FORM */}
+          <div className="space-y-5">
+
+            <div>
+              <label className="block mb-1 font-medium">Room Type *</label>
+              <select
+                name="idRoomType"
+                value={formData.idRoomType}
+                onChange={handleChange}
+                className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+              >
+                <option value="">Select Room Type</option>
+                {category.map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">Room Number *</label>
+              <input
+                name="roomNumber"
+                placeholder="Enter Room"
+                value={formData.roomNumber}
+                onChange={handleChange}
+                className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Room Name <span className="text-red-500">*</span>
-                </label>
+                <label className="block mb-1 font-medium">Room Name *</label>
                 <input
-                  type="text"
                   name="roomName"
+                  placeholder="Enter room name"
                   value={formData.roomName}
                   onChange={handleChange}
-                  placeholder="Enter room name"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Capacity <span className="text-red-500">*</span>
-                </label>
+                <label className="block mb-1 font-medium">Floor *</label>
                 <input
-                  type="text"
-                  name="capacity"
-                  value={formData.capacity}
-                  onChange={handleChange}
-                  placeholder="Enter room name"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Floor
-                </label>
-                <input
-                  type="text"
                   name="floor"
                   value={formData.floor}
-                  onChange={handleChange}
                   placeholder="Enter floor"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Area (m²) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="area"
-                  value={formData.area}
                   onChange={handleChange}
-                  placeholder="Enter Area"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Room Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="idRoomType"
-                  value={formData.idRoomType}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  required
-                >
-                  <option value="">Select Room Type</option>
-                  {category.length > 0 ? (
-                    category.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading...</option>
-                  )}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price / Full Day <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="defaultRate"
-                  value={formData.defaultRate}
-                  onChange={handleChange}
-                  placeholder="e.g. 1,000,000"
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                 />
               </div>
             </div>
 
-            {/* Upload Section */}
-            <div className="mt-8">
-              <label className="block text-sm font-semibold text-gray-800 mb-2">
-                Room Images
-              </label>
-
-              {/* Upload Input */}
-              <label
-                htmlFor="imageUpload"
-                className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition cursor-pointer"
-              >
-                <ImagePlus className="w-10 h-10 text-blue-500 mb-2" />
-                <p className="text-sm text-gray-700 font-medium">
-                  Click to upload or drag & drop
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Supported formats: JPG, PNG, JPEG
-                </p>
-              </label>
+            <div>
+              <label className="block mb-1 font-medium">Area (m²) *</label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const files = Array.from(e.target.files ?? []) as File[];
-                  if (files.length > 0) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      images: [...prev.images, ...files],
-                    }));
-
-                    // 🟢 Nếu chưa có ảnh chính → set ảnh đầu tiên
-                    if (mainImageIndex === null) setMainImageIndex(0);
-                  }
-                }}
-                multiple
-                className="hidden"
-                id="imageUpload"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                placeholder="Enter area"
+                className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
               />
-
-              {formData.images.length > 0 && (
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {formData.images.map((file, index) => {
-                    const isMain = mainImageIndex === index;
-                    return (
-                      <div
-                        key={index}
-                        className={`relative group rounded-xl overflow-hidden shadow-md border-2 transition-all duration-300 ${isMain
-                            ? "border-blue-500"
-                            : "border-transparent hover:border-gray-300"
-                          }`}
-                      >
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`room-${index}`}
-                          className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-
-                        {/* Remove Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              images: prev.images.filter((_, i) => i !== index),
-                            }));
-
-                            // 🟡 Nếu xóa ảnh đang là main → gán main mới
-                            if (mainImageIndex === index) {
-                              setMainImageIndex(
-                                formData.images.length > 1 ? 0 : null
-                              );
-                            } else if (
-                              mainImageIndex !== null &&
-                              index < mainImageIndex
-                            ) {
-                              // Nếu xóa ảnh trước ảnh chính, index chính bị giảm
-                              setMainImageIndex(mainImageIndex - 1);
-                            }
-                          }}
-                          className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-opacity opacity-0 group-hover:opacity-100"
-                        >
-                          <X size={16} />
-                        </button>
-
-                        {/* Main Label */}
-                        {isMain && (
-                          <span className="absolute bottom-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
-                             Main Image
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Notes
-              </label>
+            <div>
+              <label className="block mb-1 font-medium">Capacity *</label>
+              <input
+                name="capacity"
+                value={formData.capacity}
+                placeholder="Enter capacity"
+                onChange={handleChange}
+                className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">Notes</label>
               <textarea
                 name="note"
                 value={formData.note}
+                placeholder="Add any notes (e.g. near window, pool view)"
                 onChange={handleChange}
                 rows={4}
-                placeholder="Any additional info..."
-                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              ></textarea>
+                className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+              />
             </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="advanced"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {/* Advanced Pricing Fields */}
-            <div className="grid grid-cols-3 gap-5">
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="space-y-5">
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* Price fields */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price / First 2 Hours
-                </label>
+                <label className="block mb-1 font-medium">Price (VND) *</label>
                 <input
                   type="number"
                   name="hourlyBasePrice"
+                  placeholder="Enter room price"
                   value={formData.hourlyBasePrice}
                   onChange={handleChange}
-                  placeholder="e.g. 300,000"
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price / Extra Hour
-                </label>
+                <label className="block mb-1 font-medium">Extra Hour Price</label>
                 <input
                   type="number"
                   name="hourlyAdditionalPrice"
+                  placeholder="Enter room price"
                   value={formData.hourlyAdditionalPrice}
                   onChange={handleChange}
-                  placeholder="e.g. 80,000"
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                 />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price / Overnight
-                </label>
+                <label className="block mb-1 font-medium">Price Overnight (VND) *</label>
                 <input
                   type="number"
                   name="overnightPrice"
+                  placeholder="Enter room price"
                   value={formData.overnightPrice}
                   onChange={handleChange}
-                  placeholder="e.g. 500,000"
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 font-medium">Price day & night (VND) *</label>
+                <input
+                  type="number"
+                  name="defaultRate"
+                  placeholder="Enter room price"
+                  value={formData.defaultRate}
+                  onChange={handleChange}
+                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                 />
               </div>
             </div>
 
+            {/* IMAGE UPLOAD */}
+            <div>
+              <label className="text-sm font-medium">Image</label>
 
+              <div
+                onClick={openImageModal}
+                className="
+                  mt-2 border border-[#F2F2F2] rounded-xl bg-gray-50 hover:bg-gray-100 p-6 
+                  cursor-pointer transition
+                  flex flex-col items-center justify-center 
+                  text-center h-64
+                "
+              >
+                {formData.images.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {formData.images.map((img, index) => (
+                      <div key={index}>
+                        <img
+                          src={URL.createObjectURL(img)}
+                          className="w-full h-28 object-cover rounded-lg"
+                          alt=""
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex flex-col items-center justify-center h-40">
+                      <img
+                        src="/defaultImage.png"
+                        className="w-[167px] h-[117px] opacity-60"
+                        alt=""
+                      />
+                      <p className="text-gray-600 mt-3">Click to select images</p>
+                      <button className="mt-3 px-20 py-1.5 rounded-full border border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm">
+                        Select files
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CommonModal>
+
+      {/* ==============================
+          IMAGE SELECT POPUP
+      =============================== */}
+      <AnimatePresence>
+        {imageModalOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white w-[840px] rounded-xl p-6 shadow-xl"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center mb-5">
+                <h2 className="text-xl font-semibold">Select images</h2>
+                <X className="w-6 h-6 cursor-pointer" onClick={() => setImageModalOpen(false)} />
+              </div>
+              {tempImages.length === 0 && (
+                <div className="w-full h-[260px] bg-gray-100 rounded-lg border border-gray-300 
+                  flex items-center justify-center text-gray-400">
+                  No image selected
+                </div>
+              )}
+
+              {/* MAIN LAYOUT: LEFT = MAIN IMAGE, RIGHT = SMALL GRID */}
+              {tempImages.length > 0 && (
+                <div className="grid grid-cols-3 gap-4">
+
+                  {/* LEFT — MAIN IMAGE */}
+                  <div className="col-span-2">
+                    {tempImages.length > 0 ? (
+                      <div className="relative">
+                        <img
+                          src={URL.createObjectURL(tempImages[0])}
+                          className="w-full h-[260px] object-cover rounded-lg border border-gray-300"
+                        />
+
+                        {/* DELETE MAIN IMAGE */}
+                        <button
+                          onClick={() => {
+                            const clone = [...tempImages];
+                            clone.splice(0, 1);
+                            setTempImages(clone);
+                          }}
+                          className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full h-[260px] bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center text-gray-400">
+                        No image selected
+                      </div>
+
+                    )}
+                  </div>
+
+                  {/* RIGHT — SMALL IMAGES */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {tempImages.slice(1).map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group cursor-pointer flex justify-center"
+                        onClick={() => {
+                          const clone = [...tempImages];
+                          const clicked = clone[idx + 1];
+                          clone[idx + 1] = clone[0];
+                          clone[0] = clicked;
+                          setTempImages(clone);
+                        }}
+                      >
+                        <img
+                          src={URL.createObjectURL(img)}
+                          className="
+w-[160px]
+h-[115px]
+object-cover
+rounded-lg
+border border-gray-300
+group-hover:opacity-80
+"
+                        />
+
+                        {/* nút xóa */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const clone = [...tempImages];
+                            clone.splice(idx + 1, 1);
+                            setTempImages(clone);
+                          }}
+                          className="absolute top-2 right-2 bg-black/60 text-white p-[2px] rounded-full"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+              )}
+
+
+              {/* FILE PICKER + CONFIRM */}
+              <div className="text-center mt-6">
+                <label
+                  htmlFor="filePicker"
+                  className="mt-4 px-6 py-2 bg-[#42578E] text-white rounded-lg ml-4 cursor-pointer"
+                >
+                  Add images
+                </label>
+
+                <input
+                  id="filePicker"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []) as File[];
+
+                    if (files.length > 0) {
+                      setFormData(prev => ({
+                        ...prev,
+                        images: [...prev.images, ...files],
+                      }));
+
+
+                      setImageModalOpen(false);
+                    }
+                  }}
+
+                />
+
+                {/* Confirm */}
+
+                <p className="text-xs text-gray-500 mt-2">
+                  Supported: JPG, PNG • Min 600×600px
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </CommonModal>
+
+    </>
   );
 };
 
