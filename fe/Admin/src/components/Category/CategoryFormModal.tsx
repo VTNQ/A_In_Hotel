@@ -15,13 +15,13 @@ const CategoryFormModal = ({
     })
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
-    const handleChange =(
+    const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-    )=>{
-        const { name, value } = e.target;   
+    ) => {
+        const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    const handleSave = async () => {    
+    const handleSave = async () => {
         setLoading(true);
         try {
             const cleanedData = Object.fromEntries(
@@ -29,13 +29,13 @@ const CategoryFormModal = ({
                     name: formData.name,
                     type: formData.type
                 }).map(([key, value]) => [
-                  key,
-                  value?.toString().trim() === "" ? null : value,
+                    key,
+                    value?.toString().trim() === "" ? null : value,
                 ])
-              );
+            );
             const response = await addCategory(cleanedData);
             showAlert({
-                title: response?.data?.message||"Category created successfully.",
+                title: response?.data?.message || "Category created successfully.",
                 type: "success",
                 autoClose: 3000,
             });
@@ -44,7 +44,7 @@ const CategoryFormModal = ({
                 type: ""
             });
             onSuccess();
-        } catch (err:any) {
+        } catch (err: any) {
             console.error("Create error:", err);
             showAlert({
                 title:
@@ -57,7 +57,7 @@ const CategoryFormModal = ({
             setLoading(false);
         }
     };
-    const handleCancel=()=>{
+    const handleCancel = () => {
         setFormData({
             name: "",
             type: ""
@@ -68,15 +68,18 @@ const CategoryFormModal = ({
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
-            title="Create Category Service"
+            title="Create Category "
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}
             cancelLabel="Cancel"
         >
-            <div className="grid grid-cols-1 gap-4">
+            <h3 className="text-[18px] font-semibold text-[#000000] mb-3">
+                Category Information
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category Name <span className="text-red-500">*</span>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Category Name *
                     </label>
                     <input
                         type="text"
@@ -84,19 +87,19 @@ const CategoryFormModal = ({
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Enter service name"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Type <span className="text-red-500">*</span>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Type *
                     </label>
                     <select
                         name="type"
                         value={formData.type}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     >
                         <option value="">Select type</option>

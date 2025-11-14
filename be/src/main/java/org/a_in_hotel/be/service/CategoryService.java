@@ -15,7 +15,7 @@ public interface CategoryService {
 
     void softDelete(Long id);        // nếu entity có cờ active
 
-    Category get(Long id);
+    CategoryResponse get(Long id);
 
     void updateStatus(Long id, boolean status);
 

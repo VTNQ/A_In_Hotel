@@ -8,25 +8,27 @@ import { File_URL } from "../../setting/constant/app";
 import RoomActionMenu from "../../components/Room/RoomActionMenu";
 import UpdateRoomFormModal from "../../components/Room/UpdateRoomFormModal";
 import { useAlert } from "../../components/alert-context";
+import ViewRoomManagement from "../../components/Room/ViewRoomManagement";
 
 const ViewRoomPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [categories, setCategories] = useState<any[]>([]);
+
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
   const [totalPages, setTotalPages] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showViewModal, setShowViewModal]=useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [totalResults, setTotalResults] = useState(0);
-  const [showDeactivated, setShowDeactivated] = useState(false);
   const { showAlert } = useAlert();
   const [sortKey, setSortKey] = useState<string>("id");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [categories, setCategories] = useState<any[]>([]);
   const fetchCategories = async () => {
     try {
       const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "1", filter: "isActive==1" });
@@ -35,11 +37,10 @@ const ViewRoomPage = () => {
       console.log(err)
     }
   }
-
   useEffect(() => {
     fetchCategories();
-
-  }, [showModal])
+  }, []);
+ 
 
   const fetchData = async (
     pageNumber = 1,
@@ -55,9 +56,6 @@ const ViewRoomPage = () => {
       if (categoryFilter) {
         filters.push(`roomType.id==${categoryFilter}`);
 
-      }
-      if (showDeactivated) {
-        filters.push(`status==6`);
       }
       const filterQuery = filters.join(" and ");
       const params = {
@@ -79,8 +77,12 @@ const ViewRoomPage = () => {
       setLoading(false);
     }
   };
+  const handleView = (row: any) => {
+    setSelectedRoom(row.id);
+    setShowViewModal(true);
+  };
   const handleEdit = (row: any) => {
-    setSelectedRoom(row);
+    setSelectedRoom(row.id);
     setShowUpdateModal(true);
   };
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +145,7 @@ const ViewRoomPage = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [sortKey, sortOrder, searchValue, statusFilter, categoryFilter,showDeactivated]);
+  }, [sortKey, sortOrder, searchValue, statusFilter, categoryFilter]);
 
   const columns = [
     { key: "roomCode", label: "Room ID", sortable: true },
@@ -211,7 +213,7 @@ const ViewRoomPage = () => {
       render: (row: any) => (
         <RoomActionMenu
           room={row}
-          onView={(r) => console.log("View room:", r)}
+          onView={()=> handleView(row)}
           onEdit={() => handleEdit(row)}
           onActivate={() => handleActive(row)}
           onDeactivate={() => handleDeActived(row)}
@@ -279,12 +281,7 @@ const ViewRoomPage = () => {
           </select>
         </div>
 
-        {/* Checkbox */}
-        <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
-          <input type="checkbox" className="w-4 h-4 accent-blue-600" checked={showDeactivated}
-            onChange={(e) => setShowDeactivated(e.target.checked)} />
-          <span>Deactivated</span>
-        </label>
+       
       </div>
 
       {/* Table */}
@@ -317,7 +314,12 @@ const ViewRoomPage = () => {
             fetchData();
             setShowModal(false)
           }}
-          category={categories}
+        
+        />
+        <ViewRoomManagement
+          isOpen={showViewModal}
+          onClose={() => setShowViewModal(false)}
+          roomId={selectedRoom}
         />
         <UpdateRoomFormModal
           isOpen={showUpdateModal}
@@ -326,8 +328,8 @@ const ViewRoomPage = () => {
             fetchData();
             setShowUpdateModal(false);
           }}
-          category={categories}
-          roomData={selectedRoom}
+          
+          roomId={selectedRoom}
         />
       </div>
     </div>

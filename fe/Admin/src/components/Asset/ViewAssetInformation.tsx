@@ -1,0 +1,95 @@
+import { useEffect, useState } from "react";
+import type { ViewAssetProps } from "../../type";
+import CommonModalView from "../ui/CommonModalView";
+import { findById } from "../../service/api/Asset";
+
+const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, assetId }) => {
+    const [asset, setAsset] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        if (isOpen && assetId) {
+            fetchAsset(assetId);
+        }
+    }, [isOpen, assetId]);
+    const fetchAsset = async (id: number) => {
+        try {
+            setLoading(true);
+            const response = await findById(id);
+            setAsset(response.data.data || null);
+        } finally {
+            setLoading(false)
+        }
+    }
+    return (
+        <CommonModalView
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Amenities & Asset Tracking"
+            width="w-[500px]"
+            isBorderBottom={true}
+
+        >
+            {loading && (
+                <div className="animate-pulse mt-3 space-y-4">
+                    <div className="h-4 w-40 bg-gray-300 rounded"></div>
+
+                    <div className="grid grid-cols-[150px_1fr] gap-y-4">
+                        <div className="h-4 w-28 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-40 bg-gray-300 rounded"></div>
+
+                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-24 bg-gray-300 rounded"></div>
+
+                        <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-20 bg-gray-300 rounded"></div>
+                    </div>
+
+                    <div className="h-6 w-full bg-gray-200 rounded"></div>
+                </div>
+            )}
+            {!loading && asset && (
+                <>
+                    <h3 className="text-lg font-semibold text-[#253150] mt-2">
+                        Asset Information
+                    </h3>
+                    <div className=" w-full py-2  rounded-xl text-[16px] text-[#2B2B2B]" >
+                        <div className="grid grid-cols-[350px_2fr] gap-y-3">
+                            <span className="font-semibold text-[#253150]">Asset Name</span>
+                            <span>{asset.assetName}</span>
+
+                            <span className="font-semibold text-[#253150]">Asset ID</span>
+                            <span>{asset.assetCode}</span>
+
+                            <span className="font-semibold text-[#253150]">Category</span>
+                            <span>{asset.categoryName}</span>
+
+                            <span className="font-semibold text-[#253150]">Room Name</span>
+                            <span>{asset.roomName}</span>
+
+                            <span className="font-semibold text-[#253150]">Price(VND)</span>
+                            <span>
+                                {Number(asset.price).toLocaleString("vi-VN")} {asset.currency ?? "VND"}
+                            </span>
+
+                            <span className="font-semibold text-[#253150]">Quantity</span>
+                            <span>{asset.quantity}</span>
+
+                        </div>
+                    </div>
+                    <div className="mt-3">
+                        <h3 className="font-semibold text-[#253150] mb-2">Note</h3>
+
+                        <p className="text-[#2B2B2B] leading-relaxed text-[14px]">
+                            {asset.note || "No notes available."}
+                        </p>
+
+                        <div className="mt-4 border-b border-dotted border-gray-400"></div>
+                    </div>
+                </>
+            )}
+
+
+        </CommonModalView>
+    )
+}
+export default ViewAssetInformation;

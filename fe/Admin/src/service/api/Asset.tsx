@@ -26,3 +26,6 @@ export const updateStatus=async(id:number,status:number)=>{
     return await Http.patch(`/api/assets/updateStatus/${id}?status=${status}`)
 
 }
+export const findById=async(id:number)=>{
+    return await Http.get(`/api/assets/${id}`)
+}

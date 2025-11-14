@@ -6,6 +6,7 @@ import CategoryFormModal from "../../components/Category/CategoryFormModal";
 import UpdateCategoryFormModal from "../../components/Category/UpdateCategoryFormModal";
 import { useAlert } from "../../components/alert-context";
 import CategoryActionMenu from "../../components/Category/CategoryActionMenu";
+import ViewCategoryInformation from "../../components/Category/ViewCategoryInformation";
 
 const ViewCategoryPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -20,14 +21,17 @@ const ViewCategoryPage = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [statusFilter, setStatusFilter] = useState("");
     const [typeFilter, setTypeFilter] = useState("");
-    const [showDeactivated, setShowDeactivated] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
-
+    const [showViewModal, setShowViewModal]=useState(false);
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
+    const handleView = (row: any) => {
+        setSelectedCategory(row.id);
+        setShowViewModal(true);
+      };
     const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
         setLoading(true);
         try {
@@ -41,9 +45,7 @@ const ViewCategoryPage = () => {
             if (typeFilter) {
                 filters.push(`type==${typeFilter}`);
             }
-            if (showDeactivated) {
-                filters.push(`isActive==false`);
-            }
+        
             const filterQuery = filters.join(" and ");
             const params = {
                 page: pageNumber, sort: `${key},${order}`,
@@ -64,13 +66,13 @@ const ViewCategoryPage = () => {
 
     useEffect(() => {
         fetchData();
-    }, [searchValue, statusFilter, typeFilter, showDeactivated, sortKey, sortOrder]);
+    }, [searchValue, statusFilter, typeFilter, sortKey, sortOrder]);
 
     useEffect(() => {
         fetchData();
     }, [])
     const handleEdit = (row: any) => {
-        setSelectedCategory(row);
+        setSelectedCategory(row.id);
         setShowUpdateModal(true);
     };
     const handleCloseModal = () => {
@@ -145,6 +147,7 @@ const ViewCategoryPage = () => {
             render: (row: any) => (
                 <CategoryActionMenu
                 category={row}
+                onView={() => handleView(row)}
                 onEdit={() => handleEdit(row)}
                 onActivate={() => handleActive(row)}
                 onDeactivate={() => handleDeactivate(row)}
@@ -210,15 +213,7 @@ const ViewCategoryPage = () => {
                             </div>
 
                         </div>
-                        <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={showDeactivated}
-                                onChange={(e) => setShowDeactivated(e.target.checked)}
-                                className="w-4 h-4 accent-blue-600"
-                            />
-                            <span>Deactivated</span>
-                        </label>
+                       
                     </div>
                     {loading ? (
                         <p className="text-gray-500">Loading...</p>
@@ -242,6 +237,11 @@ const ViewCategoryPage = () => {
                         />
 
                     )}
+                    <ViewCategoryInformation
+                    isOpen={showViewModal}
+                    onClose={() => setShowViewModal(false)}
+                    categoryId={selectedCategory}
+                    />
                     <CategoryFormModal
                         isOpen={showModal}
                         onClose={() => setShowModal(false)}
@@ -258,7 +258,7 @@ const ViewCategoryPage = () => {
                             fetchData();
                             setShowUpdateModal(false);
                         }}
-                        categoryData={selectedCategory}
+                        categoryId={selectedCategory}
                     />
             
         </div>

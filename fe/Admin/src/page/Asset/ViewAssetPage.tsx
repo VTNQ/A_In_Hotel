@@ -8,6 +8,7 @@ import { getAllRoom } from "../../service/api/Room";
 import AssetActionMenu from "../../components/Asset/AssetActionMenu";
 import UpdateAssetFormModal from "../../components/Asset/UpdateAssetFormModal";
 import { useAlert } from "../../components/alert-context";
+import ViewAssetInformation from "../../components/Asset/ViewAssetInformation";
 
 const ViewAssetPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -25,11 +26,11 @@ const ViewAssetPage = () => {
     const [totalResults, setTotalResults] = useState(0);
     const [statusFilter, setStatusFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("");
-    const [showDeactivated, setShowDeactivated] = useState(false);
     const [sortKey, setSortKey] = useState<string>("id");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [showViewModal, setShowViewModal]=useState(false);
     const handleEdit = (row: any) => {
-        setSelectedAsset(row);
+        setSelectedAsset(row.id);
         setShowUpdateModal(true);
     };
     const handleMaintenance = async (row: any) => {
@@ -49,6 +50,10 @@ const ViewAssetPage = () => {
             });
         }
     };
+    const handleView = (row: any) => {
+        setSelectedAsset(row.id);
+        setShowViewModal(true);
+      };
     const handleActive = async (row: any) => {
         try {
             setLoading(true);
@@ -83,6 +88,34 @@ const ViewAssetPage = () => {
             });
         }
     };
+    const handleToogleBlock = async (row: any) => {
+        const current = row.status;
+        const newStatus = current === 1 ? 3 : 1;
+        const oldStatus = current;
+        setData((prev: any[]) =>
+            prev.map(item =>
+                item.id === row.id ? { ...item, status: newStatus } : item
+            )
+        );
+        try {
+            const response=await updateStatus(row.id,newStatus);
+            if (response?.data?.status !== "success") {
+                throw new Error("Update failed");
+            }
+        } catch (err: any) {
+            setData((prev: any[]) =>
+                prev.map(item =>
+                    item.id === row.id ? { ...item, status: oldStatus } : item
+                )
+            );
+
+            showAlert({
+                title: err?.response?.data?.message || "Failed to update status!",
+                type: "error",
+            });
+        }
+
+    }
     const columns = [
         { key: "assetCode", label: "Asset ID" },
         { key: "assetName", label: "Asset Name" },
@@ -127,6 +160,47 @@ const ViewAssetPage = () => {
                 );
             },
         },
+        {
+            key: "block",
+            label: "Block",
+            render: (row: any) => {
+                const isBlocked = row.status === 3;
+                const isGood = row.status === 1;
+
+                // Chỉ cho phép toggle khi status = Good hoặc Blocked
+                const isToggleEnabled = isGood || isBlocked;
+
+                return (
+                    <label className="flex items-center justify-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={isBlocked}
+                            disabled={!isToggleEnabled}
+                            onChange={() => handleToogleBlock(row)}
+                            className="hidden"
+                        />
+
+                        {/* TOGGLE UI */}
+                        <div
+                            className={`
+                                w-12 h-6 flex items-center rounded-full p-1
+                                transition
+                                ${!isBlocked ? "bg-[#2E3A8C]" : "bg-gray-300"}
+                                ${!isToggleEnabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                            `}
+                        >
+                            <div
+                                className={`
+                                    bg-white w-5 h-5 rounded-full shadow-md transform transition
+                                    ${!isBlocked ? "translate-x-6" : "translate-x-0"}
+                                `}
+                            />
+                        </div>
+                    </label>
+                );
+            },
+        },
+
         { key: "createdAt", label: "Created Date" },
         { key: "updatedAt", label: "Last Updated Date" },
         {
@@ -136,7 +210,7 @@ const ViewAssetPage = () => {
                 <AssetActionMenu
                     asset={row}
                     onEdit={() => handleEdit(row)}
-                    onView={(r) => console.log("View room:", r)}
+                    onView={()=>handleView(row)}
                     onActivate={() => handleActive(row)}
                     onDeactivate={() => handleDeActived(row)}
                     onMaintenance={() => handleMaintenance(row)}
@@ -172,9 +246,7 @@ const ViewAssetPage = () => {
                 filters.push(`category.id==${categoryFilter}`);
 
             }
-            if (showDeactivated) {
-                filters.push(`status==4`);
-            }
+
             const filterQuery = filters.join(" and ");
             const params = {
                 page: pageNumber, sort: `${key},${order}`,
@@ -200,7 +272,7 @@ const ViewAssetPage = () => {
     };
     useEffect(() => {
         fetchData();
-    }, [sortKey, sortOrder, searchValue,categoryFilter,showDeactivated,statusFilter]);
+    }, [sortKey, sortOrder, searchValue, categoryFilter, statusFilter]);
 
     useEffect(() => {
         fetchData();
@@ -272,15 +344,7 @@ const ViewAssetPage = () => {
                     </div>
 
                 </div>
-                <label className="flex items-center space-x-2 text-gray-700 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={showDeactivated}
-                        onChange={(e) => setShowDeactivated(e.target.checked)}
-                        className="w-4 h-4 accent-blue-600"
-                    />
-                    <span>Deactivated</span>
-                </label>
+                
             </div>
             <AssetFormModal
                 isOpen={showModal}
@@ -289,8 +353,13 @@ const ViewAssetPage = () => {
                     fetchData();
                     setShowModal(false);
                 }}
-                category={categories}
+
                 room={rooms}
+            />
+            <ViewAssetInformation
+                isOpen={showViewModal}
+                onClose={() => setShowViewModal(false)}
+                assetId={selectedAsset}
             />
             <UpdateAssetFormModal
                 isOpen={showUpdateModal}
@@ -299,9 +368,8 @@ const ViewAssetPage = () => {
                     fetchData();
                     setShowUpdateModal(false);
                 }}
-                category={categories}
                 room={rooms}
-                assetData={selectedAsset}
+                assetId={selectedAsset}
             />
             {loading ? (
                 <p className="text-gray-500">Loading...</p>

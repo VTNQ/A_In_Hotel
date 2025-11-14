@@ -16,6 +16,9 @@ export const getAllRoom = async (options: GetAllOptions = {}) => {
     });
     return resp.data;
 }
+export const findById = async (id: number) => {
+    return await Http.get(`/api/rooms/findById/${id}`);
+}
 export const createRoom = async (roomData: any) => {
     const formData = new FormData();
     Object.entries(roomData).forEach(([key, value]) => {

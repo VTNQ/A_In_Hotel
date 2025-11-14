@@ -29,23 +29,21 @@ export interface ExtraServiceFormModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    category: any[];
 }
 export interface AssetFormModalProps{
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    category: any[];
     room:any[];
 }
 export interface UpdateAssetFormModalProps extends AssetFormModalProps {
-    assetData: any; // dữ liệu asset cần sửa
+    assetId: any; // dữ liệu asset cần sửa
 }
 export interface RoomFormModalProps {
     isOpen: boolean;
     onClose: () => void;    
     onSuccess: () => void;
-    category: any[];
+
 }
 export interface CategoryFormModalProps {
     isOpen: boolean;
@@ -58,7 +56,7 @@ export interface StaffFormModalProps{
     onSuccess: () => void;
 }
 export interface UpdateCategoryFormModalProps extends CategoryFormModalProps {
-    categoryData: any; // dữ liệu category cần sửa
+    categoryId: any; // dữ liệu category cần sửa
 }
 
 export interface RoomActionMenuProps {
@@ -84,7 +82,7 @@ export interface AssetActionMenuProps {
     onMaintenance?: (room: any) => void;
 }
 export interface UpdateExtraServiceFormModalProps extends ExtraServiceFormModalProps {
-    serviceData: any; // dữ liệu service cần sửa
+    serviceId: any; // dữ liệu service cần sửa
 }
 export interface Category {
     id?: number;
@@ -126,4 +124,36 @@ export interface StaffActionMenuProps {
     staff: Staff;
     onActivate?: (service: ExtraService) => void;
     onDeactivate?: (service: ExtraService) => void;
+}
+export interface ViewRoomManagementProps{
+    isOpen:boolean;
+    onClose:()=>void;
+    roomId:any;
+}
+export interface TabItem {
+    key: string;
+    label: string;
+}
+export interface CommonModalViewProps{
+    isOpen:boolean;
+    title?:string;
+    children:React.ReactNode;
+    onClose:()=>void;
+    tabs?:TabItem[];
+    activeTab?:string;
+    onTabChange?:(key:string)=>void;
+    width?:string;
+    isBorderBottom?: boolean;
+    widthClose?:string;
+
+}
+export interface ViewAssetProps{
+    isOpen:boolean;
+    onClose:()=>void;
+    assetId:any;
+}
+export interface ViewCategoryProps{
+    isOpen:boolean;
+    onClose:()=>void;
+    categoryId:any;
 }

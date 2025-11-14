@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommonModal from "../ui/CommonModal";
 import type { ExtraServiceFormModalProps } from "../../type";
 import { addExtraService } from "../../service/api/ExtraService";
 import { useAlert } from "../alert-context";
+import { getAllCategory } from "../../service/api/Category";
 
 const ExtraServiceFormModal = ({
     isOpen,
     onClose,
     onSuccess,
-    category,
 }: ExtraServiceFormModalProps) => {
     const [formData, setFormData] = useState({
         serviceName: "",
@@ -17,12 +17,27 @@ const ExtraServiceFormModal = ({
         unit: "",
         description: "",
         note: "",
-        priceType:"1"
+        priceType: "1",
+        extraCharge: ""
     });
-
+    const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
-
+    const [categories, setCategories] = useState<any[]>([]);
+    const fetchCategories = async () => {
+        try {
+            setLoading(true)
+            const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "2", filter: "isActive==1" });
+            setCategories(res.content || []);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        fetchCategories()
+    }, [isOpen])
     // ✅ Xử lý thay đổi input
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -38,13 +53,14 @@ const ExtraServiceFormModal = ({
             unit: "",
             description: "",
             note: "",
-            priceType:"1"
+            priceType: "1",
+            extraCharge: ""
         })
         onClose();
     }
     // ✅ Xử lý lưu (khi bấm Save)
     const handleSave = async () => {
-        setLoading(true);
+        setSaving(true);
         try {
             const cleanedData = Object.fromEntries(
                 Object.entries({
@@ -56,7 +72,7 @@ const ExtraServiceFormModal = ({
                     currency: "VNĐ",
                     isActive: true,
                     note: formData.note.trim(),
-                    priceType:formData.priceType
+                    extraCharge: formData.extraCharge
                 }).map(([key, value]) => [
                     key,
                     value?.toString().trim() === "" ? null : value,
@@ -83,7 +99,8 @@ const ExtraServiceFormModal = ({
                 unit: "",
                 description: "",
                 note: "",
-                priceType:"1"
+                priceType: "1",
+                extraCharge: ""
             });
 
             onSuccess?.();
@@ -98,24 +115,38 @@ const ExtraServiceFormModal = ({
                 autoClose: 4000,
             });
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
-
+    if (isOpen && loading) {
+        return (
+            <CommonModal
+                isOpen={true}
+                onClose={handleCancel}
+                title="Create New Extra Service"
+                saveLabel="Save"
+                cancelLabel="Cancel"
+            >
+                <div className="flex justify-center items-center py-10">
+                    <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
+                </div>
+            </CommonModal>
+        );
+    }
     return (
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
             title="Create New Extra Service"
             onSave={handleSave}
-            saveLabel={loading ? "Saving..." : "Save"}
+            saveLabel={saving ? "Saving..." : "Save"}
             cancelLabel="Cancel"
         >
             <div className="grid grid-cols-2 gap-4">
                 {/* Service Name */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Service Name <span className="text-red-500">*</span>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Service Name *
                     </label>
                     <input
                         type="text"
@@ -123,57 +154,37 @@ const ExtraServiceFormModal = ({
                         value={formData.serviceName}
                         onChange={handleChange}
                         placeholder="Enter service name"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Price Type <span className="text-red-500">*</span>
+                <div >
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Description
                     </label>
-                    <select
-                        name="priceType"
-                        value={formData.priceType}
+                    <textarea
+                        name="description"
+                        value={formData.description}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        required
-                    >
-                        <option value="1">Fixed amount (VND)</option>
-                        <option value="2">% of room price</option>
-                    </select>
-                </div>
-                {/* Price */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Price (VNĐ) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        placeholder="Enter price"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        min={0}
-                        required
+                        placeholder="Short description"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        rows={1}
                     />
                 </div>
-
-                {/* Category */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category <span className="text-red-500">*</span>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Category *
                     </label>
                     <select
                         name="categoryId"
                         value={formData.categoryId}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     >
                         <option value="">Select Category</option>
-                        {category.length > 0 ? (
-                            category.map((item) => (
+                        {categories.length > 0 ? (
+                            categories.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
                                 </option>
@@ -183,17 +194,16 @@ const ExtraServiceFormModal = ({
                         )}
                     </select>
                 </div>
-
                 {/* Unit */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Unit <span className="text-red-500">*</span>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Unit *
                     </label>
                     <select
                         name="unit"
                         value={formData.unit}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     >
                         <option value="">Select Unit</option>
@@ -203,23 +213,36 @@ const ExtraServiceFormModal = ({
                         <option value="PERTRIP">Per Trip</option>
                     </select>
                 </div>
-
-                {/* Description */}
-                <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
+                <div>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Price (VNĐ) *
                     </label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
+                    <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
                         onChange={handleChange}
-                        placeholder="Enter service description"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        rows={3}
+                        placeholder="Enter service price"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        min={0}
+                        required
                     />
                 </div>
-
-                {/* Note */}
+                <div>
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Extra Charge (%) *
+                    </label>
+                    <input
+                        type="number"
+                        name="extraCharge"
+                        value={formData.extraCharge}
+                        onChange={handleChange}
+                        placeholder="Enter service extra charge"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        min={0}
+                        required
+                    />
+                </div>
                 <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Note
