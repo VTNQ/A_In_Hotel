@@ -10,6 +10,8 @@ env:
   SERVER_HOST: 202.92.6.60
   SERVER_USER: tranp6648
   SERVER_PORT: 24700
+  GITHUB_TOKEN_FOR_VPS: |
+    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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
   SERVER_SSH_KEY: |
     -----BEGIN OPENSSH PRIVATE KEY-----
     b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
@@ -150,6 +152,7 @@ jobs:
           script: |
             echo "=== 🧹 Cleaning old containers ==="
             cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
+            git remote set-url origin "https://${{ env.GITHUB_TOKEN_FOR_VPS }}@github.com/VTNQ/A_In_Hotel.git"
             git fetch --all
             git reset --hard origin/deploy_web
             echo "=== 📦 Pulling latest Docker images ==="
