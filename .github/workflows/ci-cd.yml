@@ -71,16 +71,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: 🔄 Force update to latest code
-        run: |
-          cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
-          git pull
       - name: ☕ Setup Java 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
-
+      - name: 🔄 Force update to latest code
+        run: |
+          git fetch --all
+          git reset --hard origin/deploy_web
       - name: 🧱 Build backend
         run: |
           cd be
