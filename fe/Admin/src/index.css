@@ -22,7 +22,9 @@
 .react-datepicker-wrapper {
   width: 100%;
 }
-
+body{
+  font-family: 'Montserrat', sans-serif;
+}
 /* Style cho input bên trong react-datepicker giống input thường */
 .react-datepicker__input-container input {
   width: 100%;
