@@ -145,6 +145,7 @@ export interface CommonModalViewProps{
     width?:string;
     isBorderBottom?: boolean;
     widthClose?:string;
+    withCenter?:string;
 
 }
 export interface ViewAssetProps{

@@ -27,6 +27,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
             title="Amenities & Asset Tracking"
             width="w-[500px]"
             isBorderBottom={true}
+            withCenter="text-left"
 
         >
             {loading && (
@@ -49,37 +50,42 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
             )}
             {!loading && asset && (
                 <>
-                    <h3 className="text-lg font-semibold text-[#253150] mt-2">
+                    <h3 className="text-[24px] mt-4 leading-[32px] font-semibold tracking-[0.2px] text-[#253150]">
                         Asset Information
                     </h3>
+
                     <div className=" w-full py-2  rounded-xl text-[16px] text-[#2B2B2B]" >
                         <div className="grid grid-cols-[350px_2fr] gap-y-3">
-                            <span className="font-semibold text-[#253150]">Asset Name</span>
-                            <span>{asset.assetName}</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">
+                                Asset Name
+                            </span>
 
-                            <span className="font-semibold text-[#253150]">Asset ID</span>
-                            <span>{asset.assetCode}</span>
 
-                            <span className="font-semibold text-[#253150]">Category</span>
-                            <span>{asset.categoryName}</span>
+                            <span style={{ fontWeight: '400', fontSize: '16px', lineHeight: '22px', letterSpacing: "0px" }}>{asset.assetName}</span>
 
-                            <span className="font-semibold text-[#253150]">Room Name</span>
-                            <span>{asset.roomName}</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Asset ID</span>
+                            <span style={{ fontWeight: '400' }}>{asset.assetCode}</span>
 
-                            <span className="font-semibold text-[#253150]">Price(VND)</span>
-                            <span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Category</span>
+                            <span style={{ fontWeight: '400' }}>{asset.categoryName}</span>
+
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Room Name</span>
+                            <span style={{ fontWeight: '400' }}>{asset.roomName}</span>
+
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Price(VND)</span>
+                            <span style={{ fontWeight: '400' }}>
                                 {Number(asset.price).toLocaleString("vi-VN")} {asset.currency ?? "VND"}
                             </span>
 
-                            <span className="font-semibold text-[#253150]">Quantity</span>
-                            <span>{asset.quantity}</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Quantity</span>
+                            <span style={{ fontWeight: '400' }}>{asset.quantity}</span>
 
                         </div>
                     </div>
                     <div className="mt-3">
-                        <h3 className="font-semibold text-[#253150] mb-2">Note</h3>
+                        <h3 className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Note</h3>
 
-                        <p className="text-[#2B2B2B] leading-relaxed text-[14px]">
+                        <p className="text-[#2B2B2B] leading-relaxed text-[14px]" style={{ fontWeight: '400' }}>
                             {asset.note || "No notes available."}
                         </p>
 
