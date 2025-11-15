@@ -11,7 +11,8 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
     onTabChange,
     width = "w-[500px]",
     isBorderBottom,
-    widthClose="w-[200px]"
+    widthClose = "w-[200px]",
+    withCenter = "text-center"
 }) => {
     if (!isOpen) return null;
 
@@ -24,7 +25,7 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
                 <div className={`relative px-6 pt-8 pb-4 bg-white rounded-2xl ${isBorderBottom ? "border-b border-[#C2C4C5]" : ""
                     }`}
                 >
-                    <h2 className="text-[26px] font-semibold text-center text-[#1F2945] font-serif">
+                    <h2 className={`text-[27px] font-semibold  text-[#1F2945] ${withCenter}`}>
                         {title}
                     </h2>
 
@@ -52,19 +53,17 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
                                     key={tab.key}
                                     onClick={() => onTabChange?.(tab.key)}
                                     className={`
-            text-[16px] font-medium pb-1
-                 w-[210px]
-            transition
-            mb-[-10px]
-            ${activeTab === tab.key
-                                            ? "text-[#2E3A8C] border-b-2 border-[#2E3A8C]"
-                                            : "text-[#7A7A7A] hover:text-[#2E3A8C]"
+      text-[16px] font-semibold pb-1 w-[250px] transition mb-[-10px]
+      ${activeTab === tab.key
+                                            ? "text-[#1F2945] border-b-2 border-[#1F2945]"
+                                            : "text-[#8A8FA3] hover:text-[#253150]"
                                         }
-          `}
+    `}
                                 >
                                     {tab.label}
                                 </button>
                             ))}
+
 
                         </div>
                     )}
