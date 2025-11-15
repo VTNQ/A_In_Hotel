@@ -13,7 +13,7 @@ env:
   SERVER_USER: tranp6648
   SERVER_PORT: 24700
   GITHUB_TOKEN_FOR_VPS: |
-    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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
+      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
   SERVER_SSH_KEY: |
     -----BEGIN OPENSSH PRIVATE KEY-----
      b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
@@ -155,21 +155,48 @@ jobs:
           key: ${{ env.SERVER_SSH_KEY }}
           port: ${{ env.SERVER_PORT }}
           script: |
-            echo "=== 🔄 Pull latest source from GitHub BEFORE build ==="
+            echo "=== 🔍 CHECK REMOTE BEFORE UPDATE ==="
             cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
+            git remote -v || echo "❌ Cannot read remote"
+  
+            echo "=== 🔄 UPDATE REMOTE ORIGIN WITH TOKEN ==="
             git remote set-url origin "https://${{ env.GITHUB_TOKEN_FOR_VPS }}@github.com/VTNQ/A_In_Hotel.git"
+            if [ $? -eq 0 ]; then
+              echo "✅ Remote updated successfully"
+            else
+              echo "❌ Failed to update remote"
+            fi
+  
+            echo "=== 🔍 CHECK REMOTE AFTER UPDATE ==="
+            git remote -v
+  
+            echo "=== 🔄 FETCH LATEST CODE ==="
             git fetch --all
+            if [ $? -eq 0 ]; then
+              echo "✅ Fetch successful"
+            else
+              echo "❌ Fetch failed"
+            fi
+  
+            echo "=== 🔄 RESET TO ORIGIN/deploy_web ==="
             git reset --hard origin/deploy_web
+            if [ $? -eq 0 ]; then
+              echo "✅ Reset successful"
+            else
+              echo "❌ Reset failed"
+            fi
+  
+            echo "=== 🧹 CLEAN UNTRACKED FILES ==="
             git clean -fd
-
-            echo "=== 📦 Pulling latest Docker images ==="
+  
+            echo "=== 📦 Pull latest Docker images ==="
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-admin:latest
-
-            echo "=== 🧱 Rebuilding docker-compose with latest code ==="
+  
+            echo "=== 🔄 Restart docker-compose ==="
             docker-compose down
             docker-compose up -d --build
-
+  
             echo "=== ✅ Deployment finished successfully ==="
