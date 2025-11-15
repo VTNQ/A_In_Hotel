@@ -158,6 +158,7 @@ jobs:
             git remote set-url origin "https://${{ env.GITHUB_TOKEN_FOR_VPS }}@github.com/VTNQ/A_In_Hotel.git"
             git fetch --all
             git reset --hard origin/deploy_web
+            git clean -fd
 
             echo "=== 📦 Pulling latest Docker images ==="
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
