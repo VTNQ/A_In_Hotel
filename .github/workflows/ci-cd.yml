@@ -150,7 +150,8 @@ jobs:
           script: |
             echo "=== 🧹 Cleaning old containers ==="
             cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
-
+            git fetch --all
+            git reset --hard origin/deploy_web
             echo "=== 📦 Pulling latest Docker images ==="
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
