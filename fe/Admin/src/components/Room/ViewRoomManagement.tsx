@@ -44,7 +44,7 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
             tabs={tabs}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            width="w-[650px]"
+            width="w-[574px]"
         >
             {loading && (
                 <div className="animate-pulse mt-3 space-y-4">
@@ -76,21 +76,21 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                                     {/* LEFT COLUMN */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Room Name</span>
+                                            <span className="font-semibold text-[#253150]">Room Name</span>
                                             <span>{roomData.roomName}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Room ID</span>
+                                            <span className="font-semibold text-[#253150]">Room ID</span>
                                             <span>{roomData.roomNumber}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Floor</span>
+                                            <span className="font-semibold text-[#253150]">Floor</span>
                                             <span>{roomData.floor}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Capacity</span>
+                                            <span className="font-semibold text-[#253150]">Capacity</span>
                                             <span>{roomData.capacity}</span>
                                         </div>
                                     </div>
