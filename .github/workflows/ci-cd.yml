@@ -3,8 +3,6 @@ name: CI/CD for A_In_Hotel
 on:
   push:
     branches: [ "deploy_web" ]
-  pull_request:
-    branches: [ "deploy_web" ]
 
 env:
   DOCKER_USERNAME: tranp6648
