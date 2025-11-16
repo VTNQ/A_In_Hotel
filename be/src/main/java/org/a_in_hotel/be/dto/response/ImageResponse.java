@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageRoomResponse {
+public class ImageResponse {
     private String url;
     private String altText;
 }
