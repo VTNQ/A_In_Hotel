@@ -90,6 +90,9 @@ public class RoomExtraServiceImpl implements RoomExtraService {
         }catch (EntityNotFoundException e){
             log.warn("⚠️ Room Extra with id {} not found: {}", id, e.getMessage());
             throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy dịch vu có ID: " + id);
+        }catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

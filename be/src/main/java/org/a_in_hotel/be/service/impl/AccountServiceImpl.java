@@ -103,6 +103,11 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     }
 
     @Override
+    public Account findById(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
+    @Override
     public Page<AccountResponse> findAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
         try {
             Specification<Account>sortable= RSQLJPASupport.toSort(sort);

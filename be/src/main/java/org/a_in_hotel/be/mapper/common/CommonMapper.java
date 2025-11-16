@@ -2,9 +2,10 @@ package org.a_in_hotel.be.mapper.common;
 
 import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.dto.request.RoomRequest;
-import org.a_in_hotel.be.dto.response.ImageRoomResponse;
+import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.repository.StaffRepository;
+import org.a_in_hotel.be.service.StaffService;
 import org.a_in_hotel.be.util.SecurityUtils;
 import org.mapstruct.Context;
 import org.mapstruct.Named;
@@ -13,21 +14,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public interface CommonMapper {
-    default Set<Tag> mapTagNames(List<String> tagNames) {
-        if (tagNames == null) return null;
-        return tagNames.stream()
-                .filter(name -> name != null && !name.isBlank())
-                .map(name -> {
-                    Tag tag = new Tag();
-                    tag.setName(name.trim());
-                    return tag;
-                })
-                .collect(Collectors.toSet());
-    }
     @Named("capitalizeFirstLetter")
     default String capitalizeFirstLetter(String value) {
         if (value == null || value.isEmpty()) return value;
@@ -61,18 +49,6 @@ public interface CommonMapper {
     @Named("instantToLong")
     static Long instantToLong(Instant instant) {
         return instant != null ? instant.toEpochMilli() : null;
-    }
-
-    default Set<String> mapTagsToNames(Set<Tag> tags) {
-        if (tags == null) return null;
-        return tags.stream()
-                .map(Tag::getName)
-                .collect(Collectors.toSet());
-    }
-
-    default List<String> mapImagesToUrls(Blog blog) {
-        if (blog == null || blog.getImage() == null) return List.of();
-        return List.of(blog.getImage().getUrl());
     }
 
     @Named("mapCategory")
@@ -118,13 +94,33 @@ public interface CommonMapper {
         category.setId(idCategory);
         return category;
     }
+    default String resolveCreatedBy(String createdBy, StaffService accountService) {
+        if (createdBy == null) return null;
 
-    default List<ImageRoomResponse> mapImages(List<Image> images) {
+        try {
+            Long id = Long.parseLong(createdBy);
+            var account = accountService.findByAccountId(id);
+            if (account != null && account.getFullName() != null) {
+                return account.getFullName();
+            }
+        } catch (Exception ignored) {
+            // Nếu parse fail hoặc không tìm thấy user → bỏ qua
+        }
+
+        // fallback
+        return createdBy;
+    }
+
+    default List<ImageResponse>  mapImages(List<Image> images) {
         if (images == null || images.isEmpty()) return List.of();
         return images.stream()
                 .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
-                .map(img -> new ImageRoomResponse(img.getUrl(), img.getAltText()))
+                .map(img -> new ImageResponse(img.getUrl(), img.getAltText()))
                 .toList();
+    }
+    default ImageResponse mapImage(Image image) {
+        if (image == null) return null;
+        return new ImageResponse(image.getUrl(), image.getAltText());
     }
 
 
