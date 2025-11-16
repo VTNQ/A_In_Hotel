@@ -1,36 +1,36 @@
 package org.a_in_hotel.be.mapper;
 
-import org.a_in_hotel.be.dto.request.BlogDTO;
+import org.a_in_hotel.be.Enum.BlogCategory;
+import org.a_in_hotel.be.Enum.BlogStatus;
+import org.a_in_hotel.be.dto.request.BlogRequest;
+import org.a_in_hotel.be.dto.request.BlogUpdateRequest;
 import org.a_in_hotel.be.dto.response.BlogResponse;
 import org.a_in_hotel.be.entity.Blog;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
+import org.a_in_hotel.be.service.AccountService;
+import org.a_in_hotel.be.service.StaffService;
 import org.mapstruct.*;
 
-import java.time.Instant;
-import java.util.UUID;
-
-@Mapper(componentModel = "spring",
-        imports = {Instant.class, UUID.class},
-        builder = @Builder(disableBuilder = true)
-)
+@Mapper(componentModel = "spring", imports = {BlogStatus.class, BlogCategory.class})
 public interface BlogMapper extends CommonMapper {
-    @Mapping(target = "id",ignore = true)
-    @Mapping(target = "category.id",source = "dto.categoryId")
-    @Mapping(target = "category.name",ignore = true)
-    @Mapping(target = "tags", expression = "java(mapTagNames(dto.getTags()))")
-    @Mapping(target = "image", ignore = true) // xử lý ảnh trong service
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "publishAt", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
-    Blog toEntity(BlogDTO dto,Long userId);
+    Blog toEntity(BlogRequest request,Long userId);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
-    void updateEntityFromDto(BlogDTO dto, @MappingTarget Blog blog , Long userId);
-    @Mapping(target = "categoryName",source = "category.name")
-    @Mapping(target = "tags", expression = "java(mapTagsToNames(blog.getTags()))")
-    @Mapping(target = "mediaUrls", expression = "java(mapImagesToUrls(blog))")
-    BlogResponse toResponse(Blog blog);
+    void updateEntity(BlogUpdateRequest request, @MappingTarget Blog blog, Long userId);
+    @Mapping(
+            target = "category",
+            expression = "java(org.a_in_hotel.be.Enum.BlogCategory.fromCode(blog.getCategory()).getDescription())"
+    )
+    @Mapping(target = "categoryId",source = "category")
+    @Mapping(target = "image", expression = "java(mapImage(blog.getThumbnail()))")
+
+    @Mapping(
+            target = "createdBy",
+            expression = "java(resolveCreatedBy(blog.getCreatedBy(), accountService))"
+    )
+    BlogResponse toResponse(Blog blog, @Context StaffService accountService);
 }

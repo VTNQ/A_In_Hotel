@@ -36,6 +36,14 @@ export interface AssetFormModalProps{
     onSuccess: () => void;
     room:any[];
 }
+export interface BlogFormModalProps{
+    isOpen:boolean;
+    onClose:()=>void;
+    onSuccess:()=>void;
+}
+export interface UpdateBlogFormModalProps extends BlogFormModalProps{
+    blogId:any;
+}
 export interface UpdateAssetFormModalProps extends AssetFormModalProps {
     assetId: any; // dữ liệu asset cần sửa
 }
@@ -80,6 +88,17 @@ export interface AssetActionMenuProps {
     onActivate?: (room: any) => void;
     onDeactivate?: (room: any) => void;
     onMaintenance?: (room: any) => void;
+}
+export interface BlogActionMenuProps{
+    blog:{
+        status?:number;
+        [key:string]:any;
+    }
+    onView?:(blog:any)=>void;
+    onEdit?:(blog:any)=>void;
+    onPublish?:(blog:any)=>void;
+    onArchive?:(blog:any)=>void;
+    onRestore?:(blog:any)=>void
 }
 export interface UpdateExtraServiceFormModalProps extends ExtraServiceFormModalProps {
     serviceId: any; // dữ liệu service cần sửa

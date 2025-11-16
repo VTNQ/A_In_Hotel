@@ -92,6 +92,9 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         }catch (EntityNotFoundException e){
             log.warn("⚠️ asset with id {} not found: {}", id, e.getMessage());
             e.printStackTrace();
+        }catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

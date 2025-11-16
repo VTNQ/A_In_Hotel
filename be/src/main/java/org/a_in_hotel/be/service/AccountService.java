@@ -11,6 +11,7 @@ public interface AccountService extends UserDetailsService {
     Account findByEmail(String email);
     void save(AccountDTO accountDTO, MultipartFile file);
     Account getAccountFromToken(String token);
+    Account findById(Long id);
     Page<AccountResponse> findAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 ;
 }
