@@ -65,6 +65,24 @@ const ViewBlogPage = () => {
     useEffect(() => {
         fetchData();
     }, [sortKey, sortOrder, searchValue, statusFilter]);
+    const handleRestore = async (row: any) => {
+        try {
+            setLoading(true);
+            const response = await updateStatus(row.id, 1);
+            const message = response?.data?.message || "Blog restored successfully!";
+            showAlert({ title: message, type: "success", autoClose: 3000 });
+            fetchData();
+        } catch (err: any) {
+            showAlert({
+                title:
+                    err?.response?.data?.message ||
+                    "Failed to restore blog. Please try again.",
+                type: "error",
+            });
+        } finally {
+            setLoading(false)
+        }
+    }
     const handlePublish = async (row: any) => {
         try {
             setLoading(true);
@@ -176,6 +194,7 @@ const ViewBlogPage = () => {
                 <BlogActionMenu
                     blog={row}
                     onEdit={() => handleEdit(row)}
+                    onRestore={()=>handleRestore(row)}
                     onPublish={() => handlePublish(row)}
                     onArchive={() => handleArchive(row)}
                 />
