@@ -172,6 +172,11 @@ export interface ViewAssetProps{
     onClose:()=>void;
     assetId:any;
 }
+export interface ViewBlogProps{
+    isOpen:boolean;
+    onClose:()=>void;
+    blogId:any;
+}
 export interface ViewCategoryProps{
     isOpen:boolean;
     onClose:()=>void;

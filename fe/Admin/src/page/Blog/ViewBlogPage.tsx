@@ -7,6 +7,7 @@ import { File_URL } from "../../setting/constant/app";
 import BlogActionMenu from "../../components/Blog/BlogActionMenu";
 import BlogEditFormModal from "../../components/Blog/BlogEditFormModal";
 import { useAlert } from "../../components/alert-context";
+import ViewBlog from "../../components/Blog/ViewBlog";
 
 const ViewBlogPage = () => {
     const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ const ViewBlogPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showViewModal,setShowViewModal]=useState(false);
     const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -48,6 +50,10 @@ const ViewBlogPage = () => {
         } finally {
             setLoading(false)
         }
+    }
+    const handleView = (row: any) => {
+        setSelectedBlog(row.id);
+        setShowViewModal(true);
     }
     const handleEdit = (row: any) => {
         setSelectedBlog(row.id);
@@ -193,6 +199,7 @@ const ViewBlogPage = () => {
             render: (row: any) => (
                 <BlogActionMenu
                     blog={row}
+                    onView={()=>handleView(row)}
                     onEdit={() => handleEdit(row)}
                     onRestore={()=>handleRestore(row)}
                     onPublish={() => handlePublish(row)}
@@ -283,6 +290,11 @@ const ViewBlogPage = () => {
                 }}
 
             />
+            <ViewBlog
+            isOpen={showViewModal}
+            onClose={() => setShowViewModal(false)}
+            blogId={selectedBlog}
+        />
 
         </div>
     )
