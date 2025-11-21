@@ -5,6 +5,7 @@ import lombok.Data;
 import org.a_in_hotel.be.Enum.RoomStatus;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class RoomRequest {
@@ -37,5 +38,6 @@ public class RoomRequest {
     // giá ban đêm
     private BigDecimal overnightPrice;
 
+    List<String> oldImages;
 
 }

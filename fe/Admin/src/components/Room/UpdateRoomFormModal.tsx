@@ -27,6 +27,16 @@ const UpdateRoomFormModal = ({
     const { showAlert } = useAlert();
     const [originalData, setOriginalData] = useState<any>(null);
     const [categories, setCategories] = useState<any[]>([]);
+    const [confirmDelete, setConfirmDelete] = useState<{
+        open: boolean,
+        index: number | null,
+        isOld: boolean
+    }>({
+        open: false,
+        index: null,
+        isOld: false
+    });
+    
     const [formData, setFormData] = useState({
         roomNumber: "",
         roomName: "",
@@ -194,6 +204,7 @@ const UpdateRoomFormModal = ({
             </CommonModal>
         );
     }
+    console.log(formData)
     return (
         <>
             <CommonModal
@@ -424,7 +435,7 @@ const UpdateRoomFormModal = ({
                                             oldImages: validOld,
                                             images: validNew,
                                         }));
-
+                                      
                                         setImageModalOpen(false);
                                     }}
                                 >
@@ -434,7 +445,27 @@ const UpdateRoomFormModal = ({
 
                             {/* DROPZONE */}
                             <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] 
-                        p-8 max-h-[500px] overflow-auto custom-scroll">
+                        p-8 max-h-[500px] overflow-auto custom-scroll" 
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                            e.currentTarget.classList.add("border-blue-500");
+                          }}
+                          onDragLeave={(e) => {
+                            e.currentTarget.classList.remove("border-blue-500");
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.currentTarget.classList.remove("border-blue-500");
+                        
+                            const droppedFiles = Array.from(e.dataTransfer.files).filter(
+                              (f) => f.type.startsWith("image/")
+                            ) as File[];
+                        
+                            if (droppedFiles.length > 0) {
+                              setTempImages((prev) => [...prev, ...droppedFiles]);
+                            }
+                          }}
+                        >
 
                                 {/* NO IMAGES */}
                                 {tempImages.length === 0 && (
@@ -492,13 +523,12 @@ const UpdateRoomFormModal = ({
                                                     onClick={() => {
                                                         const isOld = typeof tempImages[0] === "string";
 
-                                                        if (isOld) {
-                                                            if (!window.confirm("Delete existing image?")) return;
-                                                        }
-
-                                                        const clone = [...tempImages];
-                                                        clone.splice(0, 1);
-                                                        setTempImages(clone);
+                                                        setConfirmDelete({
+                                                            open: true,
+                                                            index: 0,
+                                                            isOld
+                                                        });
+                                                
                                                     }}
                                                     className="absolute top-3 right-3 bg-black/60 text-white p-1.5 rounded-full"
                                                 >
@@ -526,13 +556,13 @@ const UpdateRoomFormModal = ({
 
                                                                 const isOld = typeof img === "string";
 
-                                                                if (isOld) {
-                                                                    if (!window.confirm("Delete existing image?")) return;
-                                                                }
+                                                                setConfirmDelete({
+                                                                    open: true,
+                                                                    index: index + 1,
+                                                                    isOld
+                                                                });
 
-                                                                const clone = [...tempImages];
-                                                                clone.splice(index + 1, 1);
-                                                                setTempImages(clone);
+                                                        
                                                             }}
                                                             className="absolute top-2 right-2 bg-black/60 text-white p-[3px] rounded-full
                                     opacity-0 group-hover:opacity-100 transition"
@@ -575,6 +605,43 @@ const UpdateRoomFormModal = ({
                     </motion.div>
                 )}
             </AnimatePresence>
+            {confirmDelete.open && (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+        <div className="bg-white p-6 rounded-xl w-[360px] shadow-lg relative">
+
+            <h2 className="text-lg font-semibold">Delete Image?</h2>
+            <p className="text-gray-600 mt-2">
+                {confirmDelete.isOld
+                    ? "This is an existing saved image. Are you sure you want to delete it?"
+                    : "Remove this image from your selection?"}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+                <button
+                    className="px-4 py-2 bg-gray-200 rounded-lg"
+                    onClick={() => setConfirmDelete({ open: false, index: null, isOld: false })}
+                >
+                    Cancel
+                </button>
+
+                <button
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                    onClick={() => {
+                        if (confirmDelete.index !== null) {
+                            const clone = [...tempImages];
+                            clone.splice(confirmDelete.index, 1);
+                            setTempImages(clone);
+                        }
+                        setConfirmDelete({ open: false, index: null, isOld: false });
+                    }}
+                >
+                    Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+)}
 
 
         </>
