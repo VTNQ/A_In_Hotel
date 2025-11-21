@@ -27,16 +27,7 @@ const UpdateRoomFormModal = ({
     const { showAlert } = useAlert();
     const [originalData, setOriginalData] = useState<any>(null);
     const [categories, setCategories] = useState<any[]>([]);
-    const [confirmDelete, setConfirmDelete] = useState<{
-        open: boolean,
-        index: number | null,
-        isOld: boolean
-    }>({
-        open: false,
-        index: null,
-        isOld: false
-    });
-    
+
     const [formData, setFormData] = useState({
         roomNumber: "",
         roomName: "",
@@ -99,7 +90,7 @@ const UpdateRoomFormModal = ({
                     images: [],
                     oldImages: oldImages
                 });
-                
+
 
 
                 setTempImages(oldImages);
@@ -117,13 +108,13 @@ const UpdateRoomFormModal = ({
     const hasChanges = () => {
         const newImages = tempImages.filter(i => i instanceof File);
         const newOldImages = tempImages.filter(i => typeof i === "string");
-    
+
         const compare = {
             ...formData,
             images: newImages,
             oldImages: newOldImages
         };
-    
+
         const originalCompare = {
             ...originalData,
             images: [],
@@ -137,12 +128,13 @@ const UpdateRoomFormModal = ({
     };
     const fetchCategories = async () => {
         try {
-            const res = 
-            await getAllCategory({ 
-                all:true, 
-                searchField: "type", 
-                searchValue: "1", 
-                filter: "isActive==1" });
+            const res =
+                await getAllCategory({
+                    all: true,
+                    searchField: "type",
+                    searchValue: "1",
+                    filter: "isActive==1"
+                });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)
@@ -156,7 +148,7 @@ const UpdateRoomFormModal = ({
                 type: "warning",
                 autoClose: 2500,
             });
-            onClose(); 
+            onClose();
             return;
         }
         setLoading(true);
@@ -188,6 +180,8 @@ const UpdateRoomFormModal = ({
         setTempImages([]);
         onClose();
     };
+    const [pendingDelete, setPendingDelete] = useState<number[]>([]);
+
     if (isOpen && fetching) {
         return (
             <CommonModal
@@ -204,7 +198,6 @@ const UpdateRoomFormModal = ({
             </CommonModal>
         );
     }
-    console.log(formData)
     return (
         <>
             <CommonModal
@@ -398,6 +391,7 @@ const UpdateRoomFormModal = ({
             </CommonModal>
 
             {/* POPUP SELECT IMAGES (giữ nguyên logic cũ) */}
+            {/* IMAGE SELECT MODAL */}
             <AnimatePresence>
                 {imageModalOpen && (
                     <motion.div
@@ -413,11 +407,15 @@ const UpdateRoomFormModal = ({
                             exit={{ scale: 0.9 }}
                         >
 
-                            {/* HEADER */}
+                            {/* Header */}
                             <div className="flex justify-between items-center mb-6">
                                 <button
                                     className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
-                                    onClick={() => setImageModalOpen(false)}
+                                    onClick={() => {
+                                        // Khôi phục lại hình gốc
+                                        setTempImages([...formData.oldImages, ...formData.images]);
+                                        setImageModalOpen(false);
+                                    }}
                                 >
                                     Cancel
                                 </button>
@@ -427,15 +425,15 @@ const UpdateRoomFormModal = ({
                                 <button
                                     className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
                                     onClick={() => {
-                                        const validOld = tempImages.filter(i => typeof i === "string") as string[];
-                                        const validNew = tempImages.filter(i => i instanceof File) as File[];
+                                        const finalOld = tempImages.filter(i => typeof i === "string");
+                                        const finalNew = tempImages.filter(i => i instanceof File);
 
                                         setFormData(prev => ({
                                             ...prev,
-                                            oldImages: validOld,
-                                            images: validNew,
+                                            oldImages: finalOld,
+                                            images: finalNew
                                         }));
-                                      
+
                                         setImageModalOpen(false);
                                     }}
                                 >
@@ -443,71 +441,67 @@ const UpdateRoomFormModal = ({
                                 </button>
                             </div>
 
-                            {/* DROPZONE */}
-                            <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] 
-                        p-8 max-h-[500px] overflow-auto custom-scroll" 
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.add("border-blue-500");
-                          }}
-                          onDragLeave={(e) => {
-                            e.currentTarget.classList.remove("border-blue-500");
-                          }}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.remove("border-blue-500");
-                        
-                            const droppedFiles = Array.from(e.dataTransfer.files).filter(
-                              (f) => f.type.startsWith("image/")
-                            ) as File[];
-                        
-                            if (droppedFiles.length > 0) {
-                              setTempImages((prev) => [...prev, ...droppedFiles]);
-                            }
-                          }}
-                        >
+                            {/* DROP ZONE */}
+                            <div
+                                className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] 
+          p-8 max-h-[500px] overflow-auto custom-scroll"
+                                onDragOver={(e) => {
+                                    e.preventDefault();
+                                    e.currentTarget.classList.add("border-blue-500");
+                                }}
+                                onDragLeave={(e) =>
+                                    e.currentTarget.classList.remove("border-blue-500")
+                                }
+                                onDrop={(e) => {
+                                    e.preventDefault();
+                                    e.currentTarget.classList.remove("border-blue-500");
+
+                                    const dropped = Array.from(e.dataTransfer.files).filter(f =>
+                                        f.type.startsWith("image/")
+                                    ) as File[];
+
+                                    if (dropped.length > 0) {
+                                        setTempImages(prev => [...prev, ...dropped]);
+                                    }
+                                }}
+                            >
 
                                 {/* NO IMAGES */}
                                 {tempImages.length === 0 && (
                                     <div className="flex flex-col items-center py-16">
                                         <img src="/defaultImage.png" className="w-20 opacity-70" />
-
-                                        <p className="mt-4 font-medium">Drag and drop an image</p>
+                                        <p className="mt-4 font-medium">Drag & drop images here</p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            Supported formats: JPG, PNG | Min. 600×600px
+                                            Supported: JPG, PNG
                                         </p>
 
-                                        <p className="mt-4 text-gray-400 text-sm">OR</p>
-
                                         <label
-                                            htmlFor="filePicker"
-                                            className="mt-3 px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
+                                            htmlFor="pickImg"
+                                            className="mt-3 px-6 py-2 border rounded-full bg-white cursor-pointer"
                                         >
                                             Browse Files
                                         </label>
 
                                         <input
-                                            id="filePicker"
+                                            id="pickImg"
                                             type="file"
                                             multiple
                                             accept="image/*"
                                             className="hidden"
                                             onChange={(e) => {
                                                 const files = Array.from(e.target.files ?? []) as File[];
-                                                if (files.length > 0) {
-                                                    setTempImages(files);
-                                                }
+                                                if (files.length > 0) setTempImages(files);
                                             }}
                                         />
                                     </div>
                                 )}
 
-                                {/* WITH IMAGES */}
+                                {/* HAS IMAGES */}
                                 {tempImages.length > 0 && (
                                     <>
                                         <div className="grid grid-cols-3 gap-4">
 
-                                            {/* LARGE MAIN IMAGE */}
+                                            {/* MAIN IMAGE */}
                                             <div className="col-span-2 relative">
                                                 <img
                                                     src={
@@ -518,28 +512,22 @@ const UpdateRoomFormModal = ({
                                                     className="w-full h-[350px] object-cover rounded-xl"
                                                 />
 
-                                                {/* DELETE MAIN IMAGE */}
                                                 <button
+                                                    className="absolute top-3 right-3 bg-black/60 p-1.5 rounded-full text-white"
                                                     onClick={() => {
-                                                        const isOld = typeof tempImages[0] === "string";
-
-                                                        setConfirmDelete({
-                                                            open: true,
-                                                            index: 0,
-                                                            isOld
-                                                        });
-                                                
+                                                        const clone = [...tempImages];
+                                                        clone.splice(0, 1);
+                                                        setTempImages(clone);
                                                     }}
-                                                    className="absolute top-3 right-3 bg-black/60 text-white p-1.5 rounded-full"
                                                 >
-                                                    <X size={16} />
+                                                    <X size={18} />
                                                 </button>
                                             </div>
 
-                                            {/* RIGHT SMALL IMAGES */}
+                                            {/* SMALL IMAGES */}
                                             <div className="flex flex-col gap-4">
-                                                {tempImages.slice(1).map((img, index) => (
-                                                    <div key={index} className="relative group cursor-pointer">
+                                                {tempImages.slice(1).map((img, idx) => (
+                                                    <div key={idx} className="relative group">
                                                         <img
                                                             src={
                                                                 typeof img === "string"
@@ -549,23 +537,13 @@ const UpdateRoomFormModal = ({
                                                             className="w-full h-[165px] object-cover rounded-xl"
                                                         />
 
-                                                        {/* DELETE SMALL IMAGE */}
                                                         <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-
-                                                                const isOld = typeof img === "string";
-
-                                                                setConfirmDelete({
-                                                                    open: true,
-                                                                    index: index + 1,
-                                                                    isOld
-                                                                });
-
-                                                        
+                                                            className="absolute top-2 right-2 bg-black/60 text-white p-[3px] rounded-full opacity-0 group-hover:opacity-100 transition"
+                                                            onClick={() => {
+                                                                const clone = [...tempImages];
+                                                                clone.splice(0, 1);
+                                                                setTempImages(clone);
                                                             }}
-                                                            className="absolute top-2 right-2 bg-black/60 text-white p-[3px] rounded-full
-                                    opacity-0 group-hover:opacity-100 transition"
                                                         >
                                                             <X size={14} />
                                                         </button>
@@ -574,74 +552,38 @@ const UpdateRoomFormModal = ({
                                             </div>
                                         </div>
 
-                                        {/* UPLOAD MORE IMAGES */}
+                                        {/* ADD MORE */}
                                         <div className="flex justify-center mt-8">
                                             <label
-                                                htmlFor="filePickerMore"
-                                                className="px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
+                                                htmlFor="addMoreImg"
+                                                className="px-6 py-2 border rounded-full cursor-pointer bg-white hover:bg-gray-50"
                                             >
                                                 Browse Files
                                             </label>
 
                                             <input
-                                                id="filePickerMore"
+                                                id="addMoreImg"
                                                 type="file"
                                                 multiple
                                                 accept="image/*"
                                                 className="hidden"
                                                 onChange={(e) => {
-                                                    const newFiles = Array.from(e.target.files ?? []) as File[];
-                                                    if (newFiles.length > 0) {
-                                                        setTempImages([...tempImages, ...newFiles]);
-                                                    }
+                                                    const files = Array.from(e.target.files ?? []) as File[];
+                                                    if (files.length > 0)
+                                                        setTempImages(prev => [...prev, ...files]);
                                                 }}
                                             />
                                         </div>
                                     </>
                                 )}
                             </div>
-
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-            {confirmDelete.open && (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
-        <div className="bg-white p-6 rounded-xl w-[360px] shadow-lg relative">
 
-            <h2 className="text-lg font-semibold">Delete Image?</h2>
-            <p className="text-gray-600 mt-2">
-                {confirmDelete.isOld
-                    ? "This is an existing saved image. Are you sure you want to delete it?"
-                    : "Remove this image from your selection?"}
-            </p>
+         
 
-            <div className="flex justify-end gap-3 mt-6">
-                <button
-                    className="px-4 py-2 bg-gray-200 rounded-lg"
-                    onClick={() => setConfirmDelete({ open: false, index: null, isOld: false })}
-                >
-                    Cancel
-                </button>
-
-                <button
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                    onClick={() => {
-                        if (confirmDelete.index !== null) {
-                            const clone = [...tempImages];
-                            clone.splice(confirmDelete.index, 1);
-                            setTempImages(clone);
-                        }
-                        setConfirmDelete({ open: false, index: null, isOld: false });
-                    }}
-                >
-                    Delete
-                </button>
-            </div>
-
-        </div>
-    </div>
-)}
 
 
         </>
