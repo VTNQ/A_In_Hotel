@@ -2,10 +2,8 @@ package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.dto.response.RoomResponse;
@@ -15,7 +13,6 @@ import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.mapper.RoomMapper;
 import org.a_in_hotel.be.repository.ImageRepository;
-import org.a_in_hotel.be.repository.RoomPriceOptionRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.service.RoomService;
 import org.a_in_hotel.be.util.GeneralService;
@@ -38,7 +35,6 @@ import java.util.stream.Collectors;
 @Service
 public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
-    private final RoomPriceOptionRepository roomPriceOptionRepository;
     private final RoomRepository roomRepository;
     private static final List<String> SEARCH_FIELDS = List.of("roomNumber","roomName");
     private final GeneralService generalService;
@@ -51,15 +47,13 @@ public class RoomServiceImpl implements RoomService {
                            GeneralService generalService,
                            ImageRepository roomImageRepository,
                            ImageMapper roomImageMapper,
-                           SecurityUtils securityUtils,
-                           RoomPriceOptionRepository roomPriceOptionRepository) {
+                           SecurityUtils securityUtils) {
         this.roomMapper = roomMapper;
         this.roomRepository = roomRepository;
         this.generalService=generalService;
         this.roomImageRepository=roomImageRepository;
         this.roomImageMapper=roomImageMapper;
         this.securityUtils=securityUtils;
-        this.roomPriceOptionRepository=roomPriceOptionRepository;
     }
     @Override
     @Transactional
@@ -92,7 +86,6 @@ public class RoomServiceImpl implements RoomService {
             }
             roomImageRepository.saveAll(images);
             room.setImages(images);
-            roomPriceOptionRepository.saveAll(room.getRoomPriceOptions());
         }catch (Exception e){
             log.error("save room error : {}",e.getMessage());
             e.printStackTrace();
@@ -148,9 +141,6 @@ public class RoomServiceImpl implements RoomService {
             // 4) GÁN DANH SÁCH ẢNH MỚI
             existing.getImages().clear();
             existing.getImages().addAll(updatedImageList);
-
-            // 5) Update giá phòng
-            roomMapper.updateRoomPriceOptions(request, existing, securityUtils.getCurrentUserId());
 
             roomRepository.save(existing);
         }catch (Exception e) {

@@ -6,6 +6,7 @@ interface Column {
   key: string;
   label: string;
   sortable?: boolean;
+  sortKey?: string;
   render?: (row: any) => React.ReactNode;
 }
 
@@ -36,12 +37,14 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onSortChange,
 }) => {
   /** Xử lý sắp xếp */
-  const handleSort = (key: string) => {
-    if (!onSortChange) return;
-    if (sortKey === key) {
-      onSortChange(key, sortOrder === "asc" ? "desc" : "asc");
+  const handleSort = (col :Column) => {
+    if (!onSortChange || !col.sortable) return;
+
+    const keyToSort = col.sortKey ?? col.key;
+    if (sortKey === keyToSort) {
+      onSortChange(keyToSort, sortOrder === "asc" ? "desc" : "asc");
     } else {
-      onSortChange(key, "asc");
+      onSortChange(keyToSort, "asc");
     }
   };
 
@@ -56,7 +59,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
               {columns.map((col, index) => (
                 <th
                   key={col.key}
-                  onClick={() => col.sortable && handleSort(col.key)}
+                  onClick={() => col.sortable && handleSort(col)}
                   className={`px-4 py-3 text-center border-r border-[#6C80C2] ${
                     index === 0 ? "rounded-tl-xl" : ""
                   } ${
