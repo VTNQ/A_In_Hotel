@@ -28,7 +28,6 @@ public class RoomResponse {
     private String note;
     private List<ImageResponse> images;
     private BigDecimal hourlyBasePrice;
-    private Integer hourlyBaseDuration;
     private BigDecimal hourlyAdditionalPrice;
     private BigDecimal overnightPrice;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

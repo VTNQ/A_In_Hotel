@@ -62,14 +62,14 @@ const UpdateRoomFormModal = ({
                     roomNumber: room?.roomNumber || "",
                     roomName: room?.roomName || "",
                     idRoomType: room?.idRoomType || "",
-                    defaultRate: room?.defaultRate || "",
+                    defaultRate: room?.defaultRate || 0,
                     area: room?.area || "",
                     capacity: room?.capacity || "",
                     status: room?.status || "",
                     floor: room?.floor || "",
-                    hourlyBasePrice: room?.hourlyBasePrice || "",
-                    hourlyAdditionalPrice: room?.hourlyAdditionalPrice || "",
-                    overnightPrice: room?.overnightPrice || "",
+                    hourlyBasePrice: room?.hourlyBasePrice || 0,
+                    hourlyAdditionalPrice: room?.hourlyAdditionalPrice || 0,
+                    overnightPrice: room?.overnightPrice || 0,
                     note: room?.note || "",
                     images: [],
                     oldImages: oldImages
@@ -78,14 +78,14 @@ const UpdateRoomFormModal = ({
                     roomNumber: room?.roomNumber || "",
                     roomName: room?.roomName || "",
                     idRoomType: room?.idRoomType || "",
-                    defaultRate: room?.defaultRate || "",
+                    defaultRate: room?.defaultRate || 0,
                     area: room?.area || "",
                     capacity: room?.capacity || "",
                     status: room?.status || "",
                     floor: room?.floor || "",
-                    hourlyBasePrice: room?.hourlyBasePrice || "",
-                    hourlyAdditionalPrice: room?.hourlyAdditionalPrice || "",
-                    overnightPrice: room?.overnightPrice || "",
+                    hourlyBasePrice: room?.hourlyBasePrice || 0,
+                    hourlyAdditionalPrice: room?.hourlyAdditionalPrice || 0,
+                    overnightPrice: room?.overnightPrice || 0,
                     note: room?.note || "",
                     images: [],
                     oldImages: oldImages
@@ -154,8 +154,16 @@ const UpdateRoomFormModal = ({
         setLoading(true);
 
         try {
-            const response = await updateRoom(Number(roomId), formData);
-
+            const cleanOldImages = formData.oldImages.map((img) =>
+                img.replace(File_URL, "")
+            );
+            const cleanFormData = {
+                ...formData,
+                oldImages: cleanOldImages,
+            };
+    
+            const response = await updateRoom(Number(roomId), cleanFormData);
+                
             showAlert({
                 title: response?.data?.message || "Room updated successfully!",
                 type: "success",
@@ -316,7 +324,7 @@ const UpdateRoomFormModal = ({
                     <div className="space-y-5">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block mb-1 font-medium">Price (VND)</label>
+                                <label className="block mb-1 font-medium">Price (VND)*</label>
                                 <input
                                     type="number"
                                     name="hourlyBasePrice"
@@ -327,7 +335,7 @@ const UpdateRoomFormModal = ({
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Extra Hour Price</label>
+                                <label className="block mb-1 font-medium">Price Extra Hour (VND)*</label>
                                 <input
                                     type="number"
                                     name="hourlyAdditionalPrice"
@@ -338,7 +346,7 @@ const UpdateRoomFormModal = ({
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Overnight Price</label>
+                                <label className="block mb-1 font-medium">Price Overnight (VND)*</label>
                                 <input
                                     type="number"
                                     name="overnightPrice"
@@ -349,7 +357,7 @@ const UpdateRoomFormModal = ({
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Day & Night Price</label>
+                                <label className="block mb-1 font-medium">Price day & night (VND) *</label>
                                 <input
                                     type="number"
                                     name="defaultRate"
