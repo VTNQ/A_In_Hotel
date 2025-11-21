@@ -8,6 +8,8 @@ import org.a_in_hotel.be.Enum.UnitExtraService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,9 +26,9 @@ public class ExtraServiceResponse {
     private UnitExtraService unit;
     private Boolean isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
     private String priceType;

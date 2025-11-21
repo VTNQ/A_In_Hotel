@@ -136,6 +136,7 @@ const UpdateRoomFormModal = ({
                 title="Edit Room"
                 saveLabel="Save"
                 cancelLabel="Cancel"
+                width="w-[1000px]"
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -150,6 +151,7 @@ const UpdateRoomFormModal = ({
                 onClose={handleCancel}
                 onSave={handleUpdate}
                 title="Edit Room"
+                width="w-[1000px]"
                 saveLabel={loading ? "Saving..." : "Save Changes"}
                 cancelLabel="Cancel"
             >
@@ -434,7 +436,7 @@ const UpdateRoomFormModal = ({
                                     }}
                                 />
 
-                             
+
                             </div>
                         </motion.div>
                     </motion.div>

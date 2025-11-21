@@ -22,7 +22,7 @@ const ViewRoomPage = () => {
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [showViewModal, setShowViewModal]=useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [totalResults, setTotalResults] = useState(0);
   const { showAlert } = useAlert();
@@ -40,7 +40,7 @@ const ViewRoomPage = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
- 
+
 
   const fetchData = async (
     pageNumber = 1,
@@ -155,7 +155,11 @@ const ViewRoomPage = () => {
       label: "Image",
       render: (row: any) => (
         <img
-          src={File_URL + row.images[0].url || "/no-image.png"} // hiển thị ảnh đầu tiên
+          src={row.images?.length > 0
+            ? File_URL + row.images[0].url
+            : "/default.webp"
+          }
+          // hiển thị ảnh đầu tiên
           alt={row.roomNumber}
           width="80"
           height="60"
@@ -213,7 +217,7 @@ const ViewRoomPage = () => {
       render: (row: any) => (
         <RoomActionMenu
           room={row}
-          onView={()=> handleView(row)}
+          onView={() => handleView(row)}
           onEdit={() => handleEdit(row)}
           onActivate={() => handleActive(row)}
           onDeactivate={() => handleDeActived(row)}
@@ -281,7 +285,7 @@ const ViewRoomPage = () => {
           </select>
         </div>
 
-       
+
       </div>
 
       {/* Table */}
@@ -314,7 +318,7 @@ const ViewRoomPage = () => {
             fetchData();
             setShowModal(false)
           }}
-        
+
         />
         <ViewRoomManagement
           isOpen={showViewModal}
@@ -328,7 +332,7 @@ const ViewRoomPage = () => {
             fetchData();
             setShowUpdateModal(false);
           }}
-          
+
           roomId={selectedRoom}
         />
       </div>

@@ -40,9 +40,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       setFetching(false);
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     fetchCategories();
-  },[isOpen])
+  }, [isOpen])
   // ============================
   // POPUP STATE
   // ============================
@@ -121,6 +121,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         title="Create New Room"
         saveLabel="Save"
         cancelLabel="Cancel"
+        width="w-[1000px]"
       >
         <div className="flex justify-center items-center py-10">
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -139,6 +140,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         onSave={handleSave}
         saveLabel={loading ? "Saving..." : "Save"}
         cancelLabel="Cancel"
+        width="w-[1000px]"
       >
         <div className="grid grid-cols-2 gap-10">
 
