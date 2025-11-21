@@ -231,7 +231,7 @@ const UpdateAssetFormModal = ({
                         Price (VND) *
                     </label>
                     <input
-                        type="text"
+                        type="number"
                         name="price"
                         placeholder="Enter room price"
                         value={formData.price}
@@ -246,7 +246,7 @@ const UpdateAssetFormModal = ({
                         Quantity
                     </label>
                     <input
-                        type="text"
+                        type="number"
                         name="quantity"
                         placeholder="Enter quantity (e.g. 1)"
                         value={formData.quantity}

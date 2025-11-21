@@ -248,6 +248,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <div>
                 <label className="block mb-1 font-medium">Floor *</label>
                 <input
+                  type="number"
                   name="floor"
                   placeholder="Enter floor"
                   value={formData.floor}
@@ -261,6 +262,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <label className="block mb-1 font-medium">Area (m²) *</label>
               <input
                 name="area"
+                type="number"
                 value={formData.area}
                 onChange={handleChange}
                 placeholder="Enter area"
@@ -272,6 +274,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <label className="block mb-1 font-medium">Capacity *</label>
               <input
                 name="capacity"
+                type="number"
                 value={formData.capacity}
                 placeholder="Enter capacity"
                 onChange={handleChange}
@@ -407,7 +410,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
-                    setTempImages(formData.images); 
+                    setTempImages(formData.images);
                     setImageModalOpen(false);
                   }}
                 >
