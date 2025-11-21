@@ -155,7 +155,7 @@ const ViewRoomPage = () => {
       label: "Image",
       render: (row: any) => (
         <img
-          src={File_URL + row.images[0].url || "/no-image.png"} // hiển thị ảnh đầu tiên
+          src={File_URL + row.images[0]?.url || "/no-image.png"} // hiển thị ảnh đầu tiên
           alt={row.roomNumber}
           width="80"
           height="60"
