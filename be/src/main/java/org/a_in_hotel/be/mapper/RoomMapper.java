@@ -1,17 +1,11 @@
 package org.a_in_hotel.be.mapper;
 
-import org.a_in_hotel.be.Enum.CategoryType;
-import org.a_in_hotel.be.Enum.PriceType;
 import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.RoomResponse;
 import org.a_in_hotel.be.entity.Room;
-import org.a_in_hotel.be.entity.RoomPriceOption;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.mapstruct.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper(componentModel = "spring",
 imports = {RoomStatus.class})
@@ -21,8 +15,9 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roomType", source = "request.idRoomType", qualifiedByName = "mapRoomTypeFromId")
     @Mapping(target = "createdBy", source = "userId")
-    @Mapping(target = "updatedBy", source = "userId")
-    @Mapping(target = "roomPriceOptions", expression = "java(mapPriceOptions(request,room,userId))")
+    @Mapping(target = "basePrice",source ="request.hourlyBasePrice")
+    @Mapping(target = "additionalPrice",source = "request.hourlyAdditionalPrice")
+    @Mapping(target = "updatedBy",  source = "userId")
     @Mapping(target = "hotelId",source = "hotelId")
     Room toEntity(RoomRequest request, Long userId,Long hotelId);
 
@@ -31,15 +26,16 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roomType", source = "request.idRoomType", qualifiedByName = "mapRoomTypeFromId")
     @Mapping(target = "updatedBy", source = "userId")
+    @Mapping(target = "basePrice",source ="request.hourlyBasePrice")
+    @Mapping(target = "additionalPrice",source = "request.hourlyAdditionalPrice")
     void updateEntity(RoomRequest request, @MappingTarget Room entity, Long userId);
     // ========== RESPONSE ==========
     @Mapping(target = "roomTypeName", source = "roomType.name")
     @Mapping(target = "idRoomType",source = "roomType.id")
     @Mapping(target = "images", expression = "java(mapImages(room.getImages()))")
-    @Mapping(target = "hourlyBasePrice", expression = "java(getBigDecimalPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"basePrice\"))")
-    @Mapping(target = "hourlyBaseDuration", expression = "java(getIntegerPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"baseDurationHours\"))")
-    @Mapping(target = "hourlyAdditionalPrice", expression = "java(getBigDecimalPrice(room, org.a_in_hotel.be.Enum.PriceType.HOURLY, \"additionalPrice\"))")
-    @Mapping(target = "overnightPrice", expression = "java(getBigDecimalPrice(room, org.a_in_hotel.be.Enum.PriceType.OVERNIGHT, \"basePrice\"))")
+    @Mapping(target = "hourlyBasePrice", source = "basePrice")
+    @Mapping(target = "hourlyAdditionalPrice", source = "additionalPrice")
+    @Mapping(target = "overnightPrice", source = "overnightPrice")
     RoomResponse toResponse(Room room);
    
 }

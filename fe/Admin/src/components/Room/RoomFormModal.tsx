@@ -300,7 +300,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 font-medium">Price (VND)</label>
+                <label className="block mb-1 font-medium">Price (VND) *</label>
                 <input
                   name="hourlyBasePrice"
                   type="number"
@@ -312,7 +312,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">Extra Hour Price</label>
+                <label className="block mb-1 font-medium">Price Extra Hour (VND)*</label>
                 <input
                   name="hourlyAdditionalPrice"
                   type="number"
@@ -325,7 +325,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               <div>
                 <label className="block mb-1 font-medium">
-                  Overnight Price (VND)
+                  Price Overnight (VND)*
                 </label>
                 <input
                   name="overnightPrice"
@@ -339,7 +339,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               <div>
                 <label className="block mb-1 font-medium">
-                  Price day & night (VND)
+                  Price day & night (VND) *
                 </label>
                 <input
                   name="defaultRate"

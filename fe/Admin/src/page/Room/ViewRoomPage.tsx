@@ -176,30 +176,34 @@ const ViewRoomPage = () => {
       key: "hourlyBasePrice", 
       label: "Price / First 2 Hours", 
       sortable: true,
+      sortKey:"roomPriceOptions.basePrice",
       render: (row: any) =>
-        `${row.hourlyBasePrice?.toLocaleString("vi-VN")} VNĐ`,
+        `${(row.hourlyBasePrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
+    
     { 
       key: "hourlyAdditionalPrice", 
       label: "Price / Extra Hour", 
       sortable: true,
       render: (row: any) =>
-        `${row.hourlyAdditionalPrice?.toLocaleString("vi-VN")} VNĐ`,
+        `${(row.hourlyAdditionalPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
+    
     { 
       key: "overnightPrice", 
       label: "Price / Overnight", 
       sortable: true,
       render: (row: any) =>
-        `${row.overnightPrice?.toLocaleString("vi-VN")} VNĐ`,
+        `${(row.overnightPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
+    
     { 
       key: "defaultRate", 
       label: "Price / Full Day", 
       sortable: true,
       render: (row: any) =>
-        `${row.defaultRate?.toLocaleString("vi-VN")} VNĐ`,
-    },
+        `${(row.defaultRate ?? 0).toLocaleString("vi-VN")} VNĐ`,
+    },    
     { key: "floor", label: "Floor", sortable: true },
     { key: "capacity", label: "Capacity", sortable: true },
     { key: "createdAt", label: "Created Date", sortable: true },

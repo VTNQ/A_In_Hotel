@@ -34,6 +34,12 @@ public class Room {
     private Long hotelId;
     @Column(name = "room_name")
     private String roomName;
+    @Column(name = "base_price",nullable = false)
+    private BigDecimal basePrice;
+    @Column(name = "additional_price")
+    private BigDecimal additionalPrice;
+    @Column(name = "overnight_price")
+    private BigDecimal overnightPrice;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id",nullable = false)
     private Category roomType;
@@ -49,8 +55,7 @@ public class Room {
     private Double area;
     @Column(name = "note")
     private String note;
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RoomPriceOption> roomPriceOptions = new ArrayList<>();
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX") // XXX = +07:00
