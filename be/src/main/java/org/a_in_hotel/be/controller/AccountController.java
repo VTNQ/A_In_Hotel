@@ -155,7 +155,13 @@ public class AccountController {
                 long refreshTokenExpiryAt=jwtService.getRefreshTokenExpiryAt();
                 String role=jwtService.extractRole(accessToken);
                 return ResponseEntity.ok(RequestResponse.success(
-                        new TokenResponse(refreshToken,accessToken,accessTokenExpiryAt,refreshTokenExpiryAt,role)
+                        new TokenResponse(
+                                refreshToken,
+                                accessToken,
+                                accessTokenExpiryAt,
+                                refreshTokenExpiryAt,
+                                role,
+                                hotel.getId())
                 ));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

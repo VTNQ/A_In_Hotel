@@ -8,9 +8,10 @@ import type { RoomFormModalProps } from "../../type";
 import { getAllCategory } from "../../service/api/Category";
 
 const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
-  // ============================
-  // FORM STATE
-  // ============================
+
+  /* ===============================
+      FORM STATE
+  =============================== */
   const [formData, setFormData] = useState({
     roomNumber: "",
     roomName: "",
@@ -25,50 +26,79 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
     note: "",
     images: [] as File[],
   });
+
   const [category, setCategory] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
+  const [initialData, setInitialData] = useState<any>(null);
+  /* ===============================
+      FETCH CATEGORY
+  =============================== */
   const fetchCategories = async () => {
     try {
-      setFetching(true)
-      const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "1", filter: "isActive==1" });
+      setFetching(true);
+      const res = await getAllCategory({
+        all:true,
+        searchField: "type",
+        searchValue: "1",
+        filter: "isActive==1",
+      });
       setCategory(res.content || []);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     } finally {
       setFetching(false);
     }
-  }
+  };
   useEffect(() => {
-    fetchCategories();
-  }, [isOpen])
-  // ============================
-  // POPUP STATE
-  // ============================
+    if (isOpen) {
+      setInitialData(formData);
+    }
+  }, [isOpen]);
+  const isFormChanged = () => {
+    if (!initialData) return false;
+
+    const keys = Object.keys(formData);
+
+    for (const key of keys) {
+      if (key === "images") {
+        if (formData.images.length !== initialData.images.length) return true;
+        continue;
+      }
+      if (formData[key as keyof typeof formData] !== initialData[key as keyof typeof formData]) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (isOpen) fetchCategories();
+  }, [isOpen]);
+
+  /* ===============================
+      POPUP STATE
+  =============================== */
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [tempImages, setTempImages] = useState<File[]>([]);
 
-  // ============================
-  // OPEN POPUP
-  // ============================
   const openImageModal = () => {
-    setTempImages(formData.images); // copy ảnh hiện tại sang popup
+    setTempImages(formData.images);
     setImageModalOpen(true);
   };
 
-
-  // ============================
-  // HANDLE INPUT CHANGE
-  // ============================
+  /* ===============================
+      HANDLE INPUT CHANGE
+  =============================== */
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ============================
-  // SAVE FORM
-  // ============================
+  /* ===============================
+      SAVE ROOM
+  =============================== */
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -77,25 +107,38 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       showAlert({
         title: response?.data?.message || "Room created successfully!",
         type: "success",
-        autoClose: 3000
+        autoClose: 3000,
       });
-
+      setFormData({
+        roomNumber: "",
+        roomName: "",
+        idRoomType: "",
+        defaultRate: "",
+        area: "",
+        capacity: "",
+        floor: "",
+        hourlyBasePrice: "",
+        hourlyAdditionalPrice: "",
+        overnightPrice: "",
+        note: "",
+        images: [],
+      });
       onSuccess?.();
       onClose();
     } catch (err: any) {
       showAlert({
         title: err?.response?.data?.message || "Failed to create room.",
         type: "error",
-        autoClose: 3000
+        autoClose: 3000,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  // ============================
-  // CANCEL FORM
-  // ============================
+  /* ===============================
+      CANCEL FORM
+  =============================== */
   const handleCancel = () => {
     setFormData({
       roomNumber: "",
@@ -113,6 +156,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
     });
     onClose();
   };
+
+  /* ===============================
+      CONFIRM CLOSE MODAL
+  =============================== */
+  const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
+
   if (isOpen && fetching) {
     return (
       <CommonModal
@@ -129,35 +178,46 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       </CommonModal>
     );
   }
-  return (
 
+  return (
     <>
-      {/* MAIN CREATE ROOM MODAL */}
+      {/* ===============================
+            MAIN FORM MODAL
+      =============================== */}
       <CommonModal
         isOpen={isOpen}
-        onClose={handleCancel}
+        onClose={() => {
+          if (isFormChanged()) {
+            setConfirmCloseOpen(true);
+          } else {
+            onClose();
+          }
+        }}
+
         title="Create New Room"
         onSave={handleSave}
         saveLabel={loading ? "Saving..." : "Save"}
         cancelLabel="Cancel"
         width="w-[1000px]"
       >
+        {/* FORM CONTENT */}
         <div className="grid grid-cols-2 gap-10">
 
-          {/* LEFT SIDE FORM */}
+          {/* LEFT */}
           <div className="space-y-5">
-
             <div>
               <label className="block mb-1 font-medium">Room Type *</label>
               <select
                 name="idRoomType"
                 value={formData.idRoomType}
                 onChange={handleChange}
-                className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               >
                 <option value="">Select Room Type</option>
                 {category.map((c: any) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -166,10 +226,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <label className="block mb-1 font-medium">Room Number *</label>
               <input
                 name="roomNumber"
-                placeholder="Enter Room"
                 value={formData.roomNumber}
                 onChange={handleChange}
-                className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                placeholder="Enter room number"
+                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
             </div>
 
@@ -181,17 +241,18 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter room name"
                   value={formData.roomName}
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
+
               <div>
                 <label className="block mb-1 font-medium">Floor *</label>
                 <input
                   name="floor"
-                  value={formData.floor}
                   placeholder="Enter floor"
+                  value={formData.floor}
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
             </div>
@@ -203,7 +264,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 value={formData.area}
                 onChange={handleChange}
                 placeholder="Enter area"
-                className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                className="w-full border rounded-lg p-2 outline-none"
               />
             </div>
 
@@ -214,7 +275,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 value={formData.capacity}
                 placeholder="Enter capacity"
                 onChange={handleChange}
-                className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                className="w-full border rounded-lg p-2 outline-none"
               />
             </div>
 
@@ -223,105 +284,100 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <textarea
                 name="note"
                 value={formData.note}
-                placeholder="Add any notes (e.g. near window, pool view)"
                 onChange={handleChange}
+                 placeholder="Add any notes (e.g. near window, pool view)"
+                className="w-full border bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
-                className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
               />
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
+          {/* RIGHT */}
           <div className="space-y-5">
 
             <div className="grid grid-cols-2 gap-4">
-              {/* Price fields */}
               <div>
-                <label className="block mb-1 font-medium">Price (VND) *</label>
+                <label className="block mb-1 font-medium">Price (VND)</label>
                 <input
-                  type="number"
                   name="hourlyBasePrice"
+                  type="number"
                   placeholder="Enter room price"
                   value={formData.hourlyBasePrice}
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
 
               <div>
                 <label className="block mb-1 font-medium">Extra Hour Price</label>
                 <input
-                  type="number"
                   name="hourlyAdditionalPrice"
+                  type="number"
                   placeholder="Enter room price"
                   value={formData.hourlyAdditionalPrice}
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
+
               <div>
-                <label className="block mb-1 font-medium">Price Overnight (VND) *</label>
+                <label className="block mb-1 font-medium">
+                  Overnight Price (VND)
+                </label>
                 <input
-                  type="number"
                   name="overnightPrice"
+                  type="number"
                   placeholder="Enter room price"
                   value={formData.overnightPrice}
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
+
               <div>
-                <label className="block mb-1 font-medium">Price day & night (VND) *</label>
+                <label className="block mb-1 font-medium">
+                  Price day & night (VND)
+                </label>
                 <input
-                  type="number"
                   name="defaultRate"
-                  placeholder="Enter room price"
+                  type="number"
                   value={formData.defaultRate}
+                  placeholder="Enter room price"
                   onChange={handleChange}
-                  className="w-full border border-[#42578E] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                  className="w-full border rounded-lg p-2 outline-none"
                 />
               </div>
             </div>
 
-            {/* IMAGE UPLOAD */}
+            {/* IMAGE UPLOAD PREVIEW */}
             <div>
-              <label className="text-sm font-medium">Image</label>
+              <label className="text-sm font-medium">Images</label>
 
               <div
                 onClick={openImageModal}
-                className="
-                  mt-2 border border-[#F2F2F2] rounded-xl bg-gray-50 hover:bg-gray-100 p-6 
-                  cursor-pointer transition
-                  flex flex-col items-center justify-center 
-                  text-center h-64
-                "
+                className="mt-2 border border-gray-200 rounded-xl bg-gray-50 hover:bg-gray-100 p-6 cursor-pointer transition flex flex-col items-center h-64"
               >
                 {formData.images.length > 0 ? (
                   <div className="grid grid-cols-3 gap-3">
                     {formData.images.map((img, index) => (
-                      <div key={index}>
-                        <img
-                          src={URL.createObjectURL(img)}
-                          className="w-full h-28 object-cover rounded-lg"
-                          alt=""
-                        />
-                      </div>
+                      <img
+                        key={index}
+                        src={URL.createObjectURL(img)}
+                        className="w-full h-28 object-cover rounded-lg"
+                      />
                     ))}
                   </div>
                 ) : (
-                  <>
-                    <div className="flex flex-col items-center justify-center h-40">
-                      <img
-                        src="/defaultImage.png"
-                        className="w-[167px] h-[117px] opacity-60"
-                        alt=""
-                      />
-                      <p className="text-gray-600 mt-3">Click to select images</p>
-                      <button className="mt-3 px-20 py-1.5 rounded-full border border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm">
-                        Select files
-                      </button>
-                    </div>
-                  </>
+                  <div className="flex flex-col items-center justify-center h-40">
+                    <img
+                      src="/defaultImage.png"
+                      className="w-[167px] h-[117px] opacity-60"
+                    />
+                    <p className="text-gray-600 mt-3">Click to select images</p>
+                    <button className="mt-3 px-20 py-1.5 rounded-full border border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm">
+                      Select files
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -329,8 +385,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         </div>
       </CommonModal>
 
-      {/* ==============================
-          IMAGE SELECT POPUP
+      {/* ===============================
+            IMAGE PICKER POPUP
       =============================== */}
       <AnimatePresence>
         {imageModalOpen && (
@@ -341,144 +397,204 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white w-[840px] rounded-xl p-6 shadow-xl"
+              className="bg-white w-[900px] rounded-2xl p-8 shadow-xl relative"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
             >
-              {/* Header */}
-              <div className="flex justify-between items-center mb-5">
+              {/* HEADER */}
+              <div className="flex justify-between items-center mb-6">
+                <button
+                  className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
+                  onClick={() => setImageModalOpen(false)}
+                >
+                  Cancel
+                </button>
+
                 <h2 className="text-xl font-semibold">Select images</h2>
-                <X className="w-6 h-6 cursor-pointer" onClick={() => setImageModalOpen(false)} />
+
+                <button
+                  className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
+                  onClick={() => {
+                    const filtered = tempImages.filter((x) => x !== null);
+                    setFormData((prev) => ({
+                      ...prev,
+                      images: filtered,
+                    }));
+                    setImageModalOpen(false);
+                  }}
+                >
+                  Save
+                </button>
               </div>
-              {tempImages.length === 0 && (
-                <div className="w-full h-[260px] bg-gray-100 rounded-lg border border-gray-300 
-                  flex items-center justify-center text-gray-400">
-                  No image selected
-                </div>
-              )}
 
-              {/* MAIN LAYOUT: LEFT = MAIN IMAGE, RIGHT = SMALL GRID */}
-              {tempImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-4">
+              {/* DROPZONE */}
+              <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
+     max-h-[500px] overflow-auto custom-scroll">
 
-                  {/* LEFT — MAIN IMAGE */}
-                  <div className="col-span-2">
-                    {tempImages.length > 0 ? (
-                      <div className="relative">
+                {/* NO IMAGES */}
+                {tempImages.length === 0 && (
+                  <div className="flex flex-col items-center py-16">
+                    <img src="/defaultImage.png" className="w-20 opacity-70" />
+
+                    <p className="mt-4 font-medium">Drag and drop an image</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Supported formats: JPG, PNG | Max. ....MB | Min. 600px x 600px
+                    </p>
+
+                    <p className="mt-4 text-gray-400">OR</p>
+
+                    <label
+                      htmlFor="filePicker"
+                      className="mt-3 px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
+                    >
+                      Browse Files
+                    </label>
+
+                    <input
+                      id="filePicker"
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files ?? []) as File[];
+                        if (files.length > 0) {
+                          setTempImages(files);
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* WITH IMAGES */}
+                {tempImages.length > 0 && (
+                  <>
+                    <div className="grid grid-cols-3 gap-4">
+
+                      {/* LARGE IMAGE */}
+                      <div className="col-span-2 relative">
                         <img
                           src={URL.createObjectURL(tempImages[0])}
-                          className="w-full h-[260px] object-cover rounded-lg border border-gray-300"
+                          className="w-full h-[350px] object-cover rounded-xl"
                         />
 
-                        {/* DELETE MAIN IMAGE */}
                         <button
                           onClick={() => {
                             const clone = [...tempImages];
                             clone.splice(0, 1);
                             setTempImages(clone);
                           }}
-                          className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded"
+                          className="absolute top-3 right-3 bg-black/60 text-white p-1.5 rounded-full"
                         >
-                          <X size={14} />
+                          <X size={16} />
                         </button>
                       </div>
-                    ) : (
-                      <div className="w-full h-[260px] bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center text-gray-400">
-                        No image selected
+
+                      {/* RIGHT SMALL IMAGES */}
+                      <div className="flex flex-col gap-4">
+                        {tempImages.slice(1).map((img, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={URL.createObjectURL(img)}
+                              className="w-full h-[165px] object-cover rounded-xl"
+                            />
+
+                            <button
+                              onClick={() => {
+                                const clone = [...tempImages];
+                                clone.splice(index + 1, 1);
+                                setTempImages(clone);
+                              }}
+                              className="absolute top-2 right-2 bg-black/60 text-white p-[3px] rounded-full opacity-0 group-hover:opacity-100 transition"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
                       </div>
+                    </div>
 
-                    )}
-                  </div>
-
-                  {/* RIGHT — SMALL IMAGES */}
-                  <div className="grid grid-cols-2 gap-3">
-                    {tempImages.slice(1).map((img, idx) => (
-                      <div
-                        key={idx}
-                        className="relative group cursor-pointer flex justify-center"
-                        onClick={() => {
-                          const clone = [...tempImages];
-                          const clicked = clone[idx + 1];
-                          clone[idx + 1] = clone[0];
-                          clone[0] = clicked;
-                          setTempImages(clone);
-                        }}
+                    {/* ALWAYS SHOW BROWSE FILES HERE */}
+                    <div className="flex justify-center mt-8">
+                      <label
+                        htmlFor="filePickerMore"
+                        className="px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
                       >
-                        <img
-                          src={URL.createObjectURL(img)}
-                          className="
-w-[160px]
-h-[115px]
-object-cover
-rounded-lg
-border border-gray-300
-group-hover:opacity-80
-"
-                        />
+                        Browse Files
+                      </label>
 
-                        {/* nút xóa */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const clone = [...tempImages];
-                            clone.splice(idx + 1, 1);
+                      <input
+                        id="filePickerMore"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files ?? []) as File[];
+
+                          if (files.length > 0) {
+                            const clone = [...tempImages, ...files];
                             setTempImages(clone);
-                          }}
-                          className="absolute top-2 right-2 bg-black/60 text-white p-[2px] rounded-full"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                          }
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
 
-                </div>
-              )}
-
-
-              {/* FILE PICKER + CONFIRM */}
-              <div className="text-center mt-6">
-                <label
-                  htmlFor="filePicker"
-                  className="mt-4 px-6 py-2 bg-[#42578E] text-white rounded-lg ml-4 cursor-pointer"
-                >
-                  Add images
-                </label>
-
-                <input
-                  id="filePicker"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files ?? []) as File[];
-
-                    if (files.length > 0) {
-                      setFormData(prev => ({
-                        ...prev,
-                        images: [...prev.images, ...files],
-                      }));
-
-
-                      setImageModalOpen(false);
-                    }
-                  }}
-
-                />
-
-                {/* Confirm */}
-
-                <p className="text-xs text-gray-500 mt-2">
-                  Supported: JPG, PNG • Min 600×600px
-                </p>
               </div>
+
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* ===============================
+            CONFIRM CLOSE
+      =============================== */}
+      {confirmCloseOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+          <div className="bg-white p-6 rounded-lg w-[360px] shadow-lg relative">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              onClick={() => setConfirmCloseOpen(false)}
+            >
+              ✕
+            </button>
+
+            <h2 className="text-lg font-semibold">
+              Do you want to save changes?
+            </h2>
+
+            <p className="text-gray-600 mt-2">
+              Your changes will be lost if you don't save.
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-lg"
+                onClick={() => {
+                  setConfirmCloseOpen(false);
+                  onClose();
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                onClick={() => {
+                  setConfirmCloseOpen(false);
+                  handleSave();
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

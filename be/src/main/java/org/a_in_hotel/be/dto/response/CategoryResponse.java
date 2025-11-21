@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 public class CategoryResponse {
@@ -15,7 +16,7 @@ public class CategoryResponse {
     private String code;
     private Boolean isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

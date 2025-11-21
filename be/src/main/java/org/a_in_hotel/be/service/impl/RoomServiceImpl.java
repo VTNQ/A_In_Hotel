@@ -63,8 +63,14 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public void save(RoomRequest request, List<MultipartFile>image) {
+        if(roomRepository.existsByRoomNumberAndHotelId(request.getRoomNumber(),securityUtils.getHotelId())){
+            throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Room number already exists");
+        }
         try {
-            Room room = roomMapper.toEntity(request,securityUtils.getCurrentUserId());
+            Room room = roomMapper.toEntity(
+                    request,
+                    securityUtils.getCurrentUserId(),
+                    securityUtils.getHotelId());
             roomRepository.save(room);
             List<Image> images = new ArrayList<>();
             for (MultipartFile file : image) {
@@ -76,7 +82,9 @@ public class RoomServiceImpl implements RoomService {
                         roomImage.setEntityId(room.getId());
                         images.add(roomImage);
                     }catch (Exception e) {
-                        throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi lưu hình ảnh: " + e.getMessage());
+                        throw new ErrorHandler
+                                (HttpStatus.INTERNAL_SERVER_ERROR,
+                                        "Lỗi khi lưu hình ảnh: " + e.getMessage());
                     }
                 }
 

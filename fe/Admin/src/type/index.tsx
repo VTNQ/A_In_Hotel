@@ -34,7 +34,6 @@ export interface AssetFormModalProps{
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    room:any[];
 }
 export interface BlogFormModalProps{
     isOpen:boolean;

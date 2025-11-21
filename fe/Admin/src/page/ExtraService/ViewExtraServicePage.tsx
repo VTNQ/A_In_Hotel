@@ -7,6 +7,7 @@ import ExtraServiceFormModal from "../../components/ExtraService/ExtraServiceFor
 import { useAlert } from "../../components/alert-context";
 import UpdateExtraServiceFormModal from "../../components/ExtraService/UpdateExtraServiceFormModal";
 import ExtraServiceActionMenu from "../../components/ExtraService/ExtraServiceActionMenu";
+import { getTokens } from "../../util/auth";
 
 const ViewExtraServicePage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -38,7 +39,7 @@ const ViewExtraServicePage = () => {
     if (categoryFilter) {
       filters.push(`category.id==${categoryFilter}`);
     }
-    
+    filters.push(`hotelId==${getTokens()?.hotelId}`)
     const filterQuery = filters.join(" and ");
     try {
       const params = {
