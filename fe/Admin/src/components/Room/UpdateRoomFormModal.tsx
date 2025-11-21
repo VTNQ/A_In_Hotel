@@ -252,6 +252,7 @@ const UpdateRoomFormModal = ({
                                 <label className="block mb-1 font-medium">Floor *</label>
                                 <input
                                     name="floor"
+                                    type="number"
                                     value={formData.floor}
                                     onChange={handleChange}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
@@ -263,6 +264,7 @@ const UpdateRoomFormModal = ({
                             <label className="block mb-1 font-medium">Area (m²) *</label>
                             <input
                                 name="area"
+                                type="number"
                                 value={formData.area}
                                 onChange={handleChange}
                                 className="w-full border border-[#42578E] rounded-lg p-2"
@@ -291,6 +293,7 @@ const UpdateRoomFormModal = ({
                             <label className="block mb-1 font-medium">Capacity *</label>
                             <input
                                 name="capacity"
+                                type="number"
                                 value={formData.capacity}
                                 onChange={handleChange}
                                 className="w-full border border-[#42578E] rounded-lg p-2"
