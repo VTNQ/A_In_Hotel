@@ -127,6 +127,24 @@ const ViewAssetPage = () => {
                 `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
         },
         { key: "quantity", label: "Quantity" },
+    
+
+        { key: "createdAt", label: "Created Date" },
+        { key: "updatedAt", label: "Last Updated Date" },
+        {
+            key: "action",
+            label: "Action",
+            render: (row: any) => (
+                <AssetActionMenu
+                    asset={row}
+                    onEdit={() => handleEdit(row)}
+                    onView={()=>handleView(row)}
+                    onActivate={() => handleActive(row)}
+                    onDeactivate={() => handleDeActived(row)}
+                    onMaintenance={() => handleMaintenance(row)}
+                />
+            ),
+        },
         {
             key: "status",
             label: "Status",
@@ -198,23 +216,6 @@ const ViewAssetPage = () => {
                     </label>
                 );
             },
-        },
-
-        { key: "createdAt", label: "Created Date" },
-        { key: "updatedAt", label: "Last Updated Date" },
-        {
-            key: "action",
-            label: "Action",
-            render: (row: any) => (
-                <AssetActionMenu
-                    asset={row}
-                    onEdit={() => handleEdit(row)}
-                    onView={()=>handleView(row)}
-                    onActivate={() => handleActive(row)}
-                    onDeactivate={() => handleDeActived(row)}
-                    onMaintenance={() => handleMaintenance(row)}
-                />
-            ),
         },
     ]
    

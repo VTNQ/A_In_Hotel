@@ -39,7 +39,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
     try {
       setFetching(true);
       const res = await getAllCategory({
-        all:true,
+        all: true,
         searchField: "type",
         searchValue: "1",
         filter: "isActive==1",
@@ -285,7 +285,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 name="note"
                 value={formData.note}
                 onChange={handleChange}
-                 placeholder="Add any notes (e.g. near window, pool view)"
+                placeholder="Add any notes (e.g. near window, pool view)"
                 className="w-full border bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
               />
@@ -430,7 +430,27 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               {/* DROPZONE */}
               <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
-     max-h-[500px] overflow-auto custom-scroll">
+     max-h-[500px] overflow-auto custom-scroll"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add("border-blue-500");
+                }}
+                onDragLeave={(e) => {
+                  e.currentTarget.classList.remove("border-blue-500");
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove("border-blue-500");
+
+                  const droppedFiles = Array.from(e.dataTransfer.files).filter(
+                    (f) => f.type.startsWith("image/")
+                  ) as File[];
+
+                  if (droppedFiles.length > 0) {
+                    setTempImages((prev) => [...prev, ...droppedFiles]);
+                  }
+                }}
+              >
 
                 {/* NO IMAGES */}
                 {tempImages.length === 0 && (
