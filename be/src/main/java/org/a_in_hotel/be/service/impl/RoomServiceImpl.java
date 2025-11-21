@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -99,50 +100,66 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void update(Long id, RoomRequest request, List<MultipartFile>image) {
+    @Transactional
+    public void update(Long id, RoomRequest request, List<MultipartFile> newImages) {
         try {
             Room existing = roomRepository.findById(id)
                     .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Phòng không tồn tại"));
 
-            // Cập nhật thông tin cơ bản
-            roomMapper.updateEntity(request, existing,securityUtils.getCurrentUserId());
+            // 1) Update basic info
+            roomMapper.updateEntity(request, existing, securityUtils.getCurrentUserId());
 
-            // Nếu có ảnh mới
-            if (image != null && !image.isEmpty()) {
-                if (existing.getImages() != null && !existing.getImages().isEmpty()) {
-                    for (Image oldImg : existing.getImages()) {
-                        try {
-                            generalService.deleFile(oldImg.getUrl());
-                        } catch (Exception e) {
-                            log.warn("⚠️ Không thể xóa ảnh cũ {}: {}", oldImg.getUrl(), e.getMessage());
-                        }
-                    }
-                    existing.getImages().clear();
+            List<Image> currentImages = existing.getImages();     // ảnh đang có trong DB
+            List<String> keepUrls = request.getOldImages();       // ảnh cũ FE muốn giữ
+
+            // 2) XÓA ẢNH CŨ NẾU KHÔNG CÓ TRONG oldImages GỬI LÊN
+            List<Image> imagesToDelete = currentImages.stream()
+                    .filter(img -> !keepUrls.contains(img.getUrl()))
+                    .toList();
+
+            for (Image img : imagesToDelete) {
+                try {
+                    generalService.deleFile(img.getUrl());
+                } catch (Exception e) {
+                    log.warn("⚠️ Không thể xóa file {}", img.getUrl());
                 }
-                List<Image> images = new ArrayList<>();
+            }
 
-                for (MultipartFile file : image) {
+            // Giữ lại ảnh cũ còn dùng
+            List<Image> updatedImageList = currentImages.stream()
+                    .filter(img -> keepUrls.contains(img.getUrl()))
+                    .collect(Collectors.toList());
+
+            // 3) LƯU ẢNH MỚI
+            if (newImages != null) {
+                for (MultipartFile file : newImages) {
                     if (file != null && !file.isEmpty()) {
                         FileUploadMeta meta = generalService.saveFile(file, "room");
-                        Image imageNew = roomImageMapper.toBannerImage(meta);
-                        imageNew.setEntityId(existing.getId());
-                        imageNew.setEntityType("Room");
-                        images.add(imageNew);
+
+                        Image newImg = roomImageMapper.toBannerImage(meta);
+                        newImg.setEntityId(existing.getId());
+                        newImg.setEntityType("Room");
+
+                        updatedImageList.add(newImg);
                     }
                 }
-
-                // Xóa ảnh cũ (nếu cần)
-                existing.getImages().clear();
-                existing.getImages().addAll(images);
             }
-            roomMapper.updateRoomPriceOptions(request,existing,securityUtils.getCurrentUserId());
-            roomRepository.save(existing);
 
-        } catch (Exception e) {
+            // 4) GÁN DANH SÁCH ẢNH MỚI
+            existing.getImages().clear();
+            existing.getImages().addAll(updatedImageList);
+
+            // 5) Update giá phòng
+            roomMapper.updateRoomPriceOptions(request, existing, securityUtils.getCurrentUserId());
+
+            roomRepository.save(existing);
+        }catch (Exception e) {
             log.error("Error updating room: {}", e.getMessage(), e);
             throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật phòng: " + e.getMessage());
         }
+
     }
+
 
     @Override
     public RoomResponse findById(Long id) {

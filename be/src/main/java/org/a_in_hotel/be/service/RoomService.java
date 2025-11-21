@@ -12,7 +12,7 @@ import java.util.List;
 public interface RoomService {
     void save(RoomRequest request, List<MultipartFile> image);
 
-    void update(Long id, RoomRequest request, List<MultipartFile> image);
+    void update(Long id, RoomRequest request, List<MultipartFile> newImages);
 
     RoomResponse findById(Long id);
 

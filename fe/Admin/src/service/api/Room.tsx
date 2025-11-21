@@ -42,7 +42,7 @@ export const updateRoom = async (id: number, roomData: any) => {
             }
         }
     });
-    roomData.images?.forEach((img: File) => formData.append("image", img))
+    roomData.images?.forEach((img: File) => formData.append("images", img))
     return await Http.put(`/api/rooms/update/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
     })
