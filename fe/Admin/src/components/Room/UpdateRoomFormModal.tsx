@@ -180,7 +180,6 @@ const UpdateRoomFormModal = ({
         setTempImages([]);
         onClose();
     };
-    const [pendingDelete, setPendingDelete] = useState<number[]>([]);
 
     if (isOpen && fetching) {
         return (
