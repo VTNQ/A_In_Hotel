@@ -116,21 +116,22 @@ const ViewAssetPage = () => {
 
     }
     const columns = [
-        { key: "assetCode", label: "Asset ID" },
+        { key: "assetCode", label: "Asset ID" ,sortable: true },
         { key: "assetName", label: "Asset Name" },
-        { key: "roomName", label: "Room" },
-        { key: "categoryName", label: "Category" },
+        { key: "roomName", label: "Room",sortable: true },
+        { key: "categoryName", label: "Category",sortable: true },
         {
             key: "price",
             label: "Price",
             render: (row: any) =>
                 `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
+            sortable: true
         },
         { key: "quantity", label: "Quantity" },
     
 
-        { key: "createdAt", label: "Created Date" },
-        { key: "updatedAt", label: "Last Updated Date" },
+        { key: "createdAt", label: "Created Date" ,sortable: true},
+        { key: "updatedAt", label: "Last Updated Date",sortable: true },
         {
             key: "action",
             label: "Action",
