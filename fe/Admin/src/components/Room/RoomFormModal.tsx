@@ -190,7 +190,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
           if (isFormChanged()) {
             setConfirmCloseOpen(true);
           } else {
-            onClose();
+            handleCancel();
           }
         }}
 
@@ -406,7 +406,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <div className="flex justify-between items-center mb-6">
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
-                  onClick={() => setImageModalOpen(false)}
+                  onClick={() => {
+                    setTempImages(formData.images); 
+                    setImageModalOpen(false);
+                  }}
                 >
                   Cancel
                 </button>
@@ -596,7 +599,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 className="px-4 py-2 bg-gray-200 rounded-lg"
                 onClick={() => {
                   setConfirmCloseOpen(false);
-                  onClose();
+                  handleCancel();
                 }}
               >
                 Cancel
