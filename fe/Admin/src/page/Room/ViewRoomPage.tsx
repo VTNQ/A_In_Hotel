@@ -9,6 +9,7 @@ import RoomActionMenu from "../../components/Room/RoomActionMenu";
 import UpdateRoomFormModal from "../../components/Room/UpdateRoomFormModal";
 import { useAlert } from "../../components/alert-context";
 import ViewRoomManagement from "../../components/Room/ViewRoomManagement";
+import { getTokens } from "../../util/auth";
 
 const ViewRoomPage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -57,6 +58,7 @@ const ViewRoomPage = () => {
         filters.push(`roomType.id==${categoryFilter}`);
 
       }
+      filters.push(`hotelId==${getTokens()?.hotelId}`)
       const filterQuery = filters.join(" and ");
       const params = {
         page: pageNumber,

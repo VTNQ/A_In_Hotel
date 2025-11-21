@@ -38,6 +38,7 @@ export default function Login() {
           refreshToken: response.data.refreshToken,
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
+          hotelId:response.data.hotelId
         })
       } else {
         setError("Bạn không có quyền truy cập hệ thống.");

@@ -4,12 +4,13 @@ import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateAsset } from "../../service/api/Asset";
 import { getAllCategory } from "../../service/api/Category";
+import { getAllRoom } from "../../service/api/Room";
+import { getTokens } from "../../util/auth";
 
 const UpdateAssetFormModal = ({
     isOpen,
     onClose,
     onSuccess,
-    room,
     assetId
 }: UpdateAssetFormModalProps) => {
     const [formData, setFormData] = useState({
@@ -25,11 +26,13 @@ const UpdateAssetFormModal = ({
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [room,setRooms]= useState<any[]>([]);
     const { showAlert } = useAlert();
     useEffect(() => {
         if (!isOpen || !assetId) return;
         setLoading(true);
         fetchCategories();
+        fetchRooms();
         findById(assetId)
             .then((res) => {
                 const data = res?.data?.data;
@@ -56,10 +59,30 @@ const UpdateAssetFormModal = ({
     }, [isOpen, assetId]);
     const fetchCategories = async () => {
         try {
-            const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "3", filter: "isActive==1" });
+            const res = await getAllCategory({ all: true, searchField: "type", searchValue: "3", filter: "isActive==1" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)
+        }
+    }
+    const fetchRooms=async()=>{
+        try {
+            setLoading(true)
+            let filters: string[] = [];
+            filters.push(`hotelId==${getTokens()?.hotelId}`)
+            filters.push(`status==3`)
+            const filterQuery = filters.join(" and ");
+            
+            const res = await getAllRoom(
+            { 
+                 all:true,
+                filter: filterQuery
+            });
+            setRooms(res.data.content || []);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setLoading(false)
         }
     }
     const handleChange = (

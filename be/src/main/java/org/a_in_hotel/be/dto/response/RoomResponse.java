@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
@@ -31,8 +32,8 @@ public class RoomResponse {
     private BigDecimal hourlyAdditionalPrice;
     private BigDecimal overnightPrice;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }
 

@@ -3,6 +3,7 @@ export type Tokens={
     refreshToken?:string;
     accessTokenAt:number;
     refreshTokenAt?:number;
+    hotelId?:number;
 }
 const LS_KEY="auth/tokens";
 export function saveTokens(t:Tokens){

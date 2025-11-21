@@ -4,22 +4,50 @@ import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { createAsset } from "../../service/api/Asset";
 import { getAllCategory } from "../../service/api/Category";
+import { getAllRoom } from "../../service/api/Room";
+import { getTokens } from "../../util/auth";
 
 const AssetFormModal = ({
     isOpen,
     onClose,
     onSuccess,
-    room
 }: AssetFormModalProps) => {
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
     const [saving, setSaving] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
+    const [room,setRooms]= useState<any[]>([]);
     const fetchCategories = async () => {
         try {
             setLoading(true)
-            const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "3", filter: "isActive==1" });
+            const res = await getAllCategory(
+                { 
+                    all:true, 
+                    searchField: "type", 
+                    searchValue: "3", 
+                    filter: "isActive==1" 
+                });
             setCategories(res.content || []);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setLoading(false)
+        }
+    }
+    const fetchRooms=async()=>{
+        try {
+            setLoading(true)
+            let filters: string[] = [];
+            filters.push(`hotelId==${getTokens()?.hotelId}`)
+            filters.push(`status==3`)
+            const filterQuery = filters.join(" and ");
+            
+            const res = await getAllRoom(
+            { 
+                all:true,
+                filter: filterQuery
+            });
+            setRooms(res.data.content || []);
         } catch (err) {
             console.log(err)
         } finally {
@@ -28,6 +56,7 @@ const AssetFormModal = ({
     }
     useEffect(() => {
         fetchCategories()
+        fetchRooms()
     }, [isOpen])
     const [formData, setFormData] = useState({
         assetName: "",

@@ -17,4 +17,5 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
     GROUP BY r.roomType.id
 """)
     List<KeyCount> countByRoomTypeIds(@Param("ids") List<Long> ids);
+    boolean existsByRoomNumberAndHotelId(String roomNumber, Long hotelId);
 }

@@ -38,7 +38,7 @@ public class ExtraService {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private  Category category;
+    private Category category;
     @Column(name = "extra_charge", nullable = false)
     private Integer extraCharge;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
@@ -49,13 +49,14 @@ public class ExtraService {
     @Enumerated(EnumType.STRING)
     @Column(name = "unit", length = 50, nullable = false)
     private UnitExtraService unit;
-
+    @Column(name = "hotel_id")
+    private Long hotelId;
     @Column(name = "is_active")
     private Boolean isActive = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX") // XXX = +07:00
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     private OffsetDateTime createdAt;
 
     @Column(name = "updated_at")
@@ -71,6 +72,7 @@ public class ExtraService {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
     @PrePersist
     public void prePersist() {
         if (this.serviceCode == null || this.serviceCode.isEmpty()) {

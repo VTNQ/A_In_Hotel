@@ -43,7 +43,10 @@ public class RoomExtraServiceImpl implements RoomExtraService {
     public void save(ExtraServiceRequest request) {
         try {
             log.info("start create extra service");
-            ExtraService extraService =mapper.toEntity(request,securityUtils.getCurrentUserId());
+            ExtraService extraService =mapper.toEntity(
+                    request,
+                    securityUtils.getCurrentUserId(),
+                    securityUtils.getHotelId());
             repository.save(extraService);
         }catch (Exception e){
             log.error(e.getMessage(),e);

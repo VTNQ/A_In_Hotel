@@ -27,7 +27,7 @@ const ExtraServiceFormModal = ({
     const fetchCategories = async () => {
         try {
             setLoading(true)
-            const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "2", filter: "isActive==1" });
+            const res = await getAllCategory({ all:true, searchField: "type", searchValue: "2", filter: "isActive==1" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)

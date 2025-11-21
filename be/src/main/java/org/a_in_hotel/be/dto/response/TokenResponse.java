@@ -13,4 +13,5 @@ public class TokenResponse {
     private long accessTokenExpiryAt;
     private long refreshTokenExpiryAt;
     private String role;
+    private Long hotelId;
 }

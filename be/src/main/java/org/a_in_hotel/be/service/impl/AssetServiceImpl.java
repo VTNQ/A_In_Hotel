@@ -48,7 +48,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         try {
             log.info("➡️ Start creating asset: {}", req.getAssetName());
             // ✅ Map DTO → Entity
-            Asset asset = assetMapper.toEntity(req,securityUtils);
+            Asset asset = assetMapper.toEntity(req,securityUtils.getHotelId());
             asset.setCreatedBy(securityUtils.getCurrentUserId().toString());
             asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
             // ✅ Lưu DB
@@ -70,7 +70,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
         categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        assetMapper.updateEntity(asset, req,securityUtils);
+        assetMapper.updateEntity(asset, req);
         asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
         assetRepository.save(asset);
     }

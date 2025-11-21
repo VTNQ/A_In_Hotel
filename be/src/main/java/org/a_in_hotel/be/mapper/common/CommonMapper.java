@@ -72,12 +72,6 @@ public interface CommonMapper {
         r.setId(id);
         return r;
     }
-    default Hotel mapHotelFromToken(SecurityUtils securityUtils) {
-        Long hotelId = securityUtils.getHotelId();
-        Hotel hotel = new Hotel();
-        hotel.setId(hotelId);
-        return hotel;
-    }
 
     @Named("mapRoomTypeFromId")
     default Category mapRoomTypeFromId(Long idRoomType) {
