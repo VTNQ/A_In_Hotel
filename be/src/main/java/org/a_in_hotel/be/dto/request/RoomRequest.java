@@ -17,7 +17,7 @@ public class RoomRequest {
     @NotNull(message = "Room type is required")
     @Min(value = 1,message = "Room Type is required")
     private Integer idRoomType;
-    private Integer status=1;
+    private Integer status=3;
     @NotNull(message = "Capacity is required")
     @Min(value = 1,message = "Capacity must be least 1")
     private Integer capacity;

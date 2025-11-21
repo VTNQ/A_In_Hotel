@@ -23,7 +23,8 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "roomPriceOptions", expression = "java(mapPriceOptions(request,room,userId))")
-    Room toEntity(RoomRequest request, Long userId);
+    @Mapping(target = "hotelId",source = "hotelId")
+    Room toEntity(RoomRequest request, Long userId,Long hotelId);
 
     // ========== UPDATE ==========
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

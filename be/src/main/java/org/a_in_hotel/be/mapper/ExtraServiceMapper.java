@@ -15,7 +15,8 @@ public interface ExtraServiceMapper extends CommonMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
-    ExtraService toEntity(ExtraServiceRequest request, Long userId);
+    @Mapping(target = "hotelId",source = "hotelId")
+    ExtraService toEntity(ExtraServiceRequest request, Long userId,Long hotelId);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "request.categoryId", qualifiedByName = "mapCategoryFromId")

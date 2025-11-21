@@ -4,11 +4,11 @@ import CommonTable from "../../components/ui/CommonTable";
 import { getAllAsset, updateStatus } from "../../service/api/Asset";
 import AssetFormModal from "../../components/Asset/AssetFormModal";
 import { getAllCategory } from "../../service/api/Category";
-import { getAllRoom } from "../../service/api/Room";
 import AssetActionMenu from "../../components/Asset/AssetActionMenu";
 import UpdateAssetFormModal from "../../components/Asset/UpdateAssetFormModal";
 import { useAlert } from "../../components/alert-context";
 import ViewAssetInformation from "../../components/Asset/ViewAssetInformation";
+import { getTokens } from "../../util/auth";
 
 const ViewAssetPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -19,7 +19,6 @@ const ViewAssetPage = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
-    const [rooms, setRooms] = useState<any[]>([]);
     const [searchValue, setSearchValue] = useState("");
     const [showModal, setShowModal] = useState(false);
     const { showAlert } = useAlert();
@@ -218,14 +217,7 @@ const ViewAssetPage = () => {
             ),
         },
     ]
-    const fetchRooms = async () => {
-        try {
-            const res = await getAllRoom({ page: 1, size: 10, searchField: "status", searchValue: "3" });
-            setRooms(res.data.content || []);
-        } catch (err) {
-            console.log(err)
-        }
-    }
+   
     const fetchCategory = async () => {
         try {
             const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "3", filter: "isActive==1" });
@@ -246,6 +238,7 @@ const ViewAssetPage = () => {
                 filters.push(`category.id==${categoryFilter}`);
 
             }
+            filters.push(`hotelId==${getTokens()?.hotelId}`)
 
             const filterQuery = filters.join(" and ");
             const params = {
@@ -277,7 +270,6 @@ const ViewAssetPage = () => {
     useEffect(() => {
         fetchData();
         fetchCategory();
-        fetchRooms();
     }, [])
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
@@ -353,8 +345,6 @@ const ViewAssetPage = () => {
                     fetchData();
                     setShowModal(false);
                 }}
-
-                room={rooms}
             />
             <ViewAssetInformation
                 isOpen={showViewModal}
@@ -368,7 +358,6 @@ const ViewAssetPage = () => {
                     fetchData();
                     setShowUpdateModal(false);
                 }}
-                room={rooms}
                 assetId={selectedAsset}
             />
             {loading ? (
