@@ -241,7 +241,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter room name"
                   value={formData.roomName}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
 
@@ -253,7 +253,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter floor"
                   value={formData.floor}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
             </div>
@@ -266,7 +266,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 value={formData.area}
                 onChange={handleChange}
                 placeholder="Enter area"
-                className="w-full border rounded-lg p-2 outline-none"
+                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
             </div>
 
@@ -278,7 +278,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 value={formData.capacity}
                 placeholder="Enter capacity"
                 onChange={handleChange}
-                className="w-full border rounded-lg p-2 outline-none"
+                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
             </div>
 
@@ -289,7 +289,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 value={formData.note}
                 onChange={handleChange}
                 placeholder="Add any notes (e.g. near window, pool view)"
-                className="w-full border bg-[#EEF0F7] rounded-lg p-2 outline-none"
+                className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
               />
             </div>
@@ -307,7 +307,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter room price"
                   value={formData.hourlyBasePrice}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
 
@@ -319,7 +319,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter room price"
                   value={formData.hourlyAdditionalPrice}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
 
@@ -333,7 +333,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder="Enter room price"
                   value={formData.overnightPrice}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
 
@@ -347,7 +347,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   value={formData.defaultRate}
                   placeholder="Enter room price"
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
               </div>
             </div>

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import type { StaffFormModalProps } from "../../type";
 import CommonModal from "../ui/CommonModal";
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import { useAlert } from "../alert-context";
 import { create } from "../../service/api/Staff";
+import CustomDatePicker from "../ui/CustomDatePicker";
 const StaffFormModal = ({
     isOpen,
     onClose,
@@ -29,26 +28,26 @@ const StaffFormModal = ({
             [name]: value,
         }));
     };
-    const handleSave=async()=>{
+    const handleSave = async () => {
         setLoading(true);
-        try{
+        try {
             const cleanedData = Object.fromEntries(
                 Object.entries({
-                    email:formData.email,
-                    fullName:formData.fullName,
-                    gender:formData.gender,
-                    phone:formData.phone,
-                    idRole:formData.role,
-                    birthday:formData.birthday
-                    ? formData.birthday.toISOString().split("T")[0] 
-                    : null,
-                    isActive:true
+                    email: formData.email,
+                    fullName: formData.fullName,
+                    gender: formData.gender,
+                    phone: formData.phone,
+                    idRole: formData.role,
+                    birthday: formData.birthday
+                        ? formData.birthday.toISOString().split("T")[0]
+                        : null,
+                    isActive: true
                 }).map(([key, value]) => [
                     key,
                     value?.toString().trim() === "" ? null : value,
-                  ])
+                ])
             )
-            const response=await create(cleanedData);
+            const response = await create(cleanedData);
             const message =
                 response?.data?.message ||
                 "staff created successfully!";
@@ -65,11 +64,11 @@ const StaffFormModal = ({
                 phone: "",
                 role: "3",
                 birthday: null as Date | null,
-           
+
             })
             onSuccess?.();
             onClose();
-        }catch(err:any){
+        } catch (err: any) {
             console.error("Create error:", err);
             showAlert({
                 title:
@@ -78,11 +77,11 @@ const StaffFormModal = ({
                 type: "error",
                 autoClose: 4000,
             });
-        }finally{
+        } finally {
             setLoading(false)
         }
     }
-    const handleCancel=()=>{
+    const handleCancel = () => {
         setFormData({
             email: "",
             fullName: "",
@@ -90,7 +89,7 @@ const StaffFormModal = ({
             phone: "",
             role: "3",
             birthday: null as Date | null,
-          
+
         })
         onClose();
     }
@@ -98,6 +97,7 @@ const StaffFormModal = ({
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
+
             title="Create Staff"
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}
@@ -114,7 +114,7 @@ const StaffFormModal = ({
                         onChange={handleChange}
                         value={formData.fullName}
                         placeholder="Enter Full Name"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                         required
                     />
                 </div>
@@ -128,25 +128,84 @@ const StaffFormModal = ({
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="Enter Email"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                         required
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">
                         Gender <span className="text-red-500">*</span>
                     </label>
-                    <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        required
-                    >
-                        <option defaultValue="0">Nam</option>
-                        <option value="1">Nữ</option>
-                    </select>
+
+                    <div className="flex items-center gap-6 mt-2">
+
+                        {/* MALE */}
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="0"
+                                checked={formData.gender === "0"}
+                                onChange={handleChange}
+                                className="hidden peer"
+                            />
+
+                            {/* Custom radio */}
+                            <span
+                                className="
+          h-4 w-4 rounded-full border
+          border-gray-400 
+          peer-checked:border-[#42578E]
+          peer-checked:bg-[#42578E]
+          transition
+        "
+                            ></span>
+
+                            <span
+                                className="
+          text-gray-700 
+          peer-checked:text-[#42578E]
+        "
+                            >
+                                Male
+                            </span>
+                        </label>
+
+                        {/* FEMALE */}
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="1"
+                                checked={formData.gender === "1"}
+                                onChange={handleChange}
+                                className="hidden peer"
+                            />
+
+                            {/* Custom radio */}
+                            <span
+                                className="
+          h-4 w-4 rounded-full border
+          border-gray-400 
+          peer-checked:border-[#42578E]
+          peer-checked:bg-[rgb(66,87,142)]
+          transition
+        "
+                            ></span>
+
+                            <span
+                                className="
+          text-gray-700 
+          peer-checked:text-[#42578E]
+        "
+                            >
+                                Female
+                            </span>
+                        </label>
+                    </div>
+
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Phone
@@ -165,19 +224,13 @@ const StaffFormModal = ({
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Date of birth <span className="text-red-500">*</span>
                     </label>
-                    <DatePicker
-                        selected={formData.birthday}
-                        onChange={(date: Date | null) =>
-                            setFormData((prev) => ({ ...prev, birthday: date }))
-                        }
-                        dateFormat="yyyy-MM-dd"
-                        maxDate={new Date()} // không cho chọn ngày tương lai
-                        placeholderText="Select date of birth"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
+                    <CustomDatePicker
+                        value={formData.birthday}
+                        onChange={(date) => setFormData((prev) => ({ ...prev, birthday: date }))}
+                        placeholder="Select date of birth"
                     />
+
+
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -195,7 +248,7 @@ const StaffFormModal = ({
                     </select>
                 </div>
             </div>
-     
+
         </CommonModal>
     )
 }

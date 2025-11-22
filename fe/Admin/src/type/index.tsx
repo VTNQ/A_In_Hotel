@@ -40,6 +40,11 @@ export interface BlogFormModalProps{
     onClose:()=>void;
     onSuccess:()=>void;
 }
+export interface CustomDatePickerProps {
+    value: Date | null;
+    onChange: (value: Date | null) => void;
+    placeholder?: string;
+  }
 export interface UpdateBlogFormModalProps extends BlogFormModalProps{
     blogId:any;
 }
