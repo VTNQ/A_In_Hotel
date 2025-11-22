@@ -127,11 +127,22 @@ const ViewAssetPage = () => {
                 `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
             sortable: true
         },
-        { key: "quantity", label: "Quantity" },
+        { key: "quantity", label: "Quantity",sortable:true },
     
 
         { key: "createdAt", label: "Created Date" ,sortable: true},
         { key: "updatedAt", label: "Last Updated Date",sortable: true },
+        {
+            key:"note",
+            label:"Note",
+            render: (row: any) => (
+                <span title={row.note}>
+                  {row.note?.length > 50
+                    ? row.note.substring(0, 50) + "..."
+                    : row.note || "No note"}
+                </span>
+              ),
+        },
         {
             key: "action",
             label: "Action",
@@ -296,7 +307,7 @@ const ViewAssetPage = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by Name or ID"
+                        placeholder="Search by Asset ID, Asset Name"
                         className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-82 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
