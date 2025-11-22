@@ -11,6 +11,7 @@ interface CommonModalProps {
   cancelLabel?: string;
   hideFooter?: boolean;
   width?: string; // custom width (optional)
+  height?:string;
 }
 
 const CommonModal: React.FC<CommonModalProps> = ({
@@ -23,13 +24,14 @@ const CommonModal: React.FC<CommonModalProps> = ({
   cancelLabel = "Cancel",
   hideFooter = false,
   width = "w-[875px]",
+  height = "h-[400px]"
 }) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div
-        className={`bg-white rounded-2xl shadow-xl ${width} max-w-full flex flex-col max-h-[85vh]`}
+        className={`bg-white rounded-2xl shadow-xl ${width} ${height} max-w-full flex flex-col max-h-[85vh]`}
       >
         {/* HEADER */}
         <div className="relative px-6 py-4 border-b border-gray-200 bg-white">
@@ -90,7 +92,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
     border border-[#7C7C7C]
     text-[#4B4B4B]
     bg-[#F2F2F2]
-    hover:bg-[#7C7C7C]
+    hover:bg-[#42578E]
     hover:text-white
     transition
     font-medium
