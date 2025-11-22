@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -140,37 +141,67 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<RequestResponse<TokenResponse>> login(@RequestBody LoginDTO loginDTO) {
         try {
+            // 1. Xác thực tài khoản
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDTO.getUsername(),
                             loginDTO.getPassword()
                     )
             );
-            if (authentication.isAuthenticated()) {
-                Account account = (Account) authentication.getPrincipal();
-                Hotel hotel = hotelService.getHotelByAccountId(account.getId());
-                String accessToken= jwtService.generateAccessToken(account.getEmail(),account.getId(),account.getRole().getName(),hotel==null?null:hotel.getId());
-                String refreshToken= jwtService.generateRefreshToken(account.getEmail(),account.getId(),account.getRole().getName(),hotel==null?null:hotel.getId());
-                long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
-                long refreshTokenExpiryAt=jwtService.getRefreshTokenExpiryAt();
-                String role=jwtService.extractRole(accessToken);
-                return ResponseEntity.ok(RequestResponse.success(
-                        new TokenResponse(
-                                refreshToken,
-                                accessToken,
-                                accessTokenExpiryAt,
-                                refreshTokenExpiryAt,
-                                role,
-                                hotel.getId())
-                ));
-            } else {
+
+            if (!authentication.isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(RequestResponse.error("Invalid username or password"));
             }
+
+            // 2. Lấy account sau khi login thành công
+            Account account = (Account) authentication.getPrincipal();
+
+            // 3. Lấy hotel (có thể null)
+            Hotel hotel = hotelService.getHotelByAccountId(account.getId());
+            Long hotelId = (hotel != null) ? hotel.getId() : null;
+
+            // 4. Generate token
+            String accessToken = jwtService.generateAccessToken(
+                    account.getEmail(),
+                    account.getId(),
+                    account.getRole().getName(),
+                    hotelId
+            );
+
+            String refreshToken = jwtService.generateRefreshToken(
+                    account.getEmail(),
+                    account.getId(),
+                    account.getRole().getName(),
+                    hotelId
+            );
+
+            // 5. Expiry time
+            long accessTokenExpiryAt = jwtService.getAccessTokenExpiryAt();
+            long refreshTokenExpiryAt = jwtService.getRefreshTokenExpiryAt();
+
+            // 6. Role
+            String role = jwtService.extractRole(accessToken);
+
+            // 7. Trả response thành công
+            TokenResponse tokenResponse = new TokenResponse(
+                    refreshToken,
+                    accessToken,
+                    accessTokenExpiryAt,
+                    refreshTokenExpiryAt,
+                    role,
+                    hotelId
+            );
+
+            return ResponseEntity.ok(RequestResponse.success(tokenResponse));
+
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(RequestResponse.error("Incorrect username or password"));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
-
     }
 }
