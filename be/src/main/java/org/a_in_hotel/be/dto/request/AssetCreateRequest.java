@@ -23,10 +23,11 @@ public class AssetCreateRequest {
     private Long roomId;
 
     @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMin(value = "0.0", inclusive = true,message = "Invalid price format")
     private BigDecimal price;
 
-    @NotNull @Min(value = 0,message = "Quantity must be greater than or equal to 0")
+    @NotNull(message = "Quantity is required")
+    @Min(value = 0,message = "Invalid quantity")
     private Integer quantity;
     private Integer status=1;
 
