@@ -19,6 +19,8 @@ public class AssetUpdateRequest {
     @NotNull(message = "Category is required")
     @Min(value = 1,message = "Category is required")
     private Long categoryId;
+    @NotNull(message = "Room Number is required")
+    private Long roomId;
 
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = true,message = "Price must be greater than or equal to 0")
