@@ -118,7 +118,7 @@ const ViewAssetPage = () => {
     const columns = [
         { key: "assetCode", label: "Asset ID" ,sortable: true },
         { key: "assetName", label: "Asset Name" },
-        { key: "roomName", label: "Room",sortable: true },
+        { key: "roomNumber", label: "Room",sortable: true,sortKey:"room.roomNumber" },
         { key: "categoryName", label: "Category",sortable: true },
         {
             key: "price",
