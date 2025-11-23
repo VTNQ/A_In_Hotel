@@ -11,7 +11,8 @@ interface CommonModalProps {
   cancelLabel?: string;
   hideFooter?: boolean;
   width?: string; // custom width (optional)
-  height?:string;
+  height?: string;
+  showCloseButton?: boolean;
 }
 
 const CommonModal: React.FC<CommonModalProps> = ({
@@ -24,7 +25,8 @@ const CommonModal: React.FC<CommonModalProps> = ({
   cancelLabel = "Cancel",
   hideFooter = false,
   width = "w-[875px]",
-  height = "h-[400px]"
+  height = "h-[400px]",
+  showCloseButton = true
 }) => {
   if (!isOpen) return null;
 
@@ -41,20 +43,22 @@ const CommonModal: React.FC<CommonModalProps> = ({
 
           {/* CLOSE BTN */}
 
-          <button
-            onClick={onClose}
-            className="
-      absolute right-6 bottom-4
-      w-7 h-7 flex items-center justify-center
-      border border-[#2E3A8C]
-      text-[#2E3A8C]
-      rounded-lg
-      hover:bg-[#f2f4ff]
-      transition
-    "
-          >
-            <X size={17} strokeWidth={2} />
-          </button>
+          {showCloseButton && (
+            <button
+              onClick={onClose}
+              className="
+                absolute right-6 bottom-4
+                w-7 h-7 flex items-center justify-center
+                border border-[#2E3A8C]
+                text-[#2E3A8C]
+                rounded-lg
+                hover:bg-[#f2f4ff]
+                transition
+              "
+            >
+              <X size={17} strokeWidth={2} />
+            </button>
+          )}
         </div>
 
         {/* CONTENT */}

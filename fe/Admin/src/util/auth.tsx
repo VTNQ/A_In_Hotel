@@ -1,14 +1,17 @@
-export type Tokens={
-    accessToken:string;
-    refreshToken?:string;
-    accessTokenAt:number;
-    refreshTokenAt?:number;
-    hotelId?:number;
+export type Tokens = {
+  accessToken: string;
+  refreshToken?: string;
+  accessTokenAt: number;   // milliseconds
+  refreshTokenAt?: number; // milliseconds
+  hotelId?: number;
+};
+
+const LS_KEY = "auth/tokens";
+
+export function saveTokens(t: Tokens) {
+  localStorage.setItem(LS_KEY, JSON.stringify(t));
 }
-const LS_KEY="auth/tokens";
-export function saveTokens(t:Tokens){
-    localStorage.setItem(LS_KEY,JSON.stringify(t));
-}
+
 export function getTokens(): Tokens | null {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) return null;
@@ -18,15 +21,20 @@ export function getTokens(): Tokens | null {
     return null;
   }
 }
+
 export function clearTokens() {
   localStorage.removeItem(LS_KEY);
 }
 
-function toMillis(epoch: number) {
-  return epoch < 1e12 ? epoch * 1000 : epoch;
-}
+/**
+ * 🔥 Access token expired?
+ * Backend gửi về accessTokenAt = timestamp (ms)
+ * Chỉ cần so sánh:
+ *   accessTokenAt < now
+ */
 export function isAccessExpired(): boolean {
   const t = getTokens();
   if (!t) return true;
-  return toMillis(t.accessTokenAt)  <= Date.now();
+
+  return t.accessTokenAt <= Date.now();
 }
