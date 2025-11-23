@@ -23,13 +23,14 @@ public interface AssetMapper  extends CommonMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategoryFromId")
+    @Mapping(target = "room",source = "roomId",qualifiedByName = "mapRoom")
     @Mapping(target = "updatedBy", ignore = true)
     void updateEntity(@MappingTarget Asset asset, AssetUpdateRequest dto);
 
     @Mapping(target = "categoryId",   source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "roomId",source = "room.id")
-    @Mapping(target = "roomName",source = "room.roomName")
+    @Mapping(target = "roomNumber",source = "room.roomNumber")
     @Mapping(target = "note",source = "note")
     AssetResponse toResponse(Asset entity);
 
