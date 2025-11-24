@@ -7,6 +7,7 @@ import org.a_in_hotel.be.Enum.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +20,5 @@ public class AccountResponse {
     private String phone;
     private String avatarUrl;
     private LocalDate birthday;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }
