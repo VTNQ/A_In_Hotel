@@ -1,5 +1,6 @@
 package org.a_in_hotel.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,11 +8,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.a_in_hotel.be.Enum.Gender;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,11 +52,15 @@ public class Account implements UserDetails {
     @JoinColumn(name = "avatar_id", referencedColumnName = "id") // FK tới BannerImage
     private Image image;
 
+    @CreationTimestamp
     @Schema(description = "Thời gian tạo", example = "2025-08-22 09:05:46.698643")
-    private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
+    private OffsetDateTime createdAt;
 
+    @UpdateTimestamp
     @Schema(description = "Thời gian cập nhật", example = "2025-08-22 09:05:46.698643")
-    private LocalDateTime updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
+    private OffsetDateTime updatedAt;
     @Column(name = "is_active")
     private Boolean isActive = true;
     @Column(name = "created_by")
@@ -60,16 +68,6 @@ public class Account implements UserDetails {
 
     @Column(name = "updated_by")
     private String updatedBy;
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     // UserDetails methods
     @Override
