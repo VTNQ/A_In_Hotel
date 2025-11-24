@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "staff")
@@ -40,13 +41,13 @@ public class Staff {
     @Schema(description = "Tài khoản đăng nhập liên kết với nhân viên")
     private Account account;
     @Schema(description = "Thời gian tạo", example = "2025-08-22 09:05:46.698643")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @Schema(description = "Thời gian cập nhật", example = "2025-08-22 09:05:46.698643")
     @UpdateTimestamp
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDateTime updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
+    private OffsetDateTime updatedAt;
     @Column(name = "hotel_id")
     private Long hotelId;
     @Column(name = "created_by")

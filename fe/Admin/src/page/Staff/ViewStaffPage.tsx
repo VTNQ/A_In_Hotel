@@ -87,7 +87,7 @@ const ViewStaffPage = () => {
   };
 
   const columns = [
-    { key: "id", label: "StaffID" },
+    { key: "staffCode", label: "StaffID" },
     { key: "fullName", label: "Full Name", sortable: true, keySort: "fullName" },
     { key: "gender", label: "Gender", sortable: true, keySort: "gender" },
     { key: "birthday", label: "Date of Birth" },
