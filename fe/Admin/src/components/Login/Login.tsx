@@ -38,7 +38,7 @@ export default function Login() {
           refreshToken: response.data.refreshToken,
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
-          hotelId:response.data.hotelId
+          hotelId: response.data.hotelId
         })
       } else {
         setError("Bạn không có quyền truy cập hệ thống.");
@@ -224,14 +224,19 @@ export default function Login() {
           </div>
           <div className="block md:hidden absolute -top-40 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-full">
             {/* Lớp ngoài: gradient border */}
-            <div className="p-[1.6px] rounded-2xl md:border-none" style={{
-              backgroundImage: `
+            {/* Khung gradient */}
+            <div
+              className="p-[1.6px] rounded-2xl md:border-none"
+              style={{
+                backgroundImage: `
       linear-gradient(108.52deg, #B2DCFE 0.55%, #154686 98.39%),
       linear-gradient(250.95deg, rgba(86, 154, 243, 0) 0%, rgba(29, 79, 188, 0.2) 100%)
-    `
-            }}>
-              {/* Lớp trong: form trắng */}
+    `,
+              }}
+            >
+              {/* Box trắng */}
               <div className="bg-[#EEF0F7] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,.08)] p-5 transition-colors">
+
                 <form className="space-y-4" onSubmit={handleLogin}>
                   <div>
                     <label className="block text-sm font-medium text-[#42578E]">
@@ -253,23 +258,24 @@ export default function Login() {
                     </label>
                     <input
                       type="password"
-                      placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter password"
                       className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                       required
                     />
                   </div>
+
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2 text-sm text-slate-600 relative">
                       <input
                         type="checkbox"
                         className="peer appearance-none h-4 w-4 border-2 border-[#154686] rounded-sm cursor-pointer 
-                 bg-transparent checked:bg-[#154686] checked:border-[#154686] transition-all duration-150"
+                     bg-transparent checked:bg-[#154686] checked:border-[#154686] transition-all duration-150"
                       />
-                      {/* Dấu check */}
+                      {/* Check icon */}
                       <svg
-                        className="absolute left-[2%] top-[22%] w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
+                        className="absolute left-[2%] top-[22%] w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -279,45 +285,30 @@ export default function Login() {
                           d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0 0-1.414z"
                         />
                       </svg>
+
                       Remember password
                     </label>
 
-                    <a
-                      href="/register"
-                      className="text-sm text-[#007AFF]  hover:underline"
-                      style={{ fontWeight:'400' }}
-                    >
+                    <a href="/register" className="text-sm text-[#007AFF] hover:underline">
                       Forgot Password?
                     </a>
                   </div>
                 </form>
-
-                <AlertModal
-                  open={modalOpen}
-                  onOpenChange={handleModalOpenChange}
-                  type={modalCfg?.type ?? "info"}
-                  title={modalCfg?.title ?? ""}
-                  description={modalCfg?.description}
-                  closable
-                  autoClose={modalCfg?.type === "success" ? 1600 : undefined}
-                  primaryAction={{
-                    label: "OK",
-                    autoFocus: true,
-                  }}
-                />
               </div>
-              
             </div>
-            
+
+            {/* NÚT LOGIN — HOÀN TOÀN BÊN NGOÀI BOX XANH */}
             <button
-                    type="submit"
-                    className={`w-full rounded-md py-2 font-semibold text-white transition-colors mt-3 ${isFilled
-                      ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                      : "bg-[#4B62A0] cursor-not-allowed"
-                      }`}
-                  >
-                    Login
-                  </button>
+              type="submit"
+              onClick={handleLogin}
+              className={`w-full rounded-md py-2 font-semibold text-white transition-colors mt-3 ${isFilled
+                ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+                : "bg-[#4B62A0] cursor-not-allowed"
+                }`}
+            >
+              Login
+            </button>
+
           </div>
 
 
