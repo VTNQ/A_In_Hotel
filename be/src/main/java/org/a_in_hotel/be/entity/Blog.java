@@ -29,7 +29,6 @@ public class Blog {
     @Transient
     private Image thumbnail;
 
-
     @Column(name = "category")
     private Integer category;
     @Column(name = "description", columnDefinition = "TEXT")
