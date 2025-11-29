@@ -6,6 +6,7 @@ import { findById, updateAsset } from "../../service/api/Asset";
 import { getAllCategory } from "../../service/api/Category";
 import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
+import { File_URL } from "../../setting/constant/app";
 
 const UpdateAssetFormModal = ({
     isOpen,
@@ -21,11 +22,13 @@ const UpdateAssetFormModal = ({
         quantity: "",
         note: "",
         roomId: "",
+        image: null as File | null,
 
     });
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [preview, setPreview] = useState<string | null>(null);
     const [room,setRooms]= useState<any[]>([]);
     const { showAlert } = useAlert();
     useEffect(() => {
@@ -43,8 +46,10 @@ const UpdateAssetFormModal = ({
                     price: data.price || 0,
                     quantity: data.quantity || 0,
                     note: data.note || "",
-                    roomId: data.roomId || ""
+                    roomId: data.roomId || "",
+                    image: null
                 })
+                setPreview(File_URL + data.thumbnail?.url || null)
             })
             .catch(() => {
                 showAlert({
@@ -57,6 +62,13 @@ const UpdateAssetFormModal = ({
 
 
     }, [isOpen, assetId]);
+    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFormData((prev) => ({ ...prev, image: file }));
+            setPreview(URL.createObjectURL(file));
+        }
+    };
     const fetchCategories = async () => {
         try {
             const res = await getAllCategory({ all: true, searchField: "type", searchValue: "3", filter: "isActive==1" });
@@ -102,7 +114,8 @@ const UpdateAssetFormModal = ({
                 roomId: formData.roomId,
                 price: formData.price,
                 quantity: formData.quantity,
-                note: formData.note
+                note: formData.note,
+                image:formData.image
             }
             const response = await updateAsset(Number(formData.id), payload);
             const message = response?.data?.message || "Asset updated successfully.";
@@ -136,6 +149,7 @@ const UpdateAssetFormModal = ({
             quantity: "",
             note: "",
             roomId: "",
+            image:null
 
         })
         onClose();
@@ -164,6 +178,40 @@ const UpdateAssetFormModal = ({
             saveLabel={saving ? "Saving..." : "Save"}
             cancelLabel="Cancel"
         >
+                  <div className="mb-4">
+                <label className="block mb-1 font-medium text-[#253150]">Asset Icon</label>
+                <div className="relative w-32 h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleIconChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                    />
+
+                    {preview ? (
+                        <img
+                            src={preview}
+                            className="w-full h-full object-cover absolute inset-0"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <img
+                                src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
+                                className="w-full h-full object-cover absolute inset-0"
+                            />
+                        </div>
+                    )}
+
+                    <div className="absolute bottom-2 right-2 bg-[#4B62A0] p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 5a3 3 0 110 6 3 3 0 010-6z" />
+                            <path d="M12 13c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]" >

@@ -9,8 +9,10 @@ import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.service.AssetService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,23 +38,25 @@ public class AssetController {
     }
 
     // ===================== TẠO MỚI =====================
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>> create(
-            @Valid @RequestBody AssetCreateRequest req
+            @Valid @ModelAttribute AssetCreateRequest req,
+            @RequestParam(value = "image", required = false) MultipartFile image
     ) {
-        assetService.save(req);
+        assetService.save(req, image);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RequestResponse.success("Tạo asset thành công"));
     }
 
     // ===================== CẬP NHẬT =====================
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<AssetResponse>> update(
             @PathVariable Long id,
-            @Valid @RequestBody AssetUpdateRequest req
+            @Valid @ModelAttribute AssetUpdateRequest req,
+            @RequestParam(value = "image", required = false) MultipartFile image
     ) {
-        assetService.update(id, req);
+        assetService.update(id, req, image);
         return ResponseEntity.ok(RequestResponse.success( "Cập nhật asset thành công"));
     }
 

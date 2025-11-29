@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { ViewAssetProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Asset";
+import { File_URL } from "../../setting/constant/app";
 
 const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, assetId }) => {
     const [asset, setAsset] = useState<any>(null);
@@ -56,6 +57,23 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
 
                     <div className=" w-full py-2  rounded-xl text-[16px] text-[#2B2B2B]" >
                         <div className="grid grid-cols-[350px_2fr] gap-y-3">
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 flex items-center">
+                                Thumbnail
+                            </span>
+
+                            <div className="flex items-center">
+                                <div className="w-28 h-28 border border-[#4B62A0]/40 rounded-xl overflow-hidden bg-[#F3F4F6] flex items-center justify-center">
+                                    {asset.thumbnail?.url ? (
+                                        <img
+                                            src={File_URL+asset.thumbnail.url}
+                                            alt="thumbnail"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">No Image</span>
+                                    )}
+                                </div>
+                            </div>
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">
                                 Asset Name
                             </span>
@@ -69,8 +87,8 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Category</span>
                             <span style={{ fontWeight: '400' }}>{asset.categoryName}</span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Room Name</span>
-                            <span style={{ fontWeight: '400' }}>{asset.roomName}</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Room Number</span>
+                            <span style={{ fontWeight: '400' }}>{asset.roomNumber}</span>
 
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Price(VND)</span>
                             <span style={{ fontWeight: '400' }}>
