@@ -30,6 +30,8 @@ public class AssetResponse {
     private Integer status;
     private String note;
 
+    private ImageResponse thumbnail;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private OffsetDateTime createdAt;
 

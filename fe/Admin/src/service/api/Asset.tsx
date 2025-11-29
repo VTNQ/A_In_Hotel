@@ -17,10 +17,33 @@ export const getAllAsset=async(options:GetAllOptions={})=>{
     return resp.data;
 }
 export const createAsset=async(assetData:any)=>{
-    return await Http.post("/api/assets",assetData)
+    const formData = new FormData();
+    Object.entries(assetData).forEach(([key, value]) => {
+        if (key !== "image" && value !== undefined && value !== null) {
+            formData.append(key, value.toString());
+        }
+    });
+    if (assetData.image) {
+        formData.append("image", assetData.image);
+    }
+    return await Http.post("/api/assets", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
 }
 export const updateAsset=async(id:number,assetData:any)=>{
-    return await Http.put(`/api/assets/${id}`,assetData)
+    const formData = new FormData();
+    Object.entries(assetData).forEach(([key, value]) => {
+        if (key !== "image" && value !== undefined && value !== null) {
+            formData.append(key, value.toString());
+        }
+    });
+    if (assetData.image) {
+        formData.append("image", assetData.image);
+    }
+    return await Http.put(`/api/assets/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
 }
 export const updateStatus=async(id:number,status:number)=>{
     return await Http.patch(`/api/assets/updateStatus/${id}?status=${status}`)

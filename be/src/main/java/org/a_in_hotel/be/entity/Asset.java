@@ -37,6 +37,8 @@ public class Asset {
     private Long hotelId;
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
+    @Transient
+    private Image thumbnail;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;

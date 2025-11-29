@@ -23,21 +23,51 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
 
   const toggle = () => {
     if (!btnRef.current) return;
+  
     const rect = btnRef.current.getBoundingClientRect();
-    setMenuPos({
-      top: rect.bottom + window.scrollY + 6,
-      left: rect.left + window.scrollX - 120,
-    });
+    const menuWidth = 176; // w-44 = 176px
+    const menuHeight = 180; // ước lượng, hoặc bạn chỉnh theo UI
+  
+    // Tính vị trí default (menu bên dưới)
+    let top = rect.bottom + 6;
+    let left = rect.left - menuWidth + 40;
+  
+    // Nếu menu tràn xuống dưới màn hình → flip lên
+    if (top + menuHeight > window.innerHeight) {
+      top = rect.top - menuHeight - 6; // đặt lên trên
+    }
+  
+    // Nếu menu tràn trái → đẩy sang phải
+    if (left < 0) {
+      left = rect.right + 6;
+    }
+  
+    setMenuPos({ top, left });
     setOpen(!open);
   };
+  
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (!btnRef.current?.contains(e.target as Node)) setOpen(false);
     };
-    if (open) document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+  
+    const handleScroll = () => setOpen(false);
+    const handleResize = () => setOpen(false);
+  
+    if (open) {
+      document.addEventListener("click", handleClickOutside);
+      window.addEventListener("scroll", handleScroll, true);
+      window.addEventListener("resize", handleResize);
+    }
+  
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [open]);
+  
 
   return (
     <>
@@ -53,12 +83,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
         createPortal(
           <AnimatePresence>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -5 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -5 }}
-              transition={{ duration: 0.15 }}
-              className="fixed z-[99999] bg-white border border-gray-200 shadow-lg rounded-xl p-2 w-44"
-              style={{ top: menuPos.top, left: menuPos.left }}
+             initial={{ opacity: 0, scale: 0.95, y: -5 }}
+             animate={{ opacity: 1, scale: 1, y: 0 }}
+             exit={{ opacity: 0, scale: 0.95, y: -5 }}
+             transition={{ duration: 0.15 }}
+             className="fixed z-[2147483647] bg-white border border-gray-200 shadow-xl rounded-xl p-2 w-44"
+             style={{ top: menuPos.top, left: menuPos.left }}
             >
               {title && (
                 <p className="text-sm font-semibold text-gray-700 mb-2">

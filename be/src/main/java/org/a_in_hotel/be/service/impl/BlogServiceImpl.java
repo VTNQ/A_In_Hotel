@@ -88,15 +88,17 @@ public class BlogServiceImpl implements BlogService {
     public void update(Long id, BlogUpdateRequest request, MultipartFile file) {
         try {
             Blog blog = blogRepository.getReferenceById(id);
+            Image oldImage =imageRepository.findFirstByEntityIdAndEntityType(blog.getId(), "Blog")
+                    .orElse(null);
             blogMapper.updateEntity(request, blog, securityUtil.getCurrentUserId());
             if(file!=null && !file.isEmpty()) {
-                if(blog.getThumbnail()!=null){
+                if(oldImage!=null){
                     try {
-                        generalService.deleFile(blog.getThumbnail().getUrl());
+                        generalService.deleFile(oldImage.getUrl());
                     }catch (Exception e) {
-                        log.warn("⚠️ Không thể xóa ảnh cũ {}: {}", blog.getThumbnail().getUrl(), e.getMessage());
+                        log.warn("⚠️ Không thể xóa ảnh cũ {}: {}", oldImage.getUrl(), e.getMessage());
                     }
-
+                    imageRepository.delete(oldImage);
                 }
                 FileUploadMeta meta;
                 try {
@@ -108,7 +110,7 @@ public class BlogServiceImpl implements BlogService {
                 Image newImage = imageMapper.toBannerImage(meta);
                 newImage.setEntityType("Blog");
                 newImage.setEntityId(blog.getId());
-                blog.setThumbnail(newImage);
+                imageRepository.save(newImage);
             }
             blogRepository.save(blog);
         } catch (EntityNotFoundException e) {
