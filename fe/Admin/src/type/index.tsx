@@ -82,6 +82,18 @@ export interface RoomActionMenuProps {
     onDeactivate?: (room: any) => void;
     onMaintenance?: (room: any) => void;
 }
+export interface BookingActionMenuProps {
+    booking: {
+        status?: number;
+        [key: string]: any; // Cho phép các field khác (roomCode, name, ...)
+    };
+    onView?: (booking: any) => void;
+    onEdit?: (booking: any) => void;
+    onCheckIn?: (booking: any) => void;
+    onCheckOut?: (booking: any) => void;
+    onSwitchRoom?: (booking: any) => void;
+    onRebook?: (booking: any) => void;
+}
 export interface AssetActionMenuProps {
     asset: {
         status?:number;

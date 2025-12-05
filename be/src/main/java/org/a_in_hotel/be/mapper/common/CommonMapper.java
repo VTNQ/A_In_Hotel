@@ -1,9 +1,14 @@
 package org.a_in_hotel.be.mapper.common;
 
+import org.a_in_hotel.be.Enum.BookingPackage;
 import org.a_in_hotel.be.Enum.PriceType;
+import org.a_in_hotel.be.dto.request.BookingDetailRequest;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.mapper.BookingDetailMapper;
+import org.a_in_hotel.be.repository.ExtraServiceRepository;
+import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.repository.StaffRepository;
 import org.a_in_hotel.be.service.StaffService;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -12,8 +17,10 @@ import org.mapstruct.Named;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface CommonMapper {
     @Named("capitalizeFirstLetter")
@@ -115,5 +122,108 @@ public interface CommonMapper {
     default ImageResponse mapImage(Image image) {
         if (image == null) return null;
         return new ImageResponse(image.getUrl(), image.getAltText());
+    }
+
+    @Named("mapDetails")
+    default List<BookingDetail> mapDetails(
+            List<BookingDetailRequest> requests,
+            Booking booking,
+            @Context BookingDetailMapper detailMapper,
+            @Context RoomRepository roomRepository,
+            @Context ExtraServiceRepository extraServiceRepository,
+            Long userId) {
+        List<BookingDetail> details = requests.stream()
+                .map(req -> {
+                    BookingDetail detail = detailMapper.toEntity
+                            (req,roomRepository,extraServiceRepository,userId);
+                    detail.setBooking(booking);
+                    validatePrice(
+                            detail,
+                            req.getPrice(),
+                            booking,roomRepository,extraServiceRepository);
+                    detail.setPrice(req.getPrice());
+                    return detail;
+                })
+                .collect(Collectors.toList());
+        BigDecimal systemTotal = calculateTotalPrice(details);
+
+        validateTotalPrice(booking.getTotalPrice(), systemTotal);
+
+        return details;
+    }
+
+    default void  validatePrice(BookingDetail detail,
+                                BigDecimal fePrice,
+                                Booking booking,
+                                @Context RoomRepository roomRepository,
+                                @Context ExtraServiceRepository extraServiceRepository
+                                ) {
+
+        BigDecimal systemPrice = calculateCorrectPrice(
+                detail,
+                booking,
+                roomRepository,
+                extraServiceRepository);
+
+        if (fePrice == null)
+            throw new IllegalArgumentException("Price is required.");
+        if(systemPrice.compareTo(fePrice) !=0){
+            throw new IllegalArgumentException(
+                    "Invalid price for detail. Expected: " + systemPrice + ", received: " + fePrice
+            );
+        }
+    }
+
+    default BigDecimal calculateCorrectPrice(
+            BookingDetail detail,
+            Booking booking,
+            @Context RoomRepository roomRepository,
+            @Context ExtraServiceRepository extraServiceRepository
+            ) {
+        if(detail.getExtraService() != null) {
+            ExtraService extraService = extraServiceRepository.
+                    getReferenceById(detail.getExtraService().getId());
+            return extraService.getPrice();
+        }
+
+        if(detail.getRoom()!=null){
+            Room room = roomRepository.
+                    getReferenceById(detail.getRoom().getId());
+            BookingPackage bookingPackage = BookingPackage.
+                    getBookingPackage(booking.getBookingPackage());
+
+            long days = ChronoUnit.DAYS.between(
+                    booking.getCheckInDate(),
+                    booking.getCheckOutDate());
+
+            if(days <=0) days = 1;
+            return switch (bookingPackage) {
+                case FIRST_2_HOURS -> room.getBasePrice();         // 2 giờ
+                case OVERNIGHT -> room.getOvernightPrice();    // Qua đêm
+                case FULL_DAY -> room.getDefaultRate()
+                        .multiply(BigDecimal.valueOf(days));       // Full day
+                default -> throw new IllegalArgumentException("Unknown bookingPackage");
+            };
+        }
+        throw new IllegalStateException("BookingDetail must have room or extraService.");
+    }
+    default void validateTotalPrice(BigDecimal feTotal, BigDecimal systemTotal) {
+
+        if (feTotal == null) {
+            throw new IllegalArgumentException("totalPrice is required");
+        }
+
+        if (feTotal.compareTo(systemTotal) != 0) {
+            throw new IllegalArgumentException(
+                    "Invalid total price. Expected: " + systemTotal + ", received: " + feTotal
+            );
+        }
+    }
+
+
+    default BigDecimal calculateTotalPrice(List<BookingDetail> details){
+        return details.stream()
+                .map(d->d.getPrice().multiply(BigDecimal.valueOf(d.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

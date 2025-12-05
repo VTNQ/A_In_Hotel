@@ -278,7 +278,7 @@ const ViewRoomPage = () => {
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
-            placeholder="Search by room number, name"
+            placeholder="Search by booking number, phone number"
             className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-72 focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
