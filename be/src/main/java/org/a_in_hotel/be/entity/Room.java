@@ -3,6 +3,7 @@ package org.a_in_hotel.be.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.a_in_hotel.be.Enum.RoomStatus;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Room {
     @Id
     @Column(name = "id", length = 10)

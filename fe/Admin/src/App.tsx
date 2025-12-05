@@ -8,6 +8,7 @@ import ViewRoomPage from './page/Room/ViewRoomPage'
 import ViewAssetPage from './page/Asset/ViewAssetPage'
 import ViewStaffPage from './page/Staff/ViewStaffPage'
 import ViewBlogPage from './page/Blog/ViewBlogPage'
+import ViewBooking from './page/Booking/ViewBooking'
 
 function App() {
   return(
@@ -20,6 +21,7 @@ function App() {
           <Route path='facility/categories' element={<ViewCategoryPage/>}/>
           <Route path='facility/rooms' element={<ViewRoomPage/>}/>
           <Route path='facility/assets' element={<ViewAssetPage/>}/>
+          <Route path='booking' element={<ViewBooking/>}/>
           <Route path='staffs' element={<ViewStaffPage/>}/>
           <Route path='post/blogs' element={<ViewBlogPage/>}/>
         </Route>
