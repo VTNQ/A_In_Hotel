@@ -50,9 +50,25 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<RequestResponse<Void>> handleInvalidJson(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getMostSpecificCause();
+
+        // Nếu Jackson xác định field lỗi
+        if (cause instanceof com.fasterxml.jackson.databind.JsonMappingException mappingException) {
+
+            String fieldName = mappingException.getPath().isEmpty()
+                    ? "unknown"
+                    : mappingException.getPath().get(0).getFieldName();
+
+            String message = "Trường '" + fieldName + "' không hợp lệ: " + mappingException.getOriginalMessage();
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(RequestResponse.error(message));
+        }
+
         return ResponseEntity
                 .badRequest()
-                .body(RequestResponse.error("Dữ liệu gửi lên không hợp lệ hoặc sai định dạng JSON."));
+                .body(RequestResponse.error("JSON gửi lên sai định dạng hoặc không thể đọc."));
     }
 
     /**
