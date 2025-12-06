@@ -41,6 +41,7 @@ const ViewBooking = () => {
             const params = {
                 page: pageNumber, sort: `${key},${order}`,
                 size: 10,
+                searchValue:searchValue,
                 ...(filterQuery ? { filter: filterQuery } : {})
             }
             const res = await GetAllBookings(params);
