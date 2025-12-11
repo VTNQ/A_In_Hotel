@@ -26,4 +26,12 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
             @Param("newCheckInDate") LocalDate newCheckIn,
             @Param("newCheckOutDate") LocalDate newCheckOut);
 
+    @Query("""
+    SELECT b FROM Booking b
+    WHERE b.BookingPackage IN :packages
+      AND b.status = :status""")
+    List<Booking> findBookingsForRoomUpdate(
+            @Param("packages") List<Integer> bookingPackages,
+            @Param("status") Integer status);
+
 }
