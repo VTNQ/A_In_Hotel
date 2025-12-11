@@ -19,4 +19,7 @@ public enum RoomStatus {
         }
         throw new IllegalArgumentException("Invalid room status code: " + code);
     }
+    public int getCode() {
+        return code;
+    }
 }
