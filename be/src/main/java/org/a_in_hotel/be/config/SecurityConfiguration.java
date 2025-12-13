@@ -105,7 +105,9 @@ public class SecurityConfiguration {
         config.setAllowedOrigins(List.of(
                 "https://superadmin.ainhotelvn.com",
                 "https://admin.ainhotelvn.com",
+                "https://www.ainhotelvn.com",
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "http://localhost:5175"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
