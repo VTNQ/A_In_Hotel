@@ -4,14 +4,18 @@ import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BookingPackage;
+import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.BookingDetailRequest;
 import org.a_in_hotel.be.dto.request.BookingRequest;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.Booking;
+import org.a_in_hotel.be.entity.Payment;
 import org.a_in_hotel.be.mapper.BookingDetailMapper;
 import org.a_in_hotel.be.mapper.BookingMapper;
+import org.a_in_hotel.be.mapper.PaymentMapper;
 import org.a_in_hotel.be.repository.BookingRepository;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
+import org.a_in_hotel.be.repository.PaymentRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.service.BookingService;
 import org.a_in_hotel.be.util.SearchHelper;
@@ -43,6 +47,10 @@ public class BookingServiceImpl  implements BookingService {
 
     private final ExtraServiceRepository extraServiceRepository;
 
+    private final PaymentRepository paymentRepository;
+
+    private final PaymentMapper paymentMapper;
+
     private final SecurityUtils securityUtils;
 
     private static final List<String> SEARCH_FIELDS =  List.of("code","phoneNumber");
@@ -51,15 +59,42 @@ public class BookingServiceImpl  implements BookingService {
 
         validateBookingTime(request);
 
+        validateRoomAvailable(request);
         validateRoomSchedule(request);
         Booking booking = mapper.toEntity
                 (request,detailMapper,roomRepository,extraServiceRepository,securityUtils.getCurrentUserId());
 
         repository.save(booking);
+
+        Payment payment = paymentMapper.toEntity(request);
+        payment.setBooking(booking);
+        paymentRepository.save(payment);
         log.info("Booking created {} details",
                  booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
+    private void validateRoomAvailable(BookingRequest request) {
+        List<Long> roomIds = request.getBookingDetail().stream()
+                .map(BookingDetailRequest::getRoomId)
+                .filter(Objects::nonNull)
+                .toList();
 
+        if (roomIds.isEmpty()) {
+            return;
+        }
+
+        roomIds.forEach(roomId -> {
+            var room = roomRepository.findById(roomId)
+                    .orElseThrow(() ->
+                                         new IllegalArgumentException("Room ID " + roomId + " not found")
+                                );
+
+            if (room.getStatus() != RoomStatus.AVAILABLE.getCode()) {
+                throw new IllegalArgumentException(
+                        "Room ID " + roomId + " is not available"
+                );
+            }
+        });
+    }
     @Override
     public Page<BookingResponse> findAll(
             Integer page, Integer size, String sort, String filter, String searchField,
@@ -141,7 +176,7 @@ public class BookingServiceImpl  implements BookingService {
                 }
 
                 if (checkOutTime.isAfter(LocalTime.of(12, 0))) {
-                    throw new IllegalArgumentException("Full day booking requires Check-out <= 2:00.");
+                    throw new IllegalArgumentException("Full day booking requires Check-out <= 12:00.");
                 }
 
 

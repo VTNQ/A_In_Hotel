@@ -9,5 +9,5 @@ public class HotelUpdate {
     private Long id;
     private String address;
     private Long idUser;
-    private HotelStatus status;
+    private Integer status;
 }

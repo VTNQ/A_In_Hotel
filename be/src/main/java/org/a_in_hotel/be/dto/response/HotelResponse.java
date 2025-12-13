@@ -12,5 +12,5 @@ public class HotelResponse {
     private String fullName;
     private Long createdAt;
     private Long idUser;
-    private HotelStatus status;
+    private Integer status;
 }

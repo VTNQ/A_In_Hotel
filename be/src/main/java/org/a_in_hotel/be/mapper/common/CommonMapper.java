@@ -183,7 +183,7 @@ public interface CommonMapper {
         if(detail.getExtraService() != null) {
             ExtraService extraService = extraServiceRepository.
                     getReferenceById(detail.getExtraService().getId());
-            return extraService.getPrice();
+            return extraService.getPrice().multiply(BigDecimal.valueOf(detail.getQuantity()));
         }
 
         if(detail.getRoom()!=null){

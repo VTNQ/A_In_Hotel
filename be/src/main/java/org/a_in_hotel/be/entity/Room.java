@@ -34,6 +34,8 @@ public class Room {
     private String roomNumber;
     @Column(name = "hotel_id")
     private Long hotelId;
+    @OneToMany(mappedBy = "room")
+    private List<Asset> assets;
     @Column(name = "room_name")
     private String roomName;
     @Column(name = "base_price",nullable = false)

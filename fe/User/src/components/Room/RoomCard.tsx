@@ -1,47 +1,44 @@
-import React from "react";
+import { File_URL } from "../../setting/constant/app";
+import type { RoomCardProps } from "../../type/room.types";
 
-interface RoomCardProps {
-  image: string;
-  type: string;
-}
-
-const RoomCard: React.FC<RoomCardProps> = ({ image, type }) => {
-  return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden w-[320px]">
-      {/* Image */}
-      <div className="relative">
-        <img src={image} alt={type} className="w-full h-52 object-cover" />
-        {/* Expand icon */}
-        <div className="absolute top-2 right-2 bg-white bg-opacity-80 hover:bg-opacity-100 transition p-1 rounded-full cursor-pointer shadow">
-          <svg
-            className="w-5 h-5 text-gray-800"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M15 10l4.553 4.553a2 2 0 01-2.829 2.829L12 12.828m0 0L6.276 18.553a2 2 0 01-2.829-2.829L9 10m3 2.828V5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+const RoomCard =({room}:RoomCardProps)=>{
+    return (
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="relative">
+            <img
+              src={File_URL+room?.images[0].url}
+              alt={room?.images[0].altText}
+              className="h-56 w-full object-cover"
             />
-          </svg>
+            {/* {room.tag && (
+              <span className="absolute top-3 left-3 bg-[#b38a58] text-white text-xs px-3 py-1 rounded-full">
+                {room.tag}
+              </span>
+            )} */}
+          </div>
+    
+          <div className="p-4">
+            <h3 className="font-semibold text-lg mb-2">{room.roomName}</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              A perfect choice for luxury stay with premium amenities.
+            </p>
+    
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs text-gray-400">Starting from</div>
+                <div className="text-lg font-semibold">
+                  ${room.defaultRate}
+                  <span className="text-sm text-gray-500"> / night</span>
+                </div>
+              </div>
+    
+              <button className="px-4 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800">
+                Book Now
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4 text-sm text-gray-800">
-        <div className="flex items-center justify-between mb-2">
-          <span className="font-medium">{type}</span>
-          <span className="text-lg">&rsaquo;</span>
-        </div>
-        <hr className="mb-3 border-gray-300" />
-        <button className="bg-[#8c7b6c] text-white px-4 py-2 rounded-full text-sm hover:opacity-90 transition">
-          View Rates
-        </button>
-      </div>
-    </div>
-  );
-};
-
+      );
+    
+}
 export default RoomCard;
