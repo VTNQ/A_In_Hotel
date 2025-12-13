@@ -13,7 +13,7 @@ public interface HotelService {
 
     void update(HotelUpdate branch, Long id);
 
-    void updateStatus(HotelStatus branchStatus, Long id);
+    void updateStatus(Integer branchStatus, Long id);
 
     Page<HotelResponse> getAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 

@@ -26,6 +26,14 @@ public class BookingRequest {
 
     private Integer numberOfGuests;
 
+    private BigDecimal paidAmount;
+
+    private String paymentMethod;
+
+    private Integer paymentType;
+
+    private String notes;
+
     private LocalDate checkInDate;
 
     private BigDecimal totalPrice;

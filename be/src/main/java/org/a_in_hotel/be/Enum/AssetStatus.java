@@ -6,6 +6,9 @@ public enum AssetStatus {
     BROKEN(3),
     DEACTIVATED(4);
     private final int code;
+    public int getCode() {
+        return code;
+    }
     AssetStatus(int code) {
         this.code = code;
     }

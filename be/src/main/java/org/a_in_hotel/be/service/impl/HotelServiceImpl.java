@@ -72,7 +72,6 @@ public class HotelServiceImpl implements HotelService {
                     });
 
             Hotel hotelEntity = hotelMapper.toEntity(hotel,securityUtils.getCurrentUserId());
-            hotelEntity.setCode(generalService.generateByUUID());
             hotelRepository.save(hotelEntity);
 
         } catch (DataIntegrityViolationException e) {
@@ -122,7 +121,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public void updateStatus(HotelStatus branchStatus, Long id) {
+    public void updateStatus(Integer branchStatus, Long id) {
         try {
             Hotel hotel = hotelRepository.getReferenceById(id);
             hotel.setStatus(branchStatus);

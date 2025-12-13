@@ -56,10 +56,11 @@ public class RoomController {
                                                                               @RequestParam(required = false) String filter,
                                                                               @RequestParam(required = false) String searchField,
                                                                               @RequestParam(required = false) String searchValue,
-                                                                              @RequestParam(required = false) boolean all) {
+                                                                              @RequestParam(required = false) boolean all,
+                                                                              @RequestParam(required = false) List<String> searchFields) {
         try {
             PageResponse<RoomResponse> pageResponse =
-                    new PageResponse<>(roomService.getListRoom(page, size, sort, filter, searchField, searchValue, all));
+                    new PageResponse<>(roomService.getListRoom(page, size, sort, filter, searchField, searchValue, all,searchFields));
             return ResponseEntity.ok(
                     RequestResponse.success(pageResponse, "Lấy room thành công")
             );

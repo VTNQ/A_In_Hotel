@@ -31,9 +31,8 @@ public class Hotel {
     private String code;
     @Column(columnDefinition = "TEXT", nullable = true)
     private String address;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private HotelStatus status = HotelStatus.ACTIVE;
+
+    private Integer status;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false, unique = true) // Tạo cột account_id trong bảng hotels
     private Account account;
@@ -50,4 +49,14 @@ public class Hotel {
     private String createdBy;
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @PrePersist
+    public void onPrePersist() {
+        if(this.code == null){
+            this.code = "HT" + String.format("%04d", (int) (Math.random() * 9999));
+        }
+        if(status == null){
+            this.status =HotelStatus.ACTIVE.getValue();
+        }
+    }
 }

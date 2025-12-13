@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public interface HotelMapper  extends CommonMapper {
     @Mapping(target = "id", ignore = true)         // id auto gen
     @Mapping(target = "code", ignore = true)       // code sẽ generate sau
-    @Mapping(target = "status", constant = "ACTIVE")
     @Mapping(source = "request.idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")

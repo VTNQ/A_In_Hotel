@@ -62,7 +62,7 @@ public class HotelController {
         }
     }
     @PutMapping("updateStatus/{id}")
-    public ResponseEntity<?>updateStatus(@RequestBody HotelStatus hotelStatus, @PathVariable Long id) {
+    public ResponseEntity<?>updateStatus(@RequestBody Integer hotelStatus, @PathVariable Long id) {
         try {
             hotelService.updateStatus(hotelStatus,id);
             return ResponseEntity.ok(RequestResponse.success("Hotel updated Status successfully"));
@@ -71,7 +71,7 @@ public class HotelController {
                     .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
         }
     }
-    @GetMapping("getAll")
+    @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<HotelResponse>>>getAll(@RequestParam(defaultValue = "1") int page,
                                                                               @RequestParam(defaultValue = "5") int size,
                                                                               @RequestParam(defaultValue = "id,desc") String sort,
