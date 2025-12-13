@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
     private final RoomRepository roomRepository;
-    private static final List<String> SEARCH_FIELDS = List.of("roomNumber","roomName");
+
     private final GeneralService generalService;
     private final ImageRepository roomImageRepository;
     private final SecurityUtils securityUtils;
@@ -163,12 +163,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+    public Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all,
+                                          List<String> searchFields) {
         try {
             log.info("start to get list room");
             Specification<Room> sortable= RSQLJPASupport.toSort(sort);
             Specification<Room>filterable= RSQLJPASupport.toSpecification(filter);
-            Specification<Room>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
+            Specification<Room>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,searchFields);
             Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
             return roomRepository.findAll(sortable.and(filterable).and(searchable),pageable).map(roomMapper::toResponse);
         }catch (Exception e){

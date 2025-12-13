@@ -8,8 +8,6 @@ import lombok.Data;
 public class HotelRequest {
     @NotBlank(message = "Tên khách sạn không được để trống")
     private String name;
-    private Long id;
-    private String code;
     @NotBlank(message = "Địa chỉ khách sạn không được để trống")
     private String address;
     @NotNull(message = "Phải chọn người quản lý cho khách sạn")

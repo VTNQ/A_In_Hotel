@@ -2,11 +2,11 @@ package org.a_in_hotel.be.Enum;
 
 public enum BookingStatus {
 
-    DRAFT(1),
-    BOOKED(2),
-    CHECKIN(3),
-    CHECKOUT(4),
-    CANCELLED(5);
+
+    BOOKED(1),
+    CHECKIN(2),
+    CHECKOUT(3),
+    CANCELLED(4);
 
 
     private final int code;
