@@ -3,11 +3,6 @@ import type { BlogResponse } from "../../type/blog.types";
 import { getBlog } from "../../service/api/Blog";
 import { File_URL } from "../../setting/constant/app";
 
-
-const BLOG_IMAGES = [
-    "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
-    "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
-];
 const OurBlog = () => {
     const [blogs,setBlogs]=useState<BlogResponse[]>([]);
     useEffect(()=>{
