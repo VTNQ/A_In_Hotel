@@ -18,8 +18,10 @@ const ExtraServiceFormModal = ({
         description: "",
         note: "",
         priceType: "1",
-        extraCharge: ""
+        extraCharge: "",
+        image: null as File | null,
     });
+    const [previewIcon, setPreviewIcon] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
@@ -45,6 +47,13 @@ const ExtraServiceFormModal = ({
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
+    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFormData((prev) => ({ ...prev, image: file }));
+            setPreviewIcon(URL.createObjectURL(file));
+        }
+    };
     const handleCancel = () => {
         setFormData({
             serviceName: "",
@@ -54,7 +63,8 @@ const ExtraServiceFormModal = ({
             description: "",
             note: "",
             priceType: "1",
-            extraCharge: ""
+            extraCharge: "",
+            image:null,
         })
         onClose();
     }
@@ -62,23 +72,20 @@ const ExtraServiceFormModal = ({
     const handleSave = async () => {
         setSaving(true);
         try {
-            const cleanedData = Object.fromEntries(
-                Object.entries({
-                    serviceName: formData.serviceName.trim(),
-                    price: Number(formData.price),
-                    categoryId: Number(formData.categoryId),
-                    unit: formData.unit.trim(),
-                    description: formData.description.trim(),
-                    currency: "VNĐ",
-                    isActive: true,
-                    note: formData.note.trim(),
-                    extraCharge: formData.extraCharge
-                }).map(([key, value]) => [
-                    key,
-                    value?.toString().trim() === "" ? null : value,
-                ])
-            );
-            const response = await addExtraService(cleanedData);
+           const payload ={
+            serviceName: formData.serviceName.trim(),
+            price: Number(formData.price),
+            categoryId: Number(formData.categoryId),
+            unit: formData.unit.trim(),
+            description: formData.description.trim(),
+            currency: "VNĐ",
+            isActive: true,
+            note: formData.note.trim(),
+            extraCharge: formData.extraCharge,
+            image:formData.image,
+            type:1
+           }
+            const response = await addExtraService(payload);
 
             // ✅ response có thể là AxiosResponse hoặc đã unwrap data
             const message =
@@ -100,7 +107,8 @@ const ExtraServiceFormModal = ({
                 description: "",
                 note: "",
                 priceType: "1",
-                extraCharge: ""
+                extraCharge: "",
+                image:null
             });
 
             onSuccess?.();
@@ -142,6 +150,39 @@ const ExtraServiceFormModal = ({
             saveLabel={saving ? "Saving..." : "Save"}
             cancelLabel="Cancel"
         >
+             <div className="mb-4">
+                <label className="block mb-1 font-medium text-[#253150]">Extra Service Icon</label>
+                <div className="relative w-32 h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleIconChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                    />
+
+                    {previewIcon ? (
+                        <img
+                            src={previewIcon}
+                            className="w-full h-full object-cover absolute inset-0"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <img
+                                src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
+                                className="w-full h-full object-cover absolute inset-0"
+                            />
+                        </div>
+                    )}
+
+                    <div className="absolute bottom-2 right-2 bg-[#4B62A0] p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 5a3 3 0 110 6 3 3 0 010-6z" />
+                            <path d="M12 13c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
             <div className="grid grid-cols-2 gap-4">
                 {/* Service Name */}
                 <div>

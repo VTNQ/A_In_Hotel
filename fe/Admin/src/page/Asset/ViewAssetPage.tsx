@@ -9,6 +9,7 @@ import UpdateAssetFormModal from "../../components/Asset/UpdateAssetFormModal";
 import { useAlert } from "../../components/alert-context";
 import ViewAssetInformation from "../../components/Asset/ViewAssetInformation";
 import { getTokens } from "../../util/auth";
+import { File_URL } from "../../setting/constant/app";
 
 const ViewAssetPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -117,6 +118,23 @@ const ViewAssetPage = () => {
     }
     const columns = [
         { key: "assetCode", label: "Asset ID" ,sortable: true },
+        {
+            key: "icon",
+            label: "Icon",
+            render: (row: any) => (
+              <img
+                src={row.thumbnail!=null
+                  ? File_URL + row.thumbnail?.url
+                  : "/default.webp"
+                }
+                // hiển thị ảnh đầu tiên
+                alt={row.serviceName}
+                width="80"
+                height="60"
+                style={{ objectFit: "cover", borderRadius: 8 }}
+              />
+            ),
+          },
         { key: "assetName", label: "Asset Name" },
         { key: "roomNumber", label: "Room",sortable: true,sortKey:"room.roomNumber" },
         { key: "categoryName", label: "Category",sortable: true },

@@ -23,6 +23,8 @@ public class ExtraServiceResponse {
     private Integer categoryId;
     private BigDecimal price;
     private String currency;
+    private Integer type;
+    private ImageResponse icon;
     private UnitExtraService unit;
     private Boolean isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

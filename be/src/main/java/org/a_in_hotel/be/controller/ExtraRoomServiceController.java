@@ -11,9 +11,11 @@ import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.service.RoomExtraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/extra-room-service")
@@ -21,10 +23,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ExtraRoomServiceController {
     private final RoomExtraService extraService;
-    @PostMapping("/create")
-    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody ExtraServiceRequest extra){
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>>create
+            (
+                    @Valid @ModelAttribute ExtraServiceRequest extra,
+                    @RequestParam("image") MultipartFile image
+            ){
         try {
-            extraService.save(extra);
+            extraService.save(extra,image);
             return ResponseEntity.ok(RequestResponse.success("Thêm dịch vụ thành công"));
         }catch (Exception e){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));
@@ -54,10 +60,15 @@ public class ExtraRoomServiceController {
                     .body(RequestResponse.error( "Get extra room service by id: " + e.getMessage()));
         }
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @RequestBody ExtraServiceRequest extra){
+    @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>>update
+            (
+                    @PathVariable Long id,
+                    @Valid @ModelAttribute ExtraServiceRequest extra,
+                    @RequestParam("image")  MultipartFile image
+            ){
         try {
-            extraService.update(extra,id);
+            extraService.update(extra,id,image);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật dịch vụ thành công"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));

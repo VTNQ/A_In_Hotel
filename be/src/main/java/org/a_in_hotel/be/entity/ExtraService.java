@@ -44,6 +44,11 @@ public class ExtraService {
     @Column(name = "price", precision = 15, scale = 2, nullable = false)
     private BigDecimal price;
 
+    private Integer type;
+
+    @Transient
+    private Image icon;
+
     @Column(name = "currency", length = 10, nullable = false)
     private String currency = "VND"; // 💰 Loại tiền tệ mặc định
     @Enumerated(EnumType.STRING)
