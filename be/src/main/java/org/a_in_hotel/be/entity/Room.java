@@ -32,8 +32,9 @@ public class Room {
     private String roomCode;
     @Column(name = "room_number",nullable = false)
     private String roomNumber;
-    @Column(name = "hotel_id")
-    private Long hotelId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
     @OneToMany(mappedBy = "room")
     private List<Asset> assets;
     @Column(name = "room_name")

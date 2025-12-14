@@ -34,6 +34,7 @@ import {
   Settings,
   Menu,
   Hotel,
+  LayoutDashboard,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -262,6 +263,23 @@ const SECTIONS: SectionSpec[] = [
       { label: "Podcast", icon: AppWindow },
       { label: "School", icon: GraduationCap },
       { label: "Social Media", icon: Boxes },
+      {
+        label: "System Management",
+        icon: Settings,
+        children: [
+          {
+            label: "System Content",
+            icon: FileText,
+            children: [
+              { label: "About Hotel", icon: Hotel, path: "/Home/system-content/about-hotel" },
+              { label: "Banner", icon: Image, path: "/Home/system-content/banner" },
+              { label: "Homepage Content", icon: LayoutDashboard, path: "/Home/system-content/home" },
+              { label: "Policy & Terms", icon: Lock, path: "/Home/system-content/policy" },
+              { label: "Footer Content", icon: Boxes, path: "/Home/system-content/footer" },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
