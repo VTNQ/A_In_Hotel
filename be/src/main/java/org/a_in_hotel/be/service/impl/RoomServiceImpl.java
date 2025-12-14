@@ -99,7 +99,10 @@ public class RoomServiceImpl implements RoomService {
                     .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Phòng không tồn tại"));
 
             // 1) Update basic info
-            roomMapper.updateEntity(request, existing, securityUtils.getCurrentUserId());
+            roomMapper.updateEntity(request,
+                                    existing,
+                                    securityUtils.getCurrentUserId(),
+                                    securityUtils.getHotelId());
 
             List<Image> currentImages = existing.getImages();     // ảnh đang có trong DB
             List<String> keepUrls = request.getOldImages();       // ảnh cũ FE muốn giữ
