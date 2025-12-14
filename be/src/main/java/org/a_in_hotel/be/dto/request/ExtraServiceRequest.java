@@ -22,6 +22,7 @@ public class ExtraServiceRequest {
     private Integer extraCharge;
     private String note;
     private String currency;
+    private Integer type;
     @NotNull(message = "Unit is required")
     private UnitExtraService unit;
     private Boolean isActive;

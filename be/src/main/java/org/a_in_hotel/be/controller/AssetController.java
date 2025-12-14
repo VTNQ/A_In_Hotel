@@ -50,7 +50,7 @@ public class AssetController {
     }
 
     // ===================== CẬP NHẬT =====================
-    @PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<RequestResponse<AssetResponse>> update(
             @PathVariable Long id,
             @Valid @ModelAttribute AssetUpdateRequest req,

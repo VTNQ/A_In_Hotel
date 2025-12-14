@@ -17,13 +17,37 @@ export const getAll=async(options:GetAllOptions = {})=>{
   return res.data;
 }
 export const addExtraService=async(extraData:any) => {
-    return await Http.post('/api/extra-room-service/create',extraData);
+   const formData = new FormData();
+   Object.entries(extraData).forEach(([key, value]) => {
+       if (key !== "image" && value !== undefined && value !== null) {
+           formData.append(key, value.toString());
+       }
+   });
+   if (extraData.image) {
+       formData.append("image", extraData.image);
+   }
+   return await Http.post(`/api/extra-room-service/create`, formData, {
+       headers: { "Content-Type": "multipart/form-data" },
+   });
+   
  }
  export const updateStatus=async(id:number,status:boolean)=>{
     return await Http.patch(`/api/extra-room-service/updateStatus/${id}?status=${status}`)
  }
  export const updateExtraService=async(id:number,extraData:any)=>{
-  return await Http.put(`/api/extra-room-service/update/${id}`,extraData)
+    const formData = new FormData();
+   Object.entries(extraData).forEach(([key, value]) => {
+       if (key !== "image" && value !== undefined && value !== null) {
+           formData.append(key, value.toString());
+       }
+   });
+   if (extraData.image) {
+       formData.append("image", extraData.image);
+   }
+   return await Http.put(`/api/extra-room-service/update/${id}`, formData, {
+       headers: { "Content-Type": "multipart/form-data" },
+   });
+ 
  }
  export const findById=async(id:number)=>{
   return await Http.get(`/api/extra-room-service/findById/${id}`)

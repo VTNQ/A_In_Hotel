@@ -8,6 +8,7 @@ import { useAlert } from "../../components/alert-context";
 import UpdateExtraServiceFormModal from "../../components/ExtraService/UpdateExtraServiceFormModal";
 import ExtraServiceActionMenu from "../../components/ExtraService/ExtraServiceActionMenu";
 import { getTokens } from "../../util/auth";
+import { File_URL } from "../../setting/constant/app";
 
 const ViewExtraServicePage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -164,6 +165,23 @@ const ViewExtraServicePage = () => {
 
   const columns = [
     { key: "serviceCode", label: "Service ID", sortable: true },
+    {
+      key: "icon",
+      label: "Icon",
+      render: (row: any) => (
+        <img
+          src={row.icon!=null
+            ? File_URL + row.icon?.url
+            : "/default.webp"
+          }
+          // hiển thị ảnh đầu tiên
+          alt={row.serviceName}
+          width="80"
+          height="60"
+          style={{ objectFit: "cover", borderRadius: 8 }}
+        />
+      ),
+    },
     { key: "serviceName", label: "Service Name", sortable: true },
     { key: "categoryName", label: "Category",sortable: true  },
     {

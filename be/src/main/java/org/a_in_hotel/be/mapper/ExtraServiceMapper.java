@@ -25,5 +25,6 @@ public interface ExtraServiceMapper extends CommonMapper {
 
     @Mapping(target = "categoryName",source = "category.name")
     @Mapping(target = "categoryId",source = "category.id")
+    @Mapping(target = "icon", source = "icon")
     ExtraServiceResponse toResponse(ExtraService service);
 }
