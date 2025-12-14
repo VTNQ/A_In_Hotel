@@ -3,38 +3,41 @@ import RoomCard from "./RoomCard";
 
 import { getRoom } from "../../service/api/Room";
 import type { RoomResponse } from "../../type/room.types";
+import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 
 
 
 const RoomGrid = () => {
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
-  const fetchRoom = async () => {
-    const raw = localStorage.getItem("booking_search");
-    if (!raw) return null;
+  const { search } = useBookingSearch();
+ 
+  useEffect(() => {
+    if (!search) return;
 
-    const search = JSON.parse(raw);
-    const totalGuests = search.adults + search.children;
-    const res = await getRoom({
-      page: 1,
-      size: 5,
-      sort: "basePrice,asc",
-      filter: `hotelId==${search.hotelId};status==3;capacity>=${totalGuests}`,
-    })
+    const fetchRoom = async () => {
+      const totalGuests = search.adults + search.children;
 
-    setRooms(res.data?.content || []);
-    console.log(res)
+      const res = await getRoom({
+        page: 1,
+        size: 5,
+        sort: "basePrice,asc",
+        filter: `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`,
+      });
+      console.log(search)
+      setRooms(res.data?.content || []);
 
-  }
+      console.log(res)
+    };
 
-  useEffect(()=>{
     fetchRoom();
-  },[])
+  }, [search]);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
       {rooms.map((room) => (
-        <RoomCard  room={room} />
+        <RoomCard key={room.id} room={room} />
       ))}
     </div>
+
   );
 }
 export default RoomGrid;

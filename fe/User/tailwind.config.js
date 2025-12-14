@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        dmserif: ['"DM Serif Display"', 'serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
       colors:{
         peach:{
           200:'#FFE0C7',

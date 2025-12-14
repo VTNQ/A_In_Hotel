@@ -1,3 +1,5 @@
+import type { HotelResponse } from "./hotel.types";
+
 export interface GetAllOptions {
     page?: number;
     size?: number;
@@ -28,11 +30,20 @@ export interface PageResponse<T> {
     totalPages: number;
     last: boolean;
 }
+export interface ImageResponse {
+    url:string;
+    altText:string;
 
-
-
+}
 export interface CalendarUIProps {
     selectedDates?: string[];
     disabledDates?: string[];
     onSelect: (date: string) => void;
+}
+
+export interface SelectHotelButtonProps {
+    hotels: HotelResponse[];
+    value?: HotelResponse | null;
+    onChange: (hotel: HotelResponse) => void;
+    placeholder?: string;
 }

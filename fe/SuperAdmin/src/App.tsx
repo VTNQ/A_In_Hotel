@@ -12,6 +12,7 @@ import ListAdminPage from './page/Admin/ListAdminPage'
 import ListSuperAdminPage from './page/ChildSuperAdmin/ListChildSuperAdminPage'
 import CreateChildSuperAdminPage from './page/ChildSuperAdmin/CreateChildSuperAdminPage'
 import ResetPasswordPage from './page/ResetPasswordPage'
+import AboutHotelContent from './page/SystemContent/AboutHotelContent'
 function App() {
 
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path='Home' element={<AdminLayout />}>
 
           <Route index element={<HomePage />} />
+          <Route path='system-content/about-hotel' element={<AboutHotelContent/>}/>
           <Route path='ChildSuperAdmin/create' element={<CreateChildSuperAdminPage />} />
           <Route path='Admin' element={<ListAdminPage/>}/>
           <Route path='ChildSuperAdmin' element={<ListSuperAdminPage/>}/>

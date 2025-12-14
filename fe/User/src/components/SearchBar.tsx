@@ -5,15 +5,16 @@ import DateSelect from "./Home/DateSelect";
 import type { HotelResponse } from "../type/hotel.types";
 import { getHotel } from "../service/api/Hotel";
 import RoomGuestsSelect from "./Home/RoomsGuestsSelect";
-import { useNavigate } from "react-router-dom";
+
+import { useBookingSearch } from "../context/booking/BookingSearchContext";
 
 
 
 export default function SearchBar() {
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
   const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(null);
-  const navigate = useNavigate();
   const [openHotel, setOpenHotel] = useState(false);
+  const { setSearch } = useBookingSearch();
   const [dateRange, setDateRange] = useState<{
     checkIn: string | null;
     checkOut: string | null;
@@ -54,21 +55,19 @@ export default function SearchBar() {
       return;
     }
 
-    const bookingSearch = {
+    setSearch({
       hotelId: selectedHotel.id,
-      hotelName: selectedHotel.name,
-      checkIn: dateRange.checkIn,
-      checkOut: dateRange.checkOut,
+      checkIn: dateRange.checkIn!,
+      checkOut: dateRange.checkOut!,
       rooms: guests.rooms,
       adults: guests.adults,
       children: guests.children,
-    }
+    });
+
+   
+
+    window.location.href="/Room";
     
-    localStorage.setItem(
-      "booking_search",
-      JSON.stringify(bookingSearch)
-    )
-    navigate("/Room")
   }
   return (
 

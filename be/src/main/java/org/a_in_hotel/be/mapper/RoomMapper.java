@@ -18,7 +18,7 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "basePrice",source ="request.hourlyBasePrice")
     @Mapping(target = "additionalPrice",source = "request.hourlyAdditionalPrice")
     @Mapping(target = "updatedBy",  source = "userId")
-    @Mapping(target = "hotelId",source = "hotelId")
+    @Mapping(target = "hotel",source = "hotelId",qualifiedByName = "mapHotel")
     Room toEntity(RoomRequest request, Long userId,Long hotelId);
 
     // ========== UPDATE ==========
@@ -27,6 +27,7 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "roomType", source = "request.idRoomType", qualifiedByName = "mapRoomTypeFromId")
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "basePrice",source ="request.hourlyBasePrice")
+
     @Mapping(target = "additionalPrice",source = "request.hourlyAdditionalPrice")
     void updateEntity(RoomRequest request, @MappingTarget Room entity, Long userId);
     // ========== RESPONSE ==========

@@ -1,44 +1,68 @@
+import { BedDouble, Users, Maximize } from "lucide-react";
 import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
 
-const RoomCard =({room}:RoomCardProps)=>{
-    return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="relative">
-            <img
-              src={File_URL+room?.images[0].url}
-              alt={room?.images[0].altText}
-              className="h-56 w-full object-cover"
-            />
-            {/* {room.tag && (
-              <span className="absolute top-3 left-3 bg-[#b38a58] text-white text-xs px-3 py-1 rounded-full">
-                {room.tag}
-              </span>
-            )} */}
+const RoomCard = ({ room }: RoomCardProps) => {
+  return (
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden flex">
+      
+      {/* Image */}
+      <div className="w-[260px] h-[200px] shrink-0">
+        <img
+          src={File_URL + room.images[0].url}
+          alt={room.images[0].altText}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col justify-between p-4 flex-1">
+        
+        {/* Top */}
+        <div>
+          <h3 className="font-semibold text-lg mb-2 uppercase">
+            {room.roomName}
+          </h3>
+
+          {/* Room info */}
+          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+            <div className="flex items-center gap-1">
+              <Maximize size={16} />
+              <span>{room.area || 20} m²</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <BedDouble size={16} />
+              <span>double bed</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Users size={16} />
+              <span>{room.capacity} guest</span>
+            </div>
           </div>
-    
-          <div className="p-4">
-            <h3 className="font-semibold text-lg mb-2">{room.roomName}</h3>
-            <p className="text-sm text-gray-500 mb-4">
-              A perfect choice for luxury stay with premium amenities.
-            </p>
-    
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-xs text-gray-400">Starting from</div>
-                <div className="text-lg font-semibold">
-                  ${room.defaultRate}
-                  <span className="text-sm text-gray-500"> / night</span>
-                </div>
-              </div>
-    
-              <button className="px-4 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800">
-                Book Now
-              </button>
+
+          {/* Description */}
+          <p className="text-sm text-gray-500 line-clamp-3">
+            A In Hotel Riverside cung cấp phòng nghỉ tại trung tâm Hồ Chí Minh,
+            cách Bảo tàng Mỹ thuật 1.2 km. Khách sạn cung cấp WiFi miễn phí.
+          </p>
+        </div>
+
+        {/* Bottom */}
+        <div className="flex items-end justify-between mt-4">
+          <div></div>
+
+          <div className="text-right">
+            <div className="text-xs text-gray-400">Price</div>
+            <div className="text-lg font-semibold text-[#b38a58]">
+              {room.defaultRate.toLocaleString()} ₫
             </div>
           </div>
         </div>
-      );
-    
-}
+      </div>
+    </div>
+  );
+};
+
 export default RoomCard;

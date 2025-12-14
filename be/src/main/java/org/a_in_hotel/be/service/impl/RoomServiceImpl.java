@@ -85,7 +85,6 @@ public class RoomServiceImpl implements RoomService {
 
             }
             roomImageRepository.saveAll(images);
-            room.setImages(images);
         }catch (Exception e){
             log.error("save room error : {}",e.getMessage());
             e.printStackTrace();
