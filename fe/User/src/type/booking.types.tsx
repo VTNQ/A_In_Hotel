@@ -16,5 +16,18 @@ export interface RoomGuestValue {
 
 export interface RoomsGuestsSelectProps {
     value?: RoomGuestValue;
-    onChange?: (value: RoomGuestValue)=>void;
+    onChange?: (value: RoomGuestValue) => void;
 }
+
+export interface BookingSearch {
+    hotelId: number;
+    checkIn: string;
+    checkOut: string;
+    rooms: number;
+    adults: number;
+    children: number;
+}
+export interface BookingSearchContextValue {
+    search: BookingSearch | null;
+    setSearch: (s: BookingSearch) => void;
+  };
