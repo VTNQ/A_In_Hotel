@@ -65,7 +65,7 @@ public class ExtraRoomServiceController {
             (
                     @PathVariable Long id,
                     @Valid @ModelAttribute ExtraServiceRequest extra,
-                    @RequestParam("image")  MultipartFile image
+                    @RequestParam(value = "image",required = false)  MultipartFile image
             ){
         try {
             extraService.update(extra,id,image);

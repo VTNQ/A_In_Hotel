@@ -11,20 +11,33 @@ import {
   Wind,
   ConciergeBell,
 } from "lucide-react";
+import { getAllFacilities } from "../../service/api/facilities";
+import { useEffect, useState } from "react";
+import type { facilitiesResponse } from "../../type/facilities.types";
+import { File_URL } from "../../setting/constant/app";
 
 export default function FacilitiesSection() {
-  const facilities = [
-    { icon: <BedDouble className="w-8 h-8" />, label: "Evening turndown service" },
-    { icon: <Bath className="w-8 h-8" />, label: "Bathrooms with shower" },
-    { icon: <Tv className="w-8 h-8" />, label: "Netflix" },
-    { icon: <Wifi className="w-8 h-8" />, label: "Wifi free" },
-    { icon: <ConciergeBell className="w-8 h-8" />, label: "22h room service" },
-    { icon: <ParkingCircle className="w-8 h-8" />, label: "Parking free" },
-    { icon: <Bike className="w-8 h-8" />, label: "Rent motorbike" },
-    { icon: <Beer className="w-8 h-8" />, label: "Minibar drinks" },
-    { icon: <Wind className="w-8 h-8" />, label: "Air conditioning" },
-    { icon: <Coffee className="w-8 h-8" />, label: "Coffee and tea service" },
-  ];
+  const[data,setData]=useState<facilitiesResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const fetchData =async()=>{
+    try{
+      setLoading(true)
+        const response= await getAllFacilities({
+          page:1,
+          size:10,
+          filter:"isActive==true and type==1 and price==0"
+        });
+        setData(response?.content || [])
+    }catch(err:any){
+      console.log(err)
+    }finally{
+      setLoading(false)
+    }
+  }
+  useEffect(()=>{
+    fetchData();
+  },[])
+ 
 
   return (
     <section className="w-full bg-[#fcfaf8] py-16 text-center">
@@ -36,17 +49,34 @@ export default function FacilitiesSection() {
       {/* Box with border */}
       <div className="max-w-5xl mx-auto border-2 border-dashed border-[#2b3a67] rounded-2xl py-10 px-6 relative">
         {/* Facilities Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-10 gap-x-8 justify-items-center">
-          {facilities.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center text-[#3A3125] hover:text-[#b38a58] transition-colors duration-300"
-            >
-              {item.icon}
-              <p className="text-sm mt-3 font-medium">{item.label}</p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-gray-500">Loading facilities...</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-10  justify-items-center">
+            {data.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-[#3A3125] hover:text-[#b38a58] transition-colors duration-300"
+              >
+                {/* ICON */}
+                {item.icon?.url ? (
+                  <img
+                    src={File_URL + item.icon.url}
+                    alt={item.icon.altText || item.serviceName}
+                    className="w-8 h-8 object-contain"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded bg-gray-200" />
+                )}
+
+                {/* LABEL */}
+                <p className="text-sm font-montserrat font-medium">
+                  {item.serviceName}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bottom text */}

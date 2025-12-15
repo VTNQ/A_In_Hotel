@@ -1,0 +1,40 @@
+import type { FacilityStatus } from "@/setting/constant/Facility.constant";
+import type { Status } from "./common";
+
+export interface HotelFormData {
+    name: string;
+    address: string;
+    idUser?: number | null;
+}
+
+
+export type StatusFilter = "ALL" | FacilityStatus;
+export type SearchField = "default" | "name" | "code" | "fullName";
+
+export interface HotelRow {
+    id: number;
+    code?: string;
+    name: string;
+    createdOn: string | number;
+    status: Status;
+    address: string;
+    fullName?: string;
+    idUser: number | null;
+}
+
+export interface HotelFilterProps {
+
+    search: string;
+    onSearchChange: (v: string) => void;
+    statusFilter: StatusFilter;
+    onStatusFilterChange: (v: StatusFilter) => void;
+}
+export interface HotelTableProps {
+    rows:HotelRow[];
+    loading:boolean;
+    onEdit: (row: HotelRow)=>void;
+    sortKey: keyof HotelRow | null;
+    sortDir: "asc" | "desc";
+    onStatusChange:(row:HotelRow,status:Status)=>void;
+    onSortChange: (key: keyof HotelRow) => void;
+}

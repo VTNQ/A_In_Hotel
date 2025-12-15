@@ -49,8 +49,6 @@ public class ExtraService {
     @Transient
     private Image icon;
 
-    @Column(name = "currency", length = 10, nullable = false)
-    private String currency = "VND"; // 💰 Loại tiền tệ mặc định
     @Enumerated(EnumType.STRING)
     @Column(name = "unit", length = 50, nullable = false)
     private UnitExtraService unit;
