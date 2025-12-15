@@ -1,16 +1,3 @@
-"use client";
-import {
-  Bath,
-  BedDouble,
-  Tv,
-  Wifi,
-  Coffee,
-  ParkingCircle,
-  Bike,
-  Beer,
-  Wind,
-  ConciergeBell,
-} from "lucide-react";
 import { getAllFacilities } from "../../service/api/facilities";
 import { useEffect, useState } from "react";
 import type { facilitiesResponse } from "../../type/facilities.types";
