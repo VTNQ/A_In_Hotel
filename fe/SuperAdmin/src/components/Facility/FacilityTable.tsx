@@ -51,7 +51,7 @@ const FacilityTable = ({
                         </TableCell>
                     </TableRow>
                 ) : (
-                    rows.map((row, idx) => (
+                    rows.map((row) => (
                         <TableRow key={row.id}>
                             <TableCell>{row.serviceCode}</TableCell>
                             <TableCell>
