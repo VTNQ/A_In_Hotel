@@ -1,6 +1,5 @@
 import type { FacilityStatus } from "@/setting/constant/Facility.constant";
 import type { ImageResponse } from "./common";
-import type { StatusFilter } from "./hotel.types";
 
 export interface facilityRow{
     id:number;
@@ -25,6 +24,7 @@ export interface FacilityFilterProps {
     statusFilter: StatusFilter;
     onStatusFilterChange: (v: StatusFilter) => void;
 }
+export type StatusFilter = "ALL" | FacilityStatus;
 
 export interface FacilitiesEditProps{
     open:boolean;
