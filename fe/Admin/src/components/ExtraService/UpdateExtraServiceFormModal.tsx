@@ -88,7 +88,6 @@ const UpdateExtraServiceFormModal = ({
                     categoryId: Number(formData.categoryId),
                     unit: formData.unit.trim(),
                     description: formData.description.trim(),
-                    currency: "VNĐ",
                     note: formData.note.trim(),
                     extraCharge: formData.extraCharge,
                     image:formData.image

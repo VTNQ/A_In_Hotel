@@ -1,121 +1,173 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
-// 🎨 Clean, modern table primitives with focus on clarity & spacing
+/* =======================
+   TYPES
+======================= */
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+export type SortDir = "asc" | "desc";
+
+type InjectedSortProps<SortKey extends string> = {
+  __activeSortKey?: SortKey | null;
+  __sortDir?: SortDir;
+  __onSort?: (key: SortKey) => void;
+};
+
+export type TableProps<SortKey extends string = string> =
+  React.PropsWithChildren<
+    React.TableHTMLAttributes<HTMLTableElement> & {
+      sortKey?: SortKey | null;
+      sortDir?: SortDir;
+      onSort?: (key: SortKey) => void;
+    }
+  >;
+
+export type TableHeadProps<SortKey extends string = string> =
+  React.ThHTMLAttributes<HTMLTableHeaderCellElement> & {
+    sortable?: boolean;
+    sortKey?: SortKey;
+  } & InjectedSortProps<SortKey>;
+
+/* =======================
+   INTERNAL: inject sort
+======================= */
+
+function injectSort<SortKey extends string>(
+  node: React.ReactNode,
+  injected: InjectedSortProps<SortKey>
+): React.ReactNode {
+  if (!React.isValidElement(node)) return node;
+
+  // ✅ ÉP KIỂU ĐỂ TS BIẾT CÓ children
+  const element = node as React.ReactElement<any>;
+
+  // Inject cho TableHead
+  if ((element.type as any).displayName === "TableHead") {
+    return React.cloneElement(element, injected);
+  }
+
+  // Đệ quy children nếu có
+  if (element.props?.children) {
+    return React.cloneElement(element, {
+      children: React.Children.map(
+        element.props.children,
+        (child) => injectSort(child, injected)
+      ),
+    });
+  }
+
+  return element;
+}
+
+/* =======================
+   TABLE
+======================= */
+
+export function Table<SortKey extends string = string>({
+  className,
+  sortKey,
+  sortDir = "asc",
+  onSort,
+  children,
+  ...props
+}: TableProps<SortKey>) {
   return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto rounded-2xl border bg-white shadow-sm"
-    >
+    <div className="relative w-full overflow-x-auto rounded-2xl border custom-scrollbar bg-white shadow-sm">
       <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm text-gray-700", className)}
         {...props}
-      />
+        className={cn("w-full text-sm text-gray-700", className)}
+      >
+        {injectSort<SortKey>(children, {
+          __activeSortKey: sortKey ?? null,
+          __sortDir: sortDir,
+          __onSort: onSort,
+        })}
+      </table>
     </div>
   );
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+/* =======================
+   TABLE PARTS
+======================= */
+
+export function TableHeader(
+  props: React.ComponentProps<"thead">
+) {
   return (
     <thead
-      data-slot="table-header"
-      className={cn(
-        "sticky top-0 z-10 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60",
-        "text-xs font-semibold uppercase tracking-wide text-gray-500 [&_tr]:border-b",
-        className
-      )}
       {...props}
+      className="sticky top-0 z-10 bg-white text-xs font-semibold uppercase tracking-wide text-gray-500 border-b"
     />
   );
 }
 
-function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return (
-    <tbody
-      data-slot="table-body"
-      className={cn(
-        "divide-y divide-gray-100 [&_tr:last-child]:border-0",
-        className
-      )}
-      {...props}
-    />
-  );
+export function TableBody(
+  props: React.ComponentProps<"tbody">
+) {
+  return <tbody {...props} className="divide-y divide-gray-100" />;
 }
 
-function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
-  return (
-    <tfoot
-      data-slot="table-footer"
-      className={cn(
-        "bg-gray-50 text-gray-700 border-t font-medium [&>tr]:last:border-b-0",
-        "[&_td]:px-4 [&_td]:py-3",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+export function TableRow(
+  props: React.ComponentProps<"tr">
+) {
   return (
     <tr
-      data-slot="table-row"
-      className={cn(
-        "transition-colors hover:bg-gray-50 data-[state=selected]:bg-gray-100",
-        "even:bg-gray-50/40",
-        className
-      )}
       {...props}
+      className="transition-colors hover:bg-gray-50 even:bg-gray-50/40"
     />
   );
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<"th">) {
-  return (
-    <th
-      data-slot="table-head"
-      className={cn(
-        "h-12 px-4 text-center align-middle text-sm font-semibold text-gray-700 whitespace-nowrap",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+export function TableCell(
+  props: React.ComponentProps<"td">
+) {
   return (
     <td
-      data-slot="table-cell"
+      {...props}
+      className="px-4 py-3 text-center text-sm text-gray-600 whitespace-nowrap"
+    />
+  );
+}
+
+export function TableHead<SortKey extends string = string>({
+  sortable,
+  sortKey,
+  __activeSortKey,
+  __sortDir = "asc",
+  __onSort,
+  children,
+  className,
+  ...props
+}: TableHeadProps<SortKey>) {
+  const isActive = sortable && sortKey === __activeSortKey;
+
+  return (
+    <th
+      {...props}
       className={cn(
-        "px-4 py-3 align-middle text-center text-sm text-gray-600 whitespace-nowrap",
+        "h-12 px-4 text-center align-middle text-sm font-semibold whitespace-nowrap text-gray-700",
+        sortable && "cursor-pointer select-none hover:text-gray-900",
         className
       )}
-      {...props}
-    />
+      onClick={() => sortable && sortKey && __onSort?.(sortKey)}
+    >
+      <div className="flex items-center justify-center gap-1">
+        {children}
+
+        {sortable &&
+          (isActive ? (
+            __sortDir === "asc" ? (
+              <ChevronUp size={14} />
+            ) : (
+              <ChevronDown size={14} />
+            )
+          ) : (
+            <ChevronUp size={14} className="opacity-30" />
+          ))}
+      </div>
+    </th>
   );
 }
-
-function TableCaption({ className, ...props }: React.ComponentProps<"caption">) {
-  return (
-    <caption
-      data-slot="table-caption"
-      className={cn("mt-4 text-sm text-gray-500", className)}
-      {...props}
-    />
-  );
-}
-
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-};
+TableHead.displayName = "TableHead";

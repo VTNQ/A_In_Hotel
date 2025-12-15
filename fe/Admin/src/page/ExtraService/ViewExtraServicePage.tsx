@@ -188,7 +188,7 @@ const ViewExtraServicePage = () => {
       key: "price",
       label: "Price (VNĐ)",
       render: (row: any) =>
-        `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
+        `${row.price?.toLocaleString("vi-VN")} ${"VNĐ"}`,
       sortable: true,
     },
     {

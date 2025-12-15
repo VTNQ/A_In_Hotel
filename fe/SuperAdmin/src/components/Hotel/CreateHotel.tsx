@@ -6,10 +6,10 @@ import { Textarea } from "../ui/textarea";
 import { getAll } from "@/service/api/Authenticate";
 import type { UserResponse } from "@/type/UserResponse";
 import { SelectField } from "../ui/select";
-import type { HotelFormData } from "@/type/Hotel/HotelFormData";
 import { useAlert } from "../alert-context";
 import { AddHotel } from "@/service/api/Hotel";
 import { useNavigate } from "react-router-dom";
+import type { HotelFormData } from "@/type/hotel.types";
 
 
 /**

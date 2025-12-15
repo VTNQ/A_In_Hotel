@@ -14,12 +14,12 @@ export const AddHotel=async(hotelData:any) => {
       searchValue,
       all = false,
   } = options;
-  const res = await Http.get("/api/hotels/getAll", {
+  const res = await Http.get("/api/hotels", {
     params: { page, size, sort, filter, searchField,searchValue, all },
   });
   return res.data;
  }
-export const UpdateStatusHotel = async (hotelId: number, status: "ACTIVE" | "INACTIVE") => {
+export const UpdateStatusHotel = async (hotelId: number, status: 0 | 1) => {
   return await Http.put(`/api/hotels/updateStatus/${hotelId}`, status, {
     headers: { "Content-Type": "application/json" }
   });
