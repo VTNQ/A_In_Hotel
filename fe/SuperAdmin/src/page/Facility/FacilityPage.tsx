@@ -2,12 +2,12 @@ import { useAlert } from "@/components/alert-context";
 import FacilityEditModal from "@/components/Facility/FacilityEditModal";
 import FacilityFiler from "@/components/Facility/FacilityFilter";
 import FacilityTable from "@/components/Facility/FacilityTable";
-import { getAllFicilities } from "@/service/api/facilities";
+import { getAllFicilities, updateStatusFacilities } from "@/service/api/facilities";
 import type { FacilityStatus } from "@/setting/constant/Facility.constant";
 import type { SortDir } from "@/type/common";
-import type { facilityRow } from "@/type/facility.types";
-import type { StatusFilter } from "@/type/hotel.types";
-import { useEffect, useMemo, useState } from "react";
+import type { facilityRow, StatusFilter } from "@/type/facility.types";
+
+import { useEffect, useState } from "react";
 
 const FacilityPage: React.FC = () => {
     const { showAlert } = useAlert();
@@ -62,7 +62,11 @@ const FacilityPage: React.FC = () => {
     };
     const updateStatus = async (row: facilityRow, next: FacilityStatus) => {
         try {
-
+            await updateStatusFacilities(row.id, next);
+            showAlert({
+              title: "Cập nhật trạng thái thành công",
+              type: "success",
+            });
         } catch {
             showAlert({
                 title: "Cập nhật trạng thái thất bại",

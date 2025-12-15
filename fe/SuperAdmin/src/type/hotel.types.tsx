@@ -1,4 +1,4 @@
-import type { FacilityStatus } from "@/setting/constant/Facility.constant";
+
 import type { Status } from "./common";
 
 export interface HotelFormData {
@@ -8,7 +8,7 @@ export interface HotelFormData {
 }
 
 
-export type StatusFilter = "ALL" | FacilityStatus;
+export type StatusFilter = "ALL" | Status;
 export type SearchField = "default" | "name" | "code" | "fullName";
 
 export interface HotelRow {

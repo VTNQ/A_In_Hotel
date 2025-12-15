@@ -39,7 +39,9 @@ export const getFacilityById=async(id:number)=>{
   });
   return response.data.data;
 }
-
+export const updateStatusFacilities=async(id:number,status:string)=>{
+  return await Http.patch(`/api/extra-room-service/updateStatus/${id}?status=${status}`)
+}
 export const updateExtraServcie = async(id:number,extraData:any)=>{
   const formData = new FormData();
   Object.entries(extraData).forEach(([key, value]) => {
