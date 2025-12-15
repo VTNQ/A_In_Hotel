@@ -22,7 +22,6 @@ public class ExtraServiceResponse {
     private String categoryName;
     private Integer categoryId;
     private BigDecimal price;
-    private String currency;
     private Integer type;
     private ImageResponse icon;
     private UnitExtraService unit;
@@ -33,6 +32,5 @@ public class ExtraServiceResponse {
     private OffsetDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
-    private String priceType;
     private Integer extraCharge;
 }

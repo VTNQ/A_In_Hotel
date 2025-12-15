@@ -33,15 +33,20 @@ function SelectTrigger({
         "hover:bg-accent/30",
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        size === "sm" && "h-9 px-3 text-sm",
-        size === "md" && "h-10 px-3.5 text-sm",
-        size === "lg" && "h-11 px-4 text-base",
-        fullWidth ? "w-full" : "w-fit",
+      
+        size === "sm" && "h-9 px-3 text-sm min-w-[120px]",
+        size === "md" && "h-10 px-3.5 text-sm min-w-[160px]",
+        size === "lg" && "h-11 px-4 text-base min-w-[200px]",
+    
+        fullWidth ? "w-full" : "w-auto",
+      
         error &&
           "border-destructive/70 focus-visible:ring-destructive/25 focus-visible:border-destructive",
+      
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
+      
       {...props}
     >
       <div className="min-w-0 flex-1">{children}</div>

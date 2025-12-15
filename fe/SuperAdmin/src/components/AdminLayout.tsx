@@ -199,7 +199,7 @@ export default function AdminLayout() {
       {/* Main layout */}
       <div className="flex">
         <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 max-w-[80%]">
           <AlertProvider>
             <Outlet />
           </AlertProvider>
@@ -248,89 +248,25 @@ const SECTIONS: SectionSpec[] = [
           { label:"Child SuperAdmin Manager",icon:Lock,path:"/Home/ChildSuperAdmin"}
         ],
       },
-      { label: "Analytics", icon: BarChart2 },
-      { label: "Ecommerce", icon: ShoppingBag },
-      { label: "CRM", icon: HandCoins },
-      { label: "Crypto", icon: LineChart },
-      { label: "NFT", icon: Layers3 },
-      { label: "Projects", icon: Briefcase },
-      { label: "Jobs", icon: LayoutList },
-      { label: "HRM", icon: Users },
-      { label: "Courses", icon: GraduationCap },
-      { label: "Stocks", icon: LineChart },
-      { label: "Medical", icon: Activity },
-      { label: "POS System", icon: Building2 },
-      { label: "Podcast", icon: AppWindow },
-      { label: "School", icon: GraduationCap },
-      { label: "Social Media", icon: Boxes },
+   
       {
         label: "System Management",
         icon: Settings,
         children: [
-          {
-            label: "System Content",
-            icon: FileText,
-            children: [
-              { label: "About Hotel", icon: Hotel, path: "/Home/system-content/about-hotel" },
-              { label: "Banner", icon: Image, path: "/Home/system-content/banner" },
-              { label: "Homepage Content", icon: LayoutDashboard, path: "/Home/system-content/home" },
-              { label: "Policy & Terms", icon: Lock, path: "/Home/system-content/policy" },
-              { label: "Footer Content", icon: Boxes, path: "/Home/system-content/footer" },
-            ],
-          },
+          { label: "About Hotel", icon: Hotel, path: "/Home/system-content/about-hotel" },
+          { label: "Banner", icon: Image, path: "/Home/system-content/banner" },
+          { label: "Homepage Content", icon: LayoutDashboard, path: "/Home/system-content/home" },
+          { label: "Policy & Terms", icon: Lock, path: "/Home/system-content/policy" },
+          { label: "Footer Content", icon: Boxes, path: "/Home/system-content/footer" },
         ],
       },
-    ],
-  },
-  {
-    title: "Web Apps",
-    items: [
-      { label: "Apps", icon: AppWindow },
       {
-        label: "Nested Menu",
-        icon: Layers3,
-        children: [
-          { label: "Level 2 / Reports", icon: FileText },
-          { label: "Level 2 / Settings", icon: Lock },
-          {
-            label: "Level 2 / More",
-            icon: Boxes,
-            children: [
-              { label: "Level 3 / A", icon: FileText },
-              { label: "Level 3 / B", icon: FileText },
-            ],
-          },
-        ],
+        label: "Facilities",
+        icon: Building2,
+        path: "/Home/system-content/facilities",
       },
     ],
-  },
-  {
-    title: "Crafted",
-    items: [
-      { label: "Authentication", icon: Lock, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Error", icon: CircleAlert, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Pages", icon: FileText, trailing: <ChevronRight className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "Modules",
-    items: [
-      { label: "Forms", icon: TerminalSquare, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Ui Elements", icon: Boxes, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Advanced UI", icon: AppWindow, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Utilities", icon: Search, highlighted: true },
-      { label: "Widgets", icon: Boxes },
-    ],
-  },
-  {
-    title: "Tools & Components",
-    items: [
-      { label: "Maps", icon: MapPin, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Icons", icon: Image, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Charts", icon: PieChart, trailing: <ChevronRight className="h-4 w-4" /> },
-      { label: "Tables", icon: Table2, trailing: <ChevronRight className="h-4 w-4" /> },
-    ],
-  },
+  }
 ];
 
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
