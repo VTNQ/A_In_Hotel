@@ -37,7 +37,7 @@ export default function RoomShowcase() {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-[#fff7f0] to-[#f9f2e8] py-20">
+    <section className=" py-20">
       {/* Title */}
       <h2 className="text-center text-3xl md:text-4xl font-bold text-[#2b3a67] mb-12">
         Popular Room And Suites

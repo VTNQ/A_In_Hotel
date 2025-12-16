@@ -20,7 +20,7 @@ const OurBlog = () => {
         fetchData();
     },[])
     return (
-        <section className="py-16 bg-gradient-to-b from-[#fff7f0] to-[#f9f2e8]">
+        <section className="py-16">
             <div className="max-w-7xl mx-auto px-17">
                 <h2 className="text-center text-3xl  font-dmserif font-normal mb-10 text-[#4B3F30] " style={{ fontWeight:'400' }}>
                     Our blog

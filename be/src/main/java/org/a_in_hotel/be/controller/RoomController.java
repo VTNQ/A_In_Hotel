@@ -100,5 +100,13 @@ public class RoomController {
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
-
+    @GetMapping("/representative-by-hotel")
+    public ResponseEntity<RequestResponse<List<RoomResponse>>> getRepresentativeByHotel() {
+        try {
+            return ResponseEntity.ok(RequestResponse.success(roomService.getRepresentativeRoomsOfHotels()));
+        }catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
 }

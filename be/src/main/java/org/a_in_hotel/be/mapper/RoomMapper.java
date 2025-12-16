@@ -37,6 +37,7 @@ public interface RoomMapper extends CommonMapper {
     @Mapping(target = "hourlyBasePrice", source = "basePrice")
     @Mapping(target = "hourlyAdditionalPrice", source = "additionalPrice")
     @Mapping(target = "overnightPrice", source = "overnightPrice")
+    @Mapping(target = "hotelName",source = "hotel.name")
     RoomResponse toResponse(Room room);
    
 }
