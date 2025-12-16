@@ -120,7 +120,7 @@ const CreateFacilityForm: React.FC = () => {
                     items={[
                         { label: "Home", href: "/Home" },
 
-                        { label: "Facilities", href: "/Home/facilities" },
+                        { label: "Facilities", href: "/Home/facility" },
                         { label: "Create Facility" },
                     ]}
                 />

@@ -248,7 +248,7 @@ const SECTIONS: SectionSpec[] = [
       {
         label: "Facilities",
         icon: Building2,
-        path: "/Home/system-content/facilities",
+        path: "/Home/facility",
       },
     ],
   }
