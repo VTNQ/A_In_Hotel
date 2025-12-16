@@ -10,6 +10,7 @@ import { useAlert } from "../alert-context";
 import { AddHotel } from "@/service/api/Hotel";
 import { useNavigate } from "react-router-dom";
 import type { HotelFormData } from "@/type/hotel.types";
+import Breadcrumb from "../Breadcrumb";
 
 
 /**
@@ -65,20 +66,24 @@ export default function CreateHotel() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="space-y-6">
             {/* Header */}
-            <div className="mx-auto mb-6 flex  items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Hotel</h1>
-                    <p className="mt-1 text-sm text-gray-500">
-                        Hotel <span className="mx-1">»</span> Add Hotel
-                    </p>
-                </div>
+
+            <div >
+            <h1 className="text-2xl font-semibold">Create Hotel</h1>
+                <Breadcrumb
+                    items={[
+                        { label: "Home", href: "/Home" },
+
+                        { label: "Hotel", href: "/Home/hotel" },
+                        { label: "Create Hotel" },
+                    ]}
+                />
 
             </div>
 
             {/* Grid */}
-            <div className="mx-auto grid  grid-cols-1 gap-6 lg:grid-cols-1">
+            <div className="mx-auto grid mt-5  grid-cols-1 gap-6 lg:grid-cols-1">
                 <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
                     <div className="flex items-center justify-between border-b border-gray-100 p-4">
                         <h3 className="text-lg font-semibold text-gray-800">Khách sạn</h3>

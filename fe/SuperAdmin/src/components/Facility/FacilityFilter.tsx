@@ -39,7 +39,7 @@ const FacilityFiler = ({
                 />
             </div>
             <Button asChild>
-                <a href="/Home/hotel/create">+ Thêm tiện ích</a>
+                <a href="/Home/facility/create">+ Thêm tiện ích</a>
             </Button>
         </div>
     )
