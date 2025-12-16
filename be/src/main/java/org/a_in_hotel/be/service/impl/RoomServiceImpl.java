@@ -201,4 +201,10 @@ public class RoomServiceImpl implements RoomService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @Override
+    public List<RoomResponse> getRepresentativeRoomsOfHotels() {
+        return roomRepository.findFirstRoomOfEachHotel()
+                .stream().map(roomMapper::toResponse).collect(Collectors.toList());
+    }
 }

@@ -9,6 +9,7 @@ import { getAllHotel, UpdateStatusHotel } from "@/service/api/Hotel";
 
 import HotelFilter from "./HotelFilter";
 import HotelTable from "./HotelTable";
+import HotelEditModal from "./HotelEditModal";
 
 const ListHotel: React.FC = () => {
   const { showAlert } = useAlert();
@@ -16,7 +17,7 @@ const ListHotel: React.FC = () => {
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [editingRow,setEditingRow]= useState<HotelRow | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
@@ -117,9 +118,15 @@ const ListHotel: React.FC = () => {
         sortKey={sortKey}
         sortDir={sortDir}
         onSortChange={handleSort}
-        onEdit={(row:any) => console.log("Edit", row)}
+        onEdit={(row:any) => setEditingRow(row)}
         onStatusChange={updateStatus}
       />
+      <HotelEditModal
+        open={!! editingRow}
+        hotelId={Number(editingRow?.id)}
+        onClose={()=>setEditingRow(null)}
+        onSubmit={fetchHotels}
+        />
     </div>
   );
 };

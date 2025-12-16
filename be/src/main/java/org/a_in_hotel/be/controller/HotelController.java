@@ -86,4 +86,13 @@ public class HotelController {
                     .body(RequestResponse.error( "Get All Config: " + e.getMessage()));
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<RequestResponse<HotelResponse>>getHotelById(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(hotelService.getHotelById(id)));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get Hotel Config: " + e.getMessage()));
+        }
+    }
 }

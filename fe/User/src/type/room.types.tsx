@@ -4,6 +4,7 @@ export interface RoomResponse {
     id:number;
     roomType:string;
     roomName:string;
+    hotelName:string;
     capacity:string;
     area:string;
     defaultRate:number;

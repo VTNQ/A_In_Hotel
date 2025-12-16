@@ -19,4 +19,6 @@ public interface RoomService {
     Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all,List<String> searchFields);
 
     void updateStatus(Long id, Integer status);
+
+    List<RoomResponse> getRepresentativeRoomsOfHotels();
 }

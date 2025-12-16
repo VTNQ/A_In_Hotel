@@ -38,3 +38,10 @@ export interface HotelTableProps {
     onStatusChange:(row:HotelRow,status:Status)=>void;
     onSortChange: (key: keyof HotelRow) => void;
 }
+
+export interface HotelEditProps {
+    open:boolean;
+    hotelId:number | null;
+    onClose: ()=>void;
+    onSubmit:()=>void;
+}

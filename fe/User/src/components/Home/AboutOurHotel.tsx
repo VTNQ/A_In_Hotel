@@ -27,7 +27,7 @@ const AboutOurHotel = () => {
     
 
     return (
-        <section className="relative w-full h-[700px] overflow-hidden">
+        <section className="relative w-full h-[800px] overflow-hidden">
             <img
                 src={File_URL + settingContent.backgroundImage.url}
                 alt={settingContent.backgroundImage.altText}
@@ -36,7 +36,7 @@ const AboutOurHotel = () => {
 
             />
             <div className="relative z-10 h-full flex items-end">
-                <div className="absolute right-[16%] bottom-[5%] w-[653px] bg-white/40 backdrop-blur-[20px] rounded-[12px] p-[10px]"
+                <div className="absolute right-0 bottom-[5%] w-[653px] bg-white/40 backdrop-blur-[20px] rounded-[12px] p-[10px]"
                 >
                     <h2 className="text-[48px] font-dmserif text-[#253150] mb-4 text-left">
                         {settingContent.title ?? "About Our Hotel"}

@@ -1,22 +1,23 @@
 
 import HeroSlider from "../components/HeroSection";
-
-import RatingSection from "../components/Home/RatingSection";
 import FacilitiesSection from "../components/Home/FacilitiesSection";
 import RoomShowcase from "../components/Home/RoomShowcase";
 import OurBlog from "../components/Home/OurBlog";
 import AboutOurHotel from "../components/Home/AboutOurHotel";
+import BookAppointmentSection from "../components/Home/BookAppointmentSection";
+import RoomAndSuites from "../components/Home/RoomAndSuites";
 
 const HomePage = () => {
  return(
-  <>
+  <div className="bg-gradient-to-b from-[#fff7f0] to-[#f9f2e8]">
   <HeroSlider/>
   <RoomShowcase />
   <AboutOurHotel/>
   <OurBlog/> 
-  <RatingSection/>
+  <RoomAndSuites/>
   <FacilitiesSection/>  
-</>
+  <BookAppointmentSection/>
+</div>
  )
 };
 
