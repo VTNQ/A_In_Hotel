@@ -22,10 +22,9 @@ const AboutHotelContent = () => {
                     id: response.data.data.id || "",
                     description: response.data.data.description || "",
                     ctaText: response.data.data.ctaText,
-                    title: "",
+                    title: response.data.data.title,
                     imageUrl: File_URL + response.data.data.backgroundImage?.url || "",
                 })
-                console.log(response.data.data)
             } catch (err: any) {
                 console.log(err)
             }
