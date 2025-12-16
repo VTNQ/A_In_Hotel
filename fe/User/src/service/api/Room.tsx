@@ -1,4 +1,5 @@
-import type { GetAllOptions } from "../../type/common";
+import {  type ApiResponseList, type GetAllOptions } from "../../type/common";
+import type { RoomResponse } from "../../type/room.types";
 import Http from "../http/http";
 
 export const getRoom = async(options:GetAllOptions)=>{
@@ -25,4 +26,8 @@ export const getRoom = async(options:GetAllOptions)=>{
           skipAuth: true,
     })
     return resp.data;
+}
+
+export const getRepresentativeRoomsOfHotels=async()=>{
+    return await Http.get<ApiResponseList<RoomResponse>>("/api/rooms/representative-by-hotel")
 }

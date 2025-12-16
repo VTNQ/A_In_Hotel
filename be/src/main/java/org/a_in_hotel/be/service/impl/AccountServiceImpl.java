@@ -113,7 +113,7 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
             Specification<Account>sortable= RSQLJPASupport.toSort(sort);
             Specification<Account>filterable= RSQLJPASupport.toSpecification(filter);
             Specification<Account>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
-            Pageable pageable=all? PageRequest.of(page,size):PageRequest.of(page-1,size);
+            Pageable pageable=all? Pageable.unpaged():PageRequest.of(page-1,size);
             return accountRepository.
                     findAll(sortable.and(filterable).and(searchable),pageable)
                     .map(accountMapper::toResponse);

@@ -20,6 +20,7 @@ public class RoomResponse {
     private String roomCode;
     private Integer capacity;
     private Long idRoomType;
+    private String hotelName;
     private String roomTypeName;
     private Integer status;
     private BigDecimal defaultRate;

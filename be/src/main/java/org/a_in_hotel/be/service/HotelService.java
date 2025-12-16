@@ -18,4 +18,6 @@ public interface HotelService {
     Page<HotelResponse> getAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 
     Hotel getHotelByAccountId(Long accountId);
+
+    HotelResponse getHotelById(Long id);
 }

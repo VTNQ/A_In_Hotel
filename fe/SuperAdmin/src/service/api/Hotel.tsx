@@ -27,3 +27,7 @@ export const UpdateStatusHotel = async (hotelId: number, status: 0 | 1) => {
 export const updateHotel=async(hotelId:number,hotelData:any) => {
     return await Http.put(`/api/hotels/update/${hotelId}`,hotelData);
 }
+
+export const getHotelById=async(id:number)=>{
+  return await Http.get(`/api/hotels/${id}`);
+}

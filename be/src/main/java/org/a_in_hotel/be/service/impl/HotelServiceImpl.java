@@ -156,6 +156,13 @@ public class HotelServiceImpl implements HotelService {
         return hotelRepository.findByAccount_Id(accountId).orElse(null);
     }
 
+    @Override
+    public HotelResponse getHotelById(Long id) {
+        return  hotelRepository.findById(id)
+                .map(hotel -> hotelMapper.toResponse(hotel, staffRepository))
+                .orElseThrow(()->new IllegalArgumentException("Hotel not found"));
+    }
+
     /**
      * Map constraint name từ DB sang field tiếng Việt
      */
