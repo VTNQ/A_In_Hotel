@@ -89,7 +89,14 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       setLoading(false);
     }
   };
-
+  const handleClose =()=>{
+    setFormData({
+      name: "",
+      address: "",
+      idUser: null,
+    })
+    onClose();
+  }
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
@@ -140,7 +147,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={loading}>
+          <Button variant="outline" onClick={handleClose} disabled={loading}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>

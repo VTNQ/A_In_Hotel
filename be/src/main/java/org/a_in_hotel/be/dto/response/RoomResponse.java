@@ -23,6 +23,7 @@ public class RoomResponse {
     private String hotelName;
     private String roomTypeName;
     private Integer status;
+    private Long hotelId;
     private BigDecimal defaultRate;
     private Integer floor;
     private Double area;

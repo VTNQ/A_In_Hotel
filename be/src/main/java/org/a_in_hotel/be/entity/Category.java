@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -23,7 +24,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(name = "category_code",nullable = false, unique = true, length = 50)
+    @Column(name = "category_code", nullable = false, unique = true, length = 50)
     private String code;
     @Column(nullable = false)
     private Integer type;
@@ -35,6 +36,10 @@ public class Category {
     @UpdateTimestamp
     @Column(nullable = false)
     private OffsetDateTime updatedAt;
+
+    private String description;
+    @OneToMany(mappedBy = "roomType")
+    private List<Room> rooms;
     @Column(name = "is_active")
     private Boolean isActive = true;
     @Column(name = "created_by")
@@ -43,9 +48,10 @@ public class Category {
     private String updatedBy;
     @Transient
     private Long capacity;
+
     @PrePersist
     public void prePersist() {
-        if(this.code == null || this.code.isEmpty()) {
+        if (this.code == null || this.code.isEmpty()) {
             this.code = "CT" + String.format("%04d", (int) (Math.random() * 9999));
         }
     }

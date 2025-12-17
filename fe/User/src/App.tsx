@@ -5,6 +5,7 @@ import EventPromotionPage from './pages/EventPromotionPage'
 import RoomPage from './pages/RoomPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import HotelRoomPage from './pages/HotelRoomPage';
 function App() {
 
   return (
@@ -14,6 +15,7 @@ function App() {
    
     <Route path="/event-promotion" element={<EventPromotionPage />} />
     <Route path='/Room' element={<RoomPage/>}/>
+    <Route path='/Hotel/Room/:id' element={<HotelRoomPage/>}/>
     <Route path='/Login' element={<LoginPage/>}/>
     <Route path="/Register" element={<RegisterPage/>} />
     </Route>

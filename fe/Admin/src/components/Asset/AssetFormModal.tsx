@@ -46,7 +46,7 @@ const AssetFormModal = ({
         try {
             setLoading(true)
             let filters: string[] = [];
-            filters.push(`hotelId==${getTokens()?.hotelId}`)
+            filters.push(`hotel.id==${getTokens()?.hotelId}`)
             filters.push(`status==3`)
             const filterQuery = filters.join(" and ");
 

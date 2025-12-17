@@ -6,9 +6,10 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import SearchBar from "./SearchBar";
 
 const images = [
-  "/image/35f6660240b73115e02c8ff7f3435646d2446209.jpg",
-  "/image/35f6660240b73115e02c8ff7f3435646d2446209.jpg",
-  "/image/35f6660240b73115e02c8ff7f3435646d2446209.jpg",
+  "/image/Royal.jpg",
+  "/image/q1.png",
+  "/image/Rs.jpg",
+  "/image/RSLS.jpg"
 ];
 
 const HeroSlider = () => {

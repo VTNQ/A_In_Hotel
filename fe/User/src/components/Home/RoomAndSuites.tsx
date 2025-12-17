@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { type RoomResponse } from "../../type/room.types";
 import { getRepresentativeRoomsOfHotels } from "../../service/api/Room";
 import { File_URL } from "../../setting/constant/app";
+import { useNavigate } from "react-router-dom";
 
 const RoomAndSuites = () => {
     const [roomData, setRoomData] = useState<RoomResponse[]>([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -27,6 +29,7 @@ const RoomAndSuites = () => {
                         <div
                             key={room.id}
                             className="relative overflow-hidden rounded-2xl group"
+                            onClick={()=>navigate(`/Hotel/Room/${room.hotelId}`)}
                         >
                             <img
                                 src={File_URL+room.images[0]?.url}

@@ -9,15 +9,21 @@ import org.a_in_hotel.be.Enum.HotelStatus;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
+import org.a_in_hotel.be.dto.response.FacilityResponse;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
+import org.a_in_hotel.be.dto.response.RoomTypeResponse;
 import org.a_in_hotel.be.exception.ExceptionResponse;
+import org.a_in_hotel.be.service.CategoryService;
+import org.a_in_hotel.be.service.FacilityService;
 import org.a_in_hotel.be.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/hotels")
@@ -26,6 +32,10 @@ import org.springframework.web.bind.annotation.*;
 public class HotelController {
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private FacilityService facilityService;
+    @Autowired
+    private CategoryService categoryService;
     @Operation(summary = "Thêm khách sạn")
     @PostMapping("/create")
     public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody HotelRequest hotelRequest, BindingResult bindingResult) {
@@ -93,6 +103,28 @@ public class HotelController {
         }catch (Exception e){
             return ResponseEntity.badRequest()
                     .body(RequestResponse.error( "Get Hotel Config: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{id}/room-types")
+    public ResponseEntity<RequestResponse<List<RoomTypeResponse>>> getRoomTypeByHotel(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(
+                    categoryService.getRoomTypesByHotel(id)
+            ));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get Room Type Config: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/facilities")
+    public ResponseEntity<RequestResponse<List<FacilityResponse>>> getFacilities(){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(
+                    facilityService.getFacilitiesAndServices()));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get Facility Config: " + e.getMessage()));
         }
     }
 }

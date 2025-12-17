@@ -3,8 +3,11 @@ package org.a_in_hotel.be.service;
 
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
+import org.a_in_hotel.be.dto.response.RoomTypeResponse;
 import org.a_in_hotel.be.entity.Category;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface CategoryService {
     void create(CategoryDTO dto);
@@ -19,7 +22,15 @@ public interface CategoryService {
 
     void updateStatus(Long id, boolean status);
 
-    Page<CategoryResponse> search(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
+    Page<CategoryResponse> search(Integer page, Integer size, String sort,
+                                  String filter,
+                                  String searchField,
+                                  String searchValue,
+                                  boolean all);
+
+    List<RoomTypeResponse> getRoomTypesByHotel(Long hotelId);
+
+
 }
 
 
