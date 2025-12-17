@@ -11,7 +11,8 @@ const CategoryFormModal = ({
 }: CategoryFormModalProps) => {
     const [formData, setFormData] = useState({
         name: "",
-        type: ""
+        type: "",
+        description: ""
     })
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
@@ -27,7 +28,8 @@ const CategoryFormModal = ({
             const cleanedData = Object.fromEntries(
                 Object.entries({
                     name: formData.name,
-                    type: formData.type
+                    type: formData.type,
+                    description:formData.description
                 }).map(([key, value]) => [
                     key,
                     value?.toString().trim() === "" ? null : value,
@@ -41,7 +43,8 @@ const CategoryFormModal = ({
             });
             setFormData({
                 name: "",
-                type: ""
+                type: "",
+                description:""
             });
             onSuccess();
         } catch (err: any) {
@@ -60,7 +63,8 @@ const CategoryFormModal = ({
     const handleCancel = () => {
         setFormData({
             name: "",
-            type: ""
+            type: "",
+            description:""
         })
         onClose();
     }
@@ -108,7 +112,19 @@ const CategoryFormModal = ({
                         <option value="3">Asset</option>
                     </select>
                 </div>
-
+                <div className="col-span-2">
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Description
+                    </label>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        placeholder="Short description"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        rows={1}
+                    />
+                </div>
             </div>
         </CommonModal>
     )

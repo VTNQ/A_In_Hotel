@@ -94,6 +94,8 @@ const CreateFacilityForm: React.FC = () => {
                 categoryId: null,
                
             })
+            setCoverImage(null);
+            setPreview(null)
         } catch (err: any) {
             showAlert({
                 title: "create facilities failed",

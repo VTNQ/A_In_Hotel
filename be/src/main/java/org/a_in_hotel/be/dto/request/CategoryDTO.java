@@ -20,6 +20,8 @@ public class CategoryDTO {
     @Size(max = 120)
     private String name;
 
+    private String description;
+
     @NotNull(message = "Type is required")
     @Min(value = 1,message = "Type is required")
     private Integer type;

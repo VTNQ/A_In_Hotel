@@ -4,9 +4,12 @@ package org.a_in_hotel.be.service;
 import org.a_in_hotel.be.Enum.HotelStatus;
 import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
+import org.a_in_hotel.be.dto.response.FacilityResponse;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.entity.Hotel;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface HotelService {
     void save(HotelRequest branch);
@@ -20,4 +23,6 @@ public interface HotelService {
     Hotel getHotelByAccountId(Long accountId);
 
     HotelResponse getHotelById(Long id);
+
+
 }

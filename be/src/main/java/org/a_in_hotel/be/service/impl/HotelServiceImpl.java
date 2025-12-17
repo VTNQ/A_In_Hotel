@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.HotelStatus;
 import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
+import org.a_in_hotel.be.dto.response.FacilityResponse;
 import org.a_in_hotel.be.dto.response.HotelResponse;
-import org.a_in_hotel.be.entity.Hotel;
-import org.a_in_hotel.be.entity.Staff;
+import org.a_in_hotel.be.dto.response.ImageResponse;
+import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.HotelMapper;
-import org.a_in_hotel.be.repository.HotelRepository;
-import org.a_in_hotel.be.repository.StaffRepository;
+import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +42,17 @@ public class HotelServiceImpl implements HotelService {
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
+    private AssetRepository assetRepository;
+    @Autowired
+    private ExtraServiceRepository extraServiceRepository;
+    @Autowired
     private StaffRepository staffRepository;
     @Autowired
     private SecurityUtils securityUtils;
     @Autowired
     private HotelMapper hotelMapper;
+    @Autowired
+    private ImageRepository imageRepository;
     @Autowired
     private GeneralService generalService;
 
@@ -178,5 +185,6 @@ public class HotelServiceImpl implements HotelService {
         }
         return "Trường dữ liệu";
     }
+
 
 }

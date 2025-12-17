@@ -145,7 +145,17 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       setLoading(false);
     }
   };
-
+  const handleClose=()=>{
+    setFormData({
+      serviceName: "",
+      description: "",
+      note: "",
+      categoryId: "",
+    });
+    setCoverImage(null);
+    setPreview(null);
+    onClose();
+  }
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
@@ -247,7 +257,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={onClose} disabled={loading}>
+            <Button variant="outline" onClick={handleClose} disabled={loading}>
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={loading}>
