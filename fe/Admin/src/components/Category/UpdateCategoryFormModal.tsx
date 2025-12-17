@@ -16,7 +16,8 @@ const UpdateCategoryFormModal = ({
     const [formData, setFormData] = useState({
         id: "",
         name: "",
-        type: ""
+        type: "",
+        description: ""
     });
 
     const { showAlert } = useAlert();
@@ -33,7 +34,8 @@ const UpdateCategoryFormModal = ({
                 setFormData({
                     id: data?.id || "",
                     name: data?.name || "",
-                    type: data?.idType || ""
+                    type: data?.idType || "",
+                    description: data?.description || ""
                 });
             })
             .catch(() => {
@@ -47,18 +49,19 @@ const UpdateCategoryFormModal = ({
     }, [isOpen, categoryId]);
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    }
     const handleUpdate = async () => {
         setSaving(true);
         try {
             const cleanedData = Object.fromEntries(
                 Object.entries({
                     name: formData.name,
-                    type: formData.type
+                    type: formData.type,
+                    description:formData.description
                 }).map(([key, value]) => [
                     key,
                     value?.toString().trim() === "" ? null : value,
@@ -90,7 +93,7 @@ const UpdateCategoryFormModal = ({
     }
 
     const handleCancel = () => {
-        setFormData({ id: "", name: "", type: "" });
+        setFormData({ id: "", name: "", type: "", description: "" });
         onClose();
     };
     if (isOpen && loading) {
@@ -153,6 +156,19 @@ const UpdateCategoryFormModal = ({
                         <option value="2">Extra Service</option>
                         <option value="3">Asset</option>
                     </select>
+                </div>
+                <div className="col-span-2">
+                    <label className="block mb-1 font-medium text-[#253150]">
+                        Description
+                    </label>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        placeholder="Short description"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        rows={1}
+                    />
                 </div>
             </div>
         </CommonModal>

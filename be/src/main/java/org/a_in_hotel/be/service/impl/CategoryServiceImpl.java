@@ -7,16 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
+import org.a_in_hotel.be.dto.response.RoomTypeResponse;
+import org.a_in_hotel.be.entity.Asset;
 import org.a_in_hotel.be.entity.Category;
-import org.a_in_hotel.be.entity.ExtraService;
+import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.CategoryMapper;
-import org.a_in_hotel.be.repository.AssetRepository;
-import org.a_in_hotel.be.repository.CategoryRepository;
-import org.a_in_hotel.be.repository.ExtraServiceRepository;
-import org.a_in_hotel.be.repository.RoomRepository;
+import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.repository.projection.KeyCount;
 import org.a_in_hotel.be.service.CategoryService;
 import org.a_in_hotel.be.util.SearchHelper;
@@ -33,12 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repo;
@@ -48,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final RoomRepository roomRepository;
     private final ExtraServiceRepository extraServiceRepository;
     private final AssetRepository assetRepository;
+    private final ImageRepository imageRepository;
     @Override
     public void create(CategoryDTO dto) {
         Category entity = mapper.toEntity(dto,securityUtils.getCurrentUserId());
@@ -181,4 +182,50 @@ public class CategoryServiceImpl implements CategoryService {
             return null;
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RoomTypeResponse> getRoomTypesByHotel(Long hotelId) {
+        log.info("Get room types by hotel id: {}", hotelId);
+
+        // 1. Lấy danh sách room type (Category)
+        List<Category> roomTypes = repo.findRoomTypeByHotel(hotelId);
+        if (roomTypes.isEmpty()) return List.of();
+
+        // 2. Lấy roomId
+        List<Long> roomIds = roomTypes.stream()
+                .flatMap(rt -> rt.getRooms().stream())
+                .map(Room::getId)
+                .distinct()
+                .toList();
+
+        // 3. Lấy asset theo roomId
+        List<Asset> assets = roomIds.isEmpty()
+                ? List.of()
+                : assetRepository.findByRoomIds(roomIds);
+
+        // 4. Lấy image cho asset và gán thumbnail
+        if (!assets.isEmpty()) {
+            Map<Long, Image> imageMap = imageRepository
+                    .findByEntityTypeAndEntityIdIn(
+                            "Asset",
+                            assets.stream().map(Asset::getId).toList()
+                                                  )
+                    .stream()
+                    .collect(Collectors.toMap(
+                            Image::getEntityId,
+                            Function.identity(),
+                            (a, b) -> a
+                                             ));
+
+            assets.forEach(a -> a.setThumbnail(imageMap.get(a.getId())));
+        }
+
+        // 5. Map sang response
+        return roomTypes.stream()
+                .map(mapper::toRoomTypeResponse)
+                .toList();
+    }
+
+
 }

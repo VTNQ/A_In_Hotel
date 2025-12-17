@@ -1,7 +1,8 @@
-import { getAllFacilities } from "../../service/api/facilities";
+
 import { useEffect, useState } from "react";
 import type { facilitiesResponse } from "../../type/facilities.types";
 import { File_URL } from "../../setting/constant/app";
+import { getFacilities } from "../../service/api/facilities";
 
 export default function FacilitiesSection() {
   const[data,setData]=useState<facilitiesResponse[]>([]);
@@ -9,12 +10,8 @@ export default function FacilitiesSection() {
   const fetchData =async()=>{
     try{
       setLoading(true)
-        const response= await getAllFacilities({
-          page:1,
-          size:10,
-          filter:"isActive==true and type==1 and price==0"
-        });
-        setData(response?.content || [])
+        const response= await getFacilities();
+        setData(response?.data.data || [])
     }catch(err:any){
       console.log(err)
     }finally{
@@ -46,10 +43,10 @@ export default function FacilitiesSection() {
                 className="flex flex-col items-center text-[#3A3125] hover:text-[#b38a58] transition-colors duration-300"
               >
                 {/* ICON */}
-                {item.icon?.url ? (
+                {item.image?.url ? (
                   <img
-                    src={File_URL + item.icon.url}
-                    alt={item.icon.altText || item.serviceName}
+                    src={File_URL + item.image.url}
+                    alt={item.image.altText || item.name}
                     className="w-8 h-8 object-contain"
                   />
                 ) : (
@@ -58,7 +55,7 @@ export default function FacilitiesSection() {
 
                 {/* LABEL */}
                 <p className="text-sm font-montserrat font-medium">
-                  {item.serviceName}
+                  {item.name}
                 </p>
               </div>
             ))}

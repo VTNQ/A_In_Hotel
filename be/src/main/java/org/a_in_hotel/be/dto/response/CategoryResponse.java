@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 public class CategoryResponse {
@@ -14,6 +15,7 @@ public class CategoryResponse {
     private Long capacity;
     private Integer idType;
     private String code;
+    private String description;
     private Boolean isActive;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private OffsetDateTime createdAt;

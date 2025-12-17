@@ -7,6 +7,8 @@ export interface RoomResponse {
     hotelName:string;
     capacity:string;
     area:string;
+    hotelId:number;
+    note:string;
     defaultRate:number;
     images:ImageResponse[];
 }

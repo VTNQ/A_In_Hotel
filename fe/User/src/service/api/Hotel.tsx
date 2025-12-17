@@ -1,5 +1,6 @@
 
 import type { ApiResponse, GetAllOptions, PageResponse } from "../../type/common";
+
 import type { HotelResponse } from "../../type/hotel.types";
 import Http from "../http/http";
 
@@ -29,3 +30,4 @@ export const getHotel = async(options:GetAllOptions={})=>{
       });
       return resp.data.data;
 }
+
