@@ -11,7 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(
@@ -34,14 +36,13 @@ public class Banner {
 
     @Comment("NULL = bắt đầu ngay")
     @Column(name = "start_at")
-    private Instant startAt;
+    private LocalDate startAt;
 
     @Comment("NULL = không hết hạn")
     @Column(name = "end_at")
-    private Instant endAt;
+    private LocalDate endAt;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "image_id", referencedColumnName = "id") // FK tới BannerImage
+    @Transient
     private Image image;
     @Comment("Nút CTA, ví dụ: Mua ngay. Có thể null")
     @Column(name = "cta_label", columnDefinition = "TEXT")
@@ -51,14 +52,15 @@ public class Banner {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
     @Column(name = "created_by")
     private String createdBy;
     @Column(name = "updated_by")
