@@ -4,11 +4,11 @@ import { Label } from "../ui/label";
 import { DatePickerField } from "../ui/DatePickerField";
 import { Textarea } from "../ui/textarea";
 import UploadField from "../ui/UploadField";
-import type { BannerForm } from "@/type/Banner/BannerForm";
 import { useAlert } from "../alert-context";
 import { createBanner } from "@/service/api/Banner";
 import { Button } from "../ui/button";
-import { isBefore, startOfToday } from "date-fns";
+import { format, isBefore, startOfToday } from "date-fns";
+import type { BannerForm } from "@/type/banner.types";
 
 const CreateBanner = () => {
     const { showAlert } = useAlert();
@@ -20,6 +20,11 @@ const CreateBanner = () => {
         desc: "",
         bannerImage: null,
     });
+
+    const [loading, setLoading] = useState(false);
+
+    const toLocalDateString = (d?: Date) =>
+        d ? format(d, "yyyy-MM-dd") : undefined;
     const handleTextChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -33,18 +38,23 @@ const CreateBanner = () => {
         setFormData((p) => ({ ...p, endDate: d }));
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (loading) return;
         try {
+
+            setLoading(true);
+
             const BannerDto = {
                 name: formData.title,
-                startAt: formData.startDate,
-                endAt: formData.endDate,
+                startAt: toLocalDateString(formData.startDate),
+                endAt: toLocalDateString(formData.endDate),
                 ctaLabel: formData.cta,
-                description: formData.desc
+                description: formData.desc,
+                image: formData.bannerImage,
             }
-            const response = await createBanner(BannerDto, formData.bannerImage);
+            const response = await createBanner(BannerDto);
 
             showAlert({
-                title: response.message,
+                title: response.data.message,
                 type: "success",
                 autoClose: 4000,
             })
@@ -64,6 +74,8 @@ const CreateBanner = () => {
                 type: "error",
                 autoClose: 4000,
             })
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -112,13 +124,16 @@ const CreateBanner = () => {
                             <div>
                                 <Label htmlFor="Ảnh Banner">Ảnh Banner</Label>
                                 <UploadField className="w-full mt-2"
+                                    maxFiles={10}
                                     value={formData.bannerImage}
                                     onChange={(files) =>
                                         setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }))
                                     }
                                 />
                             </div>
-                            <Button type="submit" >Lưu</Button>
+                            <Button type="submit" disabled={loading}>
+                                {loading ? "Đang lưu..." : "Lưu"}
+                            </Button>
                         </form>
                     </div>
                 </div>

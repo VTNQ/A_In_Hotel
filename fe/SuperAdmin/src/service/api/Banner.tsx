@@ -1,26 +1,29 @@
 import type { GetAllOptions } from "@/type/GetAllOptions";
 import Http from "../http/http";
 
-export const createBanner=async( bannerDTO: Record<string, any>,image:File | null)=>{
-    try {
+export const createBanner = async (data: any) => {
+  try {
     const formData = new FormData();
-
-    // spread bannerDTO vào FormData
-    for (const [k, v] of Object.entries(bannerDTO)) {
-      formData.append(k, v instanceof Date ? v.toISOString() : String(v));
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "image" && value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    if (data.image) {
+      formData.append("image", data.image);
     }
 
-    if (image) formData.append("image", image);
+    return await Http.post("/api/banners/create", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-    const { data } = await Http.post("/api/banners/create", formData);
-    return data;
   } catch (err) {
     console.error("Lỗi khi tạo banner:", err);
     throw err;
   }
 }
-export const getBanner=async(options:GetAllOptions={})=>{
-   const {
+export const getBanner = async (options: GetAllOptions = {}) => {
+  const {
     page = 1,
     size = 5,
     sort = "id,desc",
@@ -29,27 +32,30 @@ export const getBanner=async(options:GetAllOptions={})=>{
     searchValue,
     all = false,
   } = options;
-   const res = await Http.get("/api/banners/getAll", {
-    params: { page, size, sort, filter, searchField,searchValue, all },
+  const res = await Http.get("/api/banners/getAll", {
+    params: { page, size, sort, filter, searchField, searchValue, all },
   });
   return res.data;
 }
-export const findById=async(id:number)=>{
-  return (await Http.get(`/api/banners/${id}`)).data; 
+export const findById = async (id: number) => {
+  return (await Http.get(`/api/banners/${id}`)).data;
 }
-export const updateBanner=async(bannerDTO: Record<string, any>,image:File | null,id:number)=>{
-      try {
+export const updateBanner = async (data: any, id: number) => {
+  try {
     const formData = new FormData();
-
-    // spread bannerDTO vào FormData
-    for (const [k, v] of Object.entries(bannerDTO)) {
-      formData.append(k, v instanceof Date ? v.toISOString() : String(v));
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "image" && value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    if (data.image) {
+      formData.append("image", data.image);
     }
 
-    if (image) formData.append("image", image);
-
-    const { data } = await Http.put(`/api/banners/update/${id}`, formData);
-    return data;
+   return await Http.put(`/api/banners/update/${id}`, formData,{
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+   
   } catch (err) {
     console.error("Lỗi khi tạo banner:", err);
     throw err;

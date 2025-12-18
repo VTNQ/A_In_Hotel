@@ -52,14 +52,6 @@ const formatDate = (val: string | number) => {
   return isNaN(d.getTime()) ? "-" : d.toLocaleDateString();
 };
 
-
-const toImgSrc = (u?: string) => {
-  if (!u) return "/placeholder-image.png";
-  if (/^https?:\/\//i.test(u)) return u;
-  const clean = u.replace(/^\/+/, "");
-  return `${File_URL}${clean}`;
-};
-
 /** ------------ Thumbnail + Lightbox ------------ */
 function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
   const [open, setOpen] = useState(false);
@@ -192,7 +184,7 @@ const ListBanner: React.FC = () => {
         header: "Hình ảnh banner",
         cell: (row) =>
           row.url ? (
-            <ThumbWithPreview src={toImgSrc(row.url)} alt={row.name || "Banner"} />
+            <ThumbWithPreview src={File_URL+row.url} alt={row.name || "Banner"} />
           ) : (
             <span className="text-xs text-muted-foreground">Không có ảnh</span>
           ),
