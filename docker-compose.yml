@@ -5,7 +5,7 @@ services:
     build: ./be
     container_name: ainhotel-be
     ports:
-      - "8585"
+      - "8585:8585"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-35bd5266-votannamquoc-130504.h.aivencloud.com:22125/a_in_hotel
       SPRING_DATASOURCE_USERNAME: avnadmin
