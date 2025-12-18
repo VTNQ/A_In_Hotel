@@ -10,7 +10,7 @@ import UploadField from "../ui/UploadField";
 import { Button } from "../ui/button";
 import { useAlert } from "../alert-context";
 import { findById, updateBanner } from "@/service/api/Banner";
-import { isBefore, startOfToday } from "date-fns";
+import { format, isBefore, startOfToday } from "date-fns";
 import { File_URL } from "@/setting/constant/app";
 
 type BannerForm = {
@@ -23,17 +23,9 @@ type BannerForm = {
 };
 
 
-const toImgSrc = (u?: string) => {
-    if (!u) return "/placeholder-image.png";
-    if (/^https?:\/\//i.test(u)) return u;
-    const clean = u.replace(/^\/+/, "");
-    return `${File_URL}${clean}`;
-};
-
 const EditBanner: React.FC = () => {
     const { id } = useParams();
     const bannerId = Number(id);
-    console.log(bannerId)
     const navigate = useNavigate();
     const { showAlert } = useAlert();
 
@@ -65,7 +57,7 @@ const EditBanner: React.FC = () => {
                     bannerImage: null, // ban đầu chưa có file mới
                 });
 
-                setDefaultPreview(toImgSrc(b?.image?.url));
+                setDefaultPreview(File_URL+b?.image?.url);
             } catch (e: any) {
                 showAlert({
                     title: "Không tải được dữ liệu banner",
@@ -92,21 +84,24 @@ const EditBanner: React.FC = () => {
 
     const handleBannerImage = (files: File[] | null) =>
         setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }));
+    const toLocalDateString = (d?: Date) =>
+        d ? format(d, "yyyy-MM-dd") : undefined;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const dto = {
                 name: formData.title,
-                startAt: formData.startDate ?? null,
-                endAt: formData.endDate ?? null,
+                startAt: toLocalDateString(formData.startDate) ?? null,
+                endAt: toLocalDateString(formData.endDate) ?? null,
                 ctaLabel: formData.cta,
                 description: formData.desc,
+                image:formData.bannerImage
             };
-            const response = await updateBanner(dto, formData.bannerImage, bannerId)
+            const response = await updateBanner(dto, bannerId)
 
             showAlert({
-                title: response.message,
+                title: response.data.message,
                 type: "success",
                 autoClose: 4000,
             })

@@ -23,18 +23,11 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import io.github.perplexhub.rsql.RSQLJPASupport;
-import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
-
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -145,9 +138,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public AssetResponse getById(Long id) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
-        imageRepository.findFirstByEntityIdAndEntityType(asset.getId(), "Asset")
-                .ifPresent(asset::setThumbnail);
-        return assetMapper.toResponse(asset);
+        return assetMapper.toResponse(asset,imageRepository);
     }
 
     @Override
@@ -164,11 +155,8 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
                             .and(filterable)
                             .and(searchable.and(filterable)),
                     pageable);
-            assets.forEach(asset ->
-                                   imageRepository.findFirstByEntityIdAndEntityType(asset.getId(), "Asset")
-                                           .ifPresent(asset::setThumbnail)
-                          );
-            return  assets.map(assetMapper::toResponse);
+
+            return  assets.map(asset -> assetMapper.toResponse(asset,imageRepository));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);

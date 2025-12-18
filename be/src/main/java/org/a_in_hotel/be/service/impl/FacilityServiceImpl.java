@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,6 +26,7 @@ public class FacilityServiceImpl implements FacilityService {
     private final ExtraServiceRepository extraServiceRepository;
     private final AssetRepository assetRepository;
     private final ImageRepository imageRepository;
+
     @Override
     public List<FacilityResponse> getFacilitiesAndServices() {
         List<FacilityResponse> result = new ArrayList<>();
@@ -56,7 +58,7 @@ public class FacilityServiceImpl implements FacilityService {
                          );
         }
 
-        // 3. Extra service bù (page 1, CÙNG SIZE)
+
         remain = LIMIT - result.size();
         if (remain > 0) {
             List<ExtraService> extraFallback =
@@ -74,6 +76,7 @@ public class FacilityServiceImpl implements FacilityService {
 
         return result;
     }
+
     private FacilityResponse mapExtraService(ExtraService service) {
         return new FacilityResponse(
                 service.getId(),
@@ -91,6 +94,7 @@ public class FacilityServiceImpl implements FacilityService {
                 mapImage(EntityTypeConst.ASSET, asset.getId())
         );
     }
+
     private ImageResponse mapImage(String entityType, Long entityId) {
 
         Image image = imageRepository

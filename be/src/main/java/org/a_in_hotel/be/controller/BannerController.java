@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BannerRequest;
+import org.a_in_hotel.be.dto.response.BannerResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.entity.Banner;
 import org.a_in_hotel.be.service.BannerService;
@@ -43,7 +44,7 @@ public class BannerController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<RequestResponse<Banner>> getBanner(@PathVariable Long id) {
+    public ResponseEntity<RequestResponse<BannerResponse>> getBanner(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(RequestResponse.success(bannerService.findById(id)));
         } catch (Exception e) {
@@ -71,7 +72,7 @@ public class BannerController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<RequestResponse<PageResponse<Banner>>> getAll(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<RequestResponse<PageResponse<BannerResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
                                                                         @RequestParam(defaultValue = "5") int size,
                                                                         @RequestParam(defaultValue = "id,desc") String sort,
                                                                         @RequestParam(required = false) String filter,
@@ -79,7 +80,7 @@ public class BannerController {
                                                                         @RequestParam(required = false) String searchValue,
                                                                         @RequestParam(required = false) boolean all) {
         try {
-            PageResponse<Banner> pageResponse =
+            PageResponse<BannerResponse> pageResponse =
                     new PageResponse<>(bannerService.getListBanner(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(
                     RequestResponse.success(pageResponse, "Lấy banner thành công")

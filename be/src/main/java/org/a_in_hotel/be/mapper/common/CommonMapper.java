@@ -8,6 +8,7 @@ import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.BookingDetailMapper;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
+import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.repository.StaffRepository;
 import org.a_in_hotel.be.service.StaffService;
@@ -118,6 +119,17 @@ public interface CommonMapper {
                 .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
                 .map(img -> new ImageResponse(img.getUrl(), img.getAltText()))
                 .toList();
+    }
+    default ImageResponse mapImageV2(
+            Long entityId,
+            String entityType,
+            ImageRepository imageRepository) {
+        return imageRepository
+                .findFirstByEntityIdAndEntityType(entityId,entityType)
+                .map(img->new ImageResponse(img.getUrl(),img.getAltText()))
+                .orElse(null);
+
+
     }
     default ImageResponse mapImage(Image image) {
         if (image == null) return null;
