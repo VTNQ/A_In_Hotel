@@ -18,9 +18,9 @@ public class BannerResponse {
     private String name;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startAt;
+    private OffsetDateTime startAt;
 
-    private LocalDate endAt;
+    private OffsetDateTime endAt;
 
     private String ctaLabel;
 

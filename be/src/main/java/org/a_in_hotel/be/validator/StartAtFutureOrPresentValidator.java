@@ -5,14 +5,20 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 public class StartAtFutureOrPresentValidator
-implements ConstraintValidator<StartAtFutureOrPresent, LocalDate> {
+implements ConstraintValidator<StartAtFutureOrPresent, OffsetDateTime> {
     @Override
-    public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(OffsetDateTime value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
             return true; // null để @NotNull xử lý nếu cần
         }
-        return !value.isBefore(LocalDate.now());
+        LocalDate startDate = value.atZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))
+                .toLocalDate();
+
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+
+        return !startDate.isBefore(today);
     }
 }

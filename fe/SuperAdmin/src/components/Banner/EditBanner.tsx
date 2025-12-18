@@ -12,6 +12,7 @@ import { useAlert } from "../alert-context";
 import { findById, updateBanner } from "@/service/api/Banner";
 import { format, isBefore, startOfToday } from "date-fns";
 import { File_URL } from "@/setting/constant/app";
+import { formatISO } from "date-fns";
 
 type BannerForm = {
     title: string;
@@ -84,16 +85,18 @@ const EditBanner: React.FC = () => {
 
     const handleBannerImage = (files: File[] | null) =>
         setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }));
-    const toLocalDateString = (d?: Date) =>
-        d ? format(d, "yyyy-MM-dd") : undefined;
+
+
+    const toOffsetDateTime = (d?: Date) =>
+        d ? formatISO(d) : null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const dto = {
                 name: formData.title,
-                startAt: toLocalDateString(formData.startDate) ?? null,
-                endAt: toLocalDateString(formData.endDate) ?? null,
+                startAt: toOffsetDateTime(formData.startDate),
+                endAt: toOffsetDateTime(formData.endDate),
                 ctaLabel: formData.cta,
                 description: formData.desc,
                 image:formData.bannerImage

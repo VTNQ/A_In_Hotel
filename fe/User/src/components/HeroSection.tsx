@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import SearchBar from "./SearchBar";
 import type { BannerResponse } from "../type/banner.type";
 import { getBanner } from "../service/api/Banner";
-import { format } from "date-fns";
+import { formatISO } from "date-fns";
 import { File_URL } from "../setting/constant/app";
 
 
@@ -17,11 +17,11 @@ const HeroSlider = () => {
   const [banners,setBanners] =useState<BannerResponse[]>([]);
   const fetchData = async()=>{
     try{
-      const today = format(new Date(), "yyyy-MM-dd");
+      const now = formatISO(new Date()); 
       const response = await getBanner({
         page:1,
         size:10,
-        filter: `startAt<=${today} and endAt>=${today}`,
+        filter: `startAt<=${now} and endAt>=${now}`,
       });
       setBanners(response.data?.content || [])
     }catch(err){
