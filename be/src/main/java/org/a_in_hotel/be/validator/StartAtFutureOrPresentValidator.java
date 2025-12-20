@@ -7,12 +7,12 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 public class StartAtFutureOrPresentValidator
-implements ConstraintValidator<StartAtFutureOrPresent, LocalDate> {
+implements ConstraintValidator<StartAtFutureOrPresent, OffsetDateTime> {
     @Override
-    public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(OffsetDateTime value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
             return true; // null để @NotNull xử lý nếu cần
         }
-        return !value.isBefore(LocalDate.now());
+        return !value.isBefore(OffsetDateTime.now());
     }
 }

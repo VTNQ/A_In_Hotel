@@ -30,30 +30,35 @@ export interface ExtraServiceFormModalProps {
     onClose: () => void;
     onSuccess: () => void;
 }
-export interface AssetFormModalProps{
+export interface AssetFormModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
 }
-export interface BlogFormModalProps{
-    isOpen:boolean;
-    onClose:()=>void;
-    onSuccess:()=>void;
+export interface BannerFormModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
+}
+export interface BlogFormModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void;
 }
 export interface CustomDatePickerProps {
     value: Date | null;
     onChange: (value: Date | null) => void;
     placeholder?: string;
-  }
-export interface UpdateBlogFormModalProps extends BlogFormModalProps{
-    blogId:any;
+}
+export interface UpdateBlogFormModalProps extends BlogFormModalProps {
+    blogId: any;
 }
 export interface UpdateAssetFormModalProps extends AssetFormModalProps {
     assetId: any; // dữ liệu asset cần sửa
 }
 export interface RoomFormModalProps {
     isOpen: boolean;
-    onClose: () => void;    
+    onClose: () => void;
     onSuccess: () => void;
 
 }
@@ -62,7 +67,7 @@ export interface CategoryFormModalProps {
     onClose: () => void;
     onSuccess: () => void;
 }
-export interface StaffFormModalProps{
+export interface StaffFormModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -96,7 +101,7 @@ export interface BookingActionMenuProps {
 }
 export interface AssetActionMenuProps {
     asset: {
-        status?:number;
+        status?: number;
         [key: string]: any;
     }
     onView?: (room: any) => void;
@@ -105,16 +110,16 @@ export interface AssetActionMenuProps {
     onDeactivate?: (room: any) => void;
     onMaintenance?: (room: any) => void;
 }
-export interface BlogActionMenuProps{
-    blog:{
-        status?:number;
-        [key:string]:any;
+export interface BlogActionMenuProps {
+    blog: {
+        status?: number;
+        [key: string]: any;
     }
-    onView?:(blog:any)=>void;
-    onEdit?:(blog:any)=>void;
-    onPublish?:(blog:any)=>void;
-    onArchive?:(blog:any)=>void;
-    onRestore?:(blog:any)=>void
+    onView?: (blog: any) => void;
+    onEdit?: (blog: any) => void;
+    onPublish?: (blog: any) => void;
+    onArchive?: (blog: any) => void;
+    onRestore?: (blog: any) => void
 }
 export interface UpdateExtraServiceFormModalProps extends ExtraServiceFormModalProps {
     serviceId: any; // dữ liệu service cần sửa
@@ -126,10 +131,15 @@ export interface Category {
     isActive?: boolean;
     [key: string]: any;
 }
-export interface Staff{
-    id?:number;
-    fullName?:string;
-    isActive?:boolean;
+export interface Banner {
+    id?: number;
+    name?: string;
+    [key: string]: any;
+}
+export interface Staff {
+    id?: number;
+    fullName?: string;
+    isActive?: boolean;
     [key: string]: any;
 }
 export interface CategoryActionMenuProps {
@@ -138,6 +148,15 @@ export interface CategoryActionMenuProps {
     onEdit?: (category: Category) => void;
     onActivate?: (category: Category) => void;
     onDeactivate?: (category: Category) => void;
+}
+
+export interface BannerActionMenuProps {
+    banner: Banner;
+    onEdit?: (banner: Banner) => void;
+ 
+}
+export interface BannerEditFormModalProps extends BannerFormModalProps {
+    bannerId: any;
 }
 export interface ExtraService {
     id?: number;
@@ -160,41 +179,41 @@ export interface StaffActionMenuProps {
     onActivate?: (service: ExtraService) => void;
     onDeactivate?: (service: ExtraService) => void;
 }
-export interface ViewRoomManagementProps{
-    isOpen:boolean;
-    onClose:()=>void;
-    roomId:any;
+export interface ViewRoomManagementProps {
+    isOpen: boolean;
+    onClose: () => void;
+    roomId: any;
 }
 export interface TabItem {
     key: string;
     label: string;
 }
-export interface CommonModalViewProps{
-    isOpen:boolean;
-    title?:string;
-    children:React.ReactNode;
-    onClose:()=>void;
-    tabs?:TabItem[];
-    activeTab?:string;
-    onTabChange?:(key:string)=>void;
-    width?:string;
+export interface CommonModalViewProps {
+    isOpen: boolean;
+    title?: string;
+    children: React.ReactNode;
+    onClose: () => void;
+    tabs?: TabItem[];
+    activeTab?: string;
+    onTabChange?: (key: string) => void;
+    width?: string;
     isBorderBottom?: boolean;
-    widthClose?:string;
-    withCenter?:string;
+    widthClose?: string;
+    withCenter?: string;
 
 }
-export interface ViewAssetProps{
-    isOpen:boolean;
-    onClose:()=>void;
-    assetId:any;
+export interface ViewAssetProps {
+    isOpen: boolean;
+    onClose: () => void;
+    assetId: any;
 }
-export interface ViewBlogProps{
-    isOpen:boolean;
-    onClose:()=>void;
-    blogId:any;
+export interface ViewBlogProps {
+    isOpen: boolean;
+    onClose: () => void;
+    blogId: any;
 }
-export interface ViewCategoryProps{
-    isOpen:boolean;
-    onClose:()=>void;
-    categoryId:any;
+export interface ViewCategoryProps {
+    isOpen: boolean;
+    onClose: () => void;
+    categoryId: any;
 }

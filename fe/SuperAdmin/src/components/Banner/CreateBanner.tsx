@@ -7,7 +7,7 @@ import UploadField from "../ui/UploadField";
 import { useAlert } from "../alert-context";
 import { createBanner } from "@/service/api/Banner";
 import { Button } from "../ui/button";
-import { format, isBefore, startOfToday } from "date-fns";
+import {  formatISO, isBefore, startOfToday } from "date-fns";
 import type { BannerForm } from "@/type/banner.types";
 
 const CreateBanner = () => {
@@ -23,8 +23,8 @@ const CreateBanner = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const toLocalDateString = (d?: Date) =>
-        d ? format(d, "yyyy-MM-dd") : undefined;
+    const toOffsetDateTime = (d?: Date) =>
+        d ? formatISO(d) : null;
     const handleTextChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -45,8 +45,8 @@ const CreateBanner = () => {
 
             const BannerDto = {
                 name: formData.title,
-                startAt: toLocalDateString(formData.startDate),
-                endAt: toLocalDateString(formData.endDate),
+                startAt: toOffsetDateTime(formData.startDate),
+                endAt: toOffsetDateTime(formData.endDate),
                 ctaLabel: formData.cta,
                 description: formData.desc,
                 image: formData.bannerImage,

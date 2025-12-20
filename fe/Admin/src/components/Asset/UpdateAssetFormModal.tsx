@@ -53,7 +53,7 @@ const UpdateAssetFormModal = ({
             })
             .catch(() => {
                 showAlert({
-                    title: "Failed to load category information!",
+                    title: "Failed to load asset information!",
                     type: "error",
                 });
                 onClose();
