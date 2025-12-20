@@ -36,11 +36,14 @@ public class Banner {
 
     @Comment("NULL = bắt đầu ngay")
     @Column(name = "start_at")
-    private LocalDate startAt;
+    private OffsetDateTime startAt;
 
     @Comment("NULL = không hết hạn")
     @Column(name = "end_at")
-    private LocalDate endAt;
+    private OffsetDateTime endAt;
+
+    @Column(name = "banner_code", nullable = false, unique = true, length = 20)
+    private String bannerCode;
 
     @Transient
     private Image image;
@@ -66,5 +69,12 @@ public class Banner {
     @Column(name = "updated_by")
     private String updatedBy;
 
- 
+    @PrePersist
+    public void prePersist() {
+        if (this.bannerCode == null || this.bannerCode.isEmpty()) {
+            this.bannerCode = "BN" + String.format("%04d", (int) (Math.random() * 9999));
+        }
+    }
+
+
 }

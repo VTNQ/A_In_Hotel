@@ -9,6 +9,7 @@ import ViewAssetPage from './page/Asset/ViewAssetPage'
 import ViewStaffPage from './page/Staff/ViewStaffPage'
 import ViewBlogPage from './page/Blog/ViewBlogPage'
 import ViewBooking from './page/Booking/ViewBooking'
+import ViewBanner from './page/Banner/ViewBanner'
 
 function App() {
   return(
@@ -17,13 +18,14 @@ function App() {
         <Route path='/' element={<LoginPage/>}/>
         <Route path='/Dashboard' element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="facility/services" element={<ViewExtraServicePage/>} />
-          <Route path='facility/categories' element={<ViewCategoryPage/>}/>
-          <Route path='facility/rooms' element={<ViewRoomPage/>}/>
-          <Route path='facility/assets' element={<ViewAssetPage/>}/>
+          <Route path="facility/service" element={<ViewExtraServicePage/>} />
+          <Route path='facility/categorie' element={<ViewCategoryPage/>}/>
+          <Route path='facility/room' element={<ViewRoomPage/>}/>
+          <Route path='facility/asset' element={<ViewAssetPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
-          <Route path='staffs' element={<ViewStaffPage/>}/>
-          <Route path='post/blogs' element={<ViewBlogPage/>}/>
+          <Route path='staff' element={<ViewStaffPage/>}/>
+          <Route path='post/banner' element={<ViewBanner/>}/>
+          <Route path='post/blog' element={<ViewBlogPage/>}/>
         </Route>
       </Routes>
     </>

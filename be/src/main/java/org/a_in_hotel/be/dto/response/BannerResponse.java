@@ -17,10 +17,12 @@ public class BannerResponse {
 
     private String name;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private OffsetDateTime startAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private OffsetDateTime endAt;
 
-    private LocalDate endAt;
+    private String bannerCode;
 
     private String ctaLabel;
 

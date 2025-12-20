@@ -9,6 +9,7 @@ import org.a_in_hotel.be.validator.EndAfterStart;
 import org.a_in_hotel.be.validator.StartAtFutureOrPresent;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 
 @Data
@@ -17,8 +18,8 @@ public class BannerRequest {
     @NotBlank(message = "Tiêu đề không được để trống")
     private String name;
     @StartAtFutureOrPresent
-    private LocalDate startAt;
-    private LocalDate endAt;
+    private OffsetDateTime startAt;
+    private OffsetDateTime endAt;
     private String ctaLabel;
     private String description;
 }
