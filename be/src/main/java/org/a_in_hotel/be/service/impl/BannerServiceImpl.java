@@ -45,7 +45,7 @@ public class BannerServiceImpl implements BannerService {
     private SecurityUtils securityUtils;
     @Autowired
     private BannerMapper bannerMapper;
-    private static final List<String> SEARCH_FIELDS = List.of("name");
+    private static final List<String> SEARCH_FIELDS = List.of("bannerCode","name");
 
     @Override
     @Transactional
