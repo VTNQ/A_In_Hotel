@@ -34,11 +34,9 @@ public class Banner {
     @Column(nullable = false)
     private String name;
 
-    @Comment("NULL = bắt đầu ngay")
     @Column(name = "start_at")
     private OffsetDateTime startAt;
 
-    @Comment("NULL = không hết hạn")
     @Column(name = "end_at")
     private OffsetDateTime endAt;
 
