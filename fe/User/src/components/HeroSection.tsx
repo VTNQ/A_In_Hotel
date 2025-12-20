@@ -21,7 +21,7 @@ const HeroSlider = () => {
       const response = await getBanner({
         page:1,
         size:10,
-        filter: `startAt<=${now} and endAt>=${now}`,
+        filter: `startAt>=${now} and endAt<=${now}`,
       });
       setBanners(response.data?.content || [])
     }catch(err){
