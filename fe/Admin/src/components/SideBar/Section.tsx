@@ -1,11 +1,11 @@
-import { BedDouble, Building2, FileText, Globe, HelpCircle, LayoutDashboard, LogOut, NotebookPen, Settings, UserCog, Users } from "lucide-react";
+import { BedDouble, Building2, FileText, HelpCircle, LayoutDashboard, LogOut, NotebookPen, Settings, UserCog, Users } from "lucide-react";
 
 export const SECTIONS = [
     {
         title: null,
         items: [
             { label: "Dashboard", icon: LayoutDashboard, path: "/Dashboard" },
-            { label: 'Booking Management', icon: BedDouble },
+            { label: 'Booking Management', icon: BedDouble,path:"/Dashboard/booking" },
             {
                 label: "Facility Management",
                 icon: Building2,
@@ -26,7 +26,6 @@ export const SECTIONS = [
                     { label: "Banner post", path: "/Dashboard/post/banner" },
                 ],
             },
-            { label: 'Website Post', icon: Globe },
             { label: "Reportings", icon: FileText },
         ],
     },
