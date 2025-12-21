@@ -25,8 +25,8 @@ const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose,
             isOpen={isOpen}
             onClose={onClose}
             title="Category"
-            width="w-[520px]"
-            widthClose="w-full"
+            width="w-[95vw] sm:w-[520px]"
+            widthClose="w-full sm:w-[200px]"
             isBorderBottom={true}
         >
             {loading && (
@@ -49,19 +49,25 @@ const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose,
             )}
             {!loading && category && (
                 <>
-                    <h3 className="text-lg font-semibold mt-2 text-[#253150] ">
+                    <h3 className="text-base sm:text-lg font-semibold mt-2 text-[#253150]">
                         Category Information
                     </h3>
-                    <div className=" w-full py-2  rounded-xl text-[16px] text-[#2B2B2B]" style={{ fontFamily: "Montserrat" }}>
-                        <div className="grid grid-cols-[350px_2fr] gap-y-3">
+
+                    <div
+                        className="w-full py-2 rounded-xl text-sm sm:text-[16px] text-[#2B2B2B]"
+                        style={{ fontFamily: "Montserrat" }}
+                    >
+                        <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-y-3 gap-x-4">
                             <span className="font-semibold text-[#253150]">Category Name</span>
                             <span>{category.name}</span>
+
                             <span className="font-semibold text-[#253150]">Type</span>
                             <span>{category.type}</span>
+
                             <span className="font-semibold text-[#253150]">Capacity</span>
                             <span>{category.capacity}</span>
-
                         </div>
+
                         <div className="mt-4 border-b border-dotted border-gray-400"></div>
                     </div>
                 </>

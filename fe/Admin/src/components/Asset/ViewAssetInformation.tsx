@@ -26,7 +26,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
             isOpen={isOpen}
             onClose={onClose}
             title="Amenities & Asset Tracking"
-            width="w-[500px]"
+            width="w-[95vw] sm:w-[90vw] lg:w-[500px]"
             isBorderBottom={true}
             withCenter="text-left"
 
@@ -55,17 +55,17 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
                         Asset Information
                     </h3>
 
-                    <div className=" w-full py-2  rounded-xl text-[16px] text-[#2B2B2B]" >
-                        <div className="grid grid-cols-[350px_2fr] gap-y-3">
+                    <div className=" w-full py-2 mt-3  rounded-xl text-[16px] text-[#2B2B2B]" >
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-[160px_1fr] lg:grid-cols-[350px_2fr]">
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 flex items-center">
                                 Thumbnail
                             </span>
 
                             <div className="flex items-center">
-                                <div className="w-28 h-28 border border-[#4B62A0]/40 rounded-xl overflow-hidden bg-[#F3F4F6] flex items-center justify-center">
+                                <div className="w-24 h-24 sm:w-26 sm:h-26 border border-[#4B62A0]/40 rounded-xl overflow-hidden bg-[#F3F4F6] flex items-center justify-center">
                                     {asset.thumbnail?.url ? (
                                         <img
-                                            src={File_URL+asset.thumbnail.url}
+                                            src={File_URL + asset.thumbnail.url}
                                             alt="thumbnail"
                                             className="w-full h-full object-cover"
                                         />
@@ -74,12 +74,12 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
                                     )}
                                 </div>
                             </div>
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">
+                            <span className="font-semibold text-base sm:text-[18px] text-[#253150]/90 ">
                                 Asset Name
                             </span>
 
 
-                            <span style={{ fontWeight: '400', fontSize: '16px', lineHeight: '22px', letterSpacing: "0px" }}>{asset.assetName}</span>
+                            <span className="text-sm sm:text-[16px] leading-[22px]" style={{ fontWeight: '400', fontSize: '16px', lineHeight: '22px', letterSpacing: "0px" }}>{asset.assetName}</span>
 
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Asset ID</span>
                             <span style={{ fontWeight: '400' }}>{asset.assetCode}</span>
@@ -100,7 +100,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
 
                         </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-4 sm:mt-3">
                         <h3 className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Note</h3>
 
                         <p className="text-[#2B2B2B] leading-relaxed text-[14px]" style={{ fontWeight: '400' }}>

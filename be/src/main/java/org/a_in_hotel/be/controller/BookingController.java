@@ -3,6 +3,8 @@ package org.a_in_hotel.be.controller;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BookingRequest;
+import org.a_in_hotel.be.dto.request.CheckOutRequest;
+import org.a_in_hotel.be.dto.request.SwitchRoomRequest;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.service.BookingService;
@@ -40,5 +42,25 @@ public class BookingController {
         PageResponse<BookingResponse> pageResponse =
                 new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,all));
         return ResponseEntity.ok(RequestResponse.success(pageResponse));
+    }
+
+    @PatchMapping("/{id}/check-in")
+    public ResponseEntity<RequestResponse<Void>> checkIn(@PathVariable Long id){
+        service.confirmCheckIn(id);
+        return ResponseEntity.ok(RequestResponse.success("Check-in successfully"));
+    }
+
+    @PatchMapping("/{id}/check-out")
+    public ResponseEntity<RequestResponse<Void>> checkOut(@PathVariable Long id, @RequestBody CheckOutRequest request){
+        service.confirmCheckOut(id,request);
+
+        return ResponseEntity.ok(RequestResponse.success("Booking Check-out successfully"));
+    }
+
+    @PatchMapping("/{id}/switch-room")
+    public ResponseEntity<RequestResponse<Void>> switchRoom(@PathVariable Long id, @RequestBody SwitchRoomRequest request){
+        service.switchRoom(id,request);
+
+        return ResponseEntity.ok(RequestResponse.success("Booking switch-room successfully"));
     }
 }

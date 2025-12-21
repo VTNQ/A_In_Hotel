@@ -102,8 +102,9 @@ const StaffFormModal = ({
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}
             cancelLabel="Cancel"
+            width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
         >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Full Name <span className="text-red-500">*</span>
@@ -114,7 +115,7 @@ const StaffFormModal = ({
                         onChange={handleChange}
                         value={formData.fullName}
                         placeholder="Enter Full Name"
-                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
                 </div>
@@ -128,7 +129,7 @@ const StaffFormModal = ({
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="Enter Email"
-                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
                 </div>
@@ -137,7 +138,7 @@ const StaffFormModal = ({
                         Gender <span className="text-red-500">*</span>
                     </label>
 
-                    <div className="flex items-center gap-6 mt-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mt-2">
 
                         {/* MALE */}
                         <label className="flex items-center gap-2 cursor-pointer">

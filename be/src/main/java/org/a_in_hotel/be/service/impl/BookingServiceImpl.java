@@ -1,17 +1,19 @@
 package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BookingPackage;
+import org.a_in_hotel.be.Enum.BookingStatus;
+import org.a_in_hotel.be.Enum.PaymentType;
 import org.a_in_hotel.be.Enum.RoomStatus;
-import org.a_in_hotel.be.dto.request.BookingDetailRequest;
-import org.a_in_hotel.be.dto.request.BookingRequest;
+import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.BookingResponse;
-import org.a_in_hotel.be.entity.Booking;
-import org.a_in_hotel.be.entity.Payment;
+import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.BookingDetailMapper;
 import org.a_in_hotel.be.mapper.BookingMapper;
+import org.a_in_hotel.be.mapper.CheckOutExtraMapper;
 import org.a_in_hotel.be.mapper.PaymentMapper;
 import org.a_in_hotel.be.repository.BookingRepository;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
@@ -26,16 +28,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class BookingServiceImpl  implements BookingService {
+public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository repository;
 
@@ -45,6 +51,8 @@ public class BookingServiceImpl  implements BookingService {
 
     private final RoomRepository roomRepository;
 
+    private final CheckOutExtraMapper checkOutExtraMapper;
+
     private final ExtraServiceRepository extraServiceRepository;
 
     private final PaymentRepository paymentRepository;
@@ -53,7 +61,8 @@ public class BookingServiceImpl  implements BookingService {
 
     private final SecurityUtils securityUtils;
 
-    private static final List<String> SEARCH_FIELDS =  List.of("code","phoneNumber");
+    private static final List<String> SEARCH_FIELDS = List.of("code", "phoneNumber");
+
     @Override
     public void create(BookingRequest request) {
 
@@ -62,7 +71,7 @@ public class BookingServiceImpl  implements BookingService {
         validateRoomAvailable(request);
         validateRoomSchedule(request);
         Booking booking = mapper.toEntity
-                (request,detailMapper,roomRepository,extraServiceRepository,securityUtils.getCurrentUserId());
+                (request, detailMapper, roomRepository, extraServiceRepository, securityUtils.getCurrentUserId());
 
         repository.save(booking);
 
@@ -70,8 +79,9 @@ public class BookingServiceImpl  implements BookingService {
         payment.setBooking(booking);
         paymentRepository.save(payment);
         log.info("Booking created {} details",
-                 booking.getDetails() != null ? booking.getDetails().size() : 0);
+                booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
+
     private void validateRoomAvailable(BookingRequest request) {
         List<Long> roomIds = request.getBookingDetail().stream()
                 .map(BookingDetailRequest::getRoomId)
@@ -85,8 +95,8 @@ public class BookingServiceImpl  implements BookingService {
         roomIds.forEach(roomId -> {
             var room = roomRepository.findById(roomId)
                     .orElseThrow(() ->
-                                         new IllegalArgumentException("Room ID " + roomId + " not found")
-                                );
+                            new IllegalArgumentException("Room ID " + roomId + " not found")
+                    );
 
             if (room.getStatus() != RoomStatus.AVAILABLE.getCode()) {
                 throw new IllegalArgumentException(
@@ -95,11 +105,12 @@ public class BookingServiceImpl  implements BookingService {
             }
         });
     }
+
     @Override
     public Page<BookingResponse> findAll(
             Integer page, Integer size, String sort, String filter, String searchField,
             String searchValue, boolean all
-                                        ) {
+    ) {
         log.info("start get bookings");
         Specification<Booking> sortable = RSQLJPASupport.toSort(sort);
         Specification<Booking> filterable = RSQLJPASupport.toSpecification(filter);
@@ -113,6 +124,230 @@ public class BookingServiceImpl  implements BookingService {
 
     }
 
+    @Override
+    @Transactional
+    public void confirmCheckIn(Long bookingId) {
+
+        Booking booking = repository.getReferenceById(bookingId);
+
+        if (!booking.getStatus().equals(BookingStatus.BOOKED.getCode())) {
+            throw new IllegalStateException("Only BOOKED booking can be checked-in");
+        }
+
+        booking.setStatus(BookingStatus.CHECKIN.getCode());
+        booking.setCheckedInAt(OffsetDateTime.now());
+        booking.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+
+        booking.getDetails().forEach(detail -> {
+            if (detail.getRoom() != null) {
+                detail.getRoom().setStatus(RoomStatus.OCCUPIED.getCode());
+            }
+        });
+
+        repository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void confirmCheckOut(Long bookingId, CheckOutRequest request) {
+
+        Booking booking = getBookingWithAllowedStatuses(bookingId, BookingStatus.CHECKIN.getCode());
+
+        addExtraCharges(booking, request);
+
+        updateTotalPriceWithExtras(booking);
+
+        recordPayment(booking, request.getPaidAmount());
+
+        booking.setStatus(BookingStatus.CHECKOUT.getCode());
+        booking.setCheckedOutAt(OffsetDateTime.now());
+        booking.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+
+        releaseRooms(booking);
+
+        repository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void switchRoom(Long bookingId, SwitchRoomRequest request) {
+
+        Booking booking = getBookingWithAllowedStatuses(
+                bookingId,
+                BookingStatus.CHECKIN.getCode()
+        );
+
+        validateSwitchRoomItems(booking,request.getItems());
+
+        OffsetDateTime now = OffsetDateTime.now();
+
+        for (RoomSwitchItem item : request.getItems()){
+            switchSingleRoom(booking,item,request.getReason(),now);
+        }
+
+        repository.save(booking);
+    }
+
+    private void validateSwitchRoomItems(
+            Booking booking,
+            List<RoomSwitchItem> items
+    ){
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("No rooms to switch");
+        }
+
+        Set<Long> newRoomIds = new HashSet<>();
+        for (RoomSwitchItem item : items) {
+            if (!newRoomIds.add(item.getNewRoomId())) {
+                throw new IllegalStateException("Duplicate new room in switch request");
+            }
+        }
+
+        Set<Long> detailIds = new HashSet<>();
+        for (RoomSwitchItem item : items) {
+            if (!detailIds.add(item.getBookingDetailId())) {
+                throw new IllegalStateException("Duplicate booking detail in switch request");
+            }
+        }
+
+    }
+    private BigDecimal resolveRoomPrice(
+            Room room,
+            Booking booking
+    ) {
+        BookingPackage bookingPackage =
+                BookingPackage.getBookingPackage(booking.getBookingPackage());
+
+        return switch (bookingPackage) {
+            case FIRST_2_HOURS -> room.getBasePrice();
+            case FULL_DAY -> room.getDefaultRate();
+            case OVERNIGHT -> room.getOvernightPrice();
+        };
+    }
+
+    private void switchSingleRoom(
+            Booking booking,
+            RoomSwitchItem item,
+            String reason,
+            OffsetDateTime now
+    ){
+        BookingDetail currentDetail = getActiveRoomDetail(
+                booking,
+                item.getBookingDetailId()
+        );
+
+        Room newRoom = roomRepository.findById(item.getNewRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+
+        if (!newRoom.getStatus().equals(RoomStatus.AVAILABLE.getCode())) {
+            throw new IllegalStateException("Room " + newRoom.getRoomName() + " is not available");
+        }
+
+        currentDetail.setEndAt(now);
+        currentDetail.setActive(false);
+        currentDetail.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+
+        Room oldRoom = currentDetail.getRoom();
+
+        BookingDetail newDetail = new BookingDetail();
+        newDetail.setBooking(booking);
+        newDetail.setRoom(newRoom);
+        newDetail.setRoomName(newRoom.getRoomName());
+        newDetail.setRoomType(newRoom.getRoomType().getName());
+        newDetail.setRoomType(newRoom.getRoomType().getName());
+        newDetail.setPrice(resolveRoomPrice(newRoom,booking));
+        newDetail.setActive(true);
+        newDetail.setStartAt(now);
+        newDetail.setEndAt(null);
+        newDetail.setCreatedBy(securityUtils.getCurrentUserId().toString());
+
+        oldRoom.setStatus(RoomStatus.AVAILABLE.getCode());
+        newRoom.setStatus(RoomStatus.OCCUPIED.getCode());
+
+        booking.getDetails().add(newDetail);
+
+        handleRoomSwitchSurcharge(
+                booking,
+                currentDetail.getPrice(),
+                newDetail.getPrice(),
+                item.getExtraServiceId(),
+                reason
+        );
+    }
+
+    private void handleRoomSwitchSurcharge(
+            Booking booking,
+            BigDecimal oldPrice,
+            BigDecimal newPrice,
+            Long extraServiceId,
+            String reason
+    ) {
+        // 1. Không upgrade → không phụ thu
+        BigDecimal diff = newPrice.subtract(oldPrice);
+        if (diff.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+
+        // 2. Không chọn service → bỏ qua
+        if (extraServiceId == null) {
+            return;
+        }
+
+        // 3. Load extra service từ DB
+        ExtraService service = extraServiceRepository.findById(extraServiceId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Extra service not found")
+                );
+
+        if (!Boolean.TRUE.equals(service.getIsActive())) {
+            throw new IllegalStateException("Extra service is inactive");
+        }
+
+        if (!service.getExtraCharge().equals(1)) {
+            throw new IllegalStateException("Service is not an extra charge");
+        }
+
+        // 4. Xác định giá phụ thu
+        BigDecimal surchargePrice =
+                service.getPrice().compareTo(BigDecimal.ZERO) > 0
+                        ? service.getPrice()
+                        : diff;
+
+        // 5. Ghi booking detail
+        BookingDetail extra = new BookingDetail();
+        extra.setBooking(booking);
+        extra.setExtraService(service);
+        extra.setExtraServiceName(service.getServiceName());
+
+        extra.setPrice(surchargePrice);
+        extra.setQuantity(1);
+        extra.setSpecialRequests(reason);
+        extra.setCreatedBy(securityUtils.getCurrentUserId().toString());
+
+        booking.getDetails().add(extra);
+
+        // 6. Update total price
+        booking.setTotalPrice(
+                booking.getTotalPrice().add(surchargePrice)
+        );
+    }
+
+
+    private BookingDetail getActiveRoomDetail(
+            Booking booking,
+            Long bookingDetailId
+    ) {
+        return booking.getDetails().stream()
+                .filter(d ->
+                        d.getId().equals(bookingDetailId)
+                                && d.getRoom() != null
+                                && d.getEndAt() == null
+                )
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException("Active room not found")
+                );
+    }
     private void validateRoomSchedule(BookingRequest request) {
         LocalDate newCheckInDate = request.getCheckInDate();
         LocalDate newCheckOutDate = request.getCheckOutDate();
@@ -121,7 +356,7 @@ public class BookingServiceImpl  implements BookingService {
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
-        if(roomId == null){
+        if (roomId == null) {
             return;
         }
         boolean hasOverlap = repository.existsOverlappingBookingsSingle(
@@ -135,16 +370,16 @@ public class BookingServiceImpl  implements BookingService {
         }
     }
 
-    private void validateBookingTime(BookingRequest request){
+    private void validateBookingTime(BookingRequest request) {
 
         LocalDate checkInDate = request.getCheckInDate();
         LocalDate checkOutDate = request.getCheckOutDate();
-        LocalTime  checkInTime = request.getCheckInTime();
+        LocalTime checkInTime = request.getCheckInTime();
         LocalTime checkOutTime = request.getCheckOutTime();
         BookingPackage pkg = BookingPackage.getBookingPackage(request.getBookingPackage());
 
         long days = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
-        switch (pkg){
+        switch (pkg) {
             case FIRST_2_HOURS:
                 if (days != 0) {
                     throw new IllegalArgumentException("2-hour booking must start and end on the same day.");
@@ -168,7 +403,7 @@ public class BookingServiceImpl  implements BookingService {
                 }
                 break;
             case FULL_DAY:
-                if(checkInTime.isBefore(LocalTime.of(14,0))){
+                if (checkInTime.isBefore(LocalTime.of(14, 0))) {
                     throw new IllegalArgumentException("Full day booking requires check-in >=14:00.");
                 }
                 if (days < 1) {
@@ -181,5 +416,87 @@ public class BookingServiceImpl  implements BookingService {
 
 
         }
+    }
+
+    private Booking getBookingWithAllowedStatuses(
+            Long bookingId,
+            Integer status) {
+
+        Booking booking = repository.getReferenceById(bookingId);
+
+        if (!booking.getStatus().equals(BookingStatus.fromCode(status).getCode())) {
+            throw new IllegalStateException("Invalid booking status. Allowed:" + BookingStatus.fromCode(status));
+        }
+        return booking;
+    }
+
+    private void addExtraCharges(Booking booking, CheckOutRequest request) {
+        if (request.getExtraCharges() == null || request.getExtraCharges().isEmpty()) {
+            return;
+        }
+
+        request.getExtraCharges().forEach(ec -> {
+            BookingDetail detail = checkOutExtraMapper.toEntity(
+                    ec,
+                    extraServiceRepository,
+                    securityUtils.getCurrentUserId()
+            );
+            detail.setBooking(booking);
+            booking.getDetails().add(detail);
+        });
+    }
+
+    private BigDecimal calculateExtraTotal(Booking booking) {
+        return booking.getDetails().stream()
+                .filter(d -> d.getExtraServiceName() != null)
+                .map(d -> d.getPrice().multiply(BigDecimal.valueOf(d.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
+    private void updateTotalPriceWithExtras(Booking booking) {
+        BigDecimal extraTotal = calculateExtraTotal(booking);
+        booking.setTotalPrice(booking.getTotalPrice().add(extraTotal));
+    }
+
+    private PaymentType resolveCheckoutPaymentType(
+            BigDecimal paidAmount,
+            BigDecimal outstanding
+    ) {
+        if (paidAmount.compareTo(outstanding) >= 0) {
+            return PaymentType.FULL;
+        }
+
+        return PaymentType.PARTIAL;
+    }
+
+    private void recordPayment(
+            Booking booking,
+            BigDecimal paidAmount
+    ) {
+        if (paidAmount == null || paidAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+
+        BigDecimal outStanding = calculateExtraTotal(booking);
+        PaymentType type = resolveCheckoutPaymentType(paidAmount, outStanding);
+
+        Payment payment = paymentMapper.toEntity(
+                paidAmount,
+                type,
+                booking
+        );
+
+        payment.setPaymentMethod("OCD");
+
+        paymentRepository.save(payment);
+    }
+
+    private void releaseRooms(Booking booking) {
+        booking.getDetails().forEach(d -> {
+            if (d.getRoom() != null) {
+                d.getRoom().setStatus(RoomStatus.AVAILABLE.getCode());
+            }
+        });
     }
 }

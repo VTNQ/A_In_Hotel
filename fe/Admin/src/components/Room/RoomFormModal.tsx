@@ -170,7 +170,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         title="Create New Room"
         saveLabel="Save"
         cancelLabel="Cancel"
-        width="w-[1000px]"
+        width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
+
       >
         <div className="flex justify-center items-center py-10">
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -198,10 +199,11 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         onSave={handleSave}
         saveLabel={loading ? "Saving..." : "Save"}
         cancelLabel="Cancel"
-        width="w-[1000px]"
+        width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
       >
         {/* FORM CONTENT */}
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+
 
           {/* LEFT */}
           <div className="space-y-5">
@@ -233,7 +235,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 font-medium">Room Name *</label>
                 <input
@@ -298,7 +300,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
           {/* RIGHT */}
           <div className="space-y-5">
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 font-medium">Price (VND) *</label>
                 <input
@@ -358,15 +360,21 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               <div
                 onClick={openImageModal}
-                className="mt-2 border border-gray-200 rounded-xl bg-gray-50 hover:bg-gray-100 p-6 cursor-pointer transition flex flex-col items-center h-64"
+                className="mt-2 border 
+                border-gray-200 rounded-xl bg-gray-50 
+                hover:bg-gray-100 p-4 
+                sm:p-6 cursor-pointer transition flex flex-col items-center 
+                min-h-[200px] sm:h-64"
               >
+
                 {formData.images.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {formData.images.map((img, index) => (
                       <img
                         key={index}
                         src={URL.createObjectURL(img)}
-                        className="w-full h-28 object-cover rounded-lg"
+                        className="w-full h-24 sm:h-28 object-cover rounded-lg"
+
                       />
                     ))}
                   </div>
@@ -377,9 +385,15 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       className="w-[167px] h-[117px] opacity-60"
                     />
                     <p className="text-gray-600 mt-3">Click to select images</p>
-                    <button className="mt-3 px-20 py-1.5 rounded-full border border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm">
+                    <button
+                      className="mt-3 w-full 
+                      sm:w-auto px-6 sm:px-20 py-1.5 
+                      rounded-full border 
+                      border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm"
+                    >
                       Select files
                     </button>
+
                   </div>
                 )}
               </div>
@@ -400,13 +414,16 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white w-[900px] rounded-2xl p-8 shadow-xl relative"
+              className="bg-white w-[95vw] sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 
+              shadow-xl relative overflow-hidden"
+
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
             >
               {/* HEADER */}
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
@@ -496,13 +513,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 {/* WITH IMAGES */}
                 {tempImages.length > 0 && (
                   <>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                       {/* LARGE IMAGE */}
                       <div className="col-span-2 relative">
                         <img
                           src={URL.createObjectURL(tempImages[0])}
-                          className="w-full h-[350px] object-cover rounded-xl"
+                          className="w-full h-[220px] sm:h-[350px] object-cover rounded-xl"
+
                         />
 
                         <button
@@ -523,7 +541,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                           <div key={index} className="relative group">
                             <img
                               src={URL.createObjectURL(img)}
-                              className="w-full h-[165px] object-cover rounded-xl"
+                              className="w-full h-[120px] sm:h-[165px] object-cover rounded-xl"
+
                             />
 
                             <button
@@ -581,7 +600,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       =============================== */}
       {confirmCloseOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
-          <div className="bg-white p-6 rounded-lg w-[360px] shadow-lg relative">
+          <div className="bg-white p-6 rounded-lg w-[90vw] sm:w-[360px] shadow-lg relative">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
               onClick={() => setConfirmCloseOpen(false)}
@@ -597,7 +616,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               Your changes will be lost if you don't save.
             </p>
 
-            <div className="flex justify-end gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+
               <button
                 className="px-4 py-2 bg-gray-200 rounded-lg"
                 onClick={() => {

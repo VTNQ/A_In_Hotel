@@ -19,7 +19,7 @@ function App() {
         <Route path='/Dashboard' element={<MainLayout />}>
           <Route index element={<HomePage />} />
           <Route path="facility/service" element={<ViewExtraServicePage/>} />
-          <Route path='facility/categorie' element={<ViewCategoryPage/>}/>
+          <Route path='facility/category' element={<ViewCategoryPage/>}/>
           <Route path='facility/room' element={<ViewRoomPage/>}/>
           <Route path='facility/asset' element={<ViewAssetPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
