@@ -29,7 +29,7 @@ const CategoryFormModal = ({
                 Object.entries({
                     name: formData.name,
                     type: formData.type,
-                    description:formData.description
+                    description: formData.description
                 }).map(([key, value]) => [
                     key,
                     value?.toString().trim() === "" ? null : value,
@@ -44,7 +44,7 @@ const CategoryFormModal = ({
             setFormData({
                 name: "",
                 type: "",
-                description:""
+                description: ""
             });
             onSuccess();
         } catch (err: any) {
@@ -64,7 +64,7 @@ const CategoryFormModal = ({
         setFormData({
             name: "",
             type: "",
-            description:""
+            description: ""
         })
         onClose();
     }
@@ -76,11 +76,12 @@ const CategoryFormModal = ({
             onSave={handleSave}
             saveLabel={loading ? "Saving..." : "Save"}
             cancelLabel="Cancel"
+            width="w-[95vw] sm:w-[600px] lg:w-[800px]"
         >
-            <h3 className="text-[18px] font-semibold text-[#000000] mb-3">
+            <h3 className="text-base sm:text-[18px] font-semibold text-[#000000] mb-3">
                 Category Information
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                         Category Name *
@@ -91,7 +92,14 @@ const CategoryFormModal = ({
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Enter service name"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border 
+                        border-[#4B62A0] 
+                        focus:border-[#3E5286] 
+                        rounded-lg 
+                        p-2.5
+                        text-sm
+                        sm:text-base
+                        outline-none"
                         required
                     />
                 </div>
@@ -103,7 +111,14 @@ const CategoryFormModal = ({
                         name="type"
                         value={formData.type}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border 
+                        border-[#4B62A0] 
+                        focus:border-[#3E5286] 
+                        rounded-lg 
+                        p-2.5
+                        text-sm
+                        sm:text-base
+                        outline-none"
                         required
                     >
                         <option value="">Select type</option>
@@ -121,8 +136,15 @@ const CategoryFormModal = ({
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Short description"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
-                        rows={1}
+                        className="w-full border 
+                        border-[#4B62A0] 
+                        focus:border-[#3E5286] 
+                        rounded-lg 
+                        p-2.5
+                        text-sm
+                        sm:text-base
+                        outline-none"
+                        rows={3}
                     />
                 </div>
             </div>

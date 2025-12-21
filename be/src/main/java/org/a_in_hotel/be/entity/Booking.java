@@ -75,6 +75,13 @@ public class Booking {
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @Column(name = "checked_in_at")
+    private OffsetDateTime checkedInAt;
+
+    @Column(name = "checked_out_at")
+    private OffsetDateTime checkedOutAt;
+
+
     @PrePersist
     public void prePersist() {
         if(this.code == null || this.code.isEmpty()) {

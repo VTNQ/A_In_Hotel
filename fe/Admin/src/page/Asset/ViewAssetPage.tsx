@@ -28,7 +28,7 @@ const ViewAssetPage = () => {
     const [categoryFilter, setCategoryFilter] = useState("");
     const [sortKey, setSortKey] = useState<string>("id");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    const [showViewModal, setShowViewModal]=useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
     const handleEdit = (row: any) => {
         setSelectedAsset(row.id);
         setShowUpdateModal(true);
@@ -53,7 +53,7 @@ const ViewAssetPage = () => {
     const handleView = (row: any) => {
         setSelectedAsset(row.id);
         setShowViewModal(true);
-      };
+    };
     const handleActive = async (row: any) => {
         try {
             setLoading(true);
@@ -98,7 +98,7 @@ const ViewAssetPage = () => {
             )
         );
         try {
-            const response=await updateStatus(row.id,newStatus);
+            const response = await updateStatus(row.id, newStatus);
             if (response?.data?.status !== "success") {
                 throw new Error("Update failed");
             }
@@ -117,27 +117,27 @@ const ViewAssetPage = () => {
 
     }
     const columns = [
-        { key: "assetCode", label: "Asset ID" ,sortable: true },
+        { key: "assetCode", label: "Asset ID", sortable: true },
         {
             key: "icon",
             label: "Icon",
             render: (row: any) => (
-              <img
-                src={row.thumbnail!=null
-                  ? File_URL + row.thumbnail?.url
-                  : "/default.webp"
-                }
-                // hiển thị ảnh đầu tiên
-                alt={row.serviceName}
-                width="80"
-                height="60"
-                style={{ objectFit: "cover", borderRadius: 8 }}
-              />
+                <img
+                    src={row.thumbnail != null
+                        ? File_URL + row.thumbnail?.url
+                        : "/default.webp"
+                    }
+                    // hiển thị ảnh đầu tiên
+                    alt={row.serviceName}
+                    width="80"
+                    height="60"
+                    style={{ objectFit: "cover", borderRadius: 8 }}
+                />
             ),
-          },
+        },
         { key: "assetName", label: "Asset Name" },
-        { key: "roomNumber", label: "Room",sortable: true,sortKey:"room.roomNumber" },
-        { key: "categoryName", label: "Category",sortable: true },
+        { key: "roomNumber", label: "Room", sortable: true, sortKey: "room.roomNumber" },
+        { key: "categoryName", label: "Category", sortable: true },
         {
             key: "price",
             label: "Price",
@@ -145,21 +145,21 @@ const ViewAssetPage = () => {
                 `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
             sortable: true
         },
-        { key: "quantity", label: "Quantity",sortable:true },
-    
+        { key: "quantity", label: "Quantity", sortable: true },
 
-        { key: "createdAt", label: "Created Date" ,sortable: true},
-        { key: "updatedAt", label: "Last Updated Date",sortable: true },
+
+        { key: "createdAt", label: "Created Date", sortable: true },
+        { key: "updatedAt", label: "Last Updated Date", sortable: true },
         {
-            key:"note",
-            label:"Note",
+            key: "note",
+            label: "Note",
             render: (row: any) => (
                 <span title={row.note}>
-                  {row.note?.length > 50
-                    ? row.note.substring(0, 50) + "..."
-                    : row.note || "No note"}
+                    {row.note?.length > 50
+                        ? row.note.substring(0, 50) + "..."
+                        : row.note || "No note"}
                 </span>
-              ),
+            ),
         },
         {
             key: "action",
@@ -168,7 +168,7 @@ const ViewAssetPage = () => {
                 <AssetActionMenu
                     asset={row}
                     onEdit={() => handleEdit(row)}
-                    onView={()=>handleView(row)}
+                    onView={() => handleView(row)}
                     onActivate={() => handleActive(row)}
                     onDeactivate={() => handleDeActived(row)}
                     onMaintenance={() => handleMaintenance(row)}
@@ -248,7 +248,7 @@ const ViewAssetPage = () => {
             },
         },
     ]
-   
+
     const fetchCategory = async () => {
         try {
             const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "3", filter: "isActive==1" });
@@ -307,67 +307,63 @@ const ViewAssetPage = () => {
     };
     return (
         <div className="flex flex-col flex-1 bg-gray-50">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-700">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
                     Amenties & Asset Tracking
                 </h1>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
+                    className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
                 >
                     + New Asset
                 </button>
             </div>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-                <div className="relative">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
+                <div className="relative w-full lg:w-[320px]">
                     <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
                         placeholder="Search by Asset ID, Asset Name"
-                        className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-82 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
+                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
                     <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
                         Status
                     </div>
-                    <div className="relative flex-1">
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
-                        >
-                            <option value="">All</option>
-                            <option value="1">GOOD</option>
-                            <option value="2">MAINTENANCE</option>
-                            <option value="3">BROKEN</option>
-                            <option value="4">DEACTIVATED</option>
-                        </select>
-                    </div>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+                    >
+                        <option value="">All</option>
+                        <option value="1">GOOD</option>
+                        <option value="2">MAINTENANCE</option>
+                        <option value="3">BROKEN</option>
+                        <option value="4">DEACTIVATED</option>
+                    </select>
                 </div>
-                <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm whitespace-nowrap">
+                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
+                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
                         Category
                     </div>
-                    <div className="relative flex-1">
-                        <select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
-                        >
-                            <option value="">All</option>
-                            {categories.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+                    >
+                        <option value="">All</option>
+                        {categories.map((item) => (
+                            <option key={item.id} value={item.id}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-                
+
+
             </div>
             <AssetFormModal
                 isOpen={showModal}

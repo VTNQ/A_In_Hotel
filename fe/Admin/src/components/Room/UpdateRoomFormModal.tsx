@@ -161,9 +161,9 @@ const UpdateRoomFormModal = ({
                 ...formData,
                 oldImages: cleanOldImages,
             };
-    
+
             const response = await updateRoom(Number(roomId), cleanFormData);
-                
+
             showAlert({
                 title: response?.data?.message || "Room updated successfully!",
                 type: "success",
@@ -197,7 +197,7 @@ const UpdateRoomFormModal = ({
                 title="Edit Room"
                 saveLabel="Save"
                 cancelLabel="Cancel"
-                width="w-[1000px]"
+                width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -212,12 +212,12 @@ const UpdateRoomFormModal = ({
                 onClose={handleCancel}
                 onSave={handleUpdate}
                 title="Edit Room"
-                width="w-[1000px]"
+                width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
                 saveLabel={loading ? "Saving..." : "Save Changes"}
                 cancelLabel="Cancel"
             >
 
-                <div className="grid grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
 
                     {/* LEFT SIDE FORM */}
                     <div className="space-y-5">
@@ -246,7 +246,7 @@ const UpdateRoomFormModal = ({
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block mb-1 font-medium">Room Name *</label>
                                 <input
@@ -313,16 +313,17 @@ const UpdateRoomFormModal = ({
                             <textarea
                                 name="note"
                                 value={formData.note}
-                                rows={4}
                                 onChange={handleChange}
-                                className="w-full border border-[#253150] bg-[#EEF0F7] rounded-lg p-2"
+                                placeholder="Add any notes (e.g. near window, pool view)"
+                                className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+                                rows={4}
                             />
                         </div>
                     </div>
 
                     {/* RIGHT SIDE */}
                     <div className="space-y-5">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block mb-1 font-medium">Price (VND)*</label>
                                 <input
@@ -374,7 +375,8 @@ const UpdateRoomFormModal = ({
 
                             <div
                                 onClick={() => setImageModalOpen(true)}
-                                className="mt-2 border border-[#F2F2F2] rounded-xl bg-gray-50 p-6 cursor-pointer flex items-center justify-center h-64"
+                                className="mt-2 border border-[#F2F2F2] rounded-xl bg-gray-50 p-4 sm:p-6 cursor-pointer flex items-center justify-center 
+                                min-h-[200px] sm:h-64"
                             >
                                 {tempImages.length === 0 ? (
                                     <img
@@ -382,7 +384,7 @@ const UpdateRoomFormModal = ({
                                         className="w-[180px] h-[130px] opacity-50"
                                     />
                                 ) : (
-                                    <div className="grid grid-cols-3 gap-3 w-full h-full">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full h-full">
                                         {tempImages.map((img, i) => (
                                             <img
                                                 key={i}
@@ -411,14 +413,15 @@ const UpdateRoomFormModal = ({
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-white w-[900px] rounded-2xl p-8 shadow-xl relative"
+                            className="bg-white w-[95vw] sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl relative
+                            overflow-hidden"
                             initial={{ scale: 0.9 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.9 }}
                         >
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-6">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
                                 <button
                                     className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                                     onClick={() => {
@@ -509,7 +512,7 @@ const UpdateRoomFormModal = ({
                                 {/* HAS IMAGES */}
                                 {tempImages.length > 0 && (
                                     <>
-                                        <div className="grid grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                                             {/* MAIN IMAGE */}
                                             <div className="col-span-2 relative">
@@ -519,7 +522,7 @@ const UpdateRoomFormModal = ({
                                                             ? tempImages[0]
                                                             : URL.createObjectURL(tempImages[0])
                                                     }
-                                                    className="w-full h-[350px] object-cover rounded-xl"
+                                                    className="w-full h-[220px] sm:h-[350px] object-cover rounded-xl"
                                                 />
 
                                                 <button
@@ -544,7 +547,7 @@ const UpdateRoomFormModal = ({
                                                                     ? img
                                                                     : URL.createObjectURL(img)
                                                             }
-                                                            className="w-full h-[165px] object-cover rounded-xl"
+                                                            className="w-full h-[120px] sm:h-[165px] object-cover rounded-xl"
                                                         />
 
                                                         <button
@@ -592,7 +595,7 @@ const UpdateRoomFormModal = ({
                 )}
             </AnimatePresence>
 
-         
+
 
 
 

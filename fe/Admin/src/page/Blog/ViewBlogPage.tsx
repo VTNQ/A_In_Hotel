@@ -16,7 +16,7 @@ const ViewBlogPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [showViewModal,setShowViewModal]=useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
     const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -199,9 +199,9 @@ const ViewBlogPage = () => {
             render: (row: any) => (
                 <BlogActionMenu
                     blog={row}
-                    onView={()=>handleView(row)}
+                    onView={() => handleView(row)}
                     onEdit={() => handleEdit(row)}
-                    onRestore={()=>handleRestore(row)}
+                    onRestore={() => handleRestore(row)}
                     onPublish={() => handlePublish(row)}
                     onArchive={() => handleArchive(row)}
                 />
@@ -211,8 +211,8 @@ const ViewBlogPage = () => {
     ]
     return (
         <div className="flex flex-col flex-1 bg-gray-50">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-700">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
                     Blog Post
                 </h1>
                 <button
@@ -221,33 +221,31 @@ const ViewBlogPage = () => {
                     + New Blog
                 </button>
             </div>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-                <div className="relative">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
+                <div className="relative w-full lg:w-[320px]">
                     <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
                         placeholder="Search by Id,Title"
-                        className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-82 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
+                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
                     <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
                         Status
                     </div>
-                    <div className="relative flex-1">
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
-                        >
-                            <option value="">All</option>
-                            <option value="1">Draft</option>
-                            <option value="2">Published</option>
-                            <option value="3">Archived</option>
-                        </select>
-                    </div>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
+                    >
+                        <option value="">All</option>
+                        <option value="1">Draft</option>
+                        <option value="2">Published</option>
+                        <option value="3">Archived</option>
+                    </select>
                 </div>
             </div>
             {loading ? (
@@ -291,10 +289,10 @@ const ViewBlogPage = () => {
 
             />
             <ViewBlog
-            isOpen={showViewModal}
-            onClose={() => setShowViewModal(false)}
-            blogId={selectedBlog}
-        />
+                isOpen={showViewModal}
+                onClose={() => setShowViewModal(false)}
+                blogId={selectedBlog}
+            />
 
         </div>
     )

@@ -157,55 +157,49 @@ const ViewRoomPage = () => {
       label: "Image",
       render: (row: any) => (
         <img
-          src={row.images?.length > 0
-            ? File_URL + row.images[0].url
-            : "/default.webp"
-          }
-          // hiển thị ảnh đầu tiên
+          src={row.images?.length > 0 ? File_URL + row.images[0].url : "/default.webp"}
           alt={row.roomNumber}
-          width="80"
-          height="60"
-          style={{ objectFit: "cover", borderRadius: 8 }}
+          className="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded-lg"
         />
       ),
     },
     { key: "roomName", label: "Room Name" },
     { key: "roomTypeName", label: "Room Type", sortable: true },
     { key: "area", label: "Room Area", sortable: true },
-    { 
-      key: "hourlyBasePrice", 
-      label: "Price / First 2 Hours", 
+    {
+      key: "hourlyBasePrice",
+      label: "Price / First 2 Hours",
       sortable: true,
-      sortKey:"basePrice",
+      sortKey: "basePrice",
       render: (row: any) =>
         `${(row.hourlyBasePrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
-    
-    { 
-      key: "hourlyAdditionalPrice", 
-      label: "Price / Extra Hour", 
+
+    {
+      key: "hourlyAdditionalPrice",
+      label: "Price / Extra Hour",
       sortable: true,
-      sortKey:"additionalPrice",
+      sortKey: "additionalPrice",
       render: (row: any) =>
         `${(row.hourlyAdditionalPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
-    
-    { 
-      key: "overnightPrice", 
-      label: "Price / Overnight", 
-      sortKey:"overnightPrice",
+
+    {
+      key: "overnightPrice",
+      label: "Price / Overnight",
+      sortKey: "overnightPrice",
       sortable: true,
       render: (row: any) =>
         `${(row.overnightPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
-    
-    { 
-      key: "defaultRate", 
-      label: "Price / Full Day", 
+
+    {
+      key: "defaultRate",
+      label: "Price / Full Day",
       sortable: true,
       render: (row: any) =>
         `${(row.defaultRate ?? 0).toLocaleString("vi-VN")} VNĐ`,
-    },    
+    },
     { key: "floor", label: "Floor", sortable: true },
     { key: "capacity", label: "Capacity", sortable: true },
     { key: "createdAt", label: "Created Date", sortable: true },
@@ -262,51 +256,64 @@ const ViewRoomPage = () => {
   return (
     <div className="flex flex-col flex-1 bg-gray-50">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-700">Room</h1>
-        <button onClick={() => setShowModal(true)} className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+          Room
+        </h1>
+        <button
+          onClick={() => setShowModal(true)}
+          className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition"
+        >
           + New Room
         </button>
       </div>
 
+
       {/* Bộ lọc */}
-      <div className="flex flex-wrap items-center gap-3 mb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
+
         {/* Search */}
-        <div className="relative">
+        <div className="relative w-full lg:w-[300px]">
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
           <input
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
-            placeholder="Search by booking number, phone number"
-            className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-72 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            placeholder="Search by room number, room name"
+            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
 
+
         {/* Status */}
-        <div className="flex items-center border border-[#b0ddf3] rounded-lg overflow-hidden w-80">
-          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">Status</div>
-          <select value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)} className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none">
+        <div className="flex w-full lg:w-[260px] items-center border border-[#b0ddf3] rounded-lg overflow-hidden">
+          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">
+            Status
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+          >
             <option value="">All</option>
             <option value="1">Vacant - Dirty</option>
             <option value="2">Occupied</option>
             <option value="3">Available</option>
             <option value="4">Maintenance</option>
-            <option value="4">Blocked</option>
-            <option value="4">Deactivated</option>
+            <option value="5">Blocked</option>
+            <option value="6">Deactivated</option>
           </select>
         </div>
 
         {/* Room Type */}
-        <div className="flex items-center border border-[#C2C4C5] rounded-lg overflow-hidden w-80">
+        <div className="flex w-full lg:w-[260px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
           <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm whitespace-nowrap">
             Room Type
           </div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
+            className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
           >
             <option value="">All</option>
             {categories.map((item) => (
@@ -316,6 +323,7 @@ const ViewRoomPage = () => {
             ))}
           </select>
         </div>
+
 
 
       </div>

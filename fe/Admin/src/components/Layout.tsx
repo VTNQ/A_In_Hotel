@@ -13,6 +13,7 @@ const MainLayout = () => {
   const [authChecking, setAuthChecking] = useState(true);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   useAuthWatcher(setAuthChecking, setShowModal);
 
   if (authChecking) {
@@ -22,10 +23,20 @@ const MainLayout = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
 
-      <SideBar />
+      <SideBar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <div className="flex flex-col flex-1 overflow-hidden">
-        <TopBar />
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+         <TopBar onMenuClick={() => setSidebarOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-6 sm:p-4 md:p-6 bg-gray-50">
           <AlertProvider>
             <Outlet />
           </AlertProvider>
