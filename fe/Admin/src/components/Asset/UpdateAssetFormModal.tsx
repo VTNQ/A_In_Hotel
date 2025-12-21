@@ -162,6 +162,7 @@ const UpdateAssetFormModal = ({
                 title="Edit Amenities & Asset Tracking"
                 saveLabel="Save"
                 cancelLabel="Cancel"
+                 width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -177,10 +178,11 @@ const UpdateAssetFormModal = ({
             title="Edit Amenities & Asset Tracking"
             saveLabel={saving ? "Saving..." : "Save"}
             cancelLabel="Cancel"
+             width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
         >
                   <div className="mb-4">
                 <label className="block mb-1 font-medium text-[#253150]">Asset Icon</label>
-                <div className="relative w-32 h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
 
                     <input
                         type="file"
@@ -212,7 +214,7 @@ const UpdateAssetFormModal = ({
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]" >
                         Asset Name *
@@ -223,7 +225,7 @@ const UpdateAssetFormModal = ({
                         placeholder="Enter asset name"
                         value={formData.assetName}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
 
@@ -236,7 +238,7 @@ const UpdateAssetFormModal = ({
                         name="roomId"
                         value={formData.roomId}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
                         <option value="">Enter number room</option>
@@ -259,7 +261,7 @@ const UpdateAssetFormModal = ({
                         name="categoryId"
                         value={formData.categoryId}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
                         <option value="">Select Category</option>
@@ -284,7 +286,7 @@ const UpdateAssetFormModal = ({
                         placeholder="Enter room price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
 
@@ -299,13 +301,13 @@ const UpdateAssetFormModal = ({
                         placeholder="Enter quantity (e.g. 1)"
                         value={formData.quantity}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
 
                 </div>
 
-                <div >
+                <div className="sm:col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
                         Notes
                     </label>
@@ -315,7 +317,7 @@ const UpdateAssetFormModal = ({
                         onChange={handleChange}
                         placeholder="Add any notes (e.g. near window, pool view)"
                         className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
-                        rows={1}
+                        rows={2}
                     />
                 </div>
             </div>

@@ -29,7 +29,7 @@ const ExtraServiceFormModal = ({
     const fetchCategories = async () => {
         try {
             setLoading(true)
-            const res = await getAllCategory({ all:true, searchField: "type", searchValue: "2", filter: "isActive==1" });
+            const res = await getAllCategory({ all: true, searchField: "type", searchValue: "2", filter: "isActive==1" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)
@@ -64,25 +64,25 @@ const ExtraServiceFormModal = ({
             note: "",
             priceType: "1",
             extraCharge: "",
-            image:null,
+            image: null,
         })
         onClose();
     }
     const handleSave = async () => {
         setSaving(true);
         try {
-           const payload ={
-            serviceName: formData.serviceName.trim(),
-            price: Number(formData.price),
-            categoryId: Number(formData.categoryId),
-            unit: formData.unit.trim(),
-            description: formData.description.trim(),
-            isActive: true,
-            note: formData.note.trim(),
-            extraCharge: formData.extraCharge,
-            image:formData.image,
-            type:1
-           }
+            const payload = {
+                serviceName: formData.serviceName.trim(),
+                price: Number(formData.price),
+                categoryId: Number(formData.categoryId),
+                unit: formData.unit.trim(),
+                description: formData.description.trim(),
+                isActive: true,
+                note: formData.note.trim(),
+                extraCharge: formData.extraCharge,
+                image: formData.image,
+                type: 1
+            }
             const response = await addExtraService(payload);
 
             // ✅ response có thể là AxiosResponse hoặc đã unwrap data
@@ -106,7 +106,7 @@ const ExtraServiceFormModal = ({
                 note: "",
                 priceType: "1",
                 extraCharge: "",
-                image:null
+                image: null
             });
 
             onSuccess?.();
@@ -147,11 +147,14 @@ const ExtraServiceFormModal = ({
             onSave={handleSave}
             saveLabel={saving ? "Saving..." : "Save"}
             cancelLabel="Cancel"
+            width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
         >
-             <div className="mb-4">
-                <label className="block mb-1 font-medium text-[#253150]">Extra Service Icon</label>
-                <div className="relative w-32 h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+            <div className="mb-6 flex flex-col lg:items-start ">
+                <label className="block mb-2 font-medium text-[#253150]">
+                    Extra Service Icon
+                </label>
 
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
                     <input
                         type="file"
                         accept="image/*"
@@ -165,23 +168,15 @@ const ExtraServiceFormModal = ({
                             className="w-full h-full object-cover absolute inset-0"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <img
-                                src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
-                                className="w-full h-full object-cover absolute inset-0"
-                            />
-                        </div>
+                        <img
+                            src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
+                            className="w-full h-full object-cover absolute inset-0"
+                        />
                     )}
-
-                    <div className="absolute bottom-2 right-2 bg-[#4B62A0] p-2 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 5a3 3 0 110 6 3 3 0 010-6z" />
-                            <path d="M12 13c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5z" />
-                        </svg>
-                    </div>
                 </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Service Name */}
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
@@ -193,7 +188,7 @@ const ExtraServiceFormModal = ({
                         value={formData.serviceName}
                         onChange={handleChange}
                         placeholder="Enter service name"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
                 </div>
@@ -206,7 +201,7 @@ const ExtraServiceFormModal = ({
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Short description"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         rows={1}
                     />
                 </div>
@@ -218,7 +213,7 @@ const ExtraServiceFormModal = ({
                         name="categoryId"
                         value={formData.categoryId}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
                         <option value="">Select Category</option>
@@ -242,7 +237,7 @@ const ExtraServiceFormModal = ({
                         name="unit"
                         value={formData.unit}
                         onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
                         <option value="">Select Unit</option>
@@ -262,7 +257,7 @@ const ExtraServiceFormModal = ({
                         value={formData.price}
                         onChange={handleChange}
                         placeholder="Enter service price"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         min={0}
                         required
                     />
@@ -277,12 +272,12 @@ const ExtraServiceFormModal = ({
                         value={formData.extraCharge}
                         onChange={handleChange}
                         placeholder="Enter service extra charge"
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         min={0}
                         required
                     />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Note
                     </label>
@@ -295,6 +290,7 @@ const ExtraServiceFormModal = ({
                         rows={2}
                     />
                 </div>
+
             </div>
         </CommonModal>
     );

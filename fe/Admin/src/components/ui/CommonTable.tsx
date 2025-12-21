@@ -37,7 +37,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onSortChange,
 }) => {
   /** Xử lý sắp xếp */
-  const handleSort = (col :Column) => {
+  const handleSort = (col: Column) => {
     if (!onSortChange || !col.sortable) return;
 
     const keyToSort = col.sortKey ?? col.key;
@@ -51,22 +51,20 @@ const CommonTable: React.FC<CommonTableProps> = ({
   return (
     <div className="border border-gray-300 bg-white rounded-2xl shadow-sm mt-4 relative z-0">
       {/* ✅ Scroll ngang + cho phép dropdown tràn ra ngoài */}
-      <div className="overflow-x-auto overflow-y-visible relative custom-scroll">
-        <table className="min-w-[2200px] w-full text-sm text-gray-700 border-collapse relative z-0">
+      <div className="overflow-x-auto relative custom-scroll">
+        <table className="w-full min-w-[900px] lg:min-w-[1400px] text-sm text-gray-700">
           {/* Header */}
-          <thead className="sticky top-0 bg-[#536DB2] text-[#F2F2F2] uppercase text-xs font-semibold z-10">
+          <thead className="sticky top-0 bg-[#536DB2] text-[#F2F2F2] uppercase text-[10px] sm:text-xs font-semibold z-10">
             <tr>
               {columns.map((col, index) => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable && handleSort(col)}
-                  className={`px-4 py-3 text-center border-r border-[#6C80C2] ${
-                    index === 0 ? "rounded-tl-xl" : ""
-                  } ${
-                    index === columns.length - 1
+                  className={`px-4 py-3 text-center border-r border-[#6C80C2] ${index === 0 ? "rounded-tl-xl" : ""
+                    } ${index === columns.length - 1
                       ? "rounded-tr-xl border-r-0"
                       : ""
-                  } ${col.sortable ? "cursor-pointer select-none" : ""}`}
+                    } ${col.sortable ? "cursor-pointer select-none" : ""}`}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {col.label}
@@ -100,7 +98,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="px-4 py-4 text-center whitespace-nowrap relative z-auto"
+                      className="px-2 sm:px-4 py-3 text-center whitespace-nowrap"
                     >
                       {col.render ? col.render(row) : row[col.key]}
                     </td>
@@ -122,18 +120,18 @@ const CommonTable: React.FC<CommonTableProps> = ({
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center px-4 py-3 border-t border-gray-300 bg-gray-50 text-sm text-gray-600 rounded-b-2xl">
-        <p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 px-4 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-600 rounded-b-2xl">
+        <p className="text-center sm:text-left">
           Showing {(page - 1) * itemsPerPage + 1}–
           {Math.min(page * itemsPerPage, totalResults)} of {totalResults} results
         </p>
 
         {/* Nút phân trang */}
-        <div className="flex items-center gap-1">
+        <div className="flex justify-center items-center gap-1 flex-wrap">
           <button
             disabled={page === 1}
             onClick={() => onPageChange(page - 1)}
-            className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+            className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
           >
             ‹
           </button>
@@ -151,11 +149,10 @@ const CommonTable: React.FC<CommonTableProps> = ({
                 )}
                 <button
                   onClick={() => onPageChange(num)}
-                  className={`px-3 py-1 rounded-md ${
-                    num === page
+                  className={`px-3 py-1 rounded-md ${num === page
                       ? "bg-blue-100 text-blue-700 font-semibold"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
+                      : "hover:bg-gray-100"
+                    }`}
                 >
                   {num}
                 </button>
@@ -164,7 +161,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
           <button
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
-            className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+           className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
           >
             ›
           </button>

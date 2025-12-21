@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "booking_detail")
@@ -51,6 +52,15 @@ public class BookingDetail {
 
     @Column(name = "price", precision = 15, scale = 2)
     private BigDecimal price;
+
+    @Column(name = "start_at")
+    private OffsetDateTime startAt;
+
+    @Column(name = "end_at")
+    private OffsetDateTime endAt;
+
+    @Column(name = "active")
+    private Boolean active;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     @CreationTimestamp
