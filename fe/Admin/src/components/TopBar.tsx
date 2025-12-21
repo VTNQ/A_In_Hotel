@@ -1,11 +1,6 @@
 import { Bell, Menu } from "lucide-react";
 
 const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
-    const user = {
-        name: 'Thien Nguyen',
-        role: 'Admin',
-        avatar: '/asset/avatar.png'
-    }
     return (
         <header className="flex items-center justify-between h-14 bg-white border-b border-gray-200 px-4 sm:px-6">
             <button
