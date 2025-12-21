@@ -194,6 +194,6 @@ jobs:
   
             echo "=== 🔄 Restart docker-compose ==="
             docker-compose down
-            docker-compose up -d 
+            docker-compose up -d --build 
   
             echo "=== ✅ Deployment finished successfully ==="
