@@ -150,27 +150,28 @@ const ViewBooking = () => {
 
     return (
         <div className="flex flex-col flex-1 bg-gray-50">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-700">Room</h1>
-                <button className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">Booking</h1>
+                <button className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
                     + New Booking
                 </button>
             </div>
-            <div className="flex flex-wrap items-center gap-3 mb-5">
-                <div className="relative">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="relative w-full lg:w-[320px]">
                     <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
                         placeholder="Search by room number, name"
-                        className="pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg w-72 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex items-center border border-[#b0ddf3] rounded-lg overflow-hidden w-80">
+                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
                     <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">Status</div>
                     <select value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)} className="w-full py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none">
+                        onChange={(e) => setStatusFilter(e.target.value)} 
+                        className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none">
                         <option value="">All</option>
                         <option value="1">Draft</option>
                         <option value="2">Booked</option>
@@ -179,9 +180,9 @@ const ViewBooking = () => {
                         <option value="4">Cancelled</option>
                     </select>
                 </div>
-                <div className="flex items-center border border-[#b0ddf3] rounded-xl  h-10 w-80">
+                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
 
-                    <div className="bg-[#F1F2F3] px-3 text-gray-600 text-sm h-full flex items-center">
+                    <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm h-full flex items-center">
                         Booking Date
                     </div>
 

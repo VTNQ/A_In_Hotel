@@ -24,6 +24,7 @@ function App() {
           <Route path='facility/asset' element={<ViewAssetPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
           <Route path='staff' element={<ViewStaffPage/>}/>
+          <Route path='booking' element={<ViewBooking/>}/>
           <Route path='post/banner' element={<ViewBanner/>}/>
           <Route path='post/blog' element={<ViewBlogPage/>}/>
         </Route>
