@@ -22,14 +22,20 @@ const BookingSummary = ({
       </div>
 
       {/* Dates */}
-      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-        <div>
+      <div className="relative grid grid-cols-[3fr_2fr] text-sm mb-4">
+        {/* divider giữa – đặt theo đúng tỉ lệ */}
+        <div className="absolute inset-y-2 left-[45%] w-px bg-gray-200" />
+
+        {/* CHECK-IN (RỘNG HƠN) */}
+        <div className="flex flex-col justify-center pr-4 min-h-[48px]">
           <p className="text-gray-400 text-xs">CHECK-IN</p>
           <p className="font-medium text-gray-800">
             {bookingDate?.checkInDate || "--"}
           </p>
         </div>
-        <div>
+
+        {/* CHECK-OUT (HẸP HƠN) */}
+        <div className="flex flex-col justify-center pl-4 min-h-[48px]">
           <p className="text-gray-400 text-xs">CHECK-OUT</p>
           <p className="font-medium text-gray-800">
             {bookingDate?.checkOutDate || "--"}
@@ -37,8 +43,10 @@ const BookingSummary = ({
         </div>
       </div>
 
+
+
       {/* Guests */}
-      <div className="flex justify-between items-center mb-4 text-sm">
+      <div className="flex justify-between items-center mb-4 text-sm border-t pt-4 border-gray-200">
         <div className="flex items-center gap-2 text-gray-700">
           <Users className="w-4 h-4" />
           <span>
@@ -82,11 +90,10 @@ const BookingSummary = ({
         disabled={!room}
         onClick={onNext}
         className={`w-full mt-4 py-2 rounded-lg flex items-center justify-center gap-2
-        ${
-          room
+        ${room
             ? "bg-[#42578E] text-white"
             : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        }`}
+          }`}
       >
         Continue to Services →
       </button>
