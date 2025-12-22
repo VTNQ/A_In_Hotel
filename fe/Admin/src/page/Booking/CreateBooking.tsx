@@ -5,7 +5,7 @@ import StepBookingDateTime from "../../components/Booking/Create/StepBookingDate
 import StepRoomSelection from "../../components/Booking/Create/StepRoomSelection/StepRoomSelection";
 
 const CreateBooking = () => {
-    const { booking, updateBooking, clearBooking } = useBooking();
+    const { booking, updateBooking } = useBooking();
     const next = () => updateBooking({ step: booking.step + 1 });
     const back = () => updateBooking({ step: booking.step - 1 });
 
