@@ -10,6 +10,7 @@ import ViewStaffPage from './page/Staff/ViewStaffPage'
 import ViewBlogPage from './page/Blog/ViewBlogPage'
 import ViewBooking from './page/Booking/ViewBooking'
 import ViewBanner from './page/Banner/ViewBanner'
+import CreateBooking from './page/Booking/CreateBooking'
 
 function App() {
   return(
@@ -25,6 +26,7 @@ function App() {
           <Route path='booking' element={<ViewBooking/>}/>
           <Route path='staff' element={<ViewStaffPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
+          <Route path='booking/create' element={<CreateBooking/>}/>
           <Route path='post/banner' element={<ViewBanner/>}/>
           <Route path='post/blog' element={<ViewBlogPage/>}/>
         </Route>

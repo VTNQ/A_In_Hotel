@@ -27,6 +27,7 @@ public class RoomResponse {
     private BigDecimal defaultRate;
     private Integer floor;
     private Double area;
+    private List<AssetResponse> assets;
     private String note;
     private List<ImageResponse> images;
     private BigDecimal hourlyBasePrice;
