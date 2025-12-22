@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.dto.response.RoomResponse;
+import org.a_in_hotel.be.entity.Asset;
 import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.exception.ErrorHandler;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -165,19 +167,64 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all,
-                                          List<String> searchFields) {
+    public Page<RoomResponse> getListRoom(
+            Integer page,
+            Integer size,
+            String sort,
+            String filter,
+            String searchField,
+            String searchValue,
+            boolean all,
+            List<String> searchFields
+    ) {
         try {
             log.info("start to get list room");
-            Specification<Room> sortable= RSQLJPASupport.toSort(sort);
-            Specification<Room>filterable= RSQLJPASupport.toSpecification(filter);
-            Specification<Room>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,searchFields);
-            Pageable pageable= all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-            return roomRepository.findAll(sortable.and(filterable).and(searchable),pageable).map(roomMapper::toResponse);
-        }catch (Exception e){
-            log.error("get list room error : {}",e.getMessage());
-            e.printStackTrace();
-            return null;
+
+            Specification<Room> sortable = RSQLJPASupport.toSort(sort);
+            Specification<Room> filterable = RSQLJPASupport.toSpecification(filter);
+            Specification<Room> searchable =
+                    SearchHelper.buildSearchSpec(searchField, searchValue, searchFields);
+
+            Pageable pageable = all
+                    ? Pageable.unpaged()
+                    : PageRequest.of(page - 1, size);
+
+            // 1️⃣ Query rooms
+            Page<Room> roomPage =
+                    roomRepository.findAll(
+                            sortable.and(filterable).and(searchable),
+                            pageable
+                    );
+
+            // 2️⃣ Collect assetIds
+            List<Long> assetIds = roomPage.getContent().stream()
+                    .flatMap(room -> room.getAssets().stream())
+                    .map(Asset::getId)
+                    .toList();
+
+            // 3️⃣ Batch load images
+            Map<Long, Image> imageMap = roomImageRepository
+                    .findByEntityTypeAndEntityIdIn("Asset", assetIds)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            Image::getEntityId,
+                            img -> img,
+                            (a, b) -> a // nếu trùng, lấy cái đầu
+                    ));
+
+            // 4️⃣ Set thumbnail cho asset
+            roomPage.getContent().forEach(room ->
+                    room.getAssets().forEach(asset ->
+                            asset.setThumbnail(imageMap.get(asset.getId()))
+                    )
+            );
+
+            // 5️⃣ Map to response
+            return roomPage.map(roomMapper::toResponse);
+
+        } catch (Exception e) {
+            log.error("get list room error", e);
+            return Page.empty();
         }
     }
 
