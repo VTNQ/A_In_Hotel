@@ -217,3 +217,21 @@ export interface ViewCategoryProps {
     onClose: () => void;
     categoryId: any;
 }
+
+export interface SelectOption {
+    label:string;
+    value:string;
+}
+
+export interface SelectProps {
+    label?: string;
+    value?: string;
+    options: SelectOption[];
+    placeholder?: string;
+    onChange: (value: string)=>void;
+}
+
+export interface ImageResponse {
+    url:string;
+    altText:string;
+}
