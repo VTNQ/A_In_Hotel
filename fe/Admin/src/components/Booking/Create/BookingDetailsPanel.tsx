@@ -10,22 +10,35 @@ const PACKAGE_OPTIONS = [
 ];
 
 const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
-    const isAutoTimePackage = form.package === "2" ||
-        form.package === "3";
-    console.log(isAutoTimePackage);
+    const isAutoTimePackage =
+        form.package === "2" || form.package === "3";
+
+    // 🔹 AUTO SET TIME THEO PACKAGE
     useEffect(() => {
         if (PACKAGE_TIME_MAP[form.package]) {
             const time = PACKAGE_TIME_MAP[form.package];
             onChange("checkInTime", time.checkIn);
             onChange("checkOutTime", time.checkOut);
         }
-    }, [form.package]);
+    }, [form.package, onChange]);
+
+    // 🔹 AUTO SET PACKAGE = FULL DAY KHI nights >= 1
+    useEffect(() => {
+        if (!form.checkInDate || !form.checkOutDate) return;
+
+        if (nights >= 1 && form.package !== "3") {
+            onChange("package", "3"); // ✅ ĐÚNG
+        }
+    }, [nights, form.checkInDate, form.checkOutDate, form.package, onChange]);
+
     return (
         <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
             <h3 className="font-semibold text-gray-800">
                 Booking Details
             </h3>
+
             <Input label="Check-in Date" value={form.checkInDate} readOnly />
+
             <Input
                 label="Check-in Time"
                 type="time"
@@ -35,7 +48,9 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                     onChange("checkInTime", e.target.value)
                 }
             />
+
             <Input label="Check-out Date" value={form.checkOutDate} readOnly />
+
             <Input
                 label="Check-out Time"
                 type="time"
@@ -45,12 +60,17 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                     onChange("checkOutTime", e.target.value)
                 }
             />
+
             <Select
                 label="Booking Package"
                 value={form.package}
-                options={PACKAGE_OPTIONS}
+                options={PACKAGE_OPTIONS.filter((opt) => {
+                    if (opt.value === "2" && nights <= 1) return false; // hide Overnight
+                    return true;
+                })}
                 onChange={(v) => onChange("package", v)}
             />
+
             <div className="grid grid-cols-2 gap-3">
                 <Input
                     label="Adults"
@@ -61,6 +81,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                         onChange("adults", Number(e.target.value))
                     }
                 />
+
                 <Input
                     label="Children"
                     type="number"
@@ -71,6 +92,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                     }
                 />
             </div>
+
             <div className="border-t border-gray-200 pt-4 text-sm">
                 <div className="flex justify-between">
                     <span>Duration</span>
@@ -80,6 +102,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
 export default BookingDetailsPanel;

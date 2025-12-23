@@ -17,7 +17,7 @@ public class BookingDetailRequest {
 
     private Long extraServiceId;
 
-    private Integer quantity;
+
 
     private BigDecimal price;
 

@@ -20,7 +20,7 @@ public interface CheckOutExtraMapper {
             @Mapping(target = "extraServiceName", ignore = true),
 
             @Mapping(target = "price", source = "req.price"),
-            @Mapping(target = "quantity", source = "req.quantity"),
+
 
             @Mapping(target = "createdBy", source = "userId"),
             @Mapping(target = "updatedBy", source = "userId")
