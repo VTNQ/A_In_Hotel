@@ -4,11 +4,12 @@ import calculateRoomPrice from "./CalculateRoomPrice";
 import RoomAmenities from "./RoomAmenities";
 
 const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
-  const { price, label } = calculateRoomPrice({
+  const priceInfo = calculateRoomPrice({
     packageType,
     room,
   });
 
+console.log(priceInfo)
   return (
     <div
       className={`rounded-2xl border p-4 shadow-sm
@@ -35,9 +36,9 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
 
             <div className="text-right">
               <div className="text-xl font-semibold text-[#536DB2]">
-                ${price}
+                ${priceInfo.price}
               </div>
-              <div className="text-xs text-gray-500">{label}</div>
+              <div className="text-xs text-gray-500">{priceInfo.label}</div>
             </div>
           </div>
 
@@ -58,7 +59,13 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
               View Photos
             </button>
             <button
-              onClick={onSelect}
+             onClick={() =>
+          onSelect({
+            ...room,
+            price: priceInfo.price,
+            priceLabel: priceInfo.label,
+          })
+        }
               className={`px-4 py-2 rounded-lg text-sm
               ${selected
                   ? "bg-[#42578E] text-white"

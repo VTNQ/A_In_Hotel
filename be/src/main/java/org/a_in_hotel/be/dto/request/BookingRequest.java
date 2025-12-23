@@ -46,7 +46,6 @@ public class BookingRequest {
 
     private Integer BookingPackage;
 
-    private Integer status;
 
     private List<BookingDetailRequest> bookingDetail;
 

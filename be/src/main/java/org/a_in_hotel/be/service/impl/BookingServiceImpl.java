@@ -320,7 +320,7 @@ public class BookingServiceImpl implements BookingService {
         extra.setExtraServiceName(service.getServiceName());
 
         extra.setPrice(surchargePrice);
-        extra.setQuantity(1);
+
         extra.setSpecialRequests(reason);
         extra.setCreatedBy(securityUtils.getCurrentUserId().toString());
 
@@ -448,8 +448,9 @@ public class BookingServiceImpl implements BookingService {
 
     private BigDecimal calculateExtraTotal(Booking booking) {
         return booking.getDetails().stream()
-                .filter(d -> d.getExtraServiceName() != null)
-                .map(d -> d.getPrice().multiply(BigDecimal.valueOf(d.getQuantity())))
+                .filter(d -> d.getExtraService().getId() != null)
+                .map(BookingDetail::getPrice)
+                .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

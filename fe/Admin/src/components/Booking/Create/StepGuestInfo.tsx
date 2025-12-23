@@ -6,7 +6,7 @@ import Select from "../../ui/Select";
 import { GUEST_TYPE_OPTIONS } from "../../../type/booking.types";
 import TextArea from "../../ui/TextArea";
 
-const StepGuestInfo = ({ data, onNext }: any) => {
+const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
     const [form, setForm] = useState({
         firstName: "",
         lastName: "",
@@ -22,6 +22,7 @@ const StepGuestInfo = ({ data, onNext }: any) => {
     const update = (key: string, value: string) => {
         setForm((prev: any) => ({ ...prev, [key]: value }));
     }
+
     const isValid =
         form.firstName.trim() !== "" &&
         form.lastName.trim() !== "" &&
@@ -35,7 +36,7 @@ const StepGuestInfo = ({ data, onNext }: any) => {
                 Guest Information
             </h2>
             <p className="text-sm text-gray-500 mb-6">
-                Step 1 of 4: Please enter the primary guest’s details to initialize the booking.
+                Step 1 of 5: Please enter the primary guest’s details to initialize the booking.
             </p>
 
             <SectionHeader
@@ -46,7 +47,7 @@ const StepGuestInfo = ({ data, onNext }: any) => {
                 <Input
                     label="First Name"
                     placeholder="e.g. Jonathan"
-                     error={!form.firstName ? "First name is required" : ""}
+
                     value={form.firstName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         update("firstName", e.target.value)}
@@ -55,15 +56,16 @@ const StepGuestInfo = ({ data, onNext }: any) => {
                     label="Last Name"
                     placeholder="e.g. Doe"
                     value={form.lastName}
-                      error={!form.lastName ? "Last name is required" : ""}
+
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         update("lastName", e.target.value)}
                 />
 
                 <Input
+                    type="number"
                     label="ID / Passport Number"
                     placeholder="Enter ID number"
-                     error={!form.idNumber ? "ID number is required" : ""}
+
                     value={form.idNumber}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         update("idNumber", e.target.value)}
@@ -82,18 +84,20 @@ const StepGuestInfo = ({ data, onNext }: any) => {
             />
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <Input
+                    type="email"
                     label="Email Address"
                     placeholder="name@example.com"
                     value={form.email}
-                     error={!form.email ? "Email is required" : ""}
+
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         update("email", e.target.value)}
                 />
                 <Input
+                    type="tel"
                     label="Phone Number"
                     placeholder="+1 (555) 000-0000"
                     value={form.phone}
-                    error={!form.idNumber ? "Phone is required" : ""}
+
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         update("phone", e.target.value)}
                 />
@@ -111,13 +115,19 @@ const StepGuestInfo = ({ data, onNext }: any) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => update("note", e.target.value)}
             />
             <div className="flex justify-end gap-3 mt-6">
-
+                <button
+                    onClick={onCancel}
+                    className="px-4 py-2 rounded-lg 
+                        bg-[#F2F2F2] text-[#4B4B4B]"
+                >
+                    Cancel
+                </button>
                 <button
                     disabled={!isValid}
                     onClick={() => onNext(form)}
                     className={`px-5 py-2 rounded-lg transition ${isValid
-                            ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
-                            : "bg-gray-300 text-gray-400 cursor-not-allowed"
+                        ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
+                        : "bg-gray-300 text-gray-400 cursor-not-allowed"
                         }`}
                 >
                     Next: Booking Date & Time →

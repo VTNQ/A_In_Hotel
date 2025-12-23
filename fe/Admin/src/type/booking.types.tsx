@@ -1,25 +1,35 @@
 export interface Booking {
-    step: number;
-    guest: any;
-    selectDate: any;
-    rooms: any[];
-    payment: any;
+  step: number;
+  guest: {
+    adults?: number;
+    children?: number;
+  };
+  selectDate: {
+    checkInDate?: string;
+    checkOutDate?: string;
+    nights?: number;
+    days?: number;
+    package?: string;
+  };
+  services: any[];
+  rooms: any[];
+  payment: any;
 }
 export interface CalendarRangeProps {
-    value: {
+  value: {
     start?: string;
     end?: string;
   };
   onChange: (range: { start?: string; end?: string }) => void;
 }
 export interface SectionHeaderProps {
-    title: string;
-    icon: React.ReactNode;
+  title: string;
+  icon: React.ReactNode;
 }
 export const GuestType = {
-  INDIVIDUAL: "INDIVIDUAL",
-  COMPANY: "COMPANY",
-  VIP: "VIP",
+  INDIVIDUAL: "1",
+  COMPANY: "2",
+  VIP: "3",
 } as const;
 
 export type GuestType = typeof GuestType[keyof typeof GuestType];
@@ -34,9 +44,9 @@ export interface BookingDateTime {
   checkInDate?: string;
   checkOutDate?: string;
   checkInTime?: string;
-  checkOutTime?:string;
-  package?:string;
-  adults:number;
+  checkOutTime?: string;
+  package?: string;
+  adults: number;
 }
 export const PACKAGE_TIME_MAP: Record<string, { checkIn: string; checkOut: string }> = {
   "2": {

@@ -16,3 +16,8 @@ export const GetAllBookings = async(options:GetAllOptions={})=>{
     });
     return resp.data.data;
 }
+
+export const createBooking =async(booking:any)=>{
+    return await Http.post("/api/bookings",booking);
+
+}

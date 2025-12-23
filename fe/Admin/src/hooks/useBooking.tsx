@@ -14,6 +14,7 @@ const DEFAULT: BookingWithTime = {
   selectDate: {},
   rooms: [],
   payment: {},
+  services: [],
   updatedAt: Date.now(),
 };
 

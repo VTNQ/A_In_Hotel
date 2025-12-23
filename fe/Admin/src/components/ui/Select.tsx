@@ -52,7 +52,7 @@ const Select = ({
                                 onChange(o.value)
                                 setOpen(false)
                             }}
-                            className={`px-3 py-2 cursor-pointer hover:bg-[#536DB2]
+                            className={`px-3 py-2 cursor-pointer hover:bg-[#536DB2] hover:text-white
                             ${o.value === value ?
                                     "bg-[#536DB2] text-white" :
                                     ""}`}

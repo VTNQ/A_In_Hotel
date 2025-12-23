@@ -23,9 +23,6 @@ public interface BookingMapper extends CommonMapper {
                     expression = "java( request.getBookingPackage() != null ? BookingPackage.getBookingPackage"
                                  + "(request.getBookingPackage()).getCode() : null )"),
 
-            @Mapping(target = "status",
-                    expression = "java( request.getStatus() != null ? BookingStatus.fromCode(request.getStatus())"
-                                 + ".getCode() : null )"),
             @Mapping(target = "createdBy", source = "userId"),
             @Mapping(target = "updatedBy", source = "userId")
     })

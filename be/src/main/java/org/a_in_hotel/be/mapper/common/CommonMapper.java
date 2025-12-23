@@ -2,6 +2,7 @@ package org.a_in_hotel.be.mapper.common;
 
 import org.a_in_hotel.be.Enum.BookingPackage;
 import org.a_in_hotel.be.Enum.PriceType;
+import org.a_in_hotel.be.Enum.UnitExtraService;
 import org.a_in_hotel.be.dto.request.BookingDetailRequest;
 import org.a_in_hotel.be.dto.request.RoomRequest;
 import org.a_in_hotel.be.dto.response.ImageResponse;
@@ -21,6 +22,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public interface CommonMapper {
@@ -185,6 +187,27 @@ public interface CommonMapper {
             );
         }
     }
+    private BigDecimal calculateExtraServicePrice(
+            ExtraService extraService,
+            Booking booking
+    ) {
+        BigDecimal basePrice = extraService.getPrice();
+        UnitExtraService unit = extraService.getUnit();
+
+        long nights = ChronoUnit.DAYS.between(
+                booking.getCheckInDate(),
+                booking.getCheckOutDate()
+        );
+        if (nights <= 0) nights = 1;
+
+        long days = nights + 1;
+
+        return switch (unit) {
+            case PERNIGHT -> basePrice.multiply(BigDecimal.valueOf(nights));
+            case PERDAY -> basePrice.multiply(BigDecimal.valueOf(days));
+            case PERUSE, PERTRIP -> basePrice;
+        };
+    }
 
     default BigDecimal calculateCorrectPrice(
             BookingDetail detail,
@@ -193,9 +216,12 @@ public interface CommonMapper {
             @Context ExtraServiceRepository extraServiceRepository
             ) {
         if(detail.getExtraService() != null) {
-            ExtraService extraService = extraServiceRepository.
-                    getReferenceById(detail.getExtraService().getId());
-            return extraService.getPrice().multiply(BigDecimal.valueOf(detail.getQuantity()));
+            ExtraService extraService =
+                    extraServiceRepository.getReferenceById(
+                            detail.getExtraService().getId()
+                    );
+
+            return calculateExtraServicePrice(extraService, booking);
         }
 
         if(detail.getRoom()!=null){
@@ -235,7 +261,8 @@ public interface CommonMapper {
 
     default BigDecimal calculateTotalPrice(List<BookingDetail> details){
         return details.stream()
-                .map(d->d.getPrice().multiply(BigDecimal.valueOf(d.getQuantity())))
+                .map(BookingDetail::getPrice)
+                .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

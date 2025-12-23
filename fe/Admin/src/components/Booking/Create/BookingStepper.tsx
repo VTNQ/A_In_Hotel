@@ -1,4 +1,4 @@
-const steps = ["Guest Info","Booking Date & Time", "Rooms", "Payment", "Confirm"];
+const steps = ["Guest Info","Booking Date & Time", "Rooms","Services", "Payment"];
 
 const BookingStepper = ({ step }: { step: number }) => (
     <div className="flex mb-6">

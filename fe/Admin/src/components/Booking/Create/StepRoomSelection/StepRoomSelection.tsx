@@ -10,7 +10,7 @@ import RoomSearchFilter from "./RoomSearchFilter";
 const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
     const [rooms, setRooms] = useState<any[]>([])
     const [data, setData] = useState<any[]>([]);
-    const [selectedRoom, setSelectedRoom] = useState<any>(null);
+    const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [roomTypes, setRoomTypes] = useState<any[]>([]);
     const [roomType, setRoomType] = useState("");
@@ -25,9 +25,7 @@ const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
 
                 const filterQuery = filters.join(" and ");
                 const params = {
-                    page: 1,
-                    size: 10,
-
+                    all: true,
                     ...(filterQuery ? { filter: filterQuery } : {}),
 
                 };
@@ -50,6 +48,15 @@ const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
         };
         fetchData();
     }, []);
+    const toggleRoom = (room: any) => {
+        setSelectedRooms((prev) => {
+            const exists = prev.find((r) => r.id === room.id);
+            if (exists) {
+                return prev.filter((r) => r.id !== room.id);
+            }
+            return [...prev, room];
+        });
+    };
     useEffect(() => {
         const timer = setTimeout(async () => {
             try {
@@ -65,8 +72,7 @@ const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
                 const filterQuery = filters.join(" and ");
 
                 const params: any = {
-                    page: 1,
-                    size: 10,
+                    all: true,
                     ...(filterQuery ? { filter: filterQuery } : {}),
                     ...(search
                         ? {
@@ -121,13 +127,13 @@ const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
                                 key={room.id}
                                 room={room}
                                 packageType={booking.selectDate?.package}
-                                selected={selectedRoom?.id === room.id}
-                                onSelect={() => setSelectedRoom(room)}
+                                selected={selectedRooms.some(r => r.id === room.id)}
+                               onSelect={(roomWithPrice: any) => toggleRoom(roomWithPrice)}
                             />
                         ))}
                     </div>
                     <BookingSummary
-                        room={selectedRoom}
+                        rooms={selectedRooms}
                         bookingDate={booking.selectDate}
                         packageType={booking.selectDate?.package}
                         guests={{
@@ -135,7 +141,7 @@ const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
                             children: booking.selectDate?.children,
                         }}
                         onEditGuests={onBack}
-                        onNext={() => onNext({ room: selectedRoom })}
+                        onNext={() => onNext({ rooms: selectedRooms })}
                     />
 
                 </div>

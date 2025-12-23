@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.a_in_hotel.be.Enum.BookingStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -86,6 +87,9 @@ public class Booking {
     public void prePersist() {
         if(this.code == null || this.code.isEmpty()) {
             this.code = "A" + String.format("%04d", (int) (Math.random() * 9999));
+        }
+        if(this.status == null ){
+            this.status= BookingStatus.BOOKED.getCode();
         }
     }
 }
