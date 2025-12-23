@@ -2,17 +2,18 @@ import { CalendarDays, Users } from "lucide-react";
 import calculateRoomPrice from "./CalculateRoomPrice";
 
 const BookingSummary = ({
-  room,
+  rooms = [],
   bookingDate,
   guests,
   onNext,
   onEditGuests,
   packageType
 }: any) => {
-  const { price } = calculateRoomPrice({
-    packageType,
-    room,
-  });
+  const totalPrice = rooms.reduce((sum: number, room: any) => {
+    const { price } = calculateRoomPrice({ packageType, room });
+    return sum + price;
+  }, 0);
+
   return (
     <div className="rounded-2xl border border-gray-200 p-5 shadow-sm sticky top-6 bg-white">
       {/* Header */}
@@ -62,16 +63,24 @@ const BookingSummary = ({
       </div>
 
       {/* Room */}
-      {!room ? (
+      {rooms.length === 0 ? (
         <div className="text-sm text-gray-400 text-center py-4 bg-gray-50 rounded mb-4">
           No room selected yet
         </div>
       ) : (
-        <div className="flex justify-between text-sm font-medium mb-4">
-          <span>{room.roomName}</span>
-          <span>${price}</span>
+        <div className="space-y-2 mb-4">
+          {rooms.map((room: any) => {
+            const { price } = calculateRoomPrice({ packageType, room });
+            return (
+              <div key={room.id} className="flex justify-between text-sm font-medium">
+                <span>{room.roomName}</span>
+                <span>${price}</span>
+              </div>
+            );
+          })}
         </div>
       )}
+
 
       {/* Price */}
       <div className="border-t border-gray-200 pt-4 text-sm space-y-2">
@@ -81,22 +90,23 @@ const BookingSummary = ({
         </div>
         <div className="flex justify-between font-semibold text-gray-800">
           <span>Total</span>
-          <span>$0.00</span>
+            <span>${totalPrice}</span>
         </div>
       </div>
 
       {/* Button */}
       <button
-        disabled={!room}
+        disabled={rooms.length === 0}
         onClick={onNext}
-        className={`w-full mt-4 py-2 rounded-lg flex items-center justify-center gap-2
-        ${room
+        className={`w-full mt-4 py-2 rounded-lg
+  ${rooms.length
             ? "bg-[#42578E] text-white"
             : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
       >
         Continue to Services →
       </button>
+
 
       {/* Footer text */}
       <p className="text-xs text-gray-400 mt-2 text-center">

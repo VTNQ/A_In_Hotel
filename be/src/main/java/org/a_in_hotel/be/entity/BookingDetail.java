@@ -47,8 +47,6 @@ public class BookingDetail {
     @JoinColumn(name = "extra_service_id")
     private ExtraService extraService;
 
-    @Column(name = "quantity")
-    private Integer quantity;
 
     @Column(name = "price", precision = 15, scale = 2)
     private BigDecimal price;
