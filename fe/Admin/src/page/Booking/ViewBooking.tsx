@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import SimpleDatePicker from "../../components/ui/SimpleDatePicker";
 import BookingActionMenu from "../../components/Booking/BookingActionMenu";
+import { useNavigate } from "react-router-dom";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
@@ -18,6 +19,7 @@ const ViewBooking = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
+    const navigate = useNavigate();
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
@@ -41,7 +43,7 @@ const ViewBooking = () => {
             const params = {
                 page: pageNumber, sort: `${key},${order}`,
                 size: 10,
-                searchValue:searchValue,
+                searchValue: searchValue,
                 ...(filterQuery ? { filter: filterQuery } : {})
             }
             const res = await GetAllBookings(params);
@@ -59,7 +61,7 @@ const ViewBooking = () => {
     }
     useEffect(() => {
         fetchData();
-    }, [searchValue, statusFilter, sortKey, sortOrder,bookingDate]);
+    }, [searchValue, statusFilter, sortKey, sortOrder, bookingDate]);
 
     const columns = [
         { key: "code", label: "Booking Id", sortable: true },
@@ -111,7 +113,7 @@ const ViewBooking = () => {
 
                 // Map status code → label + màu sắc
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
-                  
+
                     1: { label: "Booked", color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
                     3: { label: "Checked-in", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
                     4: { label: "Checked-out", color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
@@ -139,12 +141,12 @@ const ViewBooking = () => {
             key: "action",
             label: "Action",
             render: (row: any) => (
-              <BookingActionMenu
-                booking={row}
-               
-              />
+                <BookingActionMenu
+                    booking={row}
+
+                />
             ),
-          },
+        },
 
     ]
 
@@ -152,7 +154,7 @@ const ViewBooking = () => {
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">Booking</h1>
-                <button className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
+                <button onClick={()=>navigate("/Dashboard/booking/create")} className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
                     + New Booking
                 </button>
             </div>
@@ -170,13 +172,13 @@ const ViewBooking = () => {
                 <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
                     <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">Status</div>
                     <select value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)} 
+                        onChange={(e) => setStatusFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none">
                         <option value="">All</option>
-                        <option value="1">Draft</option>
-                        <option value="2">Booked</option>
-                        <option value="3">Check-in</option>
-                        <option value="4">Check-out</option>
+
+                        <option value="1">Booked</option>
+                        <option value="2">Check-in</option>
+                        <option value="3">Check-out</option>
                         <option value="4">Cancelled</option>
                     </select>
                 </div>
