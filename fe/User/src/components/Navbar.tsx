@@ -49,7 +49,7 @@ export default function Navbar() {
             {/* <span>032 696 5110</span> */}
           </span>
           <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-            {[ "ROOM & SUITE","PROMOTION", "AIR BNB"].map((item, i) => (
+            {[ "A-IN HOTEL ▾","ROOM & SUITE","PROMOTION"].map((item, i) => (
               <a
                 key={i}
                 href="#"
@@ -84,7 +84,7 @@ export default function Navbar() {
 
         {/* RIGHT SECTION */}
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-          {[  "CAMPING","OUR PRODUCT", "Log in", "Sign up"].map(
+          {[ "AIR BNB", "CAMPING","OUR PRODUCT", "Log in", "Sign up"].map(
             (item, i) => (
               <a
                 key={i}
