@@ -40,16 +40,16 @@ export default function Navbar() {
               isScrolled ? "text-[#3A3125]" : "text-white"
             }`}
           >
-            <img
+            {/* <img
               src="image/Phone Rounded.png"
               alt="phone"
               className={`h-4 w-4 ${isScrolled ? "brightness-0 invert-[0.2]" : "brightness-200"
                 }`}
-            />
-            <span>032 696 5110</span>
+            /> */}
+            {/* <span>032 696 5110</span> */}
           </span>
           <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-            {["A-IN HOTEL ▾", "ROOM & SUITE", "AIR BNB"].map((item, i) => (
+            {[ "ROOM & SUITE","PROMOTION", "AIR BNB"].map((item, i) => (
               <a
                 key={i}
                 href="#"
@@ -84,7 +84,7 @@ export default function Navbar() {
 
         {/* RIGHT SECTION */}
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-          {["OUR PRODUCT", "PROMOTION", "CAMPING", "Log in", "Sign up"].map(
+          {[  "CAMPING","OUR PRODUCT", "Log in", "Sign up"].map(
             (item, i) => (
               <a
                 key={i}
