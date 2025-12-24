@@ -19,12 +19,16 @@ public interface BannerMapper extends CommonMapper {
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "startAt",source = "bannerRequest.startAt")
+    @Mapping(target = "endAt",source = "bannerRequest.endAt")
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
     Banner toEntity(BannerRequest bannerRequest,Long userId);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "startAt",source = "bannerRequest.startAt")
+    @Mapping(target = "endAt",source = "bannerRequest.endAt")
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", source = "userId")
     void updateEntityFromDto(BannerRequest bannerRequest, @MappingTarget Banner banner,Long userId);
