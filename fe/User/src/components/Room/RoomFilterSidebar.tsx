@@ -123,7 +123,7 @@ const RoomFilterSideBar = () => {
                   type="checkbox"
                   checked={priceRanges.includes(p.value)}
                   onChange={() =>
-                    setPriceRanges((prev) =>
+                    setTimeTypes((prev) =>
                       prev.includes(p.value)
                         ? prev.filter((v) => v !== p.value)
                         : [...prev, p.value]
