@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import RoomCard from "./RoomCard";
-
 import { getRoom } from "../../service/api/Room";
 import type { RoomResponse } from "../../type/room.types";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 
+interface RoomGridProps {
+  onSelect: (room: RoomResponse) => void;
+  onLoaded: (rooms: RoomResponse[]) => void;
+}
 
-
-const RoomGrid = () => {
+const RoomGrid = ({ onSelect, onLoaded }: RoomGridProps) => {
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const { search } = useBookingSearch();
- 
+
   useEffect(() => {
     if (!search) return;
 
-    const fetchRoom = async () => {
+    const fetchRooms = async () => {
       const totalGuests = search.adults + search.children;
 
       const res = await getRoom({
@@ -23,21 +25,26 @@ const RoomGrid = () => {
         sort: "basePrice,asc",
         filter: `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`,
       });
-      console.log(search)
-      setRooms(res.data?.content || []);
 
-      console.log(res)
+      const list = res.data?.content || [];
+      setRooms(list);
+      onLoaded(list); // 🔥 TRẢ ROOMS LÊN CHA
     };
 
-    fetchRoom();
+    fetchRooms();
   }, [search]);
+
   return (
     <div className="space-y-6">
       {rooms.map((room) => (
-        <RoomCard key={room.id} room={room} />
+        <RoomCard
+          key={room.id}
+          room={room}
+          onClick={() => onSelect(room)}
+        />
       ))}
     </div>
-
   );
-}
+};
+
 export default RoomGrid;

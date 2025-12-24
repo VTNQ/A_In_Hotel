@@ -4,18 +4,15 @@ import { useState, useEffect } from "react";
 import { Menu, Globe } from "lucide-react";
 
 type LangKey = "en" | "vi" | "kr" | "jp" | "cn";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [lang, setLang] = useState<LangKey>("en");
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
 
   const flagMap: Record<LangKey, string> = {
     en: "https://flagcdn.com/w20/gb.png",
@@ -24,21 +21,44 @@ export default function Navbar() {
     jp: "https://flagcdn.com/w20/jp.png",
     cn: "https://flagcdn.com/w20/cn.png",
   };
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    // 👉 NẾU KHÔNG PHẢI TRANG HOME
+    if (!isHome) {
+      setIsScrolled(true); // ép trạng thái "đã scroll"
+      return;
+    }
+
+    // 👉 CHỈ HOME MỚI THEO DÕI SCROLL
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    handleScroll(); // check ngay khi mount
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md text-white transition-all duration-300 ${isScrolled ? "py-2 bg-[#FFFFFF] backdrop-blur-lg shadow-md"
-          : "py-5 bg-transparent"
-        }`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
+    ${isHome && !isScrolled
+          ? "bg-transparent py-5"
+          : "bg-white py-2 shadow-md backdrop-blur-lg"
+        }
+  `}
     >
       {/* ✅ Giảm max width + thêm gap giữa 3 nhóm */}
       <div className="max-w-[1300px] mx-auto flex items-center justify-between gap-8 px-6 md:px-10">
         {/* LEFT SECTION */}
         <div className="flex items-center space-x-5">
-        <span
-            className={`flex items-center space-x-2 text-sm transition-colors duration-300 ${
-              isScrolled ? "text-[#3A3125]" : "text-white"
-            }`}
+          <span
+            className={`transition-colors duration-300 ${isHome && !isScrolled ? "text-white" : "text-[#3A3125]"
+              }`}
           >
             {/* <img
               src="image/Phone Rounded.png"
@@ -49,7 +69,7 @@ export default function Navbar() {
             {/* <span>032 696 5110</span> */}
           </span>
           <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-            {[ "A-IN HOTEL ▾","ROOM & SUITE","PROMOTION"].map((item, i) => (
+            {["A-IN HOTEL ▾", "ROOM & SUITE", "PROMOTION"].map((item, i) => (
               <a
                 key={i}
                 href="#"
@@ -67,16 +87,13 @@ export default function Navbar() {
           <img
             src="/image/Vector.png"
             alt="A-IN HOTEL"
-            className={`mb-1 transition-all duration-300 ${
-              isScrolled ? "h-8" : "h-10"
-            } ${
-              isScrolled ? "brightness-0 invert-[0.2]" : "brightness-200"
-            }`}
+            className={`mb-1 transition-all duration-300 ${isScrolled ? "h-8" : "h-10"
+              } ${isScrolled ? "brightness-0 invert-[0.2]" : "brightness-200"
+              }`}
           />
           <h1
-            className={`font-bold tracking-wide transition-all duration-300 ${
-              isScrolled ? "text-[#3A3125] text-base" : "text-white text-lg"
-            }`}
+            className={`font-bold tracking-wide transition-all duration-300 ${isScrolled ? "text-[#3A3125] text-base" : "text-white text-lg"
+              }`}
           >
             A-IN HOTEL
           </h1>
@@ -84,14 +101,13 @@ export default function Navbar() {
 
         {/* RIGHT SECTION */}
         <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-          {[ "AIR BNB", "CAMPING","OUR PRODUCT", "Log in", "Sign up"].map(
+          {["AIR BNB", "CAMPING", "OUR PRODUCT", "Log in", "Sign up"].map(
             (item, i) => (
               <a
                 key={i}
                 href="#"
-                className={`transition-colors duration-300 hover:text-[#B38A58] ${
-                  isScrolled ? "text-[#3A3125]" : "text-white"
-                }`}
+                className={`transition-colors duration-300 hover:text-[#B38A58] ${isScrolled ? "text-[#3A3125]" : "text-white"
+                  }`}
               >
                 {item}
               </a>
@@ -104,11 +120,10 @@ export default function Navbar() {
             onMouseEnter={() => setIsLangOpen(true)}
           >
             <button
-              className={`flex items-center border rounded-md px-2 py-1 transition-colors duration-300 ${
-                isScrolled
-                  ? "border-[#3A3125] hover:bg-[#3A3125]/10"
-                  : "border-[#b38a58] hover:bg-[#b38a58]/20"
-              }`}
+              className={`flex items-center border rounded-md px-2 py-1 transition-colors duration-300 ${isScrolled
+                ? "border-[#3A3125] hover:bg-[#3A3125]/10"
+                : "border-[#b38a58] hover:bg-[#b38a58]/20"
+                }`}
             >
               <img
                 src={flagMap[lang]}
@@ -116,9 +131,8 @@ export default function Navbar() {
                 className="w-5 h-4 rounded-sm mr-2"
               />
               <Globe
-                className={`w-4 h-4 ${
-                  isScrolled ? "text-[#3A3125]" : "text-[#b38a58]"
-                }`}
+                className={`w-4 h-4 ${isScrolled ? "text-[#3A3125]" : "text-[#b38a58]"
+                  }`}
               />
             </button>
 
@@ -134,9 +148,8 @@ export default function Navbar() {
                       setLang(code as LangKey);
                       setIsLangOpen(false);
                     }}
-                    className={`flex items-center px-3 py-2 text-sm hover:bg-gray-100 ${
-                      lang === code ? "bg-gray-100 font-semibold" : ""
-                    }`}
+                    className={`flex items-center px-3 py-2 text-sm hover:bg-gray-100 ${lang === code ? "bg-gray-100 font-semibold" : ""
+                      }`}
                   >
                     <img
                       src={url}

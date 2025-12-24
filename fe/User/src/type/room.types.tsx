@@ -15,4 +15,5 @@ export interface RoomResponse {
 
 export interface RoomCardProps {
     room:RoomResponse;
+     onClick: () => void;
 }
