@@ -127,7 +127,7 @@ const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
             ✕
           </button>
         </div>
-        <nav className="flex-1 overflow-y-auto px-3 mt-4">
+        <nav className="flex-1 overflow-y-auto custom-scroll px-3 mt-4">
           {SECTIONS.map((section, i) => (
             <div key={i}>
               {section.title && (
