@@ -8,10 +8,6 @@ import type { BannerResponse } from "../type/banner.type";
 import { getBanner } from "../service/api/Banner";
 import { formatISO } from "date-fns";
 import { File_URL } from "../setting/constant/app";
-
-
-
-
 const HeroSlider = () => {
   const [current, setCurrent] = useState(0);
   const [banners,setBanners] =useState<BannerResponse[]>([]);
@@ -21,7 +17,7 @@ const HeroSlider = () => {
       const response = await getBanner({
         page:1,
         size:10,
-        filter: `startAt>=${now} and endAt<=${now}`,
+        filter: `startAt<=${now} and endAt>=${now}`,
       });
       setBanners(response.data?.content || [])
     }catch(err){
