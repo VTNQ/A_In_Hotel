@@ -26,8 +26,10 @@ export interface BookingSearch {
     rooms: number;
     adults: number;
     children: number;
+    priceRanges?: string[];
+    timeTypes?: string[];
 }
 export interface BookingSearchContextValue {
     search: BookingSearch | null;
     setSearch: (s: BookingSearch) => void;
-  };
+};
