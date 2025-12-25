@@ -22,7 +22,7 @@ public class OpenApiConfig {
                         .description("API A In Hotel")
                         .contact(new Contact().name("WebVibe").email("tranp6648@gmail.com"))
                 )
-                .addServersItem(new Server().url("https://api.ainhotelvn.com"))
+                .addServersItem(new Server().url("http://localhost:8585"))
                 .components(new Components()
                         .addSecuritySchemes(scheme,
                                 new SecurityScheme()

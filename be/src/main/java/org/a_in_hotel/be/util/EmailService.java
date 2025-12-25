@@ -37,4 +37,26 @@ public class EmailService {
 
         mailSender.send(message);
     }
+    public void sendHotelAdminAssignmentEmail(
+            String to,
+            String fullName,
+            String hotelName
+    ) throws MessagingException {
+
+        Context context = new Context();
+        context.setVariable("fullName",fullName);
+        context.setVariable("hotelName",hotelName);
+        context.setVariable("loginUrl","https://admin.ainhotelvn.com");
+        String htmlContent = templateEngine.process(
+                "hotel_admin_assigned",
+                    context
+        );
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true,"UTF-8");
+        helper.setTo(to);
+        helper.setSubject("Bạn đã được gán quản lý khách sạn");
+        helper.setText(htmlContent, true);
+
+        mailSender.send(message);
+    }
 }

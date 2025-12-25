@@ -1,4 +1,8 @@
-export type Gender = "MALE" | "FEMALE";
+export type Gender = "0" | "1";
+export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
+  { value: "0", label: "Nam" },
+  { value: "1", label: "Nữ" },
+];
 
 export type SuperAdminForm={
     email:string;
