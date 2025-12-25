@@ -85,5 +85,5 @@ export interface CheckInBookingResponse {
   open: boolean;
   id:number;
   onCancel: () => void;
-  onConfirm?: () => void;
+  onConfirm: () => void;
 }
