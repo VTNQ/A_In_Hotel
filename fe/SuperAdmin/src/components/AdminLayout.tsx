@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Home,
   Briefcase,
@@ -6,7 +6,6 @@ import {
   Building2,
   Lock,
   Boxes,
-  Image,
   ChevronRight,
   ChevronLeft,
   Search,
@@ -23,10 +22,9 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { clearTokens, getTokens, isAccessExpired, saveTokens } from "../util/auth";
+import { clearTokens} from "../util/auth";
 import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
-import { refresh } from "@/service/api/Authenticate";
 import UserDropdown from "./UserDropdown";
 import { useAuthWatcher } from "@/hooks/useAuthWatcher";
 
