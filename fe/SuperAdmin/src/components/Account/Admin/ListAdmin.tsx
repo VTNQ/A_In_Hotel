@@ -43,12 +43,7 @@ const formatDate = (val: string | number) => {
 };
 
 
-const toImgSrc = (u?: string) => {
-    if (!u) return "/placeholder-image.png";
-    if (/^https?:\/\//i.test(u)) return u;
-    const clean = u.replace(/^\/+/, "");
-    return `${File_URL}${clean}`;
-};
+
 function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
     const [open, setOpen] = useState(false);
 
