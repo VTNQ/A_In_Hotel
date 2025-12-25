@@ -117,11 +117,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
             <div className="flex justify-end gap-3 mt-6">
                 <button
                     onClick={onCancel}
-                    className="px-4 py-2 rounded-lg 
-                        bg-[#F2F2F2] text-[#4B4B4B]"
+                    className="px-4 py-2 rounded-lg text-sm font-medium 
+                    text-red-600 border border-red-200 bg-red-50
+                    hover:bg-red-100 hover:border-red-300 transition"
                 >
-                    Cancel
+                    Cancel booking
                 </button>
+
                 <button
                     disabled={!isValid}
                     onClick={() => onNext(form)}

@@ -1,162 +1,210 @@
 import { useEffect, useState } from "react";
 import RoomCard from "./RoomCard";
 import BookingSummary from "./BookingSummary";
+import RoomSearchFilter from "./RoomSearchFilter";
+
 import { getTokens } from "../../../../util/auth";
 import { getAllRoom } from "../../../../service/api/Room";
 import { getAll } from "../../../../service/api/ExtraService";
 import { getAllCategory } from "../../../../service/api/Category";
-import RoomSearchFilter from "./RoomSearchFilter";
 
-const StepRoomSelection = ({ booking, onBack, onNext }: any) => {
-    const [rooms, setRooms] = useState<any[]>([])
-    const [data, setData] = useState<any[]>([]);
-    const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
-    const [search, setSearch] = useState("");
+const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
+    const [rooms, setRooms] = useState<any[]>([]);
+    const [extras, setExtras] = useState<any[]>([]);
     const [roomTypes, setRoomTypes] = useState<any[]>([]);
+    const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
+
+    const [search, setSearch] = useState("");
     const [roomType, setRoomType] = useState("");
+
+    const [loading, setLoading] = useState(false);
+    const [initialized, setInitialized] = useState(false);
+
+    const hotelId = getTokens()?.hotelId;
+
+    /* ===================== INIT LOAD ===================== */
     useEffect(() => {
-        const fetchData = async () => {
+        if (!hotelId) return;
 
+        const fetchInit = async () => {
+            setLoading(true);
             try {
-                let filters: string[] = [];
+                const [roomResp, extraResp, typeResp] = await Promise.all([
+                    getAllRoom({
+                        all: true,
+                        filter: `hotel.id==${hotelId} and status==3`,
+                    }),
+                    getAll({
+                        all: true,
+                        filter: "isActive==true and type==1 and price==0",
+                    }),
+                    getAllCategory({
+                        all: true,
+                        filter: "isActive==true and type==1",
+                    }),
+                ]);
 
-                filters.push(`hotel.id==${getTokens()?.hotelId}`)
-                filters.push(`status==3`)
-
-                const filterQuery = filters.join(" and ");
-                const params = {
-                    all: true,
-                    ...(filterQuery ? { filter: filterQuery } : {}),
-
-                };
-                const resp = await getAllRoom(params);
-                const respExtra = await getAll({
-                    all: true,
-                    filter: "isActive==true and type==1 and price==0"
-                });
-                const responseRoomType = await getAllCategory({
-                    all: true,
-                    filter: "isActive==true and type==1"
-                });
-                setRoomTypes(responseRoomType?.content || [])
-                setRooms(resp.data?.content || []);
-                setData(respExtra.data?.content || [])
-            } catch (err: any) {
-                console.error("Fetch error:", err);
-
+                setRooms(roomResp.data?.content || []);
+                setExtras(extraResp.data?.content || []);
+                setRoomTypes(typeResp?.content || []);
+                setInitialized(true); // ✅ đánh dấu đã load xong
+            } catch (error) {
+                console.error("Init fetch error:", error);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchData();
-    }, []);
-    const toggleRoom = (room: any) => {
-        setSelectedRooms((prev) => {
-            const exists = prev.find((r) => r.id === room.id);
-            if (exists) {
-                return prev.filter((r) => r.id !== room.id);
-            }
-            return [...prev, room];
-        });
-    };
-    useEffect(() => {
-        const timer = setTimeout(async () => {
-            try {
-                let filters: string[] = [];
 
-                filters.push(`hotel.id==${getTokens()?.hotelId}`);
-                filters.push(`status==3`);
+        fetchInit();
+    }, [hotelId]);
+
+    /* ===================== SEARCH & FILTER ===================== */
+    useEffect(() => {
+        if (!initialized) return; // ✅ CHẶN effect dưới
+        if (!search && !roomType) return; // optional
+
+        const timer = setTimeout(async () => {
+            setLoading(true);
+            try {
+                let filters: string[] = [
+                    `hotel.id==${hotelId}`,
+                    `status==3`,
+                ];
 
                 if (roomType) {
                     filters.push(`roomType.id==${roomType}`);
                 }
 
-                const filterQuery = filters.join(" and ");
-
                 const params: any = {
                     all: true,
-                    ...(filterQuery ? { filter: filterQuery } : {}),
-                    ...(search
-                        ? {
-                            searchField: "roomName",
-                            searchValue: search,
-                        }
-                        : {}),
+                    filter: filters.join(" and "),
                 };
 
+                if (search) {
+                    params.searchField = "roomName";
+                    params.searchValue = search;
+                }
+
                 const resp = await getAllRoom(params);
-
-                const respExtra = await getAll({
-                    all: true,
-                    filter: "isActive==true and type==1 and price==0",
-                });
-
                 setRooms(resp.data?.content || []);
-                setData(respExtra.data?.content || []);
-            } catch (err) {
-                console.error("Fetch room error:", err);
+            } catch (error) {
+                console.error("Search fetch error:", error);
+            } finally {
+                setLoading(false);
             }
-        }, 400); // debounce 400ms
+        }, 400);
 
         return () => clearTimeout(timer);
-    }, [search, roomType]);
+    }, [search, roomType, initialized, hotelId]);
+
+    /* ===================== SELECT ROOM ===================== */
+    const toggleRoom = (roomWithData: any) => {
+        setSelectedRooms((prev) => {
+            const exists = prev.find((r) => r.id === roomWithData.id);
+
+
+            if (exists && roomWithData._action === "remove") {
+                return prev.filter((r) => r.id !== roomWithData.id);
+            }
+
+
+            if (exists) {
+                return prev.map((r) =>
+                    r.id === roomWithData.id ? roomWithData : r
+                );
+            }
+
+
+            return [...prev, roomWithData];
+        });
+    };
+
+
+    const RoomSkeleton = () => (
+        <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+                <div
+                    key={i}
+                    className="h-32 bg-gray-200 rounded-lg animate-pulse"
+                />
+            ))}
+        </div>
+    );
 
     return (
         <div className="bg-gray-50">
-            <div className="flex justify-between items-center mb-2">
-                <div>
-                    <h2 className="text-2xl font-semibold">Select Your Room</h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                        Available rooms · 2 Guests
-                    </p>
-                </div>
+            <h2 className="text-2xl font-semibold mb-1">Select Your Room</h2>
+            <p className="text-sm text-gray-500">
+                Available rooms · {booking.selectDate?.adults || 2} Guests
+            </p>
 
-            </div>
-            <div className="grid grid-cols-1 gap-2">
-                <RoomSearchFilter
-                    filter={{ search, roomType }}
-                    roomTypes={roomTypes}
-                    onChange={(key: string, value: string) => {
-                        if (key === "search") setSearch(value);
-                        if (key === "roomType") setRoomType(value);
-                    }}
-                />
-                <div className="grid grid-cols-3 gap-6 mt-6">
-                    <div className="col-span-2 space-y-5">
-                        {rooms.map((room) => (
+            <RoomSearchFilter
+                filter={{ search, roomType }}
+                roomTypes={roomTypes}
+                disabled={loading}
+                onChange={(key: string, value: string) => {
+                    if (key === "search") setSearch(value);
+                    if (key === "roomType") setRoomType(value);
+                }}
+            />
+
+            <div className="grid grid-cols-3 gap-6 mt-6">
+                <div className="col-span-2">
+                    {loading ? (
+                        <RoomSkeleton />
+                    ) : rooms.length === 0 ? (
+                        <p className="text-gray-500">No rooms found</p>
+                    ) : (
+                        rooms.map((room) => (
                             <RoomCard
-                                service={data}
                                 key={room.id}
                                 room={room}
+                                service={extras}
                                 packageType={booking.selectDate?.package}
-                                selected={selectedRooms.some(r => r.id === room.id)}
-                               onSelect={(roomWithPrice: any) => toggleRoom(roomWithPrice)}
+                                selected={selectedRooms.some(
+                                    (r) => r.id === room.id
+                                )}
+                                onSelect={toggleRoom}
                             />
-                        ))}
-                    </div>
-                    <BookingSummary
-                        rooms={selectedRooms}
-                        bookingDate={booking.selectDate}
-                        packageType={booking.selectDate?.package}
-                        guests={{
-                            adults: booking.selectDate?.adults,
-                            children: booking.selectDate?.children,
-                        }}
-                        onEditGuests={onBack}
-                        onNext={() => onNext({ rooms: selectedRooms })}
-                    />
-
-                </div>
-                <div className="flex justify-start gap-3 mt-6">
-                    <button
-                        onClick={onBack}
-                        className="mt-8 text-sm text-gray-500 hover:underline"
-                    >
-                        ← Back to Dates & Time
-                    </button>
+                        ))
+                    )}
                 </div>
 
+                <BookingSummary
+                    rooms={selectedRooms}
+                    bookingDate={booking.selectDate}
+                    packageType={booking.selectDate?.package}
+                    guests={{
+                        adults: booking.selectDate?.adults,
+                        children: booking.selectDate?.children,
+                    }}
+                    onEditGuests={onBack}
+                    onNext={() => onNext({ rooms: selectedRooms })}
+                />
             </div>
-        </div>
 
-    )
-}
+            <div className="flex justify-between items-center mt-8">
+
+                <button
+                    onClick={onCancel}
+                    className="px-4 py-2 rounded-lg text-sm font-medium
+            text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
+            hover:border-red-300 transition"
+                >
+                    Cancel booking
+                </button>
+
+                {/* BACK */}
+                <button
+                    onClick={onBack}
+                    className="text-sm text-gray-500 hover:underline"
+                >
+                    ← Back to Dates & Time
+                </button>
+            </div>
+
+        </div>
+    );
+};
+
 export default StepRoomSelection;

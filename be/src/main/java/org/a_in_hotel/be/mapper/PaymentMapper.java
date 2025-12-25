@@ -12,10 +12,11 @@ import java.math.BigDecimal;
 
 @Mapper(componentModel = "spring",imports = {PaymentType.class})
 public interface PaymentMapper {
-    @Mapping(target = "paidAmount",source = "paidAmount")
+    @Mapping(target = "paidAmount",source = "payment.paidAmount")
     @Mapping(target = "paymentType",
-            expression = "java( request.getPaymentType() != null ? PaymentType.fromValue(request.getPaymentType())"
+            expression = "java( request.getPayment().getPaymentType() != null ? PaymentType.fromValue(request.getPayment().getPaymentType())"
                          + ".getValue() : null )")
+    @Mapping(target = "notes",source = "payment.notes")
     Payment toEntity(BookingRequest request);
 
     @Mappings({

@@ -5,17 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDetailRequest {
+public class PaymentRequest {
+    private BigDecimal paidAmount;
 
-    private Long roomId;
+    private String paymentMethod;
 
-    private String specialRequest;
+    private Integer paymentType;
 
-    private Long extraServiceId;
-    private BigDecimal price;
-
+    private String notes;
 }

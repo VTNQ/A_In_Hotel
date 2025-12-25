@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import CalendarRange from "../../ui/CalenderRange";
 import BookingDetailsPanel from "./BookingDetailsPanel";
 
-const StepBookingDateTime = ({ data, onBack, onNext }: any) => {
+const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
     const [form, setForm] = useState({
         checkInDate: "",
         checkOutDate: "",
@@ -69,26 +69,40 @@ const StepBookingDateTime = ({ data, onBack, onNext }: any) => {
                     }
                 />
             </div>
-            <div className="flex justify-end gap-3 mt-6">
-                <button
-                    onClick={onBack}
-                    className="px-4 py-2 rounded-lg 
-                        bg-[#F2F2F2] text-[#4B4B4B]"
+            <div className="flex justify-between items-center mt-6">
+                {/* CANCEL - NGOÀI, BÊN TRÁI */}
+               <button
+                    onClick={onCancel}
+                    className="px-4 py-2 rounded-lg text-sm font-medium 
+                    text-red-600 border border-red-200 bg-red-50
+                    hover:bg-red-100 hover:border-red-300 transition"
                 >
-                    Back
+                    Cancel booking
                 </button>
-                <button
-                    disabled={!isValid}
-                    onClick={() => onNext({ ...form, nights })}
-                    className={`px-5 py-2 rounded-lg transition
-                        ${isValid
-                            ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
-                            : "bg-gray-300 text-gray-400 cursor-not-allowed"
-                        }`}
-                >
-                    Next: Room Section →
-                </button>
+                {/* BACK + NEXT - NHÓM RIÊNG */}
+                <div className="flex gap-3">
+                    <button
+                        onClick={onBack}
+                        className="px-4 py-2 rounded-lg 
+                bg-[#F2F2F2] text-[#4B4B4B]"
+                    >
+                        Back
+                    </button>
+
+                    <button
+                        disabled={!isValid}
+                        onClick={() => onNext({ ...form, nights })}
+                        className={`px-5 py-2 rounded-lg transition
+                ${isValid
+                                ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
+                                : "bg-gray-300 text-gray-400 cursor-not-allowed"
+                            }`}
+                    >
+                        Next: Room Section →
+                    </button>
+                </div>
             </div>
+
         </div>
     )
 }

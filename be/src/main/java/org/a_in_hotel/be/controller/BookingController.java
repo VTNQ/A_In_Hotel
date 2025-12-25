@@ -44,6 +44,14 @@ public class BookingController {
         return ResponseEntity.ok(RequestResponse.success(pageResponse));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<RequestResponse<BookingResponse>> getBookingById
+            (
+                    @PathVariable Long id
+            ){
+        return ResponseEntity.ok(RequestResponse.success(service.findById(id)));
+    }
+
     @PatchMapping("/{id}/check-in")
     public ResponseEntity<RequestResponse<Void>> checkIn(@PathVariable Long id){
         service.confirmCheckIn(id);

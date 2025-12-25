@@ -2,121 +2,150 @@ import { useEffect, useState } from "react";
 import ServiceTabs from "./ServiceTabs";
 import ServiceCard from "./ServiceCard";
 import BookingSummary from "./BookingSumary";
+
 import { getAll } from "../../../../service/api/ExtraService";
-import { getTokens } from "../../../../util/auth";
 import { getAllCategory } from "../../../../service/api/Category";
+import { getTokens } from "../../../../util/auth";
 import { estimateServicePrice } from "../../../../util/estimateServicePrice";
 
+const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
+    const [services, setServices] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [selectedServices, setSelectedServices] = useState<any[]>([]);
 
-const StepServiceSelection = ({
-  booking,
-  onBack,
-  onNext,
-}: any) => {
-  const [selectedServices, setSelectedServices] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [category, setCategory] = useState("");
-  const [services, setServices] = useState<any[]>([]);
-  const getCategories = async () => {
-    try {
-      const response = await getAllCategory({
-        all: true,
-        filter: "isActive==true and type==2"
-      });
-      setCategories(response?.content || [])
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  const fetchData = async () => {
-    try {
-      let filters: string[] = [];
-      filters.push(`hotelId==${getTokens()?.hotelId}`);
-      filters.push(`price>0`);
-      filters.push(`isActive==true`);
-      if (category) {
-        filters.push(`category.id==${category}`)
-      }
-      const filterQuery = filters.join(" and ");
-      const response = await getAll({
-        all: true,
-        ...(filterQuery ? { filter: filterQuery } : {}),
-      });
-      setServices(response.data?.content || [])
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  useEffect(() => {
+    const [category, setCategory] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    fetchData();
-    getCategories();
-  }, [])
+    const hotelId = getTokens()?.hotelId;
+    useEffect(() => {
+        if (!hotelId) return;
 
-  const toggleService = (service: any) => {
-    setSelectedServices((prev) => {
-      const exists = prev.find((s) => s.id === service.id);
-      if (exists) return prev.filter((s) => s.id !== service.id);
-      return [...prev, service];
-    });
-  };
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      fetchData();
-      getCategories();
-    }, 400)
-    return () => clearTimeout(timer);
-  }, [category])
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                let filters = [
+                    `hotelId==${hotelId}`,
+                    `price>0`,
+                    `isActive==true`,
+                ];
+
+                if (category) {
+                    filters.push(`category.id==${category}`);
+                }
+
+                const [categoryResp, serviceResp] = await Promise.all([
+                    getAllCategory({
+                        all: true,
+                        filter: "isActive==true and type==2",
+                    }),
+                    getAll({
+                        all: true,
+                        filter: filters.join(" and "),
+                    }),
+                ]);
+
+                setCategories(categoryResp?.content || []);
+                setServices(serviceResp.data?.content || []);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [hotelId, category]);
 
 
-  return (
-    <div className="bg-gray-50 min-h-screen p-6">
-      {/* HEADER */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold">Enhance Your Stay</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Customize your experience with our exclusive add-ons and packages.
-        </p>
-      </div>
+    /* ===================== SELECT SERVICE ===================== */
+    const toggleService = (service: any) => {
+        setSelectedServices((prev) =>
+            prev.some((s) => s.id === service.id)
+                ? prev.filter((s) => s.id !== service.id)
+                : [...prev, service]
+        );
+    };
 
-      {/* TABS */}
-      <ServiceTabs value={category} onChange={setCategory} categories={categories} />
-
-      <div className="grid grid-cols-3 gap-6 mt-6">
-        {/* LEFT */}
-        <div className="col-span-2 space-y-4">
-          {services.map((service: any) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              selected={selectedServices.some(
-                (s) => s.id === service.id
-              )}
-              onToggle={() => toggleService(service)}
-              booking={booking}
-            />
-          ))}
+    const ServiceSkeleton = () => (
+        <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+                <div
+                    key={i}
+                    className="h-28 bg-gray-200 rounded-lg animate-pulse"
+                />
+            ))}
         </div>
+    );
 
-        {/* RIGHT */}
-        <BookingSummary
-          booking={booking}
-          services={selectedServices}
-          onBack={onBack}
-          onNext={() =>
-            onNext({
-              services: selectedServices.map((s) => ({
-                extraServiceId: s.id,
-                unit: s.unit,
-                price: estimateServicePrice(s, booking),
-                serviceName: s.serviceName ?? s.name,
-              })),
-            })
-          }
-        />
-      </div>
-    </div>
-  );
+    return (
+        <div className="bg-gray-50 min-h-screen p-6">
+            {/* HEADER */}
+            <div className="mb-6">
+                <h2 className="text-2xl font-semibold">Enhance Your Stay</h2>
+                <p className="text-sm text-gray-500 mt-1">
+                    Customize your experience with our exclusive add-ons.
+                </p>
+            </div>
+
+            {/* TABS */}
+            <ServiceTabs
+                value={category}
+                categories={categories}
+                disabled={loading}
+                onChange={setCategory}
+            />
+
+            <div className="grid grid-cols-3 gap-6 mt-6">
+                {/* LEFT */}
+                <div className="col-span-2 space-y-4">
+                    {loading ? (
+                        <ServiceSkeleton />
+                    ) : services.length === 0 ? (
+                        <p className="text-gray-500">No services found</p>
+                    ) : (
+                        services.map((service) => (
+                            <ServiceCard
+                                key={service.id}
+                                service={service}
+                                booking={booking}
+                                selected={selectedServices.some(
+                                    (s) => s.id === service.id
+                                )}
+                                onToggle={() => toggleService(service)}
+                            />
+                        ))
+                    )}
+                </div>
+
+                {/* RIGHT */}
+                <BookingSummary
+                    booking={booking}
+                    services={selectedServices}
+                    onNext={() =>
+                        onNext({
+                            services: selectedServices.map((s) => ({
+                                extraServiceId: s.id,
+                                unit: s.unit,
+                                price: estimateServicePrice(s, booking),
+                                serviceName: s.serviceName ?? s.name,
+                            })),
+                        })
+                    }
+                />
+            </div>
+            <div className="flex justify-between items-center mt-8">
+                <button  className="px-4 py-2 rounded-lg text-sm font-medium
+            text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
+            hover:border-red-300 transition">
+                    Cancel booking
+                </button>
+
+                <button onClick={onBack} className="text-sm text-gray-500 hover:underline">
+                    ← Back to Room Selection
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default StepServiceSelection;

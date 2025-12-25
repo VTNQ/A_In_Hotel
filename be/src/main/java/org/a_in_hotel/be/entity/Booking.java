@@ -53,6 +53,15 @@ public class Booking {
     private LocalTime checkOutTime;
 
     private Integer BookingPackage;
+    @OneToOne(
+            mappedBy = "booking",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Payment payment;
+
+    private String note;
 
     private Integer status;
 

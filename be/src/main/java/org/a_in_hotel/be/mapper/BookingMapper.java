@@ -58,7 +58,7 @@ public interface BookingMapper extends CommonMapper {
             target = "guestType",
             expression = "java(org.a_in_hotel.be.Enum.GuestType.fromCode(booking.getGuestType()).getDescription())"
     )
-
+    @Mapping(target = "payment",source = "payment")
     BookingResponse toResponse(Booking booking);
 
 }
