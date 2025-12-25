@@ -7,7 +7,7 @@ import { SelectField } from "@/components/ui/select";
 import UploadField from "@/components/ui/UploadField";
 import { register } from "@/service/api/Authenticate";
 import { format } from "date-fns";
-import { type Gender, type SuperAdminForm } from "@/type/Account/SuperAdmin/SuperAdminForm";
+import { GENDER_OPTIONS, type Gender, type SuperAdminForm } from "@/type/Account/SuperAdmin/SuperAdminForm";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react"; // spinner icon
 
@@ -17,7 +17,7 @@ const CreateChildSuperAdmin = () => {
   const [formData, setFormData] = useState<SuperAdminForm>({
     email: "",
     fullName: "",
-    gender: "MALE",
+    gender: "0",
     phone: "",
     birthday: undefined,
     image: null,
@@ -59,7 +59,7 @@ const CreateChildSuperAdmin = () => {
       setFormData({
         email: "",
         fullName: "",
-        gender: "MALE",
+        gender: "0",
         phone: "",
         birthday: undefined,
         image: null,
@@ -145,17 +145,18 @@ const CreateChildSuperAdmin = () => {
               <div>
                 <Label className="mb-3">Giới tính</Label>
                 <SelectField
-                  items={["MALE", "FEMALE"]}
+                  items={GENDER_OPTIONS}
                   value={formData.gender}
                   onChange={(val) => {
                     setFormData((prev) => ({
                       ...prev,
-                      gender: (val as Gender) ?? "MALE",
+                      gender: val as Gender,
                     }));
                   }}
+
                   placeholder="Chọn giới tính"
-                  getValue={(item) => item}
-                  getLabel={(item) => (item === "MALE" ? "Nam" : "Nữ")}
+                  getValue={(item) => item.value}
+                  getLabel={(item) => item.label}
                   clearable={false}
                 />
 

@@ -2,10 +2,14 @@ import { BedDouble, Users, Maximize } from "lucide-react";
 import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
 
-const RoomCard = ({ room }: RoomCardProps) => {
+const RoomCard = ({ room, onClick }: RoomCardProps) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden flex">
-      
+    <div
+      onClick={onClick}
+      className="bg-white rounded-xl shadow-sm overflow-hidden flex
+                 cursor-pointer transition
+                 hover:ring-2 hover:ring-[#b38a58]"
+    >
       {/* Image */}
       <div className="w-[260px] h-[200px] shrink-0">
         <img
@@ -17,7 +21,6 @@ const RoomCard = ({ room }: RoomCardProps) => {
 
       {/* Content */}
       <div className="flex flex-col justify-between p-4 flex-1">
-        
         {/* Top */}
         <div>
           <h3 className="font-semibold text-lg mb-2 uppercase">
@@ -51,7 +54,7 @@ const RoomCard = ({ room }: RoomCardProps) => {
 
         {/* Bottom */}
         <div className="flex items-end justify-between mt-4">
-          <div></div>
+          <div />
 
           <div className="text-right">
             <div className="text-xs text-gray-400">Price</div>

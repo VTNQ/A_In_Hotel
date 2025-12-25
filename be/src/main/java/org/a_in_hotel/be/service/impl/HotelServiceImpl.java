@@ -13,6 +13,7 @@ import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.HotelMapper;
 import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.HotelService;
+import org.a_in_hotel.be.util.EmailService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -41,6 +42,10 @@ public class HotelServiceImpl implements HotelService {
 
     @Autowired
     private HotelRepository hotelRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private AccountRepository accountRepository;
     @Autowired
     private AssetRepository assetRepository;
     @Autowired
@@ -80,6 +85,7 @@ public class HotelServiceImpl implements HotelService {
 
             Hotel hotelEntity = hotelMapper.toEntity(hotel,securityUtils.getCurrentUserId());
             hotelRepository.save(hotelEntity);
+            sendAdminAssignmentEmail(hotelEntity);
 
         } catch (DataIntegrityViolationException e) {
             String field = resolveConstraintField(e);
@@ -92,26 +98,72 @@ public class HotelServiceImpl implements HotelService {
         }
     }
 
-    @Override
-    public void update(HotelUpdate branch, Long id) {
+    private void sendAdminAssignmentEmail(Hotel hotel){
+        Account adminAccount = hotel.getAccount();
+        if(adminAccount == null){
+            log.warn("Hotel {} has no admin account assigned",hotel.getName());
+            return;
+        }
+
+        String email = adminAccount.getEmail();
+        String fullName = staffRepository.findByAccountId(adminAccount.getId())
+                .map(Staff::getFullName)
+                .orElse("Admin");
+
         try {
-            Hotel entity = hotelRepository.getReferenceById(id);
-            hotelRepository.findByAccount_IdAndIdNot(branch.getIdUser(), id) // giả sử HotelRequest có idUser = accountId
-                    .ifPresent(existingHotel -> {
-                        String ownerName=staffRepository.findByAccountId(existingHotel.getAccount().getId())
-                                .map(Staff::getFullName)
-                                .orElse(existingHotel.getAccount().getEmail());
-                        String msg = String.format(
-                                "Tạo khách sạn thất bại. Account %s đã quản lý khách sạn %s",
-                                ownerName, existingHotel.getName()
+            emailService.sendHotelAdminAssignmentEmail(
+                    email,
+                    fullName,
+                    hotel.getName()
+            );
+        }catch (Exception e){
+            log.error("Failed to send admin assignment email", e);
+        }
+    }
+
+    @Override
+    public void update(HotelUpdate hotel, Long id) {
+        try {
+            Hotel currentHotel = hotelRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Hotel id=" + id + " không tồn tại"));
+
+            Long newAccountId = hotel.getIdUser();
+            Long oldAccountId = currentHotel.getAccount() !=null
+                    ? currentHotel.getAccount().getId()
+                    :null;
+
+            if(oldAccountId!=null && oldAccountId.equals(newAccountId)){
+                hotelMapper.updateEntity(hotel,currentHotel,
+                        securityUtils.getCurrentUserId());
+                hotelRepository.save(currentHotel);
+                return;
+            }
+            hotelRepository.findByAccount_Id(newAccountId)
+                    .ifPresent(otherHotel -> {
+
+                        // Nếu là chính hotel đang update thì bỏ qua
+                        if (otherHotel.getId().equals(id)) {
+                            return;
+                        }
+
+                        log.warn(
+                                "Account {} đang quản lý hotel {} → gỡ khỏi hotel cũ",
+                                newAccountId, otherHotel.getName()
                         );
-                        log.warn(msg);
-                        throw new IllegalArgumentException(msg);
+
+                        // 4️⃣ Gỡ account khỏi hotel cũ
+                        otherHotel.setAccount(null);
+                        otherHotel.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+                        hotelRepository.save(otherHotel);
                     });
+            Account newAccount = accountRepository.getReferenceById(newAccountId);
+            currentHotel.setAccount(newAccount);
+            hotelMapper.updateEntity(hotel, currentHotel,
+                    securityUtils.getCurrentUserId());
 
-            hotelMapper.updateEntity(branch, entity,securityUtils.getCurrentUserId());
-            hotelRepository.save(entity);
-
+            hotelRepository.save(currentHotel);
+            sendAdminAssignmentEmail(currentHotel);
         } catch (DataIntegrityViolationException e) {
             String field = resolveConstraintField(e);
             log.warn("Duplicate entry on field: {}", field);

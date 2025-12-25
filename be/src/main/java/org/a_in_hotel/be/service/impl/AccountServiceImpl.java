@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.request.AccountDTO;
@@ -8,15 +9,19 @@ import org.a_in_hotel.be.dto.response.AccountResponse;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Image;
+import org.a_in_hotel.be.entity.Staff;
 import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
+import org.a_in_hotel.be.mapper.StaffMapper;
 import org.a_in_hotel.be.repository.AccountRepository;
 import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.RoleRepository;
+import org.a_in_hotel.be.repository.StaffRepository;
 import org.a_in_hotel.be.service.AccountService;
 import org.a_in_hotel.be.util.EmailService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +56,13 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     @Autowired
     private RoleRepository  roleRepository;
     @Autowired
+    private StaffMapper staffMapper;
+    @Autowired
+    private StaffRepository staffRepository;
+    @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private SecurityUtils securityUtils;
     @Autowired
     private ImageMapper imageMapper;
     @Autowired
@@ -63,24 +74,34 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     }
 
     @Override
+    @Transactional
     public void save(AccountDTO accountDTO, MultipartFile file) {
         try {
-            String password=generalService.generateRandomPassword(8);
-            log.info("save account:{}", accountDTO);
+            String rawPassword = generalService.generateRandomPassword(8);
+
+            // 1. Save Account
             Account account = accountMapper.toEntity(accountDTO);
+            account.setPassword(passwordEncoder.encode(rawPassword));
+            accountRepository.save(account);
+
+            // 2. Save Staff (OWNING SIDE)
+            Staff staff = staffMapper.toEntity(accountDTO, securityUtils.getCurrentUserId());
+            staff.setAccount(account);
+            staffRepository.save(staff);
+
             if (file != null && !file.isEmpty()) {
                 try {
                     FileUploadMeta avatar = generalService.saveFile(file, "avatar");
-                    Image image =imageMapper.toBannerImage(avatar);
+                    Image image = imageMapper.toBannerImage(avatar);
+                    image.setEntityType("avatar");
+                    image.setEntityId(account.getId());
                     imageRepository.save(image);
                     account.setImage(image);
                 } catch (Exception e) {
                     throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage(), e);
                 }
             }
-            account.setPassword(passwordEncoder.encode(password));
-            accountRepository.save(account);
-            emailService.sendRegistrationEmail(accountDTO.getEmail(),accountDTO.getFullName(),accountDTO.getEmail(),password);
+            emailService.sendRegistrationEmail(accountDTO.getEmail(),accountDTO.getFullName(),accountDTO.getEmail(),rawPassword);
             log.info("save account:{}", account);
         }catch (Exception e){
             log.error("save error:{}",e.getMessage());
@@ -114,9 +135,13 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
             Specification<Account>filterable= RSQLJPASupport.toSpecification(filter);
             Specification<Account>searchable= SearchHelper.buildSearchSpec(searchField,searchValue,SEARCH_FIELDS);
             Pageable pageable=all? Pageable.unpaged():PageRequest.of(page-1,size);
-            return accountRepository.
-                    findAll(sortable.and(filterable).and(searchable),pageable)
-                    .map(accountMapper::toResponse);
+            Page<Account> accounts =accountRepository.
+                    findAll(sortable.and(filterable).and(searchable),pageable);
+            accounts.forEach(account ->
+                    imageRepository.findFirstByEntityIdAndEntityType(account.getId(), "avatar")
+                            .ifPresent(account::setImage)
+            );
+            return accounts.map(accountMapper::toResponse);
         }catch (Exception e){
             log.error("find country request error:{}",e.getMessage());
             e.printStackTrace();

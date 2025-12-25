@@ -36,8 +36,8 @@ public class Staff {
     private Integer gender;
     @Schema(description = "Số điện thoại",example = "01234567")
     private String phone;
-    @OneToOne
-    @JoinColumn(name = "account_id")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "account_id",nullable = false)
     @Schema(description = "Tài khoản đăng nhập liên kết với nhân viên")
     private Account account;
     @Schema(description = "Thời gian tạo", example = "2025-08-22 09:05:46.698643")

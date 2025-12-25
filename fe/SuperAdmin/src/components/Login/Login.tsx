@@ -30,7 +30,7 @@ export default function Login() {
     try {
       const response = await login(email, password);
       console.log(response);
-      if (response.data.role === "SUPERADMIN") {
+      if (response.data.role === "SUPERADMIN" || response.data.role ==="CHILDSUPERADMIN") {
         setSuccess("Đăng nhập thành công!");
         saveTokens({
           accessToken: response.data.accessToken,

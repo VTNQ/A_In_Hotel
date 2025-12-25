@@ -43,12 +43,7 @@ const formatDate = (val: string | number) => {
 };
 
 
-const toImgSrc = (u?: string) => {
-    if (!u) return "/placeholder-image.png";
-    if (/^https?:\/\//i.test(u)) return u;
-    const clean = u.replace(/^\/+/, "");
-    return `${File_URL}${clean}`;
-};
+
 function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
     const [open, setOpen] = useState(false);
 
@@ -171,7 +166,6 @@ const ListChildSuperAdmin: React.FC = () => {
                 key: "gender",
                 header: "Giới tính",
                 sortable: true,
-                cell: (row: any) => (row.gender === "MALE" ? "Nam" : "Nữ")
             },
 
             {
@@ -179,7 +173,7 @@ const ListChildSuperAdmin: React.FC = () => {
                 header: "Avatar",
                 cell: (row) =>
                     row.url ? (
-                        <ThumbWithPreview src={toImgSrc(row.url)} alt={row.fullName || "Banner"} />
+                        <ThumbWithPreview src={File_URL +row.url} alt={row.fullName || "Banner"} />
                     ) : (
                         <span className="text-xs text-muted-foreground">Không có ảnh</span>
                     ),
@@ -271,7 +265,7 @@ const ListChildSuperAdmin: React.FC = () => {
 
 
                     <Button asChild>
-                        <a href="/Home/SuperAdmin/create">+ Thêm tài khoản</a>
+                        <a href="/Home/ChildSuperAdmin/create">+ Thêm tài khoản</a>
                     </Button>
                 </div>
             </div>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bạn được gán quản lý khách sạn</title>
+</head>
+<body style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; margin:0;">
+<div style="max-width:600px; margin:auto; background:#ffffff; border-radius:8px;
+            padding:30px; border:1px solid #e0e0e0;">
+
+  <!-- Header -->
+  <h2 style="color:#28a745; text-align:center; margin-bottom:20px;">
+    🏨 BẠN ĐÃ ĐƯỢC GÁN QUẢN LÝ KHÁCH SẠN
+  </h2>
+
+  <!-- Nội dung -->
+  <p>Xin chào <strong th:text="${fullName}"></strong>,</p>
+
+  <p>
+    Bạn vừa được gán làm <b>Admin quản lý</b> cho khách sạn sau:
+  </p>
+
+  <div style="background:#f8f9fa; padding:15px; border-radius:6px;
+                border:1px dashed #ced4da; margin:20px 0; text-align:center;">
+    <h3 style="margin:0; color:#343a40;" th:text="${hotelName}"></h3>
+  </div>
+
+  <p>
+    Vui lòng đăng nhập hệ thống để bắt đầu quản lý và vận hành khách sạn.
+  </p>
+
+  <!-- Button -->
+  <div style="text-align:center; margin:30px 0;">
+    <a th:href="${loginUrl}"
+       style="background:#007bff; color:#ffffff; padding:12px 24px;
+                  border-radius:6px; text-decoration:none; font-weight:bold;">
+      🔐 Đăng nhập hệ thống
+    </a>
+  </div>
+
+  <!-- Cảnh báo -->
+  <div style="background:#e2f0ff; color:#084298; padding:15px;
+                border-radius:6px; border:1px solid #b6d4fe;">
+    ℹ️ Nếu bạn không nhận ra hành động này, vui lòng liên hệ bộ phận hỗ trợ ngay.
+  </div>
+
+  <!-- Footer -->
+  <p style="margin-top:30px;">
+    Trân trọng,<br/>
+    <b>Hệ thống A In Hotel</b>
+  </p>
+</div>
+</body>
+</html>

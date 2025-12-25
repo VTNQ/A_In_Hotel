@@ -47,9 +47,12 @@ public class Account implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    private Hotel hotel;
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    private Staff staff;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "avatar_id", referencedColumnName = "id") // FK tới BannerImage
+    @Transient
     private Image image;
 
     @CreationTimestamp

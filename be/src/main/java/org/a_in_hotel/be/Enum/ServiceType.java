@@ -1,6 +1,6 @@
 package org.a_in_hotel.be.Enum;
 
-public enum ServiceType {
+public enum  ServiceType {
 
     FACILITY(1),
     EXTRA_SERVICE(2);
