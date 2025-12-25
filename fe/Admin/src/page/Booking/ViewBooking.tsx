@@ -115,9 +115,9 @@ const ViewBooking = () => {
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
 
                     1: { label: "Booked", color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
-                    3: { label: "Checked-in", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
-                    4: { label: "Checked-out", color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
-                    5: { label: "Cancelled", color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
+                    2: { label: "Checked-in", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
+                    3: { label: "Checked-out", color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
+                    4: { label: "Cancelled", color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
                 };
 
                 // Nếu không khớp code nào, dùng mặc định
