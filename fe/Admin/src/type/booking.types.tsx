@@ -58,3 +58,32 @@ export const PACKAGE_TIME_MAP: Record<string, { checkIn: string; checkOut: strin
     checkOut: "12:00",
   },
 };
+export interface bookingResponse {
+  guest: {
+    name: string;
+    adults: number;
+    notes?: string;
+  }
+  rooms: {
+    id: string | number;
+    name: string;
+    type: string;
+  }[];
+  date: {
+    checkIn: string;
+    checkOut: string;
+    nights: number;
+  };
+  payment: {
+    total: number;
+    paid: number;
+    outstanding: number;
+    currency?: string;
+  };
+}
+export interface CheckInBookingResponse {
+  open: boolean;
+  id:number;
+  onCancel: () => void;
+  onConfirm?: () => void;
+}

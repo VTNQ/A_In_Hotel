@@ -4,7 +4,7 @@ import { createBooking } from "../../../../service/api/Booking";
 import { useAlert } from "../../../alert-context";
 import { useNavigate } from "react-router-dom";
 
-const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
+const PaymentForm = ({ booking, onSubmit }: any) => {
     const rooms = booking.rooms || [];
     const services = booking.services || [];
     const nights = booking.selectDate?.nights || 0;
@@ -25,10 +25,11 @@ const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
 
         return roomTotal + serviceTotal;
     }, [rooms, services, nights]);
+    console.log(booking)
 
     // 🔹 PAID AMOUNT = USER INPUT
     const [paidAmountInput, setPaidAmountInput] = useState("");
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [method, setMethod] = useState("CASH");
     const [note, setNote] = useState("");
@@ -42,7 +43,7 @@ const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
         // ===== ROOM DETAILS =====
         const roomDetails = booking.rooms.map((room: any) => ({
             roomId: room.id,
-            specialRequests: room.specialRequests || "",
+            specialRequest: room.specialRequest || "",
             price: Number(room.price) * nights,
         }));
 
@@ -61,12 +62,15 @@ const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
 
             guestType: booking.guest?.guestType ?? 1,
             numberOfGuests: booking.guest?.adults ?? 1,
-
+            note:booking.guest?.note,
             // ===== PAYMENT =====
-            paidAmount: paidAmount,
-            paymentMethod: method,
-            paymentType: 1,
-            notes: note,
+
+            payment: {
+                paidAmount: paidAmount,
+                paymentMethod: method,
+                paymentType: 1,
+                notes: note,
+            },
 
             // ===== DATE & TIME =====
             checkInDate: booking.selectDate?.checkInDate,   // yyyy-MM-dd
@@ -98,7 +102,7 @@ const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
                 type: "success",
                 autoClose: 3000,
             });
-            
+
             onSubmit();
             navigate("/Dashboard/booking");
         } catch (err: any) {
@@ -193,13 +197,8 @@ const PaymentForm = ({ booking, onBack, onSubmit }: any) => {
             </div>
 
             {/* ACTION */}
-            <div className="flex justify-between mt-6">
-                <button
-                    onClick={onBack}
-                    className="text-sm text-gray-500 hover:underline"
-                >
-                    ← Back to Services
-                </button>
+            <div className="flex justify-end mt-6">
+
 
                 <button
                     onClick={handleSubmit}

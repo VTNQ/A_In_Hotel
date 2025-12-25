@@ -5,7 +5,6 @@ import { formatBookingDateRange } from "../../../../util/formatDate";
 const BookingSummary = ({
   booking,
   services,
-  onBack,
   onNext,
 }: any) => {
   const rooms = booking.rooms || [];
@@ -125,12 +124,7 @@ const BookingSummary = ({
           Continue to Payment →
         </button>
 
-        <button
-          onClick={onBack}
-          className="w-full mt-3 text-sm text-gray-500 hover:underline"
-        >
-          Back to Room Selection
-        </button>
+
 
         <p className="text-xs text-gray-400 mt-3 text-center">
           Secure Booking Process

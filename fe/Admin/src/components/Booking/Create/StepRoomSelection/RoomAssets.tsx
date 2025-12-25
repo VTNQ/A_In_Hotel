@@ -1,6 +1,6 @@
 import type { RoomAsset } from "../../../../type/room.types";
 import { File_URL } from "../../../../setting/constant/app";
-const RoomAssets = ({ assets }: { assets: RoomAsset[] }) => {
+const RoomAssets = ({ assets=[] }: { assets?: RoomAsset[] }) => {
   return (
     <div className="flex gap-4 text-xs text-gray-600 mt-2">
       {assets.map((a) => (

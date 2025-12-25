@@ -21,3 +21,8 @@ export const createBooking =async(booking:any)=>{
     return await Http.post("/api/bookings",booking);
 
 }
+
+export const GetBookingById =async(id:number)=>{
+    return await Http.get(`/api/bookings/${id}`);
+}
+

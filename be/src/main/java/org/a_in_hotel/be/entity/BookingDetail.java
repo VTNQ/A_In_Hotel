@@ -40,8 +40,8 @@ public class BookingDetail {
     @Column(name = "extra_service_name")
     private String extraServiceName;
 
-    @Column(name = "special_requests")
-    private String specialRequests;
+    @Column(name = "special_request")
+    private String specialRequest;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "extra_service_id")

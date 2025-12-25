@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { GetAllBookings } from "../../service/api/Booking";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import SimpleDatePicker from "../../components/ui/SimpleDatePicker";
 import BookingActionMenu from "../../components/Booking/BookingActionMenu";
 import { useNavigate } from "react-router-dom";
+import ConfirmCheckIn from "../../components/Booking/CheckIn/ConfirmCheckIn";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
@@ -18,12 +19,17 @@ const ViewBooking = () => {
     const [statusFilter, setStatusFilter] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [selectedBooking, setSelectedBooking] = useState<any | null>(null)
+    const [open, setOpen] = useState(false)
     const [totalResults, setTotalResults] = useState(0);
     const navigate = useNavigate();
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
-
+    const handleConfirmCheckIn = (row: any) => {
+        setOpen(true)
+        setSelectedBooking(row)
+    }
 
     const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
         setLoading(true);
@@ -143,7 +149,7 @@ const ViewBooking = () => {
             render: (row: any) => (
                 <BookingActionMenu
                     booking={row}
-
+                    onCheckIn={() => handleConfirmCheckIn(row)}
                 />
             ),
         },
@@ -154,7 +160,7 @@ const ViewBooking = () => {
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">Booking</h1>
-                <button onClick={()=>navigate("/Dashboard/booking/create")} className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
+                <button onClick={() => navigate("/Dashboard/booking/create")} className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
                     + New Booking
                 </button>
             </div>
@@ -218,6 +224,12 @@ const ViewBooking = () => {
                 )}
 
             </div>
+            <ConfirmCheckIn
+                open={open}
+                onCancel={() => setOpen(false)}
+                id={selectedBooking?.id}
+            />
+
         </div>
     )
 }
