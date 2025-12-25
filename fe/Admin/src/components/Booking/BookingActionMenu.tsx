@@ -16,15 +16,8 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
     let actions: ActionItem[] = [];
     let statusLabel = "";
     switch (statusCode) {
+       
         case 1:
-            statusLabel = "Draft";
-            actions = [
-                { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
-                { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(booking) },
-
-            ];
-            break;
-        case 2:
             statusLabel = "Booked";
             actions = [
                 { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
@@ -34,7 +27,7 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
             ];
             break;
 
-        case 3:
+        case 2:
             statusLabel = "Checked-in"
             actions = [
                 { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
@@ -44,7 +37,7 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
 
             ];
             break;
-        case 4:
+        case 3:
             statusLabel = "Checked-out"
             actions = [
                 { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
@@ -52,7 +45,7 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
 
             ];
             break;
-        case 5:
+        case 4:
             statusLabel = "Cancelled"
             actions = [
                 { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
