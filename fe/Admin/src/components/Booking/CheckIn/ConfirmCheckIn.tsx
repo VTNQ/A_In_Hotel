@@ -12,7 +12,25 @@ const ConfirmCheckIn = ({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
- 
+  const [confirming, setConfirming] = useState(false);
+  const handleConfirm = async () => {
+    if (confirming) return;
+
+    try {
+      setConfirming(true);
+
+      await onConfirm();
+
+      onCancel();
+    } catch (err) {
+      console.error("Confirm check-in failed");
+      // ❌ KHÔNG đóng popup
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+
   useEffect(() => {
     if (!open) return;
 
@@ -79,7 +97,7 @@ const ConfirmCheckIn = ({
           ${loading ? "scale-95 opacity-70" : "scale-100 opacity-100"}
         `}
       >
-       
+
         <div className="flex items-start justify-between px-6 py-5 border-b border-gray-200">
           <div>
             <h1 className="text-xl font-semibold text-[#253150]">
@@ -98,7 +116,7 @@ const ConfirmCheckIn = ({
           </button>
         </div>
 
-       
+
         {loading && (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
@@ -108,11 +126,11 @@ const ConfirmCheckIn = ({
           </div>
         )}
 
-    
+
         {!loading && data && (
           <>
             <div className="flex-1 overflow-y-auto custom-scroll bg-[#f6f8fb] px-6 py-5 space-y-6 text-sm">
-      
+
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <User className="w-4 h-4 text-[#253150]" />
@@ -146,7 +164,7 @@ const ConfirmCheckIn = ({
                 </div>
               </section>
 
-         
+
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <Calendar className="w-4 h-4 text-[#253150]" />
@@ -190,7 +208,7 @@ const ConfirmCheckIn = ({
                 </div>
               </section>
 
-              
+
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <CreditCard className="w-4 h-4 text-[#253150]" />
@@ -231,12 +249,26 @@ const ConfirmCheckIn = ({
                 Cancel
               </button>
               <button
-                onClick={onConfirm}
-                className="px-6 py-2 rounded-xl bg-[#42578E] text-white hover:bg-[#364a7d] flex items-center gap-2"
+                onClick={handleConfirm}
+                disabled={confirming}
+                className={`px-6 py-2 rounded-xl flex items-center gap-2 font-medium transition ${confirming
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-[#42578E] text-white hover:bg-[#364a7d]"
+                  }`}
               >
-                <CheckCircle2 className="w-4 h-4" />
-                Check-in
+                {confirming ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    Check-in
+                  </>
+                )}
               </button>
+
             </div>
           </>
         )}

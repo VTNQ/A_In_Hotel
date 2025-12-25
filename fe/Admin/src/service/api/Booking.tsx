@@ -26,3 +26,6 @@ export const GetBookingById =async(id:number)=>{
     return await Http.get(`/api/bookings/${id}`);
 }
 
+export const handleCheckIn =async(id:number)=>{
+    return await Http.patch(`/api/bookings/${id}/check-in`)
+}
