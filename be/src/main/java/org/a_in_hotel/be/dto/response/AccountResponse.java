@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 public class AccountResponse {
     private String email;
     private Long id;
-    private Gender gender;
+    private String gender;
     private String fullName;
     private String phone;
     private String avatarUrl;

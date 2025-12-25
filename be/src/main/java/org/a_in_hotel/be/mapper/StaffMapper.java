@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.Enum.Gender;
+import org.a_in_hotel.be.dto.request.AccountDTO;
 import org.a_in_hotel.be.dto.request.StaffRequest;
 import org.a_in_hotel.be.dto.response.StaffResponse;
 import org.a_in_hotel.be.entity.Staff;
@@ -14,6 +15,10 @@ public interface StaffMapper extends CommonMapper {
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "hotelId",source = "hotelId")
     Staff toEntity(StaffRequest staffRequest,Long userId,Long hotelId);
+
+    @Mapping(target = "createdBy",source = "userId")
+    @Mapping(target = "updatedBy",source = "userId")
+    Staff toEntity(AccountDTO accountDTO,Long userId);
     @Mapping(target = "email",source ="account.email")
     @Mapping(target = "id",source = "account.id")
     @Mapping(target = "isActive",source = "account.isActive")

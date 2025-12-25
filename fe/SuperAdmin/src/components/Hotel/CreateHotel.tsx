@@ -25,7 +25,10 @@ export default function CreateHotel() {
     const [users, setUsers] = useState<UserResponse[]>([]);
     const getUser = async () => {
         try {
-            const response = await getAll();
+            const response = await getAll({
+                all:true,
+                filter:"hotel.id=isnull=true and role.id==2"
+            });
             setUsers(response.data.content);
         } catch (error) {
             console.log("Failed to fetch user:", error);

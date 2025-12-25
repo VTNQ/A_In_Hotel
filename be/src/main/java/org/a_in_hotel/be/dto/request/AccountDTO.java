@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class AccountDTO {
     private String email;
     private Long idRole;
-    private Gender gender;
+    private Integer gender;
     private String fullName;
     private String phone;
     private LocalDate birthday;

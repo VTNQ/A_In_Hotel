@@ -27,6 +27,8 @@ import { clearTokens, getTokens, isAccessExpired, saveTokens } from "../util/aut
 import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
 import { refresh } from "@/service/api/Authenticate";
+import UserDropdown from "./UserDropdown";
+import { useAuthWatcher } from "@/hooks/useAuthWatcher";
 
 /**
  * AdminLayout
@@ -36,111 +38,22 @@ import { refresh } from "@/service/api/Authenticate";
  * - Hỗ trợ Dark mode toggle
  */
 export default function AdminLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+   const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
 
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  // Theo dõi đường dẫn trước đó
-  const prevPathRef = useRef<string | null>(null);
-  const prevPath = prevPathRef.current;
-
-  const inHomeArea = pathname.toLowerCase().startsWith("/home");
-  useEffect(() => {
-    const handleAuthCheck = async () => {
-      console.log(getTokens());
-      if (isAccessExpired() && getTokens()?.refreshToken) {
-        try {
-          const res = await refresh();
-          if (res?.data?.data?.accessToken) {
-            saveTokens({
-              accessToken: res.data.data.accessToken,
-              accessTokenAt: res.data.data.accessTokenExpiryAt,
-            });
-            setShowModal(false); // ẩn popup nếu đang show
-          } else {
-
-            if (inHomeArea) {
-              // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-              const cameFromOutsideHome =
-                !prevPath || !prevPath.toLowerCase().startsWith("/home");
-
-              if (cameFromOutsideHome) {
-                clearTokens();
-                navigate("/", { replace: true });
-              } else {
-                // Đang ở trong /home/** rồi và treo máy -> show popup
-                setShowModal(true);
-              }
-            } else {
-              // Không ở /home/** -> về "/" luôn
-              clearTokens();
-              navigate("/", { replace: true });
-            }
-          }
-        } catch (e) {
-          // Lỗi refresh => logout
-          clearTokens();
-          navigate("/", { replace: true });
-        }
-      } else if (isAccessExpired() && !getTokens()?.refreshToken) {
-        if (inHomeArea) {
-          // Nếu vừa ĐI VÀO /home/** từ trang KHÁC -> về "/" ngay, không popup
-          const cameFromOutsideHome =
-            !prevPath || !prevPath.toLowerCase().startsWith("/home");
-
-          if (cameFromOutsideHome) {
-            clearTokens();
-            navigate("/", { replace: true });
-          } else {
-            // Đang ở trong /home/** rồi và treo máy -> show popup
-            setShowModal(true);
-          }
-        } else {
-          // Không ở /home/** -> về "/" luôn
-          clearTokens();
-          navigate("/", { replace: true });
-        }
-      } else {
-        setShowModal(false)
-      }
-
-      prevPathRef.current = pathname;
-    };
-
-    handleAuthCheck();
-  }, [pathname, inHomeArea, navigate]);
 
 
-
-  // 2) Interval check + khi tab focus lại (trường hợp treo máy)
-  useEffect(() => {
-    const check = () => {
-
-      if (isAccessExpired() && !getTokens()?.refreshToken) {
-        // Chỉ show popup nếu đang ở trong /home/**
-        if (inHomeArea) setShowModal(true);
-        else {
-          clearTokens();
-          navigate("/", { replace: true });
-        }
-      }
-    };
-    const id = setInterval(check, 30_000);
-    window.addEventListener("focus", check);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener("focus", check);
-    };
-  }, [inHomeArea, navigate]);
+  useAuthWatcher(setAuthChecking, setShowModal);
 
   useEffect(() => {
     const root = document.documentElement;
-    if (dark) root.classList.add("dark");
-    else root.classList.remove("dark");
+    dark ? root.classList.add("dark") : root.classList.remove("dark");
   }, [dark]);
+
+  if (authChecking) return null;
 
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-100">
@@ -172,10 +85,18 @@ export default function AdminLayout() {
             <IconBtn label="Messages" badge="5"><Mail className="h-5 w-5" /></IconBtn>
             <IconBtn label="Notifications" dot><Bell className="h-5 w-5" /></IconBtn>
             <IconBtn label="Fullscreen"><Maximize2 className="h-5 w-5" /></IconBtn>
-            <div className="hidden items-center gap-2 sm:flex">
-              <img src="https://i.pravatar.cc/40?img=5" alt="avatar" className="h-8 w-8 rounded-full object-cover" />
-              <span className="text-sm font-medium text-gray-700 dark:text-neutral-200">Mr. Jack</span>
-            </div>
+            <UserDropdown
+              name="Musharof Chowdhury"
+              email="randomuser@pimjo.com"
+              avatarUrl="https://i.pravatar.cc/40?img=5"
+              onProfile={() => navigate("/home/profile")}
+              onSettings={() => navigate("/home/account-settings")}
+              onLogout={() => {
+                clearTokens();
+                navigate("/", { replace: true });
+              }}
+            />
+
             <IconBtn label="Settings"><Settings className="h-5 w-5" /></IconBtn>
           </div>
         </div>
@@ -222,24 +143,22 @@ const SECTIONS: SectionSpec[] = [
   {
     title: "Dashboards",
     items: [
-      { label: "Home", icon: Home, active: true, path: "/Home" },
+      { label: "Home", icon: Home, path: "/Home" },
       { label: "Hotel", icon: Hotel, path: '/Home/hotel' },
-      { label: "Banner", icon: Image, active: false, path: "/Home/banner" },
       {
         label: "Account",
         icon: Users,
         children: [
           { label: "Admin Manager", icon: Briefcase, path: "/Home/Admin" },
-          { label:"Child SuperAdmin Manager",icon:Lock,path:"/Home/ChildSuperAdmin"}
+          { label: "Child SuperAdmin Manager", icon: Lock, path: "/Home/ChildSuperAdmin" }
         ],
       },
-   
+
       {
         label: "System Management",
         icon: Settings,
         children: [
           { label: "About Hotel", icon: Hotel, path: "/Home/system-content/about-hotel" },
-          { label: "Banner", icon: Image, path: "/Home/system-content/banner" },
           { label: "Homepage Content", icon: LayoutDashboard, path: "/Home/system-content/home" },
           { label: "Policy & Terms", icon: Lock, path: "/Home/system-content/policy" },
           { label: "Footer Content", icon: Boxes, path: "/Home/system-content/footer" },
@@ -253,6 +172,29 @@ const SECTIONS: SectionSpec[] = [
     ],
   }
 ];
+function isItemActive(item: ItemSpec, pathname: string): boolean {
+  if (item.path) {
+    // match chính xác
+    if (pathname === item.path) return true;
+
+    // match route con, nhưng KHÔNG phải root "/Home"
+    if (
+      pathname.startsWith(item.path + "/") &&
+      item.path !== "/Home"
+    ) {
+      return true;
+    }
+  }
+
+  if (item.children) {
+    return item.children.some(child =>
+      isItemActive(child, pathname)
+    );
+  }
+
+  return false;
+}
+
 
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const widthClass = collapsed ? "w-20" : "w-72";
@@ -284,6 +226,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
 
 function SidebarSection({ section, collapsed, defaultOpen = false }: { section: SectionSpec; collapsed: boolean; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (!collapsed && defaultOpen) setOpen(true);
@@ -311,7 +254,7 @@ function SidebarSection({ section, collapsed, defaultOpen = false }: { section: 
             className="space-y-1 px-1"
           >
             {section.items.map((item) => (
-              <SidebarItem key={item.label} item={item} collapsed={collapsed} depth={0} />
+              <SidebarItem key={item.label} item={item} collapsed={collapsed} depth={0} pathname={pathname} />
             ))}
           </motion.ul>
         )}
@@ -320,25 +263,45 @@ function SidebarSection({ section, collapsed, defaultOpen = false }: { section: 
   );
 }
 
-function SidebarItem({ item, collapsed, depth }: { item: ItemSpec; collapsed: boolean; depth: number }) {
-  const [open, setOpen] = useState(item.active || false);
+function SidebarItem({
+  item,
+  collapsed,
+  depth,
+  pathname,
+}: {
+  item: ItemSpec;
+  collapsed: boolean;
+  depth: number;
+  pathname: string;
+}) {
+  const navigate = useNavigate();
+
   const hasChildren = !!item.children?.length;
+  const active = isItemActive(item, pathname);
+
+  // submenu open theo active
+  const [open, setOpen] = useState(active);
+
+  useEffect(() => {
+    setOpen(active);
+  }, [active]);
+
   const Icon = item.icon ?? Boxes;
-  const paddingLeft = useMemo(() => (collapsed ? "pl-0" : `pl-${Math.min(2 + depth * 2, 10)}`), [collapsed, depth]);
+  const paddingLeft = useMemo(
+    () => (collapsed ? "pl-0" : `pl-${Math.min(2 + depth * 2, 10)}`),
+    [collapsed, depth]
+  );
 
   const baseClasses = [
     "group w-full flex items-center gap-3 rounded-xl px-2 py-2 text-sm transition-colors",
-    item.active
+    active
       ? "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-400/20"
-      : item.highlighted
-        ? "bg-indigo-600 text-white shadow hover:bg-indigo-600/90"
-        : "text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800",
+      : "text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800",
   ].join(" ");
-  const navigate = useNavigate();
+
   const handleClick = () => {
     if (hasChildren) {
-      // toggle mở submenu
-      setOpen((v) => !v)
+      setOpen(v => !v);
       return;
     }
     if (item.path) {
@@ -346,43 +309,44 @@ function SidebarItem({ item, collapsed, depth }: { item: ItemSpec; collapsed: bo
     }
   };
 
-  const Content = (
-    <button
-      className={`${baseClasses} ${paddingLeft} w-full text-left focus:outline-none focus:ring-2 focus:ring-indigo-500`}
-      onClick={handleClick}
-      aria-expanded={hasChildren ? open : undefined}
-    >
-      <Icon className="h-5 w-5 shrink-0" />
-      {!collapsed && (
-        <span className="flex-1 truncate">
-          {item.label}
-          {item.badge && (
-            <span className="ml-2 rounded-md bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:bg-indigo-400/20 dark:text-indigo-300">
-              {item.badge}
-            </span>
-          )}
-        </span>
-      )}
-      {!collapsed && (item.trailing ?? (hasChildren ? <ChevronRight className={`h-4 w-4 transition-transform ${open ? "rotate-90" : ""}`} /> : null))}
-    </button>
-  );
-
   return (
     <li>
-      {Content}
+      <button
+        className={`${baseClasses} ${paddingLeft} w-full text-left focus:outline-none`}
+        onClick={handleClick}
+        aria-expanded={hasChildren ? open : undefined}
+      >
+        <Icon className="h-5 w-5 shrink-0" />
+        {!collapsed && (
+          <span className="flex-1 truncate">{item.label}</span>
+        )}
+        {!collapsed &&
+          hasChildren && (
+            <ChevronRight
+              className={`h-4 w-4 transition-transform ${open ? "rotate-90" : ""
+                }`}
+            />
+          )}
+      </button>
+
       {hasChildren && !collapsed && (
         <AnimatePresence initial={false}>
           {open && (
             <motion.ul
-              key="sub"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="mt-1 space-y-1 border-l border-dashed border-gray-200 pl-4 dark:border-neutral-700"
             >
-              {item.children!.map((child) => (
-                <SidebarItem key={child.label} item={child} collapsed={collapsed} depth={depth + 1} />
+              {item.children!.map(child => (
+                <SidebarItem
+                  key={child.label}
+                  item={child}
+                  collapsed={collapsed}
+                  depth={depth + 1}
+                  pathname={pathname}
+                />
               ))}
             </motion.ul>
           )}
@@ -402,7 +366,6 @@ type ItemSpec = {
   badge?: string;
   path?: string;
   trailing?: React.ReactNode;
-  active?: boolean;
   highlighted?: boolean; // e.g. "Utilities" purple pill in the screenshot
   children?: ItemSpec[];
 };

@@ -171,7 +171,7 @@ const ListAdmin: React.FC = () => {
                 key: "gender",
                 header: "Giới tính",
                 sortable: true,
-                cell: (row: any) => (row.gender === "MALE" ? "Nam" : "Nữ")
+              
             },
 
             {
@@ -179,7 +179,7 @@ const ListAdmin: React.FC = () => {
                 header: "Avatar",
                 cell: (row) =>
                     row.url ? (
-                        <ThumbWithPreview src={toImgSrc(row.url)} alt={row.fullName || "Banner"} />
+                        <ThumbWithPreview src={File_URL+row.url} alt={row.fullName || "Banner"} />
                     ) : (
                         <span className="text-xs text-muted-foreground">Không có ảnh</span>
                     ),
