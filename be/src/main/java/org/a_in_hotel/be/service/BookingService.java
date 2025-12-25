@@ -19,6 +19,8 @@ public interface BookingService {
             String searchValue,
             boolean all);
 
+    BookingResponse findById(Long id);
+
     void confirmCheckIn(Long bookingId);
 
     void confirmCheckOut(Long bookingId, CheckOutRequest request);

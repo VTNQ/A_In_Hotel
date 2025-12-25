@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,12 +73,10 @@ public class BookingServiceImpl implements BookingService {
         validateRoomSchedule(request);
         Booking booking = mapper.toEntity
                 (request, detailMapper, roomRepository, extraServiceRepository, securityUtils.getCurrentUserId());
-
-        repository.save(booking);
-
         Payment payment = paymentMapper.toEntity(request);
         payment.setBooking(booking);
-        paymentRepository.save(payment);
+        booking.setPayment(payment);
+        repository.save(booking);
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
@@ -122,6 +121,13 @@ public class BookingServiceImpl implements BookingService {
                         .and(searchable),
                 pageable).map(mapper::toResponse);
 
+    }
+
+    @Override
+    public BookingResponse findById(Long id) {
+        return repository.findById(id)
+                .map(mapper::toResponse)
+                .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
     }
 
     @Override
@@ -321,7 +327,7 @@ public class BookingServiceImpl implements BookingService {
 
         extra.setPrice(surchargePrice);
 
-        extra.setSpecialRequests(reason);
+        extra.setSpecialRequest(reason);
         extra.setCreatedBy(securityUtils.getCurrentUserId().toString());
 
         booking.getDetails().add(extra);

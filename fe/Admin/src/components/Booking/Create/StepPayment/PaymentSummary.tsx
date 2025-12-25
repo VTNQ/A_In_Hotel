@@ -4,7 +4,7 @@ const PaymentSummary = ({ booking }: any) => {
   const rooms = booking.rooms || [];
   const services = booking.services || [];
   const hotel = booking.hotel;
- 
+
   const nights = booking.selectDate?.nights || 0;
 
   // Tổng tiền phòng (multi-room)

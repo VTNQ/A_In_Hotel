@@ -19,6 +19,7 @@ public class BookingResponse {
 
     private Long id;
     private String guestName;
+    private String note;
 
     private String surname;
 
@@ -43,6 +44,8 @@ public class BookingResponse {
     private Integer BookingPackage;
 
     private Integer status;
+
+    private PaymentResponse payment;
 
     private BigDecimal totalPrice;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
