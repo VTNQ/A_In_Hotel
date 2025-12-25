@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetAllBookings, handleCheckIn } from "../../service/api/Booking";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
