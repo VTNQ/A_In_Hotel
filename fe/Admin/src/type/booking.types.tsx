@@ -1,3 +1,5 @@
+import type { ImageResponse } from ".";
+
 export interface Booking {
   step: number;
   guest: {
@@ -83,7 +85,20 @@ export interface bookingResponse {
 }
 export interface CheckInBookingResponse {
   open: boolean;
-  id:number;
+  id: number;
   onCancel: () => void;
   onConfirm: () => void;
+}
+export interface ExtraCharge {
+  id?: number;
+  name: string;
+  price: number;
+  icon?:ImageResponse;
+}
+
+export interface ConfirmCheckOutProps {
+  open: boolean;
+  data: any;
+  onCancel: () => void;
+ onConfirm: () => void;
 }

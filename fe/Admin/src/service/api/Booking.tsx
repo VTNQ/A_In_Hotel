@@ -29,3 +29,8 @@ export const GetBookingById =async(id:number)=>{
 export const handleCheckIn =async(id:number)=>{
     return await Http.patch(`/api/bookings/${id}/check-in`)
 }
+
+export const handleCheckOut =async(id:number,data:any)=>{
+    return await Http.patch(`/api/bookings/${id}/check-out`,data)
+
+}

@@ -7,6 +7,7 @@ import BookingActionMenu from "../../components/Booking/BookingActionMenu";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../components/alert-context";
 import ConfirmCheckIn from "../../components/Booking/CheckIn/ConfirmCheckIn";
+import ConfirmCheckOut from "../../components/Booking/CheckOut/ConfirmCheckOut";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
@@ -20,7 +21,9 @@ const ViewBooking = () => {
     const [statusFilter, setStatusFilter] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [selectedBooking, setSelectedBooking] = useState<any | null>(null)
+    const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+    const [openCheckout, setOpenCheckout] = useState(false);
+
     const [open, setOpen] = useState(false)
     const [totalResults, setTotalResults] = useState(0);
     const { showAlert } = useAlert();
@@ -32,7 +35,10 @@ const ViewBooking = () => {
         setOpen(true)
         setSelectedBooking(row)
     }
-
+    const handleOpenCheckout = (booking: any) => {
+        setSelectedBooking(booking);
+        setOpenCheckout(true);
+    };
     const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
         setLoading(true);
         try {
@@ -80,7 +86,7 @@ const ViewBooking = () => {
 
             fetchData();
 
-            return true; 
+            return true;
         } catch (err: any) {
             showAlert({
                 title:
@@ -89,7 +95,7 @@ const ViewBooking = () => {
                 type: "error",
             });
 
-            throw err; 
+            throw err;
         }
     };
 
@@ -177,6 +183,7 @@ const ViewBooking = () => {
             render: (row: any) => (
                 <BookingActionMenu
                     booking={row}
+                    onCheckOut={() => handleOpenCheckout(row)}
                     onCheckIn={() => handleConfirmCheckIn(row)}
                 />
             ),
@@ -258,6 +265,12 @@ const ViewBooking = () => {
                 onConfirm={() => handleCheckInConfirm(selectedBooking?.id)}
                 onCancel={() => setOpen(false)}
                 id={selectedBooking?.id}
+            />
+            <ConfirmCheckOut
+                open={openCheckout}
+                data={selectedBooking}
+                onCancel={() => setOpenCheckout(false)}
+                onConfirm={() => fetchData()}
             />
 
         </div>

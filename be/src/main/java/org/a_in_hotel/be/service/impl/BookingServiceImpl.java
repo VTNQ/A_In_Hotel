@@ -16,10 +16,7 @@ import org.a_in_hotel.be.mapper.BookingDetailMapper;
 import org.a_in_hotel.be.mapper.BookingMapper;
 import org.a_in_hotel.be.mapper.CheckOutExtraMapper;
 import org.a_in_hotel.be.mapper.PaymentMapper;
-import org.a_in_hotel.be.repository.BookingRepository;
-import org.a_in_hotel.be.repository.ExtraServiceRepository;
-import org.a_in_hotel.be.repository.PaymentRepository;
-import org.a_in_hotel.be.repository.RoomRepository;
+import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.BookingService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -34,10 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -58,6 +52,8 @@ public class BookingServiceImpl implements BookingService {
 
     private final PaymentRepository paymentRepository;
 
+    private final BookingDetailRepository bookingDetailRepository;
+
     private final PaymentMapper paymentMapper;
 
     private final SecurityUtils securityUtils;
@@ -65,6 +61,7 @@ public class BookingServiceImpl implements BookingService {
     private static final List<String> SEARCH_FIELDS = List.of("code", "phoneNumber");
 
     @Override
+    @Transactional
     public void create(BookingRequest request) {
 
         validateBookingTime(request);
@@ -73,9 +70,10 @@ public class BookingServiceImpl implements BookingService {
         validateRoomSchedule(request);
         Booking booking = mapper.toEntity
                 (request, detailMapper, roomRepository, extraServiceRepository, securityUtils.getCurrentUserId());
-        Payment payment = paymentMapper.toEntity(request);
+
+        Payment payment = paymentMapper.toEntity(request.getPayment());
         payment.setBooking(booking);
-        booking.setPayment(payment);
+        booking.getPayment().add(payment);
         repository.save(booking);
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
@@ -448,13 +446,14 @@ public class BookingServiceImpl implements BookingService {
                     securityUtils.getCurrentUserId()
             );
             detail.setBooking(booking);
+            bookingDetailRepository.save(detail);
             booking.getDetails().add(detail);
         });
     }
 
     private BigDecimal calculateExtraTotal(Booking booking) {
         return booking.getDetails().stream()
-                .filter(d -> d.getExtraService().getId() != null)
+                .filter(d -> d.getExtraService() != null)
                 .map(BookingDetail::getPrice)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -496,7 +495,13 @@ public class BookingServiceImpl implements BookingService {
 
         payment.setPaymentMethod("OCD");
 
+        payment.setBooking(booking);
+
         paymentRepository.save(payment);
+
+        booking.getPayment().add(payment);
+
+
     }
 
     private void releaseRooms(Booking booking) {
