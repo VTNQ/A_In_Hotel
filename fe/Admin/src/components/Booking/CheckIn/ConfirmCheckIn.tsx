@@ -64,8 +64,8 @@ const ConfirmCheckIn = ({
   if (!open) return null;
 
   const outstanding =
-    data?.totalPrice && data?.payment?.paidAmount
-      ? data.totalPrice - data.payment.paidAmount
+    data?.totalPrice && data?.payment[0]?.paidAmount
+      ? data.totalPrice - data?.payment[0]?.paidAmount
       : 0;
 
   const getDurationLabel = () => {
@@ -227,7 +227,7 @@ const ConfirmCheckIn = ({
                   <div>
                     <p className="text-xs text-[#5f6b85]">PAID</p>
                     <p className="font-semibold text-green-600">
-                      {data.payment?.paidAmount?.toLocaleString()} VND
+                      {data.payment[0]?.paidAmount?.toLocaleString()} VND
                     </p>
                   </div>
                   <div>

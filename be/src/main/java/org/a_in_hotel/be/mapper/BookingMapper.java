@@ -4,12 +4,18 @@ import org.a_in_hotel.be.Enum.BookingPackage;
 import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.Enum.GuestType;
 import org.a_in_hotel.be.dto.request.BookingRequest;
+import org.a_in_hotel.be.dto.request.PaymentRequest;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.Booking;
+import org.a_in_hotel.be.entity.Payment;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.mapstruct.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Mapper(componentModel = "spring", imports = {GuestType.class, BookingPackage.class, BookingStatus.class},
         uses = { BookingDetailMapper.class } )
@@ -24,7 +30,8 @@ public interface BookingMapper extends CommonMapper {
                                  + "(request.getBookingPackage()).getCode() : null )"),
 
             @Mapping(target = "createdBy", source = "userId"),
-            @Mapping(target = "updatedBy", source = "userId")
+            @Mapping(target = "updatedBy", source = "userId"),
+            @Mapping(target = "payment", ignore = true)
     })
     Booking toEntity(
             BookingRequest request,
@@ -32,7 +39,15 @@ public interface BookingMapper extends CommonMapper {
             @Context RoomRepository roomRepository,
             @Context ExtraServiceRepository extraServiceRepository,
             Long userId);
+    default List<Payment> mapPaymentRequestToList(PaymentRequest request) {
+        if (request == null) return new ArrayList<>();
 
+
+        Payment payment = new Payment();
+
+
+        return Collections.singletonList(payment);
+    }
     @AfterMapping
     default void mapDetails(
             BookingRequest request,
