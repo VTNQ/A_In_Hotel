@@ -15,7 +15,7 @@ const ConfirmCheckOut = ({
     const [extraCharges, setExtraCharges] = useState<ExtraCharge[]>([]);
     const [extraService, setExtraService] = useState<any[]>([]);
     const [confirming, setConfirming] = useState(false);
-    const [loading,setLoading] = useState(false)
+    // const [loading,setLoading] = useState(false)
 
     const usedExtraServiceIds =
         data?.details
