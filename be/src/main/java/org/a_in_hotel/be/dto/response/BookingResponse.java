@@ -45,7 +45,7 @@ public class BookingResponse {
 
     private Integer status;
 
-    private PaymentResponse payment;
+    private List<PaymentResponse> payment;
 
     private BigDecimal totalPrice;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

@@ -17,5 +17,4 @@ public class ExtraChargeRequest {
 
     private BigDecimal price;
 
-    private Integer quantity;
 }

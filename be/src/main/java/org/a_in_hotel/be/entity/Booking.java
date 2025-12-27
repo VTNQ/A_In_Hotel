@@ -53,13 +53,12 @@ public class Booking {
     private LocalTime checkOutTime;
 
     private Integer BookingPackage;
-    @OneToOne(
+    @OneToMany(
             mappedBy = "booking",
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
+            orphanRemoval = true
     )
-    private Payment payment;
+    private List<Payment> payment=new ArrayList<>();
 
     private String note;
 
