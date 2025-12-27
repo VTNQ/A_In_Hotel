@@ -131,9 +131,8 @@ const UpdateRoomFormModal = ({
             const res =
                 await getAllCategory({
                     all: true,
-                    searchField: "type",
-                    searchValue: "1",
-                    filter: "isActive==1"
+                  
+                    filter: "isActive==1 and type==1"
                 });
             setCategories(res.content || []);
         } catch (err) {
