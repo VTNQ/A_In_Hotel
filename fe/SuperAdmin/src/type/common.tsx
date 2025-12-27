@@ -8,8 +8,8 @@ export const STATUS_STYLES: Record<Status
 };
 
 export const STATUS_OPTIONS = [
-    { value: 1, label: "Hoạt động" },
-    { value: 0, label: "Không hoạt động" },
+    { value: 1, label: "Active" },
+    { value: 0, label: "InActive" },
 ]
 export type Status = 0 | 1;
 

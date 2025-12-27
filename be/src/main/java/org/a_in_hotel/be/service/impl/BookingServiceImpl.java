@@ -69,7 +69,9 @@ public class BookingServiceImpl implements BookingService {
         validateRoomAvailable(request);
         validateRoomSchedule(request);
         Booking booking = mapper.toEntity
-                (request, detailMapper, roomRepository, extraServiceRepository, securityUtils.getCurrentUserId());
+                (request, detailMapper, roomRepository, extraServiceRepository,
+                        securityUtils.getCurrentUserId(),
+                        securityUtils.getHotelId());
 
         Payment payment = paymentMapper.toEntity(request.getPayment());
         payment.setBooking(booking);
@@ -186,10 +188,17 @@ public class BookingServiceImpl implements BookingService {
         OffsetDateTime now = OffsetDateTime.now();
 
         for (RoomSwitchItem item : request.getItems()){
-            switchSingleRoom(booking,item,request.getReason(),now);
+            switchSingleRoom(booking,item,now);
         }
 
         repository.save(booking);
+    }
+
+    @Override
+    public BookingResponse findByIdAndDetailsActiveTrue(Long id) {
+        return repository.findByIdFetchActiveDetail(id)
+                .map(mapper::toResponse)
+                .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
     }
 
     private void validateSwitchRoomItems(
@@ -232,7 +241,6 @@ public class BookingServiceImpl implements BookingService {
     private void switchSingleRoom(
             Booking booking,
             RoomSwitchItem item,
-            String reason,
             OffsetDateTime now
     ){
         BookingDetail currentDetail = getActiveRoomDetail(
@@ -253,88 +261,54 @@ public class BookingServiceImpl implements BookingService {
 
         Room oldRoom = currentDetail.getRoom();
 
+        BigDecimal oldPrice = resolveRoomPrice(oldRoom,booking);
+        BigDecimal newPrice = resolveRoomPrice(newRoom,booking);
+
+        BigDecimal additionalPrice = newPrice.subtract(oldPrice);
+        if(additionalPrice.compareTo(BigDecimal.ZERO) < 0){
+            additionalPrice = BigDecimal.ZERO;
+        }
+
         BookingDetail newDetail = new BookingDetail();
         newDetail.setBooking(booking);
         newDetail.setRoom(newRoom);
         newDetail.setRoomName(newRoom.getRoomName());
+        newDetail.setRoomNumber(newRoom.getRoomNumber());
         newDetail.setRoomType(newRoom.getRoomType().getName());
         newDetail.setRoomType(newRoom.getRoomType().getName());
-        newDetail.setPrice(resolveRoomPrice(newRoom,booking));
+        newDetail.setPrice(newPrice);
         newDetail.setActive(true);
         newDetail.setStartAt(now);
         newDetail.setEndAt(null);
         newDetail.setCreatedBy(securityUtils.getCurrentUserId().toString());
+        booking.getDetails().add(newDetail);
 
         oldRoom.setStatus(RoomStatus.AVAILABLE.getCode());
         newRoom.setStatus(RoomStatus.OCCUPIED.getCode());
-
-        booking.getDetails().add(newDetail);
-
-        handleRoomSwitchSurcharge(
-                booking,
-                currentDetail.getPrice(),
-                newDetail.getPrice(),
-                item.getExtraServiceId(),
-                reason
-        );
-    }
-
-    private void handleRoomSwitchSurcharge(
-            Booking booking,
-            BigDecimal oldPrice,
-            BigDecimal newPrice,
-            Long extraServiceId,
-            String reason
-    ) {
-        // 1. Không upgrade → không phụ thu
-        BigDecimal diff = newPrice.subtract(oldPrice);
-        if (diff.compareTo(BigDecimal.ZERO) <= 0) {
-            return;
-        }
-
-        // 2. Không chọn service → bỏ qua
-        if (extraServiceId == null) {
-            return;
-        }
-
-        // 3. Load extra service từ DB
-        ExtraService service = extraServiceRepository.findById(extraServiceId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Extra service not found")
-                );
-
-        if (!Boolean.TRUE.equals(service.getIsActive())) {
-            throw new IllegalStateException("Extra service is inactive");
-        }
-
-        if (!service.getExtraCharge().equals(1)) {
-            throw new IllegalStateException("Service is not an extra charge");
-        }
-
-        // 4. Xác định giá phụ thu
-        BigDecimal surchargePrice =
-                service.getPrice().compareTo(BigDecimal.ZERO) > 0
-                        ? service.getPrice()
-                        : diff;
-
-        // 5. Ghi booking detail
-        BookingDetail extra = new BookingDetail();
-        extra.setBooking(booking);
-        extra.setExtraService(service);
-        extra.setExtraServiceName(service.getServiceName());
-
-        extra.setPrice(surchargePrice);
-
-        extra.setSpecialRequest(reason);
-        extra.setCreatedBy(securityUtils.getCurrentUserId().toString());
-
-        booking.getDetails().add(extra);
-
-        // 6. Update total price
         booking.setTotalPrice(
-                booking.getTotalPrice().add(surchargePrice)
+                booking.getTotalPrice().add(additionalPrice)
         );
+
+        RoomSwitchHistory history = new RoomSwitchHistory();
+        history.setBooking(booking);
+
+        history.setFromRoomId(oldRoom.getId());
+        history.setFromRoomNumber(oldRoom.getRoomNumber());
+        history.setFromRoomName(oldRoom.getRoomName());
+
+        history.setToRoomId(newRoom.getId());
+        history.setToRoomNumber(newRoom.getRoomNumber());
+        history.setToRoomName(newRoom.getRoomName());
+        history.setOldPrice(oldPrice);
+        history.setNewPrice(newPrice);
+        history.setAdditionalPrice(additionalPrice);
+        history.setReason(item.getReason());
+        history.setSwitchedBy(securityUtils.getCurrentUserId().toString());
+
+        booking.getRoomSwitchHistories().add(history);
+
     }
+
 
 
     private BookingDetail getActiveRoomDetail(

@@ -69,6 +69,13 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingDetail> details = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "booking",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RoomSwitchHistory> roomSwitchHistories = new ArrayList<>();
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -89,6 +96,9 @@ public class Booking {
 
     @Column(name = "checked_out_at")
     private OffsetDateTime checkedOutAt;
+
+    @Column(name = "hotel_id")
+    private Long hotelId;
 
 
     @PrePersist

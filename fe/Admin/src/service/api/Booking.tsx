@@ -26,11 +26,20 @@ export const GetBookingById =async(id:number)=>{
     return await Http.get(`/api/bookings/${id}`);
 }
 
+export const findByIdAndDetailsActiveTrue = async(id:number)=>{
+    return await Http.get(`/api/bookings/${id}/active-details`);
+}
+
 export const handleCheckIn =async(id:number)=>{
     return await Http.patch(`/api/bookings/${id}/check-in`)
 }
 
 export const handleCheckOut =async(id:number,data:any)=>{
     return await Http.patch(`/api/bookings/${id}/check-out`,data)
+
+}
+
+export const handleSwitchRoom = async (id: number, data: any) =>{
+    return await Http.patch(`/api/bookings/${id}/switch-room`, data);
 
 }

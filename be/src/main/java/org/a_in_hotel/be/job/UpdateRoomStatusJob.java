@@ -26,7 +26,7 @@ public class UpdateRoomStatusJob {
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Ho_Chi_Minh")
     @Transactional
     public void updateRoomStatusForOvernightAndFullDay(){
-        log.info("=== Start job update room status at 02:00 AM ===");
+        log.info("=== Start job update room status at 12:00 PM ===");
 
         List<Integer> packages = List.of(
                 BookingPackage.OVERNIGHT.getCode(),

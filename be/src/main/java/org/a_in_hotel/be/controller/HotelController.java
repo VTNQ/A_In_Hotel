@@ -19,9 +19,11 @@ import org.a_in_hotel.be.service.FacilityService;
 import org.a_in_hotel.be.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,34 +39,25 @@ public class HotelController {
     @Autowired
     private CategoryService categoryService;
     @Operation(summary = "Thêm khách sạn")
-    @PostMapping("/create")
-    public ResponseEntity<RequestResponse<Void>>create(@Valid @RequestBody HotelRequest hotelRequest, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
-            String errorMessage=bindingResult.getFieldErrors().stream()
-                    .map(error->error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> create
+            (
+                    @Valid @ModelAttribute HotelRequest hotelRequest,
+                    @RequestParam(value = "image", required = false) MultipartFile image
+            ) {
         try {
-            hotelService.save(hotelRequest);
+            hotelService.save(hotelRequest, image);
             return ResponseEntity.ok(RequestResponse.success("Hotel created successfully"));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
-    @PutMapping("update/{id}")
-    public ResponseEntity<RequestResponse<Void>>update(@Valid @RequestBody HotelUpdate hotelRequest, BindingResult bindingResult, @PathVariable Long id) {
-        if(bindingResult.hasErrors()) {
-            String errorMessage=bindingResult.getFieldErrors().stream()
-                    .map(error->error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
+    @PutMapping(value = "update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @ModelAttribute HotelUpdate hotelRequest
+            , @RequestPart(value = "image",required = false)MultipartFile image) {
         try {
-            hotelService.update(hotelRequest,id);
+            hotelService.update(hotelRequest,id,image);
             return ResponseEntity.ok(RequestResponse.success("Hotel updated successfully"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

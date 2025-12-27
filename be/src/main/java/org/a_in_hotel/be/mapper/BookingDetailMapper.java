@@ -48,11 +48,14 @@ public interface BookingDetailMapper {
         if (req.getRoomId() != null) {
             Room room = roomRepo.getReferenceById(req.getRoomId());
             detail.setRoomName(room.getRoomName());
+            detail.setActive(true);
+            detail.setRoomNumber(room.getRoomNumber());
             detail.setRoomType(room.getRoomType().getName());
         }
 
         // snapshot extra service name
         if (req.getExtraServiceId() != null) {
+            detail.setActive(true);
             ExtraService service = extraRepo.getReferenceById(req.getExtraServiceId());
             detail.setExtraServiceName(service.getServiceName());
         }

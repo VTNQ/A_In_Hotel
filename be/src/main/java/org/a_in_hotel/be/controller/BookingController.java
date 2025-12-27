@@ -43,7 +43,12 @@ public class BookingController {
                 new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,all));
         return ResponseEntity.ok(RequestResponse.success(pageResponse));
     }
-
+    @GetMapping("/{id}/active-details")
+    public ResponseEntity<RequestResponse<BookingResponse>> findByIdAndDetailsActiveTrue(
+            @PathVariable Long id
+    ){
+        return ResponseEntity.ok(RequestResponse.success(service.findByIdAndDetailsActiveTrue(id)));
+    }
     @GetMapping("/{id}")
     public ResponseEntity<RequestResponse<BookingResponse>> getBookingById
             (

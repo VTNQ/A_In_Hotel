@@ -13,4 +13,5 @@ public class HotelResponse {
     private Long createdAt;
     private Long idUser;
     private Integer status;
+    private ImageResponse thumbnail;
 }

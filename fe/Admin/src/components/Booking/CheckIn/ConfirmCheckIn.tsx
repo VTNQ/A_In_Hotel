@@ -1,7 +1,7 @@
 import { BedDouble, Calendar, CheckCircle2, CreditCard, User, X } from "lucide-react";
 import type { CheckInBookingResponse } from "../../../type/booking.types";
 import { useEffect, useState } from "react";
-import { GetBookingById } from "../../../service/api/Booking";
+import { findByIdAndDetailsActiveTrue } from "../../../service/api/Booking";
 
 const ConfirmCheckIn = ({
   open,
@@ -49,7 +49,7 @@ const ConfirmCheckIn = ({
     const fetchBooking = async () => {
       setLoading(true);
       try {
-        const res = await GetBookingById(id);
+        const res = await findByIdAndDetailsActiveTrue(id);
         setData(res.data.data);
       } catch (err) {
         console.error(err);
