@@ -1,4 +1,5 @@
 import type { ImageResponse } from ".";
+import type { Room } from "./room.types";
 
 export interface Booking {
   step: number;
@@ -90,15 +91,27 @@ export interface CheckInBookingResponse {
   onConfirm: () => void;
 }
 export interface ExtraCharge {
-  id?: number;
+  id?: number | undefined;
   name: string;
   price: number;
-  icon?:ImageResponse;
+  icon?: ImageResponse;
 }
 
 export interface ConfirmCheckOutProps {
   open: boolean;
-  data: any;
   onCancel: () => void;
- onConfirm: () => void;
+  onConfirm: () => void;
+  id: number;
+}
+export interface BookingDetail {
+  bookingDetailId: number;
+  room: Room;
+}
+export interface SwitchRoomModalProps {
+ open: boolean;
+ id:number;
+    onClose: () => void;
+    onConfirm:()=>void;
+
+   
 }

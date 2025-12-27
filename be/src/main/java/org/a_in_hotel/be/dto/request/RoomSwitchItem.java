@@ -12,5 +12,6 @@ public class RoomSwitchItem {
     private Long bookingDetailId;
 
     private Long newRoomId;
-    private Long extraServiceId;
+
+    private String reason;
 }

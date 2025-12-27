@@ -10,11 +10,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class BookingDetailResponse {
 
+    private Long id;
+
     private Long bookingId;
 
     private Long roomId;
 
     private String roomName;
+
+    private String roomNumber;
 
     private String roomType;
 

@@ -24,6 +24,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   const [formData, setFormData] = useState<FacilityForm>({
     serviceName: "",
@@ -54,6 +55,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     if (!open || !facilityId) return;
 
     const fetchData = async () => {
+      setFetching(true);
       try {
         const response = await getFacilityById(Number(facilityId));
         setFormData({
@@ -65,6 +67,8 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
         setPreview(response?.icon?.url ? File_URL + response.icon.url : null);
       } catch (err) {
         console.error(err);
+      } finally {
+        setFetching(false)
       }
     };
 
@@ -145,7 +149,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       setLoading(false);
     }
   };
-  const handleClose=()=>{
+  const handleClose = () => {
     setFormData({
       serviceName: "",
       description: "",
@@ -171,100 +175,111 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
         <DialogHeader>
           <DialogTitle>Edit Facility</DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-4 py-2">
-          {/* Name */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Name</label>
-            <Input
-              name="serviceName"
-              value={formData.serviceName}
-              onChange={handleChange}
-              placeholder="Enter facility name"
-            />
+        {fetching ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
+            <span className="ml-3 text-sm text-gray-500">
+              Loading facility data...
+            </span>
           </div>
+        ) : (
+          <>
+            <div className="space-y-4 py-2">
+              {/* Name */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Name</label>
+                <Input
+                  name="serviceName"
+                  value={formData.serviceName}
+                  onChange={handleChange}
+                  placeholder="Enter facility name"
+                />
+              </div>
 
-          {/* Category */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Category</label>
-            <SelectField
-              items={categories}
-              value={formData.categoryId}
-              onChange={(v) =>
-                setFormData((prev) => ({ ...prev, categoryId: String(v) }))
-              }
-              placeholder="Select category"
-              getValue={(i) => String(i.id)}
-              getLabel={(i) => i.name}
-            />
-          </div>
+              {/* Category */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Category</label>
+                <SelectField
+                  items={categories}
+                  value={formData.categoryId}
+                  onChange={(v) =>
+                    setFormData((prev) => ({ ...prev, categoryId: String(v) }))
+                  }
+                  placeholder="Select category"
+                  getValue={(i) => String(i.id)}
+                  getLabel={(i) => i.name}
+                />
+              </div>
 
-          {/* Cover Image */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Cover Image</label>
+              {/* Cover Image */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Cover Image</label>
 
-            <label
-              htmlFor="cover-upload"
-              className="flex aspect-video cursor-pointer items-center justify-center
+                <label
+                  htmlFor="cover-upload"
+                  className="flex aspect-video cursor-pointer items-center justify-center
                          rounded-lg border-2 border-dashed border-gray-300
                          bg-gray-50 hover:border-primary"
-            >
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="h-full w-full rounded-lg object-cover"
+                >
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="h-full w-full rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="text-center text-sm text-gray-500">
+                      <p className="font-medium">Click to upload</p>
+                      <p className="text-xs">PNG, JPG, SVG</p>
+                    </div>
+                  )}
+                </label>
+
+                <input
+                  id="cover-upload"
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml"
+                  className="hidden"
+                  onChange={onFileInputChange}
                 />
-              ) : (
-                <div className="text-center text-sm text-gray-500">
-                  <p className="font-medium">Click to upload</p>
-                  <p className="text-xs">PNG, JPG, SVG</p>
-                </div>
-              )}
-            </label>
+              </div>
 
-            <input
-              id="cover-upload"
-              type="file"
-              accept="image/png,image/jpeg,image/svg+xml"
-              className="hidden"
-              onChange={onFileInputChange}
-            />
-          </div>
+              {/* Description */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Description</label>
+                <Textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="Shown to customer"
+                />
+              </div>
 
-          {/* Description */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Description</label>
-            <Textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={3}
-              placeholder="Shown to customer"
-            />
-          </div>
+              {/* Note */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Note</label>
+                <Textarea
+                  name="note"
+                  value={formData.note}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder="Internal note"
+                />
+              </div>
 
-          {/* Note */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Note</label>
-            <Textarea
-              name="note"
-              value={formData.note}
-              onChange={handleChange}
-              rows={2}
-              placeholder="Internal note"
-            />
-          </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={handleClose} disabled={loading}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSubmit} disabled={loading}>
+                  {loading ? "Đang lưu..." : "Lưu"}
+                </Button>
+              </DialogFooter>
+            </div>
+          </>
+        )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={handleClose} disabled={loading}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? "Đang lưu..." : "Lưu"}
-            </Button>
-          </DialogFooter>
-        </div>
       </DialogContent>
     </Dialog>
   );

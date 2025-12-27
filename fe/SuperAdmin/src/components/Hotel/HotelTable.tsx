@@ -4,6 +4,7 @@ import { Badge, Pencil } from "lucide-react";
 import { SelectField } from "../ui/select";
 import { Button } from "../ui/button";
 import { STATUS_OPTIONS, STATUS_STYLES, type Status } from "@/type/common";
+import { File_URL } from "@/setting/constant/app";
 
 const HotelTable = ({
     rows,
@@ -27,20 +28,32 @@ const HotelTable = ({
 
             <TableHeader>
                 <TableRow>
-                    <TableHead>#</TableHead>
-                    <TableHead sortable sortKey="code">Mã</TableHead>
-                    <TableHead sortable sortKey="name">Tên</TableHead>
-                    <TableHead>Địa chỉ</TableHead>
-                    <TableHead>Trạng thái</TableHead>
-                    <TableHead>Thao tác</TableHead>
+                    <TableHead sortable sortKey="code">code</TableHead>
+                    <TableHead>Image</TableHead>
+                    <TableHead sortable sortKey="name">name</TableHead>
+                    <TableHead>address</TableHead>
+                    <TableHead>status</TableHead>
+                    <TableHead>action</TableHead>
                 </TableRow>
             </TableHeader>
 
             <TableBody>
-                {rows.map((row, idx) => (
+                {rows.map((row) => (
                     <TableRow key={row.id}>
-                        <TableCell>{idx + 1}</TableCell>
+                    
                         <TableCell>{row.code}</TableCell>
+                        <TableCell>
+                            <img
+                                src={row.thumbnail != null
+                                    ? File_URL + row.thumbnail?.url
+                                    : "/default.webp"
+                                }
+                                alt={row.thumbnail?.altText}
+                                width="60"
+                                height="50"
+                                style={{ objectFit: "cover", borderRadius: 8 }}
+                            />
+                        </TableCell>
                         <TableCell>{row.name}</TableCell>
                         <TableCell>{row.address}</TableCell>
                         <TableCell>
@@ -64,7 +77,7 @@ const HotelTable = ({
                         </TableCell>
                         <TableCell>
                             <Button size="sm" variant="outline" onClick={() => onEdit(row)}>
-                                <Pencil className="mr-1 h-4 w-4" /> Sửa
+                                <Pencil className="mr-1 h-4 w-4" /> Edit
                             </Button>
                         </TableCell>
                     </TableRow>

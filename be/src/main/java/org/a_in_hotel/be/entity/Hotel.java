@@ -39,6 +39,8 @@ public class Hotel {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
+    @Transient
+    private Image thumbnail;
 
     @PreUpdate
     void onUpdate() {

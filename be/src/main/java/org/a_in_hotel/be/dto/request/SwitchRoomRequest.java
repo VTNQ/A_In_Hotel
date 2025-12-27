@@ -13,5 +13,4 @@ public class SwitchRoomRequest {
 
     private List<RoomSwitchItem> items;
 
-    private String reason;
 }

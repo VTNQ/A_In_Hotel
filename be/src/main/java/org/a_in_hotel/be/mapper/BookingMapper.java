@@ -30,6 +30,7 @@ public interface BookingMapper extends CommonMapper {
                                  + "(request.getBookingPackage()).getCode() : null )"),
 
             @Mapping(target = "createdBy", source = "userId"),
+            @Mapping(target = "hotelId",source = "hotelId"),
             @Mapping(target = "updatedBy", source = "userId"),
             @Mapping(target = "payment", ignore = true)
     })
@@ -38,7 +39,8 @@ public interface BookingMapper extends CommonMapper {
             @Context BookingDetailMapper detailMapper,
             @Context RoomRepository roomRepository,
             @Context ExtraServiceRepository extraServiceRepository,
-            Long userId);
+            Long userId,
+            Long hotelId);
     default List<Payment> mapPaymentRequestToList(PaymentRequest request) {
         if (request == null) return new ArrayList<>();
 

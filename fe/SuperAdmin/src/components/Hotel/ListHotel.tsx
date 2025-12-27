@@ -48,6 +48,7 @@ const ListHotel: React.FC = () => {
         status: Number(i.status) as HotelStatus,
         fullName: i.fullName,
         idUser: i.idUser,
+        thumbnail: i.thumbnail
       }));
 
       setRows(list);
@@ -98,7 +99,7 @@ const ListHotel: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Danh sách khách sạn</h2>
+        <h2 className="text-xl font-semibold">Hotel List</h2>
 
         <HotelFilter
           search={search}
@@ -122,7 +123,7 @@ const ListHotel: React.FC = () => {
         onStatusChange={updateStatus}
       />
       <HotelEditModal
-        open={!! editingRow}
+        open={!!editingRow}
         hotelId={Number(editingRow?.id)}
         onClose={()=>setEditingRow(null)}
         onSubmit={fetchHotels}

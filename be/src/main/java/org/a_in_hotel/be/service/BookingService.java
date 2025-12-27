@@ -26,4 +26,6 @@ public interface BookingService {
     void confirmCheckOut(Long bookingId, CheckOutRequest request);
 
     void switchRoom(Long bookingId, SwitchRoomRequest request);
+
+    BookingResponse findByIdAndDetailsActiveTrue(Long id);
 }

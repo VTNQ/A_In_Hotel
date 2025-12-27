@@ -8,13 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../components/alert-context";
 import ConfirmCheckIn from "../../components/Booking/CheckIn/ConfirmCheckIn";
 import ConfirmCheckOut from "../../components/Booking/CheckOut/ConfirmCheckOut";
+import SwitchRoomModal from "../../components/Booking/SwitchRoom/SwitchRoomModal";
+import { getTokens } from "../../util/auth";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [bookingDate, setBookingDate] = useState("");
-
+    const [openSwitchRoom,setOpenSwitchRoom] = useState(false);
     const [sortKey, setSortKey] = useState<string>("id");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchValue, setSearchValue] = useState("");
@@ -39,10 +41,14 @@ const ViewBooking = () => {
         setSelectedBooking(booking);
         setOpenCheckout(true);
     };
+    const handleSwitchRoom = (booking: any) => {
+        setSelectedBooking(booking);
+        setOpenSwitchRoom(true);
+    }
     const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
         setLoading(true);
         try {
-            let filters: string[] = [];
+            let filters: string[] = [`hotelId==${getTokens()?.hotelId}`];
             if (statusFilter) {
                 filters.push(`status==${statusFilter}`);
             }
@@ -185,6 +191,7 @@ const ViewBooking = () => {
                     booking={row}
                     onCheckOut={() => handleOpenCheckout(row)}
                     onCheckIn={() => handleConfirmCheckIn(row)}
+                    onSwitchRoom={()=>handleSwitchRoom(row)}
                 />
             ),
         },
@@ -268,9 +275,15 @@ const ViewBooking = () => {
             />
             <ConfirmCheckOut
                 open={openCheckout}
-                data={selectedBooking}
+                id={selectedBooking?.id}
                 onCancel={() => setOpenCheckout(false)}
                 onConfirm={() => fetchData()}
+            />
+            <SwitchRoomModal
+                open={openSwitchRoom}
+                onConfirm={()=>fetchData()}
+                onClose={() => setOpenSwitchRoom(false)}
+                id={selectedBooking?.id}
             />
 
         </div>
