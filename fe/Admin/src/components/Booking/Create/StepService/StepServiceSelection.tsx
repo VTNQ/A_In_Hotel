@@ -27,6 +27,7 @@ const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
                     `hotelId==${hotelId}`,
                     `price>0`,
                     `isActive==true`,
+                    `type==2`
                 ];
 
                 if (category) {

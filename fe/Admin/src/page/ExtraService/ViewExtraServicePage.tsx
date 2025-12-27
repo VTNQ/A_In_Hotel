@@ -35,6 +35,8 @@ const ViewExtraServicePage = () => {
     if (statusFilter) {
       filters.push(`isActive==${statusFilter}`);
     }
+    filters.push("type==2")
+    filters.push("price>0")
 
     // Nếu có category (id)
     if (categoryFilter) {
