@@ -251,7 +251,7 @@ const ViewAssetPage = () => {
 
     const fetchCategory = async () => {
         try {
-            const res = await getAllCategory({ page: 1, size: 10, searchField: "type", searchValue: "3", filter: "isActive==1" });
+            const res = await getAllCategory({ all:true, filter: "isActive==1 and type==3" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)

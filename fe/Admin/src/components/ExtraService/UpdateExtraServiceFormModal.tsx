@@ -72,7 +72,7 @@ const UpdateExtraServiceFormModal = ({
     };
     const fetchCategories = async () => {
         try {
-            const res = await getAllCategory({ all: true, searchField: "type", searchValue: "2", filter: "isActive==1" });
+            const res = await getAllCategory({ all: true, filter: "isActive==1 and type==2" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)
