@@ -1,4 +1,5 @@
 import { BedDouble, Building2, FileText, HelpCircle, LayoutDashboard, LogOut, NotebookPen, Settings, UserCog, Users } from "lucide-react";
+import { clearTokens } from "../../util/auth";
 
 export const SECTIONS = [
     {
@@ -34,7 +35,10 @@ export const SECTIONS = [
         items: [
             { label: "Help & support", icon: HelpCircle },
             { label: "Setting", icon: Settings },
-            { label: "log out", icon: LogOut },
+            { label: "log out", icon: LogOut,onClick:()=>{
+                clearTokens();
+                window.location.href="/";
+            } },
         ]
     }
 ]
