@@ -17,7 +17,7 @@ const ListHotel: React.FC = () => {
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editingRow,setEditingRow]= useState<HotelRow | null>(null);
+  const [editingRow, setEditingRow] = useState<HotelRow | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
@@ -37,6 +37,7 @@ const ListHotel: React.FC = () => {
         size: pageSize,
         sort: sortKey ? `${sortKey},${sortDir}` : "id,desc",
         searchValue: search,
+        filter: "status==1"
       });
 
       const list: HotelRow[] = resp.data.content.map((i: any) => ({
@@ -66,17 +67,18 @@ const ListHotel: React.FC = () => {
   }, [page, sortKey, sortDir, search]);
 
   // ================= ACTION =================
-  const updateStatus = async (row: HotelRow, next: HotelStatus) => {
+  const updateStatus = async (row: HotelRow) => {
+    const prevRows = rows;
+
+    setRows((prev) =>
+      prev.filter((r) => r.id !== row.id) 
+    );
     try {
-      await UpdateStatusHotel(row.id, next);
-      showAlert({
-        title: "Cập nhật trạng thái thành công",
-        type: "success",
-      });
-      fetchHotels();
+      await UpdateStatusHotel(row.id, 0);
     } catch {
+      setRows(prevRows);
       showAlert({
-        title: "Cập nhật trạng thái thất bại",
+        title: "Xoá khách sạn thất bại",
         type: "error",
       });
     }
@@ -93,7 +95,7 @@ const ListHotel: React.FC = () => {
     );
     setSortKey(key);
   };
-  
+
 
   // ================= RENDER =================
   return (
@@ -119,15 +121,15 @@ const ListHotel: React.FC = () => {
         sortKey={sortKey}
         sortDir={sortDir}
         onSortChange={handleSort}
-        onEdit={(row:any) => setEditingRow(row)}
-        onStatusChange={updateStatus}
+        onEdit={(row: any) => setEditingRow(row)}
+        onDelete={(row: any) => updateStatus(row)}
       />
       <HotelEditModal
         open={!!editingRow}
         hotelId={Number(editingRow?.id)}
-        onClose={()=>setEditingRow(null)}
+        onClose={() => setEditingRow(null)}
         onSubmit={fetchHotels}
-        />
+      />
     </div>
   );
 };
