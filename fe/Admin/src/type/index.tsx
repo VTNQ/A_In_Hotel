@@ -169,7 +169,6 @@ export interface ExtraService {
 
 export interface ExtraServiceActionMenuProps {
     service: ExtraService;
-    onView?: (service: ExtraService) => void;
     onEdit?: (service: ExtraService) => void;
     onActivate?: (service: ExtraService) => void;
     onDeactivate?: (service: ExtraService) => void;
