@@ -1,16 +1,14 @@
 import type { HotelRow, HotelTableProps } from "@/type/hotel.types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Badge, Pencil } from "lucide-react";
-import { SelectField } from "../ui/select";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { STATUS_OPTIONS, STATUS_STYLES, type Status } from "@/type/common";
 import { File_URL } from "@/setting/constant/app";
 
 const HotelTable = ({
     rows,
     loading,
     onEdit,
-    onStatusChange,
+    onDelete,
     sortKey,
     sortDir,
     onSortChange
@@ -32,7 +30,8 @@ const HotelTable = ({
                     <TableHead>Image</TableHead>
                     <TableHead sortable sortKey="name">name</TableHead>
                     <TableHead>address</TableHead>
-                    <TableHead>status</TableHead>
+                    <TableHead>Manager</TableHead>
+
                     <TableHead>action</TableHead>
                 </TableRow>
             </TableHeader>
@@ -40,7 +39,7 @@ const HotelTable = ({
             <TableBody>
                 {rows.map((row) => (
                     <TableRow key={row.id}>
-                    
+
                         <TableCell>{row.code}</TableCell>
                         <TableCell>
                             <img
@@ -56,7 +55,8 @@ const HotelTable = ({
                         </TableCell>
                         <TableCell>{row.name}</TableCell>
                         <TableCell>{row.address}</TableCell>
-                        <TableCell>
+                        <TableCell>{row.fullName}</TableCell>
+                        {/* <TableCell>
                             <div className="flex items-center gap-2">
                                 <Badge className={STATUS_STYLES[row.status]}>
                                     {row.status}
@@ -74,11 +74,28 @@ const HotelTable = ({
                                     getLabel={(i) => i.label}
                                 />
                             </div>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
-                            <Button size="sm" variant="outline" onClick={() => onEdit(row)}>
-                                <Pencil className="mr-1 h-4 w-4" /> Edit
-                            </Button>
+                            <div className="flex gap-2">
+                                {/* Edit */}
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => onEdit(row)}
+                                >
+                                    <Pencil className="mr-1 h-4 w-4" />
+                                    Edit
+                                </Button>
+
+                                {/* Delete */}
+                                <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => onDelete(row)}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </TableCell>
                     </TableRow>
                 ))}

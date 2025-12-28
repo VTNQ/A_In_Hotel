@@ -6,6 +6,7 @@ import OurBlog from "../components/Home/OurBlog";
 import AboutOurHotel from "../components/Home/AboutOurHotel";
 import BookAppointmentSection from "../components/Home/BookAppointmentSection";
 import RoomAndSuites from "../components/Home/RoomAndSuites";
+import DecorateSlider from "../components/Home/DecorateSlider";
 
 const HomePage = () => {
  return(
@@ -15,6 +16,7 @@ const HomePage = () => {
   <AboutOurHotel/>
   <OurBlog/> 
   <RoomAndSuites/>
+  <DecorateSlider/>
   <FacilitiesSection/>  
   <BookAppointmentSection/>
 </div>

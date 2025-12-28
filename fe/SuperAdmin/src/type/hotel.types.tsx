@@ -35,9 +35,9 @@ export interface HotelTableProps {
     rows:HotelRow[];
     loading:boolean;
     onEdit: (row: HotelRow)=>void;
+    onDelete:(row:HotelRow)=>void;
     sortKey: keyof HotelRow | null;
     sortDir: "asc" | "desc";
-    onStatusChange:(row:HotelRow,status:Status)=>void;
     onSortChange: (key: keyof HotelRow) => void;
 }
 
