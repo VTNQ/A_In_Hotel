@@ -26,7 +26,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
             isOpen={isOpen}
             onClose={onClose}
             title="Amenities & Asset Tracking"
-            width="w-[95vw] sm:w-[90vw] lg:w-[500px]"
+            width="w-[95vw] sm:w-[90vw] lg:w-[560px]"
             isBorderBottom={true}
             withCenter="text-left"
 

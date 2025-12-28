@@ -32,13 +32,17 @@ const SideBarItem = ({
   }, [isParentActive]);
 
   const handleClick = () => {
-    if (item.children) {
-      setOpen((prev) => !prev);
-    } else if (item.path) {
-      navigate(item.path);
-      onNavigate?.(); // đóng sidebar mobile
-    }
-  };
+  if (item.children) {
+    setOpen((prev) => !prev);
+  } else if (item.onClick) {
+    item.onClick();
+    onNavigate?.();
+  } else if (item.path) {
+    navigate(item.path);
+    onNavigate?.();
+  }
+};
+
 
   return (
     <div>

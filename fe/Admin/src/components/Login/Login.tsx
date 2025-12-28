@@ -5,11 +5,9 @@ import { login } from "../../service/api/Authenticate";
 import { saveTokens } from "../../util/auth";
 import { useNavigate } from "react-router-dom";
 import { AlertModal, type AlertType } from "../AlertModal";
-
-
-
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,30 +22,36 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFilled) {
-      setError("Vui lòng nhập đầy đủ email và mật khẩu!");
-      return;
-    }
+
+    if (!isFilled || loading) return;
+
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
     try {
       const response = await login(email, password);
-      console.log(response);
+
       if (response.data.role === "ADMIN") {
-        setSuccess("Đăng nhập thành công!");
         saveTokens({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
-          hotelId: response.data.hotelId
-        })
+          hotelId: response.data.hotelId,
+        });
+
+        setSuccess("Đăng nhập thành công!");
       } else {
         setError("Bạn không có quyền truy cập hệ thống.");
       }
     } catch (err) {
-      console.log(err);
       setError("Đăng nhập thất bại. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   useEffect(() => {
     if (error) {
       setModalCfg({
@@ -199,13 +203,47 @@ export default function Login() {
                 </div>
                 <button
                   type="submit"
-                  className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
-                    ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                    : "bg-[#7C7C7C] cursor-not-allowed"
-                    }`}
+                  disabled={!isFilled || loading}
+                  onClick={handleLogin}
+                  className={`relative w-full h-[40px] rounded-md py-2 font-semibold text-white transition-colors ${!isFilled || loading
+                      ? "bg-[#7C7C7C] cursor-not-allowed"
+                      : "bg-[#4B62A0] hover:bg-[#3c4e7f]"}`}
                 >
-                  Login
+                  {/* Text */}
+                  <span
+                    className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
+                      }`}
+                  >
+                    Login
+                  </span>
+
+                  {/* Spinner */}
+                  {loading && (
+                    <span className="absolute inset-0 flex items-center justify-center gap-2">
+                      <svg
+                        className="w-4 h-4 animate-spin text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                      <span>Logging in...</span>
+                    </span>
+                  )}
                 </button>
+
               </form>
               <AlertModal
                 open={modalOpen}
@@ -300,13 +338,47 @@ export default function Login() {
             {/* NÚT LOGIN — HOÀN TOÀN BÊN NGOÀI BOX XANH */}
             <button
               type="submit"
+              disabled={!isFilled || loading}
               onClick={handleLogin}
-              className={`w-full rounded-md py-2 font-semibold text-white transition-colors mt-3 ${isFilled
-                ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                : "bg-[#4B62A0] cursor-not-allowed"
+              className={`relative w-full h-[40px] mt-4 rounded-md py-2 font-semibold text-white transition-colors
+    ${!isFilled || loading
+                  ? "bg-[#7C7C7C] cursor-not-allowed"
+                  : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
                 }`}
             >
-              Login
+              {/* Text */}
+              <span
+                className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
+                  }`}
+              >
+                Login
+              </span>
+
+              {/* Spinner */}
+              {loading && (
+                <span className="absolute inset-0 flex items-center justify-center gap-2">
+                  <svg
+                    className="w-4 h-4 animate-spin text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  <span>Logging in...</span>
+                </span>
+              )}
             </button>
 
           </div>

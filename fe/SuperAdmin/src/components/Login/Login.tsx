@@ -13,6 +13,7 @@ export default function Login() {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isFilled = email.trim() !== "" && password.trim() !== "";
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCfg, setModalCfg] = useState<{
@@ -23,27 +24,32 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFilled) {
-      setError("Vui lòng nhập đầy đủ email và mật khẩu!");
-      return;
-    }
+
+    if (!isFilled || loading) return;
+
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
     try {
       const response = await login(email, password);
-      console.log(response);
-      if (response.data.role === "SUPERADMIN" || response.data.role ==="CHILDSUPERADMIN") {
-        setSuccess("Đăng nhập thành công!");
+
+      if (response.data.role === "SUPERADMIN" || response.data.role === "CHILDSUPERADMIN") {
         saveTokens({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
-        })
+        });
+
+        setSuccess("Đăng nhập thành công!");
       } else {
         setError("Bạn không có quyền truy cập hệ thống.");
       }
     } catch (err) {
-      console.log(err);
       setError("Đăng nhập thất bại. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -197,13 +203,50 @@ export default function Login() {
                 </div>
                 <button
                   type="submit"
-                  className={`w-full rounded-md py-2 font-semibold text-white transition-colors ${isFilled
-                    ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                    : "bg-[#7C7C7C] cursor-not-allowed"
-                    }`}
+                  disabled={!isFilled || loading}
+                  onClick={handleLogin}
+                  className={`relative w-full h-[40px] rounded-md py-2 font-semibold text-white transition-colors
+    ${!isFilled || loading
+                      ? "bg-[#7C7C7C] cursor-not-allowed"
+                      : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+                    }
+  `}
                 >
-                  Login
+                  {/* Text */}
+                  <span
+                    className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
+                      }`}
+                  >
+                    Login
+                  </span>
+
+                  {/* Spinner */}
+                  {loading && (
+                    <span className="absolute inset-0 flex items-center justify-center gap-2">
+                      <svg
+                        className="w-4 h-4 animate-spin text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                      <span>Logging in...</span>
+                    </span>
+                  )}
                 </button>
+
               </form>
               <AlertModal
                 open={modalOpen}
@@ -283,7 +326,7 @@ export default function Login() {
                     <a
                       href="/register"
                       className="text-sm text-[#007AFF]  hover:underline"
-                      style={{ fontWeight:'400' }}
+                      style={{ fontWeight: '400' }}
                     >
                       Forgot Password?
                     </a>
@@ -304,18 +347,55 @@ export default function Login() {
                   }}
                 />
               </div>
-              
+
             </div>
-            
+
             <button
-                    type="submit"
-                    className={`w-full rounded-md py-2 font-semibold text-white transition-colors mt-3 ${isFilled
-                      ? "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                      : "bg-[#4B62A0] cursor-not-allowed"
-                      }`}
+              type="submit"
+              disabled={!isFilled || loading}
+              onClick={handleLogin}
+              className={`relative w-full mt-3 h-[40px] rounded-md py-2 font-semibold text-white transition-colors
+    ${!isFilled || loading
+                  ? "bg-[#7C7C7C] cursor-not-allowed"
+                  : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+                }
+  `}
+            >
+              {/* Text */}
+              <span
+                className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
+                  }`}
+              >
+                Login
+              </span>
+
+              {/* Spinner */}
+              {loading && (
+                <span className="absolute inset-0 flex items-center justify-center gap-2">
+                  <svg
+                    className="w-4 h-4 animate-spin text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
                   >
-                    Login
-                  </button>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  <span>Logging in...</span>
+                </span>
+              )}
+            </button>
+
           </div>
 
 
