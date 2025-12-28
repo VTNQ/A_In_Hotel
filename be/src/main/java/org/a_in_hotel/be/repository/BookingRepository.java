@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Long>,
@@ -33,5 +34,14 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
     List<Booking> findBookingsForRoomUpdate(
             @Param("packages") List<Integer> bookingPackages,
             @Param("status") Integer status);
+    @Query("""
+    select distinct b
+    from Booking b
+    join fetch b.details d
+    where b.id = :id
+      and d.active = true
+""")
+    Optional<Booking> findByIdFetchActiveDetail(Long id);
+
 
 }

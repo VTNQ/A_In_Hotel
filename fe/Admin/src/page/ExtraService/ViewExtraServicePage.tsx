@@ -35,6 +35,8 @@ const ViewExtraServicePage = () => {
     if (statusFilter) {
       filters.push(`isActive==${statusFilter}`);
     }
+    filters.push("type==2")
+    filters.push("price>0")
 
     // Nếu có category (id)
     if (categoryFilter) {
@@ -63,10 +65,8 @@ const ViewExtraServicePage = () => {
   const fetchCategory = async () => {
     try {
       const res = await getAllCategory({
-        page: 1,
-        size: 10,
-        searchField: "type",
-        searchValue: "2",
+        all: true,
+        filter: "isActive==1 and type==2"
       });
       setCategory(res.content || []);
     } catch (err) {
@@ -336,21 +336,21 @@ const ViewExtraServicePage = () => {
         </div>
         {/* Category */}
         <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-            <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
+          <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
             Category
           </div>
-           <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
-            >
-              <option value="">All</option>
-              {category.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+          >
+            <option value="">All</option>
+            {category.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* ✅ Deactivated checkbox */}

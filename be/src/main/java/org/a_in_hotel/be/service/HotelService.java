@@ -8,13 +8,14 @@ import org.a_in_hotel.be.dto.response.FacilityResponse;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.entity.Hotel;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface HotelService {
-    void save(HotelRequest branch);
+    void save(HotelRequest hotel, MultipartFile file);
 
-    void update(HotelUpdate branch, Long id);
+    void update(HotelUpdate branch, Long id,MultipartFile file);
 
     void updateStatus(Integer branchStatus, Long id);
 

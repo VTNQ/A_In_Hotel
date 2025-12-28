@@ -15,9 +15,9 @@ const HotelFilter = ({
     <div className="flex items-center gap-2">
       <SelectField
         items={[
-          { value: "ALL", label: "Tất cả" },
-          { value: "1", label: "Hoạt động" },
-          { value: "0", label: "Không hoạt động" },
+          { value: "ALL", label: "All" },
+          { value: "1", label: "Active" },
+          { value: "0", label: "InActive" },
         ]}
         value={statusFilter === "ALL" ? "ALL" : String(statusFilter)}
         onChange={(v) =>
@@ -35,11 +35,12 @@ const HotelFilter = ({
         <Input
           className="pl-9"
           value={search}
+          placeholder="Search by code,name"
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
       <Button asChild>
-        <a href="/Home/hotel/create">+ Thêm khách sạn</a>
+        <a href="/Home/hotel/create">+ Create Hotel</a>
       </Button>
     </div>
   )

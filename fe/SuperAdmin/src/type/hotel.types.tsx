@@ -1,10 +1,11 @@
 
-import type { Status } from "./common";
+import type { ImageResponse, Status } from "./common";
 
 export interface HotelFormData {
     name: string;
     address: string;
     idUser?: number | null;
+    image:null | File;
 }
 
 
@@ -18,6 +19,7 @@ export interface HotelRow {
     createdOn: string | number;
     status: Status;
     address: string;
+    thumbnail:ImageResponse;
     fullName?: string;
     idUser: number | null;
 }

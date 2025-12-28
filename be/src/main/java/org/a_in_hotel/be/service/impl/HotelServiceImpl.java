@@ -2,15 +2,19 @@ package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.HotelStatus;
 import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
 import org.a_in_hotel.be.dto.response.FacilityResponse;
+import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.HotelMapper;
+import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.EmailService;
@@ -24,14 +28,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class HotelServiceImpl implements HotelService {
 
     private static final Map<String, String> FIELD_NAME_VI = Map.of(
@@ -40,35 +48,25 @@ public class HotelServiceImpl implements HotelService {
             "uk_hotels_name", "Tên khách sạn"
     );
 
-    @Autowired
-    private HotelRepository hotelRepository;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private AssetRepository assetRepository;
-    @Autowired
-    private ExtraServiceRepository extraServiceRepository;
-    @Autowired
-    private StaffRepository staffRepository;
-    @Autowired
-    private SecurityUtils securityUtils;
-    @Autowired
-    private HotelMapper hotelMapper;
-    @Autowired
-    private ImageRepository imageRepository;
-    @Autowired
-    private GeneralService generalService;
-
+    private final HotelRepository hotelRepository;
+    private final EmailService emailService;
+    private final AccountRepository accountRepository;
+    private final AssetRepository assetRepository;
+    private final ExtraServiceRepository extraServiceRepository;
+    private final StaffRepository staffRepository;
+    private final SecurityUtils securityUtils;
+    private final HotelMapper hotelMapper;
+    private final ImageRepository imageRepository;
+    private final GeneralService generalService;
+    private final ImageMapper imageMapper;
     private static final List<String> SEARCH_FIELDS = List.of("name", "code");
 
     @Override
-    public void save(HotelRequest hotel) {
+    public void save(HotelRequest hotel, MultipartFile file) {
         try {
             log.info("Saving hotel: {}", hotel);
 
-            // Check duplicate account
+
             hotelRepository.findByAccount_Id(hotel.getIdUser()) // giả sử HotelRequest có idUser = accountId
                     .ifPresent(existingHotel -> {
                         String ownerName=staffRepository.findByAccountId(existingHotel.getAccount().getId())
@@ -84,9 +82,22 @@ public class HotelServiceImpl implements HotelService {
                     });
 
             Hotel hotelEntity = hotelMapper.toEntity(hotel,securityUtils.getCurrentUserId());
-            hotelRepository.save(hotelEntity);
-            sendAdminAssignmentEmail(hotelEntity);
 
+            hotelRepository.save(hotelEntity);
+            if(file!=null && !file.isEmpty()){
+                try {
+                    FileUploadMeta fileUploadMeta = generalService.saveFile(file,"hotel");
+                    Image hotelImage = imageMapper.toBannerImage(fileUploadMeta);
+                    hotelImage.setEntityType("hotel");
+                    hotelImage.setEntityId(hotelEntity.getId());
+                    imageRepository.save(hotelImage);
+                }catch (Exception e){
+                    throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Lỗi khi lưu hình ảnh :"+e.getMessage());
+                }
+            }
+            sendAdminAssignmentEmail(hotelEntity);
+            log.info("Hotel created successfully by {}",securityUtils.getCurrentUserEmail());
         } catch (DataIntegrityViolationException e) {
             String field = resolveConstraintField(e);
             log.warn("Duplicate entry on field: {}", field);
@@ -122,48 +133,89 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public void update(HotelUpdate hotel, Long id) {
+    public void update(HotelUpdate hotel, Long id, MultipartFile file) {
         try {
-            Hotel currentHotel = hotelRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Hotel id=" + id + " không tồn tại"));
+           Hotel currentHotel = hotelRepository.findById(id)
+                   .orElseThrow(()->new EntityNotFoundException(
+                           "Hotel id=" + id + " không tồn tại"));
 
-            Long newAccountId = hotel.getIdUser();
-            Long oldAccountId = currentHotel.getAccount() !=null
+           Long newAccountId = hotel.getIdUser();
+            Long oldAccountId = currentHotel.getAccount() != null
                     ? currentHotel.getAccount().getId()
-                    :null;
+                    : null;
 
-            if(oldAccountId!=null && oldAccountId.equals(newAccountId)){
-                hotelMapper.updateEntity(hotel,currentHotel,
-                        securityUtils.getCurrentUserId());
-                hotelRepository.save(currentHotel);
-                return;
+            hotelMapper.updateEntity(
+                    hotel,
+                    currentHotel,
+                    securityUtils.getCurrentUserId()
+            );
+
+            if(newAccountId !=null && !newAccountId.equals(oldAccountId)){
+                hotelRepository.findByAccount_Id(newAccountId)
+                        .ifPresent(otherHotel -> {
+                            if (!otherHotel.getId().equals(currentHotel.getId())) {
+                                log.warn(
+                                        "Account {} đang quản lý hotel {} → gỡ khỏi hotel cũ",
+                                        newAccountId,
+                                        otherHotel.getName()
+                                );
+                                otherHotel.setAccount(null);
+                                otherHotel.setUpdatedBy(
+                                        securityUtils.getCurrentUserId().toString()
+                                );
+                                hotelRepository.save(otherHotel);
+                            }
+                        });
+                Account newAccount = accountRepository.getReferenceById(newAccountId);
+                currentHotel.setAccount(newAccount);
             }
-            hotelRepository.findByAccount_Id(newAccountId)
-                    .ifPresent(otherHotel -> {
+            if (file != null && !file.isEmpty()) {
 
-                        // Nếu là chính hotel đang update thì bỏ qua
-                        if (otherHotel.getId().equals(id)) {
-                            return;
-                        }
+                Image oldImage = imageRepository
+                        .findFirstByEntityIdAndEntityType(
+                                currentHotel.getId(),
+                                "hotel"
+                        )
+                        .orElse(null);
 
+                // Xóa ảnh cũ
+                if (oldImage != null) {
+                    try {
+                        generalService.deleFile(oldImage.getUrl());
+                    } catch (Exception e) {
                         log.warn(
-                                "Account {} đang quản lý hotel {} → gỡ khỏi hotel cũ",
-                                newAccountId, otherHotel.getName()
+                                "⚠️ Không thể xóa ảnh cũ {}: {}",
+                                oldImage.getUrl(),
+                                e.getMessage()
                         );
+                    }
+                    imageRepository.delete(oldImage);
+                }
 
-                        // 4️⃣ Gỡ account khỏi hotel cũ
-                        otherHotel.setAccount(null);
-                        otherHotel.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-                        hotelRepository.save(otherHotel);
-                    });
-            Account newAccount = accountRepository.getReferenceById(newAccountId);
-            currentHotel.setAccount(newAccount);
-            hotelMapper.updateEntity(hotel, currentHotel,
-                    securityUtils.getCurrentUserId());
-
+                // Upload ảnh mới
+                FileUploadMeta meta;
+                try {
+                    meta = generalService.saveFile(file, "hotel");
+                } catch (IOException e) {
+                    throw new ErrorHandler(
+                            HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Lỗi upload file: " + e.getMessage()
+                    );
+                }
+                Image newImage = imageMapper.toBannerImage(meta);
+                newImage.setEntityType("hotel");
+                newImage.setEntityId(currentHotel.getId());
+                imageRepository.save(newImage);
+            }
             hotelRepository.save(currentHotel);
+
             sendAdminAssignmentEmail(currentHotel);
+
+            log.info(
+                    "Hotel {} updated successfully by {}",
+                    currentHotel.getId(),
+                    securityUtils.getCurrentUserEmail()
+            );
         } catch (DataIntegrityViolationException e) {
             String field = resolveConstraintField(e);
             log.warn("Duplicate entry on field: {}", field);
@@ -201,9 +253,15 @@ public class HotelServiceImpl implements HotelService {
             Specification<Hotel> searchable = SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
 
             Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-            return hotelRepository
-                    .findAll(sortable.and(filterable).and(searchable), pageable)
-                    .map(hotel -> hotelMapper.toResponse(hotel, staffRepository));
+            Page<Hotel> hotels = hotelRepository.findAll(
+                    sortable
+                            .and(filterable)
+                            .and(searchable.and(filterable)),
+                    pageable
+            );
+            return hotels.map(hotel -> hotelMapper.toResponse(hotel,
+                    staffRepository,
+                    imageRepository));
         } catch (Exception e) {
             log.error("Failed to fetch hotels", e);
             throw e;
@@ -218,7 +276,7 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelResponse getHotelById(Long id) {
         return  hotelRepository.findById(id)
-                .map(hotel -> hotelMapper.toResponse(hotel, staffRepository))
+                .map(hotel -> hotelMapper.toResponse(hotel, staffRepository,imageRepository))
                 .orElseThrow(()->new IllegalArgumentException("Hotel not found"));
     }
 

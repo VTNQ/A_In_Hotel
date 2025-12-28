@@ -1,7 +1,7 @@
 import type { HotelEditProps, HotelFormData } from "@/type/hotel.types";
 import type React from "react";
 import { useAlert } from "../alert-context";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAll } from "@/service/api/Authenticate";
 import { getHotelById, updateHotel } from "@/service/api/Hotel";
 import {
@@ -16,6 +16,7 @@ import { Textarea } from "../ui/textarea";
 import { SelectField } from "../ui/select";
 import { Button } from "../ui/button";
 import type { UserResponse } from "@/type/UserResponse";
+import { File_URL } from "@/setting/constant/app";
 
 const HotelEditModal: React.FC<HotelEditProps> = ({
   open,
@@ -25,11 +26,22 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [users, setUsers] = useState<UserResponse[]>([]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview])
   const [formData, setFormData] = useState<HotelFormData>({
     name: "",
     address: "",
     idUser: null,
+    image: null as File | null
   });
 
   const fetchUsers = async () => {
@@ -46,16 +58,21 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
     if (!open || !hotelId) return;
 
     const fetchData = async () => {
+      setFetching(true)
       try {
         const response = await getHotelById(Number(hotelId));
-        console.log(response)
         setFormData({
           name: response?.data?.data?.name || "",
           address: response?.data?.data?.address || "",
           idUser: response?.data?.data?.idUser ?? null,
+          image: null as File | null
         });
+        setImagePreview(response?.data?.data?.thumbnail ?
+          File_URL + response?.data?.data?.thumbnail?.url : null)
       } catch (err) {
         console.error("Failed to fetch hotel:", err);
+      } finally {
+        setFetching(false)
       }
     };
 
@@ -67,7 +84,13 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
     if (loading || !hotelId) return;
     try {
       setLoading(true);
-      const response = await updateHotel(Number(hotelId), formData);
+      const payload = {
+        name: formData.name,
+        address: formData.address,
+        idUser: formData.idUser,
+        image: formData.image
+      }
+      const response = await updateHotel(Number(hotelId), payload);
 
       showAlert({
         title: response?.data?.message ?? "Update hotel success",
@@ -81,7 +104,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       showAlert({
         title: "Update hotel failed",
         description:
-          err?.response?.data?.message || err?.message || "Vui lòng thử lại sau",
+          err?.response?.data?.message || err?.message || "Please try again later",
         type: "error",
         autoClose: 4000,
       });
@@ -89,11 +112,12 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       setLoading(false);
     }
   };
-  const handleClose =()=>{
+  const handleClose = () => {
     setFormData({
       name: "",
       address: "",
       idUser: null,
+      image: null as File | null
     })
     onClose();
   }
@@ -103,48 +127,114 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         <DialogHeader>
           <DialogTitle>Edit hotel information</DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-4 py-2">
-          <div className="grid gap-2">
-            <label className="text-sm">Hotel name</label>
-            <Input
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((f) => ({ ...f, name: e.target.value }))
-              }
-            />
+        {fetching ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
+            <span className="ml-3 text-sm text-gray-500">
+              Loading hotel data...
+            </span>
           </div>
+        ) : (
+          <>
+            <div className="space-y-4 py-2">
+              <div className="grid gap-2">
+                <label className="text-sm">Hotel name</label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((f) => ({ ...f, name: e.target.value }))
+                  }
+                />
+              </div>
 
-          <div className="grid gap-2">
-            <label className="text-sm">Address</label>
-            <Textarea
-              value={formData.address}
-              onChange={(e) =>
-                setFormData((f) => ({ ...f, address: e.target.value }))
-              }
-            />
-          </div>
+              <div className="grid gap-2">
+                <label className="text-sm">Address</label>
+                <Textarea
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData((f) => ({ ...f, address: e.target.value }))
+                  }
+                />
+              </div>
 
-          <div className="grid gap-2">
-            <SelectField<UserResponse>
-              items={users}
-              value={formData.idUser != null ? String(formData.idUser) : null}
-              onChange={(val) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  idUser: val ? Number(val) : null,
-                }))
-              }
-              label="Người quản lý"
-              placeholder="Chọn người quản lý"
-              description="Chọn 1 người để phụ trách phòng."
-              clearable
-              size="md"
-              getValue={(u) => String(u.id)}
-              getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
-            />
-          </div>
-        </div>
+              <div className="grid gap-2">
+                <SelectField<UserResponse>
+                  items={users}
+                  value={formData.idUser != null ? String(formData.idUser) : null}
+                  onChange={(val) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      idUser: val ? Number(val) : null,
+                    }))
+                  }
+                  label="Manager"
+                  placeholder="Choose a manager"
+                  description="Choose one person to be in charge of the room."
+                  clearable
+                  size="md"
+                  getValue={(u) => String(u.id)}
+                  getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
+                />
+              </div>
+              <div>
+                <label className="text-sm">Image</label>
+                <div className="relative mt-2 w-[26%]">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className={`absolute inset-0 cursor-pointer opacity-0 ${imagePreview ? "pointer-events-none" : "z-10"
+                      }`}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setFormData((prev) => ({
+                        ...prev,
+                        image: file,
+                      }));
+                      setImagePreview(URL.createObjectURL(file));
+                    }}
+                  />
+
+                  <div className="flex min-h-[150px] w-[132%] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50  text-center hover:border-[#42578E]">
+                    {!imagePreview ? (
+                      <>
+                        <p className="text-sm font-medium text-slate-600">
+                          Click để upload ảnh khách sạn
+                        </p>
+                      </>
+                    ) : (
+                      <div className="relative w-full">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="h-full w-full rounded-lg "
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setImagePreview(null);
+                            setFormData((prev) => ({
+                              ...prev,
+                              image: null,
+                            }));
+                            if (fileInputRef.current) {
+                              fileInputRef.current.value = "";
+                            }
+                          }}
+                          className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={loading}>
