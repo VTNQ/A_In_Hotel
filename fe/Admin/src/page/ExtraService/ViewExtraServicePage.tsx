@@ -9,6 +9,7 @@ import UpdateExtraServiceFormModal from "../../components/ExtraService/UpdateExt
 import ExtraServiceActionMenu from "../../components/ExtraService/ExtraServiceActionMenu";
 import { getTokens } from "../../util/auth";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const ViewExtraServicePage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -26,6 +27,7 @@ const ViewExtraServicePage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [sortKey, setSortKey] = useState<string>("id");
+  const { t } = useTranslation();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   // 🔹 Fetch data
   const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
@@ -56,7 +58,7 @@ const ViewExtraServicePage = () => {
       setPage(pageNumber);
     } catch (err: any) {
       console.error("Fetch error:", err);
-      setError("Failed to load data.");
+      setError(t("extraService.errorLoad"));
     } finally {
       setLoading(false);
     }
@@ -71,7 +73,7 @@ const ViewExtraServicePage = () => {
       setCategory(res.content || []);
     } catch (err) {
       console.error("Fetch error:", err);
-      setError("Failed to load category data.");
+      setError(t("extraService.errorLoad"));
     }
   };
   useEffect(() => {
@@ -148,14 +150,15 @@ const ViewExtraServicePage = () => {
       setLoading(true);
       const response = await updateStatus(row.id, true);
       const message =
-        response?.data?.message || "Service activated successfully!";
+        response?.data?.message || t("extraService.activateSuccess");
+
       showAlert({ title: message, type: "success", autoClose: 3000 });
       fetchData();
     } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to activate service. Please try again.",
+          t("extraService.activateError"),
         type: "error",
       });
     } finally {
@@ -164,10 +167,10 @@ const ViewExtraServicePage = () => {
   };
 
   const columns = [
-    { key: "serviceCode", label: "Service ID", sortable: true },
+    { key: "serviceCode", label: t("extraService.code"), sortable: true },
     {
       key: "icon",
-      label: "Icon",
+      label: t("extraService.icon"),
       render: (row: any) => (
         <img
           src={row.icon != null
@@ -182,49 +185,28 @@ const ViewExtraServicePage = () => {
         />
       ),
     },
-    { key: "serviceName", label: "Service Name", sortable: true },
-    { key: "categoryName", label: "Category", sortable: true },
+    { key: "serviceName", label: t("extraService.name"), sortable: true },
+    { key: "categoryName", label: t("extraService.category"), sortable: true },
     {
       key: "price",
-      label: "Price (VNĐ)",
+      label: t("extraService.price"),
       render: (row: any) =>
         `${row.price?.toLocaleString("vi-VN")} ${"VNĐ"}`,
       sortable: true,
     },
     {
       key: "extraCharge",
-      label: "Extra Charge (%)",
+      label: t("extraService.extraCharge"),
+      sorable: true
     },
 
-    { key: "unit", label: "Unit", sortable: true, },
-    {
-      key: "description",
-      label: "Description",
-      sortable: true,
-      render: (row: any) => (
-        <span title={row.description}>
-          {row.description?.length > 50
-            ? row.description.substring(0, 50) + "..."
-            : row.description || "-"}
-        </span>
-      ),
-    },
-    {
-      key: "note",
-      label: "Note",
-      render: (row: any) => (
-        <span title={row.note}>
-          {row.note?.length > 50
-            ? row.note.substring(0, 50) + "..."
-            : row.note || "No note"}
-        </span>
-      ),
-    },
-    { key: "createdAt", label: "Created Date", sortable: true },
-    { key: "updatedAt", label: "Last Updated", sortable: true, },
+    { key: "unit", label: t("extraService.unit"), sortable: true, },
+ 
+    { key: "createdAt", label: t("common.createdAt"), sortable: true },
+    { key: "updatedAt", label: t("common.updatedAt"), sortable: true, },
     {
       key: "status",
-      label: "Status",
+      label: t("common.status"),
       render: (row: any) => (
         <div
           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium
@@ -234,13 +216,16 @@ const ViewExtraServicePage = () => {
             className={`h-2 w-2 rounded-full ${row.isActive ? "bg-green-500" : "bg-red-500"
               }`}
           ></span>
-          {row.isActive ? "Active" : "Inactive"}
+          {row.isActive
+            ? t("common.active")
+            : t("common.inactive")}
+
         </div>
       ),
     },
     {
       key: "block",
-      label: "Block",
+      label: t("extraService.block"),
       render: (row: any) => {
         const isActive = row.isActive === true;
         const isInActive = row.isActive === false;
@@ -278,7 +263,7 @@ const ViewExtraServicePage = () => {
     },
     {
       key: "action",
-      label: "Action",
+      label: t("common.action"),
       render: (row: any) => (
         <ExtraServiceActionMenu
           service={row}
@@ -295,13 +280,13 @@ const ViewExtraServicePage = () => {
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-          Extra Service
+          {t("extraService.title")}
         </h1>
         <button
           onClick={() => setShowModal(true)}
           className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
         >
-          + New Extra Service
+          {t("extraService.new")}
         </button>
       </div>
 
@@ -312,7 +297,7 @@ const ViewExtraServicePage = () => {
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search by Name or ID"
+            placeholder={t("extraService.searchPlaceholder")}
             value={searchValue}
             onChange={handleSearchChange}
             className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
@@ -320,31 +305,44 @@ const ViewExtraServicePage = () => {
         </div>
 
         {/* Status */}
-        <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-          <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-            Status
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+          {/* LABEL */}
+          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+            {t("common.status")}
           </div>
+
+          {/* DIVIDER */}
+          <div className="w-px bg-[#C2C4C5]" />
+
+          {/* SELECT */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+           className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
           >
-            <option value="">All</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
+            <option value="">{t("common.all")}</option>
+            <option value="true">{t("common.active")}</option>
+            <option value="false">{t("common.inactive")}</option>
           </select>
         </div>
+
         {/* Category */}
-        <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-          <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-            Category
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+          {/* LABEL */}
+          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+            {t("extraService.category")}
           </div>
+
+          {/* DIVIDER */}
+          <div className="w-px bg-[#C2C4C5]" />
+
+          {/* SELECT */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+            className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
           >
-            <option value="">All</option>
+            <option value="">{t("common.all")}</option>
             {category.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
@@ -353,13 +351,14 @@ const ViewExtraServicePage = () => {
           </select>
         </div>
 
+
         {/* ✅ Deactivated checkbox */}
 
       </div>
 
       {/* Table */}
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-500">{t("common.loading")}</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (

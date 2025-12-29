@@ -102,7 +102,6 @@ public class HotelServiceImpl implements HotelService {
             String field = resolveConstraintField(e);
             log.warn("Duplicate entry on field: {}", field);
             throw new IllegalArgumentException("Tạo khách sạn thất bại. Dữ liệu bị trùng ở trường: " + field, e);
-
         } catch (Exception e) {
             log.error("Unexpected error saving hotel", e);
             throw e;

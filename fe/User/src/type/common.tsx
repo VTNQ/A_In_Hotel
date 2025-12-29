@@ -52,3 +52,9 @@ export interface SelectHotelButtonProps {
     onChange: (hotel: HotelResponse) => void;
     placeholder?: string;
 }
+
+export interface PaginationProp{
+    page:number;
+    totalPages: number;
+    onChange:(page:number)=>void;
+}

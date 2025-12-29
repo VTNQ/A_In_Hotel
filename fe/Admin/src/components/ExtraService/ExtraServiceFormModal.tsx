@@ -4,6 +4,7 @@ import type { ExtraServiceFormModalProps } from "../../type";
 import { addExtraService } from "../../service/api/ExtraService";
 import { useAlert } from "../alert-context";
 import { getAllCategory } from "../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 const ExtraServiceFormModal = ({
     isOpen,
@@ -21,6 +22,7 @@ const ExtraServiceFormModal = ({
         extraCharge: "",
         image: null as File | null,
     });
+    const { t } = useTranslation();
     const [previewIcon, setPreviewIcon] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -88,7 +90,7 @@ const ExtraServiceFormModal = ({
             // ✅ response có thể là AxiosResponse hoặc đã unwrap data
             const message =
                 response?.data?.message ||
-                "Extra service created successfully!";
+                t("extraService.createOrUpdate.createSucess");
 
             showAlert({
                 title: message,
@@ -116,7 +118,7 @@ const ExtraServiceFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create extra service. Please try again.",
+                    t("extraService.createOrUpdate.createError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -129,9 +131,9 @@ const ExtraServiceFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Create New Extra Service"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("extraService.createOrUpdate.titleCreate")}
+                saveLabel={t("common.saveButton")}
+                cancelLabel={t("common.cancelButton")}
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -143,15 +145,15 @@ const ExtraServiceFormModal = ({
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
-            title="Create New Extra Service"
+            title={t("extraService.createOrUpdate.titleCreate")}
             onSave={handleSave}
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            saveLabel={saving ? t("common.saving...") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
         >
             <div className="mb-6 flex flex-col lg:items-start ">
                 <label className="block mb-2 font-medium text-[#253150]">
-                    Extra Service Icon
+                    {t("extraService.createOrUpdate.icon")}
                 </label>
 
                 <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
@@ -180,34 +182,34 @@ const ExtraServiceFormModal = ({
                 {/* Service Name */}
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Service Name *
+                        {t("extraService.name")} *
                     </label>
                     <input
                         type="text"
                         name="serviceName"
                         value={formData.serviceName}
                         onChange={handleChange}
-                        placeholder="Enter service name"
+                        placeholder={t("extraService.createOrUpdate.namePlaceHolder")}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
                 </div>
                 <div >
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Description
+                        {t("extraService.description")}
                     </label>
                     <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        placeholder="Short description"
+                        placeholder={t("extraService.createOrUpdate.descriptionPlaceHolder")}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         rows={1}
                     />
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category *
+                        {t("extraService.category")} *
                     </label>
                     <select
                         name="categoryId"
@@ -216,7 +218,7 @@ const ExtraServiceFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("extraService.createOrUpdate.defaultCategory")}</option>
                         {categories.length > 0 ? (
                             categories.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -224,14 +226,14 @@ const ExtraServiceFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 {/* Unit */}
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Unit *
+                        {t("extraService.unit")} *
                     </label>
                     <select
                         name="unit"
@@ -240,7 +242,7 @@ const ExtraServiceFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
-                        <option value="">Select Unit</option>
+                        <option value="">{t("extraService.createOrUpdate.defaultUnit")}</option>
                         <option value="PERNIGHT">Per Night</option>
                         <option value="PERDAY">Per Day</option>
                         <option value="PERUSE">Per Use</option>
@@ -249,7 +251,7 @@ const ExtraServiceFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Price (VNĐ) *
+                        {t("extraService.price")} (VNĐ) *
                     </label>
                     <input
                         type="number"
@@ -264,7 +266,7 @@ const ExtraServiceFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Extra Charge (%) *
+                        {t("extraService.extraCharge")}*
                     </label>
                     <input
                         type="number"
@@ -279,14 +281,14 @@ const ExtraServiceFormModal = ({
                 </div>
                 <div className="col-span-1 sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Note
+                        {t("extraService.note")}
                     </label>
                     <textarea
                         name="note"
                         value={formData.note}
                         onChange={handleChange}
-                        placeholder="Enter any additional notes"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        placeholder={t("common.notePlaceholder")}
+                        className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                         rows={2}
                     />
                 </div>
