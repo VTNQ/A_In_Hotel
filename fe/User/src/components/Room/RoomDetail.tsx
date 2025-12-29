@@ -1,39 +1,41 @@
-import { useState } from "react";
-import {
-  BedDouble,
-  Maximize,
-  Users,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { useEffect, useState } from "react";
 import type { RoomResponse } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
+import { Bath, BedDouble, ChevronLeft, ChevronRight, Coffee, Maximize, Plus, Tv, Wind } from "lucide-react";
+
+const AUTO_SLIDE_DELAY = 4000;
+
 
 const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
   const [active, setActive] = useState(0);
 
-  if (!room) {
-    return (
-      <div className="bg-white rounded-xl p-6 text-gray-400 text-center">
-        Select a room to see details
-      </div>
-    );
-  }
-
-  const images = room.images || [];
+  const images = room?.images || [];
   const total = images.length;
-
-  const prev = () =>
-    setActive((i) => (i === 0 ? total - 1 : i - 1));
 
   const next = () =>
     setActive((i) => (i === total - 1 ? 0 : i + 1));
 
+  const prev = () =>
+    setActive((i) => (i === 0 ? total - 1 : i - 1));
+
+  useEffect(() => {
+    if (!room || total <= 1) return;
+
+    const timer = setInterval(next, AUTO_SLIDE_DELAY);
+    return () => clearInterval(timer);
+  }, [room, total]);
+
+  useEffect(() => {
+    if (!room) return;
+    setActive(0);
+  }, [room]);
+
+  if (!room) return null;
+
+
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden  top-24">
-      {/* ===== SLIDER ===== */}
-      <div className="relative overflow-hidden h-[220px]">
-        {/* SLIDE TRACK */}
+    <div className="bg-white rounded-xl shadow overflow-hidden max-w-sm">
+      <div className="relative h-[200px] overflow-hidden">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${active * 100}%)` }}
@@ -42,88 +44,79 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
             <img
               key={i}
               src={File_URL + img.url}
-              alt=""
-              className="w-full h-full object-cover flex-shrink-0"
+              className="w-full h-full object-cover flex shrink-0"
             />
           ))}
         </div>
-
-        {/* PREV */}
         {total > 1 && (
-          <button
-            onClick={prev}
-            className="absolute left-2 top-1/2 -translate-y-1/2
-                       bg-white/80 rounded-full p-1 hover:bg-white"
-          >
-            <ChevronLeft size={20} />
-          </button>
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2
+          bg-white/80 rounded-full p-1"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2
+                         bg-white/80 rounded-full p-1"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
         )}
 
-        {/* NEXT */}
-        {total > 1 && (
-          <button
-            onClick={next}
-            className="absolute right-2 top-1/2 -translate-y-1/2
-                       bg-white/80 rounded-full p-1 hover:bg-white"
-          >
-            <ChevronRight size={20} />
-          </button>
-        )}
-
-        {/* DOT INDICATOR */}
         {total > 1 && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
             {images.map((_, i) => (
-              <button
+              <span
                 key={i}
-                onClick={() => setActive(i)}
-                className={`w-2.5 h-2.5 rounded-full transition
-                  ${
-                    i === active
-                      ? "bg-[#D9D9D9] scale-110"
-                      : "bg-[#D9D9D9] "
-                  }`}
+                className={`w-2 h-2 rounded-full
+                  ${i === active ? "bg-white" : "bg-white/60"}`}
               />
             ))}
           </div>
         )}
       </div>
-
-      {/* ===== CONTENT ===== */}
-      <div className="p-5 space-y-4">
-        <h3 className="text-lg font-semibold uppercase">
-          {room.roomName}
-        </h3>
-
-        {/* INFO */}
-        <div className="space-y-2 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <Maximize size={16} /> {room.area || 20} m²
-          </div>
-          <div className="flex items-center gap-2">
-            <BedDouble size={16} /> Double bed
-          </div>
-          <div className="flex items-center gap-2">
-            <Users size={16} /> {room.capacity} guests
-          </div>
+      <div className="p-4 space-y-4">
+        <div className="flex items-center gap-2 text-green-600 text-sm">
+          <span className="w-5 h-5 rounded-full border border-green-600
+                           flex items-center justify-center text-xs">
+            +
+          </span>
+          +{room.defaultRate?.toLocaleString() || "70.000"} / giờ sau
         </div>
-
-        {/* PRICE */}
-        <div className="pt-3 border-t">
-          <div className="text-xs text-gray-400">Price</div>
-          <div className="text-xl font-semibold text-[#b38a58]">
-            {room.defaultRate.toLocaleString()} ₫
-          </div>
-          <div className="text-xs text-gray-400">/ 2 giờ đầu</div>
+        <div>
+          <h3 className="text-lg font-semibold mb-3">
+            Details & explore
+          </h3>
+          <ul className="space-y-3 text-gray-600 text-sm">
+            <li className="flex items-center gap-3">
+              <Maximize size={18} /> Square area: {room.area || 20} m²
+            </li>
+            <li className="flex items-center gap-3">
+              <BedDouble size={18} /> Double bed
+            </li>
+            <li className="flex items-center gap-3">
+              <Coffee size={18} /> Minibar drinks
+            </li>
+            <li className="flex items-center gap-3">
+              <Wind size={18} /> Air conditioning
+            </li>
+            <li className="flex items-center gap-3">
+              <Tv size={18} /> Netflix
+            </li>
+            <li className="flex items-center gap-3">
+              <Bath size={18} /> Bathrooms with shower
+            </li>
+          </ul>
         </div>
-
-        {/* ACTION */}
-        <button className="w-full h-11 rounded-lg bg-[#b38a58] text-white">
-          Book this room
+        <button className="flex items-center gap-2 text-[#b38a58] text-sm">
+          <Plus size={16} /> More facilities
         </button>
       </div>
     </div>
-  );
-};
-
+  )
+}
 export default RoomDetail;

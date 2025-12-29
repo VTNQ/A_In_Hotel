@@ -10,13 +10,14 @@ import UpdateRoomFormModal from "../../components/Room/UpdateRoomFormModal";
 import { useAlert } from "../../components/alert-context";
 import ViewRoomManagement from "../../components/Room/ViewRoomManagement";
 import { getTokens } from "../../util/auth";
+import { useTranslation } from "react-i18next";
 
 const ViewRoomPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-
+  const { t } = useTranslation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
   const [totalPages, setTotalPages] = useState(1);
@@ -32,7 +33,7 @@ const ViewRoomPage = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const fetchCategories = async () => {
     try {
-      const res = await getAllCategory({ all:true, filter: "isActive==1 and type==1" });
+      const res = await getAllCategory({ all: true, filter: "isActive==1 and type==1" });
       setCategories(res.content || []);
     } catch (err) {
       console.log(err)
@@ -150,11 +151,11 @@ const ViewRoomPage = () => {
   }, [sortKey, sortOrder, searchValue, statusFilter, categoryFilter]);
 
   const columns = [
-    { key: "roomCode", label: "Room ID", sortable: true },
-    { key: "roomNumber", label: "Room Number" },
+    { key: "roomCode", label: t("room.code"), sortable: true },
+    { key: "roomNumber", label: t("room.roomNumber") },
     {
       key: "image",
-      label: "Image",
+      label: t("room.image"),
       render: (row: any) => (
         <img
           src={row.images?.length > 0 ? File_URL + row.images[0].url : "/default.webp"}
@@ -163,61 +164,34 @@ const ViewRoomPage = () => {
         />
       ),
     },
-    { key: "roomName", label: "Room Name" },
-    { key: "roomTypeName", label: "Room Type", sortable: true },
-    { key: "area", label: "Room Area", sortable: true },
+    { key: "roomName", label: t("room.roomName") },
     {
-      key: "hourlyBasePrice",
-      label: "Price / First 2 Hours",
-      sortable: true,
-      sortKey: "basePrice",
-      render: (row: any) =>
-        `${(row.hourlyBasePrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
+      key: "roomTypeName", label: t("room.roomTypeName"),
+      sortable: true, sortKey: "roomType.name"
     },
-
-    {
-      key: "hourlyAdditionalPrice",
-      label: "Price / Extra Hour",
-      sortable: true,
-      sortKey: "additionalPrice",
-      render: (row: any) =>
-        `${(row.hourlyAdditionalPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
-    },
-
-    {
-      key: "overnightPrice",
-      label: "Price / Overnight",
-      sortKey: "overnightPrice",
-      sortable: true,
-      render: (row: any) =>
-        `${(row.overnightPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
-    },
-
     {
       key: "defaultRate",
-      label: "Price / Full Day",
+      label: t("room.priceFullDay"),
       sortable: true,
       render: (row: any) =>
         `${(row.defaultRate ?? 0).toLocaleString("vi-VN")} VNĐ`,
     },
-    { key: "floor", label: "Floor", sortable: true },
-    { key: "capacity", label: "Capacity", sortable: true },
-    { key: "createdAt", label: "Created Date", sortable: true },
-    { key: "updatedAt", label: "Last Updated" },
+    { key: "createdAt", label: t("common.createdAt"), sortable: true },
+    { key: "updatedAt", label: t("common.updatedAt") },
     {
       key: "status",
-      label: "Status",
+      label: t("common.status"),
       render: (row: any) => {
         const statusCode = row.status; // status là số (0–5)
 
         // Map status code → label + màu sắc
         const statusMap: Record<number, { label: string; color: string; dot: string }> = {
-          1: { label: "Vacant - Dirty", color: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
-          2: { label: "Occupied", color: "bg-blue-50 text-blue-700", dot: "bg-blue-500" },
-          3: { label: "Available", color: "bg-green-50 text-green-700", dot: "bg-green-500" },
-          4: { label: "Maintenance", color: "bg-red-50 text-red-700", dot: "bg-red-500" },
-          5: { label: "Blocked", color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
-          6: { label: "Deactivated", color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
+          1: { label: t("room.roomStatus.vacantDirty"), color: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
+          2: { label: t("room.roomStatus.occupied"), color: "bg-blue-50 text-blue-700", dot: "bg-blue-500" },
+          3: { label: t("room.roomStatus.available"), color: "bg-green-50 text-green-700", dot: "bg-green-500" },
+          4: { label: t("room.roomStatus.maintenance"), color: "bg-red-50 text-red-700", dot: "bg-red-500" },
+          5: { label: t("room.roomStatus.blocked"), color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
+          6: { label: t("room.roomStatus.deactivated"), color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
         };
 
         // Nếu không khớp code nào, dùng mặc định
@@ -239,7 +213,7 @@ const ViewRoomPage = () => {
     },
     {
       key: "action",
-      label: "Action",
+      label: t("common.action"),
       render: (row: any) => (
         <RoomActionMenu
           room={row}
@@ -258,13 +232,13 @@ const ViewRoomPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-          Room
+          {t("room.title")}
         </h1>
         <button
           onClick={() => setShowModal(true)}
           className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition"
         >
-          + New Room
+          {t("room.new")}
         </button>
       </div>
 
@@ -279,43 +253,46 @@ const ViewRoomPage = () => {
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
-            placeholder="Search by room number, room name"
+            placeholder={t("room.searchPlaceholder")}
             className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
 
 
         {/* Status */}
-        <div className="flex w-full lg:w-[260px] items-center border border-[#b0ddf3] rounded-lg overflow-hidden">
-          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">
-            Status
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+            {t("common.status")}
           </div>
+          {/* DIVIDER */}
+          <div className="w-px bg-[#C2C4C5]" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
           >
-            <option value="">All</option>
-            <option value="1">Vacant - Dirty</option>
-            <option value="2">Occupied</option>
-            <option value="3">Available</option>
-            <option value="4">Maintenance</option>
-            <option value="5">Blocked</option>
-            <option value="6">Deactivated</option>
+            <option value="">{t("common.all")}</option>
+            <option value="1">{t("room.roomStatus.vacantDirty")}</option>
+            <option value="2">{t("room.roomStatus.occupied")}</option>
+            <option value="3">{t("room.roomStatus.available")}</option>
+            <option value="4">{t("room.roomStatus.maintenance")}</option>
+            <option value="5">{t("room.roomStatus.blocked")}</option>
+            <option value="6">{t("room.roomStatus.deactivated")}</option>
           </select>
         </div>
 
         {/* Room Type */}
-        <div className="flex w-full lg:w-[260px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-          <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm whitespace-nowrap">
-            Room Type
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+            {t("room.roomTypeName")}
           </div>
+            <div className="w-px bg-[#C2C4C5]" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+            className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
           >
-            <option value="">All</option>
+            <option value="">{t("common.all")}</option>
             {categories.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
@@ -331,7 +308,7 @@ const ViewRoomPage = () => {
       {/* Table */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-gray-500">{t("common.loading")}</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (

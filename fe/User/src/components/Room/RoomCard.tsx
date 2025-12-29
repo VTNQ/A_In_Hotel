@@ -2,13 +2,17 @@ import { BedDouble, Users, Maximize } from "lucide-react";
 import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
 
-const RoomCard = ({ room, onClick }: RoomCardProps) => {
+const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-sm overflow-hidden flex
-                 cursor-pointer transition
-                 hover:ring-2 hover:ring-[#b38a58]"
+      className={`bg-white rounded-xl shadow-sm overflow-hidden flex
+        cursor-pointer transition
+        ${
+          isSelected
+            ? "ring-2 ring-[#b38a58]"
+            : "hover:ring-2 hover:ring-[#b38a58]"
+        }`}
     >
       {/* Image */}
       <div className="w-[260px] h-[200px] shrink-0">

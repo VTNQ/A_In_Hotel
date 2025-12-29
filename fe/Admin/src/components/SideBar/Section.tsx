@@ -5,37 +5,37 @@ export const SECTIONS = [
     {
         title: null,
         items: [
-            { label: "Dashboard", icon: LayoutDashboard, path: "/Dashboard" },
-            { label: 'Booking Management', icon: BedDouble,path:"/Dashboard/booking" },
+            { label: "sideBar.DashBoard", icon: LayoutDashboard, path: "/Dashboard" },
+            { label: 'sideBar.booking', icon: BedDouble,path:"/Dashboard/booking" },
             {
-                label: "Facility Management",
+                label: "sideBar.facility",
                 icon: Building2,
                 children: [
-                    { label: "Room Management", path: "/Dashboard/facility/room" },
-                    { label: "Amenities & Asset Tracking", path: "/Dashboard/facility/asset" },
-                    { label: "Extra Services", path: "/Dashboard/facility/service" },
-                    { label: "Category Management", path: "/Dashboard/facility/category" },
+                    { label: "sideBar.room", path: "/Dashboard/facility/room" },
+                    { label: "sideBar.asset", path: "/Dashboard/facility/asset" },
+                    { label: "sideBar.extra", path: "/Dashboard/facility/service" },
+                    { label: "sideBar.category", path: "/Dashboard/facility/category" },
                 ],
             },
-            { label: 'User Management', icon: Users },
-            { label: 'Staff Management', icon: UserCog, path: "/Dashboard/staff" },
+            { label: 'sideBar.user', icon: Users },
+            { label: 'sideBar.staff', icon: UserCog, path: "/Dashboard/staff" },
             {
-                label: "Post Management",
+                label: "sideBar.post",
                 icon: NotebookPen,
                 children: [
-                    { label: "Blog post", path: "/Dashboard/post/blog" },
-                    { label: "Banner post", path: "/Dashboard/post/banner" },
+                    { label: "sideBar.blog", path: "/Dashboard/post/blog" },
+                    { label: "sideBar.banner", path: "/Dashboard/post/banner" },
                 ],
             },
-            { label: "Reportings", icon: FileText },
+            { label: "sideBar.reportings", icon: FileText },
         ],
     },
     {
         title: null,
         items: [
-            { label: "Help & support", icon: HelpCircle },
-            { label: "Setting", icon: Settings },
-            { label: "log out", icon: LogOut,onClick:()=>{
+            { label: "sideBar.HelpSupport", icon: HelpCircle },
+            { label: "sideBar.setting", icon: Settings },
+            { label: "sideBar.logout", icon: LogOut,onClick:()=>{
                 clearTokens();
                 window.location.href="/";
             } },

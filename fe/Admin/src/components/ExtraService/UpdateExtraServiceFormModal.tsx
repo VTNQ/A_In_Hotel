@@ -5,6 +5,7 @@ import CommonModal from "../ui/CommonModal";
 import { findById, updateExtraService } from "../../service/api/ExtraService";
 import { getAllCategory } from "../../service/api/Category";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const UpdateExtraServiceFormModal = ({
     isOpen,
@@ -28,6 +29,7 @@ const UpdateExtraServiceFormModal = ({
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
+    const { t } = useTranslation();
     const { showAlert } = useAlert();
     useEffect(() => {
         if (!isOpen || !serviceId) return;
@@ -99,7 +101,7 @@ const UpdateExtraServiceFormModal = ({
 
             const response = await updateExtraService(Number(formData.id), cleanedData);
             const message =
-                response?.data?.message || "Extra service updated successfully!";
+                response?.data?.message || t("extraService.createOrUpdate.updateSuccess");
 
             showAlert({
                 title: message,
@@ -114,7 +116,7 @@ const UpdateExtraServiceFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update extra service. Please try again.",
+                    t("extraService.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -149,9 +151,9 @@ const UpdateExtraServiceFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit Extra Service"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("extraService.createOrUpdate.titleEdit")}
+                saveLabel={t("common.saveButton")}
+                cancelLabel={t("common.cancelButton")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
             >
                 <div className="flex justify-center items-center py-10">
@@ -164,15 +166,15 @@ const UpdateExtraServiceFormModal = ({
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
-            title="Edit Extra Service"
+            title={t("extraService.createOrUpdate.titleEdit")}
             onSave={handleUpdate}
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            saveLabel={saving ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
         >
             <div className="mb-6 flex flex-col lg:items-start ">
                 <label className="block mb-2 font-medium text-[#253150]">
-                    Extra Service Icon
+                   {t("extraService.createOrUpdate.icon")} 
                 </label>
 
                 <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
@@ -200,7 +202,7 @@ const UpdateExtraServiceFormModal = ({
                 {/* Service Name */}
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Service Name *
+                        {t("extraService.name")} *
                     </label>
                     <input
                         type="text"
@@ -214,7 +216,7 @@ const UpdateExtraServiceFormModal = ({
                 </div>
                 <div >
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Description
+                       {t("extraService.description")}
                     </label>
                     <textarea
                         name="description"
@@ -227,7 +229,7 @@ const UpdateExtraServiceFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category *
+                        {t("extraService.category")} *
                     </label>
                     <select
                         name="categoryId"
@@ -236,7 +238,7 @@ const UpdateExtraServiceFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("extraService.createOrUpdate.defaultCategory")}</option>
                         {categories.length > 0 ? (
                             categories.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -244,14 +246,14 @@ const UpdateExtraServiceFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 {/* Unit */}
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Unit *
+                        {t("extraService.unit")} *
                     </label>
                     <select
                         name="unit"
@@ -269,7 +271,7 @@ const UpdateExtraServiceFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Price (VNĐ) *
+                          {t("extraService.price")} (VNĐ) *
                     </label>
                     <input
                         type="number"
@@ -284,7 +286,7 @@ const UpdateExtraServiceFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Extra Charge (%) *
+                          {t("extraService.extraCharge")} *
                     </label>
                     <input
                         type="number"
@@ -299,14 +301,14 @@ const UpdateExtraServiceFormModal = ({
                 </div>
                 <div className="col-span-1 sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Note
+                       {t("extraService.note")}
                     </label>
                     <textarea
                         name="note"
                         value={formData.note}
                         onChange={handleChange}
-                        placeholder="Enter any additional notes"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        placeholder={t("common.notePlaceholder")}
+                        className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                         rows={2}
                     />
                 </div>

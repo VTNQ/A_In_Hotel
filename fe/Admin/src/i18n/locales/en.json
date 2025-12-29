@@ -1,0 +1,135 @@
+{
+  "common": {
+    "saveButton": "Save",
+    "cancelButton": "Cancel",
+    "saving": "saving",
+    "save": "save",
+    "loading": "Loading...",
+    "edit": "Edit",
+    "all": "All",
+    "active": "Active",
+    "deActivate": "Deactivate",
+    "action": "action",
+    "createdAt": "Created At",
+    "inactive": "Inactive",
+    "status": "Status",
+    "updatedAt": "Updated At",
+    "notePlaceholder": "Enter any additional notes"
+  },
+  "sideBar": {
+    "DashBoard": "DashBoard",
+    "booking": "Booking Management",
+    "facility": "Facility Management",
+    "room": "Room Management",
+    "asset": "Amenities & Asset Tracking",
+    "extra": "Extra Services",
+    "category": "Category Management",
+    "user": "User Management",
+    "staff": "Staff Management",
+    "post": "Post Management",
+    "blog": "Blog post",
+    "banner": "Banner Post",
+    "reportings": "Reportings",
+    "HelpSupport": "Help & Support",
+    "setting": "Setting",
+    "logout": "Logout"
+  },
+  "extraService": {
+    "title": "Extra Service",
+    "new": "+ New Extra Service",
+    "searchPlaceholder": "Search by name or ID",
+    "icon": "Icon",
+    "name": "Service Name",
+    "createOrUpdate": {
+      "icon": "Extra Service Icon",
+      "namePlaceHolder": "Enter Service Name",
+      "titleCreate": "Create New Extra Service",
+      "titleEdit": "Edit Extra Service",
+      "defaultCategory": "Select Category",
+      "createSucess": "Extra service created successfully!",
+      "createError": "Error creating extra service",
+      "updateSucess": "Extra service updated successfully!",
+      "updateError": "Error updating extra service",
+      "defaultUnit": "Select Unit"
+    },
+    "extraCharge": "Extra Charge (%)",
+    "unit": "Unit",
+    "code": "Service Code",
+    "category": "Category",
+    "description": "Description",
+    "errorLoad": "Error loading data",
+    "errorLoadCategory": "Error loading category",
+    "block": "block",
+    
+    "note": "note",
+    "price": "Price",
+    "activateSuccess": "Service activated successfully",
+    "activateError": "Error activating service"
+  },
+  "room": {
+    "code": "Room Code",
+    "title":"Room",
+    "roomNumber": "Room Number",
+    "new":"+ New Room",
+    "searchPlaceholder": "Search by room number, room name",
+    "image": "Image",
+    "view":"view",
+     "createOrUpdate": {
+      "titleCreate": "Create New Room",
+
+      "roomType": "Room Type",
+      "selectRoomType": "Select Room Type",
+
+      "roomNumber": "Room Number",
+      "enterRoomNumber": "Enter room number",
+
+      "roomName": "Room Name",
+      "enterRoomName": "Enter room name",
+
+      "floor": "Floor",
+      "enterFloor": "Enter floor",
+
+      "area": "Area (m²)",
+      "enterArea": "Enter area",
+
+      "capacity": "Capacity",
+      "enterCapacity": "Enter capacity",
+
+      "note": "Notes",
+      "notePlaceholder": "Add any notes (e.g. near window, pool view)",
+
+      "priceBase": "Base Price (VND)",
+      "priceExtraHour": "Extra Hour Price (VND)",
+      "priceOvernight": "Overnight Price (VND)",
+      "priceFullDay": "Full Day Price (VND)",
+
+      "enterPrice": "Enter room price",
+
+      "images": "Images",
+      "clickSelectImages": "Click to select images",
+      "selectFiles": "Select files",
+
+      "selectImages": "Select images",
+      "dragDrop": "Drag and drop an image",
+      "supportedFormat": "Supported formats: JPG, PNG | Min. 600px x 600px",
+      "or": "OR",
+      "browseFiles": "Browse Files",
+
+      "confirmCloseTitle": "Do you want to save changes?",
+      "confirmCloseDesc": "Your changes will be lost if you don't save."
+    },
+    "roomStatus": {
+      "vacantDirty": "Vacant - Dirty",
+      "occupied": "Occupied",
+      "available": "Available",
+      "maintenance": "Maintenance",
+      "blocked": "Blocked",
+      "deactivated": "Deactivated"
+    },
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "roomName": "Room Name",
+    "roomTypeName": "Room Type",
+    "priceFullDay": "Price/Full Day"
+  }
+}
