@@ -1,8 +1,5 @@
-import { Baby, Bath, BedDouble, Calendar, ChevronLeft, ChevronRight, Coffee, Maximize, Minus, Plus, Tv, User, Wind } from "lucide-react";
-import { useEffect, useState } from "react"
+import { Baby, Bath, BedDouble, Calendar, Coffee, Minus, Plus, Tv, User, Wind } from "lucide-react";
 import RoomCard from "../components/RoomDetail/RoomCard";
-const AUTO_SLIDE_DELAY = 4000;
-const File_URL = "";
 const RoomDetailPage = () => {
     const room = {
         name: "MINI ROOM",
