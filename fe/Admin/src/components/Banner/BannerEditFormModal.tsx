@@ -6,6 +6,7 @@ import DateTimePicker from "../ui/DateTimePicker";
 import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import { findById, updateBanner } from "../../service/api/Banner";
+import { useTranslation } from "react-i18next";
 
 const BannerEditFormModal = ({
     isOpen,
@@ -22,6 +23,7 @@ const BannerEditFormModal = ({
         description: "",
         bannerImage: null as File | null,
     });
+    const { t } = useTranslation();
     const [saving, setSaving] = useState(false);
     const { showAlert } = useAlert();
     const [loading, setLoading] = useState(false);
@@ -45,7 +47,7 @@ const BannerEditFormModal = ({
             })
             .catch(() => {
                 showAlert({
-                    title: "Failed to load banner information!",
+                    title: t("banner.loadError"),
                     type: "error",
                 });
                 onClose();
@@ -90,7 +92,7 @@ const BannerEditFormModal = ({
             );
             const response = await updateBanner(bannerId, cleanedData);
             showAlert({
-                title: response?.data?.message || "Banner updated successfully.",
+                title: response?.data?.message || t("banner.createOrUpdate.updateSucess"),
                 type: "success",
                 autoClose: 3000,
             });
@@ -110,7 +112,7 @@ const BannerEditFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to edit banner. Please try again.",
+                    t("banner.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -172,9 +174,9 @@ const BannerEditFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit  Banner"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("banner.createOrUpdate.titleEdit")}
+                saveLabel={t("common.saveButton")}
+                cancelLabel={t("common.cancelButton")}
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -187,24 +189,24 @@ const BannerEditFormModal = ({
             isOpen={isOpen}
             onClose={onClose}
             onSave={handleSave}
-            title="Edit  Banner"
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            title={t("banner.createOrUpdate.titleEdit")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
         >
             <div className="grid grid-cols-1 gap-4">
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Title *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.name")} *</label>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Enter banner name"
+                        placeholder={t("banner.createOrUpdate.enterName")}
                         value={formData.name}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Start At *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.startAt")} *</label>
                     <DateTimePicker
                         value={formData.startDate}
                         onChange={(date) =>
@@ -217,11 +219,11 @@ const BannerEditFormModal = ({
                             }))
                         }
                         minDate={new Date()}
-                        placeholder="Select start at"
+                        placeholder={t("banner.createOrUpdate.selectStartAt")}
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">End At *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.endAt")} *</label>
                     <DateTimePicker
                         value={formData.endDate}
                         onChange={(date) =>
@@ -232,23 +234,23 @@ const BannerEditFormModal = ({
                                 ? new Date(formData.startDate.getTime() + 60 * 1000) // +1 phút
                                 : undefined
                         }
-                        placeholder="Select end at"
+                        placeholder={t("banner.createOrUpdate.selectEndAt")}
                     />
 
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Cta Label *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.createOrUpdate.ctaLabel")} *</label>
                     <input
                         type="text"
                         name="ctaLabel"
-                        placeholder="Enter cta label"
+                        placeholder={t("banner.createOrUpdate.enterCtaLabel")}
                         value={formData.ctaLabel}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Description</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.createOrUpdate.description")}</label>
                     <QuillEditor
                         theme="snow"
                         value={formData.description}
@@ -258,7 +260,7 @@ const BannerEditFormModal = ({
                 </div>
                 <div className="mb-4">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Thumbnail *
+                        {t("banner.thumbnail")} *
                     </label>
 
                     <div
@@ -289,7 +291,7 @@ const BannerEditFormModal = ({
                                         className="w-[167px] h-[117px] opacity-60"
                                         alt=""
                                     />
-                                    <p className="text-gray-500 text-sm">Click to select images</p>
+                                    <p className="text-gray-500 text-sm">{t("banner.clickSelectImage")}</p>
                                 </div>
                             </>
                         )}

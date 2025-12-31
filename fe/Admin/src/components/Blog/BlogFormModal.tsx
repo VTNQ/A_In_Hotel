@@ -5,12 +5,14 @@ import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useAlert } from "../alert-context";
 import { createBlog } from "../../service/api/Blog";
+import { useTranslation } from "react-i18next";
 const BlogFormModal = ({
     isOpen,
     onClose,
     onSuccess,
 }: BlogFormModalProps) => {
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         title: "",
         category: "",
@@ -22,16 +24,16 @@ const BlogFormModal = ({
     });
     const { showAlert } = useAlert();
     const categories = [
-        { id: "1", name: "News & Updates" },
-        { id: "2", name: "Offers & Promotions" },
-        { id: "3", name: "Travel Guides" },
-        { id: "4", name: "Local Food" },
-        { id: "5", name: "Booking Tips" },
-        { id: "6", name: "Hotel Services" },
-        { id: "7", name: "Events & Activities" },
-        { id: "8", name: "Nearby Attractions" },
-        { id: "9", name: "Travel Tips" },
-        { id: "10", name: "Guest Experiences" }
+        { id: "1", name: t("blog.blogCategories.newsUpdates") },
+        { id: "2", name: t("blog.blogCategories.offersPromotions") },
+        { id: "3", name: t("blog.blogCategories.travelGuides") },
+        { id: "4", name: t("blog.blogCategories.localFood") },
+        { id: "5", name: t("blog.blogCategories.bookingTips") },
+        { id: "6", name: t("blog.blogCategories.hotelServices") },
+        { id: "7", name: t("blog.blogCategories.eventsActivities") },
+        { id: "8", name: t("blog.blogCategories.nearbyAttractions") },
+        { id: "9", name: t("blog.blogCategories.travelTips") },
+        { id: "10", name: t("blog.blogCategories.guestExperiences") }
     ];
     const fullToolbar = {
         toolbar: [
@@ -97,9 +99,9 @@ const BlogFormModal = ({
                 ])
             );
             const response = await createBlog(cleanedData);
-               
+
             showAlert({
-                title: response?.data?.message || "Blog created successfully!",
+                title: response?.data?.message || t("blog.createOrUpdate.createSucess"),
                 type: "success",
                 autoClose: 3000
             });
@@ -111,7 +113,7 @@ const BlogFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create blog. Please try again.",
+                    t("blog.createOrUpdate.createError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -124,17 +126,17 @@ const BlogFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             onSave={handleSave}
-            title="Create New Blog"
-            saveLabel={loading ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            title={t("blog.createOrUpdate.titleCreate")}
+            saveLabel={loading ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
         >
             <div className="grid grid-cols-1 gap-4">
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Title *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.name")} *</label>
                     <input
                         type="text"
                         name="title"
-                        placeholder="Enter blog title"
+                        placeholder={t("blog.createOrUpdate.enterTitle")}
                         value={formData.title}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
@@ -142,7 +144,7 @@ const BlogFormModal = ({
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Category *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.category")} *</label>
                     <select
                         name="category"
                         value={formData.category}
@@ -150,7 +152,7 @@ const BlogFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
                         {categories.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.name}
@@ -159,19 +161,19 @@ const BlogFormModal = ({
                     </select>
                 </div>
                 <div>
-                    <label className="font-medium">Status *</label>
+                    <label className="font-medium">{t("common.status")} *</label>
                     <select
                         name="status"
                         value={formData.status}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                     >
-                        <option value="1">Draft</option>
-                        <option value="2">Published</option>
+                        <option value="1">{t("blog.draft")}</option>
+                        <option value="2">{t("blog.published")}</option>
                     </select>
                 </div>
                 <div>
-                    <label className="font-medium">Description</label>
+                    <label className="font-medium">{t("blog.description")}</label>
                     <QuillEditor
                         theme="snow"
                         value={formData.description}
@@ -181,7 +183,7 @@ const BlogFormModal = ({
                 </div>
 
                 <div>
-                    <label className="font-medium">Content</label>
+                    <label className="font-medium">{t("blog.content")}</label>
                     <QuillEditor
                         theme="snow"
                         value={formData.content}
@@ -191,7 +193,7 @@ const BlogFormModal = ({
                 </div>
                 <div className="mb-4">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Thumbnail *
+                        {t("blog.thumbnail")} *
                     </label>
 
                     <div
@@ -222,7 +224,7 @@ const BlogFormModal = ({
                                         className="w-[167px] h-[117px] opacity-60"
                                         alt=""
                                     />
-                                    <p className="text-gray-500 text-sm">Click to select images</p>
+                                    <p className="text-gray-500 text-sm">{t("blog.createOrUpdate.clickSelectImages")}</p>
                                 </div>
                             </>
                         )}

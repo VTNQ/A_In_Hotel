@@ -5,11 +5,13 @@ import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import StaffFormModal from "../../components/Staff/StaffFormModal";
 import { useAlert } from "../../components/alert-context";
+import { useTranslation } from "react-i18next";
 
 const ViewStaffPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<string>("account.id");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [totalResults, setTotalResults] = useState(0);
@@ -22,7 +24,7 @@ const ViewStaffPage = () => {
   const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
     setLoading(true);
     let filters: string[] = [];
-    filters.push("(account.role.id==3 or account.role.id==4)"); // nhóm điều kiện role
+    filters.push("(account.role.id==3 or account.role.id==4)");
     if (statusFilter) {
       filters.push(`account.isActive==${statusFilter}`);
     }
@@ -35,7 +37,7 @@ const ViewStaffPage = () => {
       setPage(pageNumber);
     } catch (err: any) {
       console.error("Fetch error:", err);
-      setError("Failed to load data.");
+      setError(t("staff.loadError"));
     } finally {
       setLoading(false);
     }
@@ -51,14 +53,14 @@ const ViewStaffPage = () => {
       setLoading(true);
       const response = await updateStatus(row.id, false);
       const message =
-        response?.data?.message || "Staff deactivated successfully!";
+        response?.data?.message || t("staff.deActivateSuccess");
       showAlert({ title: message, type: "success", autoClose: 3000 });
       fetchData();
     } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to deactivate staff. Please try again.",
+          t("staff.deActivateError"),
         type: "error",
       });
     } finally {
@@ -71,14 +73,14 @@ const ViewStaffPage = () => {
       setLoading(true);
       const response = await updateStatus(row.id, true);
       const message =
-        response?.data?.message || "Staff activated successfully!";
+        response?.data?.message || t("staff.activeSuccess");
       showAlert({ title: message, type: "success", autoClose: 3000 });
       fetchData();
     } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to activate staff. Please try again.",
+          t("staff.activeError"),
         type: "error",
       });
     } finally {
@@ -87,18 +89,18 @@ const ViewStaffPage = () => {
   };
 
   const columns = [
-    { key: "staffCode", label: "StaffID" },
-    { key: "fullName", label: "Full Name", sortable: true, keySort: "fullName" },
-    { key: "gender", label: "Gender", sortable: true, keySort: "gender" },
-    { key: "birthday", label: "Date of Birth" },
+    { key: "staffCode", label: t("staff.code") },
+    { key: "fullName", label: t("staff.fullName"), sortable: true, keySort: "fullName" },
+    { key: "gender", label: t("staff.gender"), sortable: true, keySort: "gender" },
+    { key: "birthday", label: t("staff.dob") },
     { key: "email", label: "Email", sortable: true, keySort: "account.email" },
-    { key: "phone", label: "Phone", sortable: true, keySort: "phone" },
-    { key: "role", label: "Role", sortable: true, keySort: "account.role.name" },
-    { key: "createdAt", label: "Created Date", sortable: true },
-    { key: "updatedAt", label: "Last Updated" },
+    { key: "phone", label: t("staff.phone"), sortable: true, keySort: "phone" },
+    { key: "role", label: t("staff.role"), sortable: true, keySort: "account.role.name" },
+    { key: "createdAt", label: t("staff.createdAt"), sortable: true },
+    { key: "updatedAt", label: t("staff.updatedAt") },
     {
       key: "status",
-      label: "Status",
+      label: t("common.status"),
       render: (row: any) => (
         <div
           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium
@@ -108,13 +110,13 @@ const ViewStaffPage = () => {
             className={`h-2 w-2 rounded-full ${row.isActive ? "bg-green-500" : "bg-gray-400"
               }`}
           ></span>
-          {row.isActive ? "Active" : "Inactive"}
+          {row.isActive ? t("common.active") : t("common.inactive")}
         </div>
       )
     },
     {
       key: "action",
-      label: "Action",
+      label: t("common.action"),
       render: (row: any) => (
         <StaffActionMenu
           onDeactivate={handleDeactivate}
@@ -128,13 +130,13 @@ const ViewStaffPage = () => {
     <div className="flex flex-col flex-1 bg-gray-50">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-          Staff Management
+          {t("staff.title")}
         </h1>
         <button
           onClick={() => setShowModal(true)}
           className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
         >
-          + New Staff
+          {t("staff.new")}
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -144,28 +146,27 @@ const ViewStaffPage = () => {
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
-            placeholder="Search by StaffID, Full Name"
+            placeholder={t("staff.searchPlaceholder")}
             className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
-        <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-          <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-            Status
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+            {t("common.status")}
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
           >
-            <option value="">All</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
+            <option value="">{t("common.all")}</option>
+            <option value="true">{t("common.active")}</option>
+            <option value="false">{t("common.inactive")}</option>
           </select>
-
         </div>
       </div>
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-500">{t("common.loading")}</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (

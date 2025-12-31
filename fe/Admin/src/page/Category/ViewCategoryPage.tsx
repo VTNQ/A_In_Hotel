@@ -7,6 +7,7 @@ import UpdateCategoryFormModal from "../../components/Category/UpdateCategoryFor
 import { useAlert } from "../../components/alert-context";
 import CategoryActionMenu from "../../components/Category/CategoryActionMenu";
 import ViewCategoryInformation from "../../components/Category/ViewCategoryInformation";
+import { useTranslation } from "react-i18next";
 
 const ViewCategoryPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -14,6 +15,7 @@ const ViewCategoryPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const { showAlert } = useAlert();
+    const { t } = useTranslation();
     const [sortKey, setSortKey] = useState<string>("id");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchValue, setSearchValue] = useState("");
@@ -119,15 +121,15 @@ const ViewCategoryPage = () => {
         }
     };
     const columns = [
-        { key: "code", label: "Category ID", sortable: true },
-        { key: "name", label: "Category Name", sortable: true },
-        { key: "type", label: "Type", sortable: true },
-        { key: "capacity", label: "Capacity", sortable: true },
-        { key: "createdAt", label: "Created Date", sortable: true },
-        { key: "updatedAt", label: "Last Updated" },
+        { key: "code", label: t("category.code"), sortable: true },
+        { key: "name", label: t("category.name"), sortable: true },
+        { key: "type", label: t("category.type"), sortable: true },
+        { key: "capacity", label: t("category.capacity"), sortable: true },
+        { key: "createdAt", label: t("category.createdAt"), sortable: true },
+        { key: "updatedAt", label: t("category.updatedAt") },
         {
             key: "status",
-            label: "Status",
+            label: t("common.status"),
             render: (row: any) => (
                 <div
                     className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium
@@ -137,13 +139,13 @@ const ViewCategoryPage = () => {
                         className={`h-2 w-2 rounded-full ${row.isActive ? "bg-green-500" : "bg-red-500"
                             }`}
                     ></span>
-                    {row.isActive ? "Active" : "Inactive"}
+                    {row.isActive ? t("common.active") : t("common.inactive")}
                 </div>
             ),
         },
         {
             key: "action",
-            label: "Action",
+            label: t("common.action"),
             render: (row: any) => (
                 <CategoryActionMenu
                     category={row}
@@ -160,13 +162,13 @@ const ViewCategoryPage = () => {
 
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-                    Category Service
+                    {t("category.title")}
                 </h1>
                 <button
                     onClick={() => setShowModal(true)}
                     className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
                 >
-                    + New Category
+                    {t("category.new")}
                 </button>
             </div>
 
@@ -177,37 +179,37 @@ const ViewCategoryPage = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by Category ID, Category Name"
+                        placeholder={t("category.searchPlaceholder")}
                         className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Status
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                        {t("common.status")}
                     </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
                     >
-                        <option value="">All</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
+                        <option value="">{t("common.all")}</option>
+                        <option value="true">{t("common.active")}</option>
+                        <option value="false">{t("common.inactive")}</option>
                     </select>
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Type
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                        {t("category.type")}
                     </div>
                     <select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
                     >
-                        <option value="">All</option>
-                        <option value="1">Room</option>
-                        <option value="2">Extra Service</option>
-                        <option value="3">Asset</option>
+                        <option value="">{t("common.all")}</option>
+                        <option value="1">{t("category.room")}</option>
+                        <option value="2">{t("category.service")}</option>
+                        <option value="3">{t("category.asset")}</option>
                     </select>
                 </div>
 

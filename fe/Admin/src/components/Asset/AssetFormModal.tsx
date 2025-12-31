@@ -6,12 +6,14 @@ import { createAsset } from "../../service/api/Asset";
 import { getAllCategory } from "../../service/api/Category";
 import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
+import { useTranslation } from "react-i18next";
 
 const AssetFormModal = ({
     isOpen,
     onClose,
     onSuccess,
 }: AssetFormModalProps) => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
     const [saving, setSaving] = useState(false);
@@ -98,7 +100,7 @@ const AssetFormModal = ({
             );
             const response = await createAsset(cleanedData);
             showAlert({
-                title: response?.data?.message || "Asset created successfully.",
+                title: response?.data?.message || t("asset.createOrUpdate.createSucess"),
                 type: "success",
                 autoClose: 3000,
             });
@@ -118,7 +120,7 @@ const AssetFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create asset. Please try again.",
+                    t("asset.createOrUpdate.createError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -143,9 +145,9 @@ const AssetFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Create New Asset"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("asset.createOrUpdate.titleCreate")}
+                saveLabel={t("common.save")}
+                cancelLabel={t("common.cancelButton")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
 
             >
@@ -160,15 +162,15 @@ const AssetFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             onSave={handleSave}
-            title="Create New Asset"
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+           title={t("asset.createOrUpdate.titleCreate")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
 
 
         >
             <div className="mb-4">
-                <label className="block mb-1 font-medium text-[#253150]">Asset Icon</label>
+                <label className="block mb-1 font-medium text-[#253150]">{t("asset.createOrUpdate.icon")}</label>
                 <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
 
                     <input
@@ -206,12 +208,12 @@ const AssetFormModal = ({
 
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]" >
-                        Asset Name *
+                        {t("asset.name")} *
                     </label>
                     <input
                         type="text"
                         name="assetName"
-                        placeholder="Enter asset name"
+                        placeholder={t("asset.createOrUpdate.namePlaceHolder")}
                         value={formData.assetName}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
@@ -221,7 +223,7 @@ const AssetFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Room Number *
+                        {t("asset.createOrUpdate.room")} *
                     </label>
                     <select
                         name="roomId"
@@ -230,7 +232,7 @@ const AssetFormModal = ({
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     >
-                        <option value="">Enter number room</option>
+                        <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
                         {room.length > 0 ? (
                             room.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -238,13 +240,13 @@ const AssetFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category *
+                        {t("asset.category")} *
                     </label>
                     <select
                         name="categoryId"
@@ -253,7 +255,7 @@ const AssetFormModal = ({
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
                         {categories.length > 0 ? (
                             categories.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -261,18 +263,18 @@ const AssetFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Price (VND) *
+                        {t("asset.createOrUpdate.price")} *
                     </label>
                     <input
                         type="number"
                         name="price"
-                        placeholder="Enter room price"
+                        placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
                         value={formData.price}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
@@ -282,12 +284,12 @@ const AssetFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Quantity
+                        {t("asset.createOrUpdate.quantity")}
                     </label>
                     <input
                         type="number"
                         name="quantity"
-                        placeholder="Enter quantity (e.g. 1)"
+                        placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
                         value={formData.quantity}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
@@ -298,13 +300,13 @@ const AssetFormModal = ({
 
                 <div className="sm:col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Notes
+                        {t("asset.createOrUpdate.note")}
                     </label>
                     <textarea
                         name="note"
                         value={formData.note}
                         onChange={handleChange}
-                        placeholder="Add any notes (e.g. near window, pool view)"
+                        placeholder={t("asset.createOrUpdate.notePlaceholder")}
                         className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                         rows={2}
                     />

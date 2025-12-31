@@ -8,11 +8,14 @@ import BlogActionMenu from "../../components/Blog/BlogActionMenu";
 import BlogEditFormModal from "../../components/Blog/BlogEditFormModal";
 import { useAlert } from "../../components/alert-context";
 import ViewBlog from "../../components/Blog/ViewBlog";
+import { useTranslation } from "react-i18next";
 
 const ViewBlogPage = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any[]>([]);
+    const { t } = useTranslation();
     const [sortKey, setSortKey] = useState<string>("id");
+    
     const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -46,7 +49,7 @@ const ViewBlogPage = () => {
             setPage(pageNumber);
         } catch (err: any) {
             console.error("Fetch error:", err);
-            setError("Failed to load data.");
+            setError(t("blog.loadError"));
         } finally {
             setLoading(false)
         }
@@ -75,14 +78,14 @@ const ViewBlogPage = () => {
         try {
             setLoading(true);
             const response = await updateStatus(row.id, 1);
-            const message = response?.data?.message || "Blog restored successfully!";
+            const message = response?.data?.message || t("blog.restoreSucess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to restore blog. Please try again.",
+                    t("blog.restoreError"),
                 type: "error",
             });
         } finally {
@@ -94,14 +97,14 @@ const ViewBlogPage = () => {
             setLoading(true);
             const response = await updateStatus(row.id, 2);
             const message =
-                response?.data?.message || "Blog published successfully!";
+                response?.data?.message || t("blog.publishSucess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to publish blog. Please try again.",
+                    t("blog.publishError"),
                 type: "error",
             });
         } finally {
@@ -113,14 +116,14 @@ const ViewBlogPage = () => {
             setLoading(true);
             const response = await updateStatus(row.id, 3);
             const message =
-                response?.data?.message || "Blog archived successfully!";
+                response?.data?.message || t("blog.archiveSucess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to archive blog. Please try again.",
+                    t("blog.archiveError"),
                 type: "error",
             });
         } finally {
@@ -128,9 +131,9 @@ const ViewBlogPage = () => {
         }
     }
     const columns = [
-        { key: "blogCode", label: "BlogID", sortable: true },
+        { key: "blogCode", label: t("blog.code"), sortable: true },
         {
-            key: "image", label: "Thumbnail",
+            key: "image", label: t("blog.thumbnail"),
 
             render: (row: any) => (
                 <img
@@ -144,10 +147,10 @@ const ViewBlogPage = () => {
                 />
             ),
         },
-        { key: "title", label: "Title", sortalbe: true },
+        { key: "title", label: t("blog.name"), sortalbe: true },
         {
             key: "description",
-            label: "Description",
+            label: t("blog.description"),
             render: (row: any) => {
                 const fullText = stripHtml(row.description || "");
                 const shortText =
@@ -161,19 +164,19 @@ const ViewBlogPage = () => {
                 );
             },
         },
-        { key: "createdAt", label: "Created Date" },
-        { key: "updatedAt", label: "Last Updated Date" },
-        { key: "createdBy", label: "Created By" },
+        { key: "createdAt", label: t("blog.createdAt")},
+        { key: "updatedAt", label: t("blog.updatedAt") },
+        { key: "createdBy", label: t("blog.createdBy") },
 
         {
             key: "status",
-            label: "Status",
+            label: t("common.status"),
             render: (row: any) => {
                 const statusCode = row.status;
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
-                    1: { label: "Draft", color: "bg-[#E4F3FC] text-[#15AEEF]", dot: "bg-[#15AEEF]" },
-                    2: { label: "Published", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
-                    3: { label: "Archived", color: "bg-[#EAEBEB] text-[#626262]", dot: "bg-[#626262]" },
+                    1: { label: t("blog.draft"), color: "bg-[#E4F3FC] text-[#15AEEF]", dot: "bg-[#15AEEF]" },
+                    2: { label: t("blog.published"), color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
+                    3: { label: t("blog.archived"), color: "bg-[#EAEBEB] text-[#626262]", dot: "bg-[#626262]" },
                 };
 
 
@@ -195,7 +198,7 @@ const ViewBlogPage = () => {
         },
         {
             key: "action",
-            label: "Action",
+            label: t("common.action"),
             render: (row: any) => (
                 <BlogActionMenu
                     blog={row}
@@ -213,12 +216,12 @@ const ViewBlogPage = () => {
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-                    Blog Post
+                   {t("blog.title")}
                 </h1>
                 <button
                     onClick={() => setShowModal(true)}
                     className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
-                    + New Blog
+                    {t("blog.new")}
                 </button>
             </div>
             <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
@@ -228,28 +231,28 @@ const ViewBlogPage = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by Id,Title"
+                        placeholder={t("blog.searchPlaceholder")}
                         className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Status
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                        {t("common.status")}
                     </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
                     >
-                        <option value="">All</option>
-                        <option value="1">Draft</option>
-                        <option value="2">Published</option>
-                        <option value="3">Archived</option>
+                        <option value="">{t("common.all")}</option>
+                        <option value="1">{t("blog.draft")}</option>
+                        <option value="2">{t("blog.published")}</option>
+                        <option value="3">{t("blog.archived")}</option>
                     </select>
                 </div>
             </div>
             {loading ? (
-                <p className="text-gray-500">Loading...</p>
+                <p className="text-gray-500">{t("common.loading")}</p>
             ) : error ? (
                 <p className="text-red-500">{error}</p>
             ) : (
