@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import type { RoomResponse } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
 import { Bath, BedDouble, ChevronLeft, ChevronRight, Coffee, Maximize, Plus, Tv, Wind } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AUTO_SLIDE_DELAY = 4000;
 
 
 const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
   const [active, setActive] = useState(0);
-
+  const navigate = useNavigate();
   const images = room?.images || [];
   const total = images.length;
 
@@ -88,7 +89,18 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
           +{room.defaultRate?.toLocaleString() || "70.000"} / giờ sau
         </div>
         <div>
-          <h3 className="text-lg font-semibold mb-3">
+          <h3 
+          onClick={() => navigate(`/Room/${room.id}`)}
+          className="
+    text-lg font-semibold mb-3 text-[#866F56]
+    relative inline-block
+    after:content-['']
+    after:absolute after:left-0 after:-bottom-1
+    after:w-0 after:h-[2px]
+    after:bg-[#866F56]
+    after:transition-all after:duration-300
+    hover:after:w-full cursor-pointer
+  ">
             Details & explore
           </h3>
           <ul className="space-y-3 text-gray-600 text-sm">

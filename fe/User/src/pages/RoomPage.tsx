@@ -4,9 +4,9 @@ import RoomHero from "../components/Room/RoomHero";
 import Navbar from "../components/Navbar";
 import RoomFilterSideBar from "../components/Room/RoomFilterSidebar";
 import RoomGrid from "../components/Room/RoomGrid";
-import RoomDetail from "../components/Room/RoomDetail";
 import ExploreOtherRooms from "../components/Room/ExploreOtherRooms";
 import RoomPagination from "../components/Room/RoomPagination";
+import RoomDetail from "../components/Room/RoomDetail";
 
 const RoomPage = () => {
     const [selectedRoom, setSelectedRoom] = useState<RoomResponse | null>(null);
