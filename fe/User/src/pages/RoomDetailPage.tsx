@@ -25,18 +25,8 @@ const RoomDetailPage = () => {
             "Hair dryer"
         ]
     }
-    const [active, setActive] = useState(0);
-    const images = room.images;
-    const total = images.length;
 
-    const next = () => setActive((i) => (i === total - 1 ? 0 : i + 1));
-    const prev = () => setActive((i) => (i === 0 ? total - 1 : i - 1));
-
-    useEffect(() => {
-        if (total <= 1) return;
-        const timer = setInterval(next, AUTO_SLIDE_DELAY);
-        return () => clearInterval(timer);
-    }, [total]);
+ 
 
     return (
 
