@@ -3,6 +3,7 @@ import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import type { CategoryFormModalProps } from "../../type";
 import { addCategory } from "../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 const CategoryFormModal = ({
     isOpen,
@@ -14,6 +15,7 @@ const CategoryFormModal = ({
         type: "",
         description: ""
     })
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const { showAlert } = useAlert();
     const handleChange = (
@@ -37,7 +39,7 @@ const CategoryFormModal = ({
             );
             const response = await addCategory(cleanedData);
             showAlert({
-                title: response?.data?.message || "Category created successfully.",
+                title: response?.data?.message || t("category.createOrUpdate.createSucess"),
                 type: "success",
                 autoClose: 3000,
             });
@@ -52,7 +54,7 @@ const CategoryFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create category. Please try again.",
+                    t("category.createOrUpdate.createError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -72,26 +74,24 @@ const CategoryFormModal = ({
         <CommonModal
             isOpen={isOpen}
             onClose={handleCancel}
-            title="Create Category "
+            title={t("category.createOrUpdate.titleCreate")}
             onSave={handleSave}
-            saveLabel={loading ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            saveLabel={loading ? t("common.saving...") : t("common.save")}
+           cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[600px] lg:w-[800px]"
         >
-            <h3 className="text-base sm:text-[18px] font-semibold text-[#000000] mb-3">
-                Category Information
-            </h3>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category Name *
+                        {t("category.name")} *
                     </label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="Enter service name"
+                        placeholder={t("category.createOrUpdate.enterName")}
                         className="w-full border 
                         border-[#4B62A0] 
                         focus:border-[#3E5286] 
@@ -105,7 +105,7 @@ const CategoryFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Type *
+                        {t("category.type")} *
                     </label>
                     <select
                         name="type"
@@ -121,21 +121,21 @@ const CategoryFormModal = ({
                         outline-none"
                         required
                     >
-                        <option value="">Select type</option>
-                        <option value="1">Room</option>
-                        <option value="2">Extra Service</option>
-                        <option value="3">Asset</option>
+                        <option value="">{t("category.createOrUpdate.selectType")}</option>
+                        <option value="1">{t("category.room")}</option>
+                        <option value="2">{t("category.service")}</option>
+                        <option value="3">{t("category.asset")}</option>
                     </select>
                 </div>
                 <div className="col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Description
+                        {t("category.createOrUpdate.description")}
                     </label>
                     <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        placeholder="Short description"
+                        placeholder={t("category.createOrUpdate.enterDescription")}
                         className="w-full border 
                         border-[#4B62A0] 
                         focus:border-[#3E5286] 

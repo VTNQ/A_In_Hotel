@@ -3,6 +3,7 @@ import { useAlert } from "../alert-context";
 import type { UpdateCategoryFormModalProps } from "../../type";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateCategory } from "../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 const UpdateCategoryFormModal = ({
     isOpen,
@@ -12,7 +13,7 @@ const UpdateCategoryFormModal = ({
 }: UpdateCategoryFormModalProps) => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
-
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         id: "",
         name: "",
@@ -40,7 +41,7 @@ const UpdateCategoryFormModal = ({
             })
             .catch(() => {
                 showAlert({
-                    title: "Failed to load category information!",
+                    title: t("category.loadError"),
                     type: "error",
                 });
                 onClose();
@@ -69,7 +70,7 @@ const UpdateCategoryFormModal = ({
             );
 
             const response = await updateCategory(Number(formData.id), cleanedData);
-            const message = response?.data?.message || "Category updated successfully.";
+            const message = response?.data?.message || t("category.createOrUpdate.updateSucess");
             showAlert({
                 title: message,
                 type: "success",
@@ -83,7 +84,7 @@ const UpdateCategoryFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update category. Please try again.",
+                    t("category.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -101,9 +102,9 @@ const UpdateCategoryFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit Category"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("category.createOrUpdate.titleEdit")}
+                saveLabel={t("common.saveButton")}
+                cancelLabel={t("common.cancelButton")}
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -116,26 +117,24 @@ const UpdateCategoryFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             onSave={handleUpdate}
-            title="Edit Category"
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            title={t("category.createOrUpdate.titleEdit")}
+            saveLabel={saving ? t("common.saving...") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[600px] lg:w-[800px]"
         >
-            <h3 className="text-base sm:text-[18px] font-semibold text-[#000000] mb-3">
-                Category Information
-            </h3>
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category Name *
+                        {t("category.name")} *
                     </label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="Enter service name"
+                        placeholder={t("category.createOrUpdate.enterName")}
                         className="w-full border 
                         border-[#4B62A0] 
                         focus:border-[#3E5286] 
@@ -150,7 +149,7 @@ const UpdateCategoryFormModal = ({
 
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Type *
+                        {t("category.type")} *
                     </label>
                     <select
                         name="type"
@@ -166,21 +165,21 @@ const UpdateCategoryFormModal = ({
                         outline-none"
                         required
                     >
-                        <option value="">Select type</option>
-                        <option value="1">Room</option>
-                        <option value="2">Extra Service</option>
-                        <option value="3">Asset</option>
+                        <option value="">{t("category.createOrUpdate.selectType")}</option>
+                        <option value="1">{t("category.room")}</option>
+                        <option value="2">{t("category.service")}</option>
+                        <option value="3">{t("category.asset")}</option>
                     </select>
                 </div>
                 <div className="col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Description
+                        {t("category.createOrUpdate.description")}
                     </label>
                     <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        placeholder="Short description"
+                        placeholder={t("category.createOrUpdate.enterDescription")}
                         className="w-full border 
                         border-[#4B62A0] 
                         focus:border-[#3E5286] 

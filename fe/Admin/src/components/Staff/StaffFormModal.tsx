@@ -4,11 +4,13 @@ import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { create } from "../../service/api/Staff";
 import CustomDatePicker from "../ui/CustomDatePicker";
+import { useTranslation } from "react-i18next";
 const StaffFormModal = ({
     isOpen,
     onClose,
     onSuccess,
 }: StaffFormModalProps) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         email: "",
         fullName: "",
@@ -50,7 +52,7 @@ const StaffFormModal = ({
             const response = await create(cleanedData);
             const message =
                 response?.data?.message ||
-                "staff created successfully!";
+                t("staff.createSucess");
 
             showAlert({
                 title: message,
@@ -73,7 +75,7 @@ const StaffFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to create staff. Please try again.",
+                    t("staff.createError"),
                 type: "error",
                 autoClose: 4000,
             });
@@ -98,23 +100,23 @@ const StaffFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
 
-            title="Create Staff"
+            title={t("staff.titleCreate")}
             onSave={handleSave}
-            saveLabel={loading ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            saveLabel={loading ? t("common.saving...") : t("common.save")}
+             cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name <span className="text-red-500">*</span>
+                        {t("staff.fullName")} <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         name="fullName"
                         onChange={handleChange}
                         value={formData.fullName}
-                        placeholder="Enter Full Name"
+                        placeholder={t("staff.create.enterFullName")}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     />
@@ -135,7 +137,7 @@ const StaffFormModal = ({
                 </div>
                 <div>
                     <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                        Gender <span className="text-red-500">*</span>
+                        {t("staff.gender")} <span className="text-red-500">*</span>
                     </label>
 
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mt-2">
@@ -168,7 +170,7 @@ const StaffFormModal = ({
           peer-checked:text-[#42578E]
         "
                             >
-                                Male
+                                {t("staff.create.male")}
                             </span>
                         </label>
 
@@ -200,7 +202,7 @@ const StaffFormModal = ({
           peer-checked:text-[#42578E]
         "
                             >
-                                Female
+                                {t("staff.create.female")}
                             </span>
                         </label>
                     </div>
@@ -209,33 +211,33 @@ const StaffFormModal = ({
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone
+                        {t("staff.phone")}
                     </label>
                     <input
                         type="text"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="Enter Phone"
+                        placeholder={t("staff.create.enterphone")}
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Date of birth <span className="text-red-500">*</span>
+                        {t("staff.dob")} <span className="text-red-500">*</span>
                     </label>
                     <CustomDatePicker
                         value={formData.birthday}
                         onChange={(date) => setFormData((prev) => ({ ...prev, birthday: date }))}
-                        placeholder="Select date of birth"
+                        placeholder={t("staff.create.selectDate")}
                     />
 
 
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Role <span className="text-red-500">*</span>
+                        {t("staff.role")} <span className="text-red-500">*</span>
                     </label>
                     <select
                         name="role"
@@ -244,7 +246,7 @@ const StaffFormModal = ({
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         required
                     >
-                        <option value="3">Receptionist</option>
+                        <option value="3">{t("staff.create.receiption")}</option>
                         <option value="4">Marketing</option>
                     </select>
                 </div>

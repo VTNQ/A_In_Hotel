@@ -6,11 +6,13 @@ import CommonTable from "../../components/ui/CommonTable";
 import { getBanner } from "../../service/api/Banner";
 import BannerFormModal from "../../components/Banner/BannerFormModal";
 import BannerEditFormModal from "../../components/Banner/BannerEditFormModal";
+import { useTranslation } from "react-i18next";
 
 const ViewBanner = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { t } = useTranslation();
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showModal, setShowModal] = useState(false);
@@ -68,12 +70,12 @@ const ViewBanner = () => {
         return data.filter((r) => computeStatus(r) === statusFilter);
     }, [data, statusFilter]);
     const columns = [
-        { key: "bannerCode", label: "Banner ID", sortable: true },
-        { key: "name", label: "Banner Name", sortable: true },
-        { key: "startAt", label: "Start At", sortable: true },
-        { key: "endAt", label: "End At", sortable: true },
+        { key: "bannerCode", label: t("banner.code"), sortable: true },
+        { key: "name", label: t("banner.name"), sortable: true },
+        { key: "startAt", label: t("banner.startAt"), sortable: true },
+        { key: "endAt", label: t("banner.endAt"), sortable: true },
         {
-            key: "image", label: "Thumbnail",
+            key: "image", label: t("banner.thumbnail"),
 
             render: (row: any) => (
                 <img
@@ -87,11 +89,11 @@ const ViewBanner = () => {
                 />
             ),
         },
-        { key: "createdAt", label: "Created Date", sortable: true },
-        { key: "updatedAt", label: "Last Updated Date", sortable: true },
+        { key: "createdAt", label: t("banner.createdAt"), sortable: true },
+        { key: "updatedAt", label: t("banner.updatedAt"), sortable: true },
         {
             key: "status",
-            label: "Status",
+            label: t("common.status"),
             render: (row: any) => {
                 const st = computeStatus(row);
 
@@ -111,7 +113,7 @@ const ViewBanner = () => {
         },
         {
             key: "action",
-            label: "Action",
+            label: t("common.action"),
             render: (row: any) => (
                 <BannerActionMenu
                     banner={row}
@@ -125,13 +127,13 @@ const ViewBanner = () => {
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-                    Banner
+                    {t("banner.title")}
                 </h1>
                 <button
                     onClick={() => setShowModal(true)}
                     className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
                 >
-                    + New Banner
+                   {t("banner.new")}
                 </button>
 
             </div>
@@ -142,22 +144,22 @@ const ViewBanner = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by id,name"
+                        placeholder={t("banner.searchPlaceholder")}
                         className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Status
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                        {t("common.status")}
                     </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
                     >
-                        <option value="">All</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="INACTIVE">InActive</option>
+                    <option value="">{t("common.all")}</option>
+                        <option value="ACTIVE">{t("common.active")}</option>
+                        <option value="INACTIVE">{t("common.inactive")}</option>
                     </select>
                 </div>
 
@@ -181,7 +183,7 @@ const ViewBanner = () => {
                 bannerId={selectedBanner}
             />
             {loading ? (
-                <p className="text-gray-500">Loading...</p>
+                <p className="text-gray-500">{t("common.loading")}</p>
             ) : error ? (
                 <p className="text-red-500">{error}</p>
             ) : (

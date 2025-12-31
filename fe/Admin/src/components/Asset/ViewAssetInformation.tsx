@@ -3,10 +3,12 @@ import type { ViewAssetProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Asset";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, assetId }) => {
     const [asset, setAsset] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     useEffect(() => {
         if (isOpen && assetId) {
             fetchAsset(assetId);
@@ -25,7 +27,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
         <CommonModalView
             isOpen={isOpen}
             onClose={onClose}
-            title="Amenities & Asset Tracking"
+            title={t("sideBar.asset")}
             width="w-[95vw] sm:w-[90vw] lg:w-[560px]"
             isBorderBottom={true}
             withCenter="text-left"
@@ -52,13 +54,13 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
             {!loading && asset && (
                 <>
                     <h3 className="text-[24px] mt-4 leading-[32px] font-semibold tracking-[0.2px] text-[#253150]">
-                        Asset Information
+                        {t("asset.view.title")}
                     </h3>
 
                     <div className=" w-full py-2 mt-3  rounded-xl text-[16px] text-[#2B2B2B]" >
                         <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-[160px_1fr] lg:grid-cols-[350px_2fr]">
                             <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 flex items-center">
-                                Thumbnail
+                                {t("asset.createOrUpdate.icon")}
                             </span>
 
                             <div className="flex items-center">
@@ -75,36 +77,36 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
                                 </div>
                             </div>
                             <span className="font-semibold text-base sm:text-[18px] text-[#253150]/90 ">
-                                Asset Name
+                               {t("asset.name")}
                             </span>
 
 
                             <span className="text-sm sm:text-[16px] leading-[22px]" style={{ fontWeight: '400', fontSize: '16px', lineHeight: '22px', letterSpacing: "0px" }}>{asset.assetName}</span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Asset ID</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">{t("asset.code")}</span>
                             <span style={{ fontWeight: '400' }}>{asset.assetCode}</span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Category</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">{t("asset.category")}</span>
                             <span style={{ fontWeight: '400' }}>{asset.categoryName}</span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Room Number</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">{t("asset.createOrUpdate.room")}</span>
                             <span style={{ fontWeight: '400' }}>{asset.roomNumber}</span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Price(VND)</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">{t("asset.createOrUpdate.price")}</span>
                             <span style={{ fontWeight: '400' }}>
                                 {Number(asset.price).toLocaleString("vi-VN")} {asset.currency ?? "VND"}
                             </span>
 
-                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Quantity</span>
+                            <span className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">{t("asset.createOrUpdate.quantity")}</span>
                             <span style={{ fontWeight: '400' }}>{asset.quantity}</span>
 
                         </div>
                     </div>
                     <div className="mt-4 sm:mt-3">
-                        <h3 className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 ">Note</h3>
+                        <h3 className="font-semibold text-[18px] leading-[22px] text-[#253150]/90 "> {t("asset.createOrUpdate.note")}</h3>
 
                         <p className="text-[#2B2B2B] leading-relaxed text-[14px]" style={{ fontWeight: '400' }}>
-                            {asset.note || "No notes available."}
+                            {asset.note || t("asset.view.noNote")}
                         </p>
 
                         <div className="mt-4 border-b border-dotted border-gray-400"></div>

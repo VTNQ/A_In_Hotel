@@ -19,7 +19,7 @@ const ExtraServiceActionMenu: React.FC<ExtraServiceActionMenuProps> = ({
         ]
       : [
 
-          { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(service) },
+          { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(service) },
           { label: t("common.active"), icon: <Power size={16} />, onClick: () => onActivate?.(service) },
         ];
   

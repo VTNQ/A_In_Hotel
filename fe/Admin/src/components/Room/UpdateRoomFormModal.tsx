@@ -6,6 +6,7 @@ import { useAlert } from "../alert-context";
 import { findById, updateRoom } from "../../service/api/Room";
 import { File_URL } from "../../setting/constant/app";
 import { getAllCategory } from "../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 interface UpdateRoomFormModalProps {
     isOpen: boolean;
@@ -23,7 +24,7 @@ const UpdateRoomFormModal = ({
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
-
+    const { t } = useTranslation();
     const { showAlert } = useAlert();
     const [originalData, setOriginalData] = useState<any>(null);
     const [categories, setCategories] = useState<any[]>([]);
@@ -131,7 +132,7 @@ const UpdateRoomFormModal = ({
             const res =
                 await getAllCategory({
                     all: true,
-                  
+
                     filter: "isActive==1 and type==1"
                 });
             setCategories(res.content || []);
@@ -143,7 +144,7 @@ const UpdateRoomFormModal = ({
     const handleUpdate = async () => {
         if (!hasChanges()) {
             showAlert({
-                title: "No changes detected",
+                title: t("common.noChange"),
                 type: "warning",
                 autoClose: 2500,
             });
@@ -164,7 +165,7 @@ const UpdateRoomFormModal = ({
             const response = await updateRoom(Number(roomId), cleanFormData);
 
             showAlert({
-                title: response?.data?.message || "Room updated successfully!",
+                title: response?.data?.message || t("room.createOrUpdate.updateSuccess"),
                 type: "success",
                 autoClose: 2500,
             });
@@ -173,7 +174,7 @@ const UpdateRoomFormModal = ({
             onClose();
         } catch (err: any) {
             showAlert({
-                title: err?.response?.data?.message || "Update failed!",
+                title: err?.response?.data?.message || t("room.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 2500,
             });
@@ -193,9 +194,9 @@ const UpdateRoomFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit Room"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("room.createOrUpdate.titleUpdate")}
+                saveLabel={t("common.save")}
+                cancelLabel={t("common.cancel")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
             >
                 <div className="flex justify-center items-center py-10">
@@ -210,10 +211,10 @@ const UpdateRoomFormModal = ({
                 isOpen={isOpen}
                 onClose={handleCancel}
                 onSave={handleUpdate}
-                title="Edit Room"
+                title={t("room.createOrUpdate.titleUpdate")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
-                saveLabel={loading ? "Saving..." : "Save Changes"}
-                cancelLabel="Cancel"
+                saveLabel={loading ? t("common.saving...") : t("common.save")}
+                cancelLabel={t("common.cancelButton")}
             >
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
@@ -221,14 +222,14 @@ const UpdateRoomFormModal = ({
                     {/* LEFT SIDE FORM */}
                     <div className="space-y-5">
                         <div>
-                            <label className="block mb-1 font-medium">Room Type *</label>
+                            <label className="block mb-1 font-medium">{t("room.roomTypeName")} *</label>
                             <select
                                 name="idRoomType"
                                 value={formData.idRoomType}
                                 onChange={handleChange}
                                 className="w-full border border-[#4B62A0] rounded-lg p-2"
                             >
-                                <option value="">Select Room Type</option>
+                                <option value="">{t("room.createOrUpdate.selectRoomType")}</option>
                                 {categories.map((c: any) => (
                                     <option key={c.id} value={c.id}>{c.name}</option>
                                 ))}
@@ -236,30 +237,33 @@ const UpdateRoomFormModal = ({
                         </div>
 
                         <div>
-                            <label className="block mb-1 font-medium">Room Number *</label>
+                            <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomNumber")} *</label>
                             <input
                                 name="roomNumber"
                                 value={formData.roomNumber}
                                 onChange={handleChange}
+                                placeholder={t("room.createOrUpdate.enterRoomNumber")}
                                 className="w-full border border-[#4B62A0] rounded-lg p-2"
                             />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block mb-1 font-medium">Room Name *</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomName")} *</label>
                                 <input
                                     name="roomName"
+                                    placeholder={t("room.createOrUpdate.enterRoomName")}
                                     value={formData.roomName}
                                     onChange={handleChange}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
                                 />
                             </div>
                             <div>
-                                <label className="block mb-1 font-medium">Floor *</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.floor")} *</label>
                                 <input
                                     name="floor"
                                     type="number"
+                                    placeholder={t("room.createOrUpdate.enterFloor")}
                                     value={formData.floor}
                                     onChange={handleChange}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
@@ -268,39 +272,41 @@ const UpdateRoomFormModal = ({
                         </div>
 
                         <div>
-                            <label className="block mb-1 font-medium">Area (m²) *</label>
+                            <label className="block mb-1 font-medium">{t("room.createOrUpdate.area")} *</label>
                             <input
                                 name="area"
                                 type="number"
                                 value={formData.area}
                                 onChange={handleChange}
+                                placeholder={t("room.createOrUpdate.enterArea")}
                                 className="w-full border border-[#42578E] rounded-lg p-2"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium">Status</label>
+                            <label className="block text-sm font-medium">{t("common.status")}</label>
                             <select
                                 name="status"
                                 value={formData.status}
                                 onChange={handleChange}
                                 className="w-full border border-[#42578E] rounded-lg p-2"
                             >
-                                <option value="0">Select Status</option>
-                                <option value="1">Vacant - Dirty</option>
-                                <option value="2">Occupied</option>
-                                <option value="3">Available</option>
-                                <option value="4">Maintenance</option>
-                                <option value="5">Blocked</option>
-                                <option value="6">Deactivated</option>
+                                <option value="0">{t("room.createOrUpdate.defaultStatus")}</option>
+                                <option value="1">{t("room.roomStatus.vacantDirty")}</option>
+                                <option value="2">{t("room.roomStatus.occupied")}</option>
+                                <option value="3">{t("room.roomStatus.available")}</option>
+                                <option value="4">{t("room.roomStatus.maintenance")}</option>
+                                <option value="5">{t("room.roomStatus.blocked")}</option>
+                                <option value="6">{t("room.roomStatus.deactivated")}</option>
                             </select>
                         </div>
 
                         <div>
-                            <label className="block mb-1 font-medium">Capacity *</label>
+                            <label className="block mb-1 font-medium">{t("room.createOrUpdate.capacity")} *</label>
                             <input
                                 name="capacity"
                                 type="number"
+                                placeholder={t("room.createOrUpdate.enterCapacity")}
                                 value={formData.capacity}
                                 onChange={handleChange}
                                 className="w-full border border-[#42578E] rounded-lg p-2"
@@ -308,12 +314,12 @@ const UpdateRoomFormModal = ({
                         </div>
 
                         <div>
-                            <label className="block mb-1 font-medium">Notes</label>
+                            <label className="block mb-1 font-medium">{t("room.createOrUpdate.note")}</label>
                             <textarea
                                 name="note"
                                 value={formData.note}
                                 onChange={handleChange}
-                                placeholder="Add any notes (e.g. near window, pool view)"
+                                placeholder={t("room.createOrUpdate.notePlaceholder")}
                                 className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                                 rows={4}
                             />
@@ -324,10 +330,11 @@ const UpdateRoomFormModal = ({
                     <div className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block mb-1 font-medium">Price (VND)*</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceBase")}*</label>
                                 <input
                                     type="number"
                                     name="hourlyBasePrice"
+                                    placeholder={t("room.createOrUpdate.enterPrice")}
                                     value={formData.hourlyBasePrice}
                                     onChange={handleChange}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
@@ -335,10 +342,11 @@ const UpdateRoomFormModal = ({
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Price Extra Hour (VND)*</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceExtraHour")}*</label>
                                 <input
                                     type="number"
                                     name="hourlyAdditionalPrice"
+                                    placeholder={t("room.createOrUpdate.enterPrice")}
                                     value={formData.hourlyAdditionalPrice}
                                     onChange={handleChange}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
@@ -346,23 +354,25 @@ const UpdateRoomFormModal = ({
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Price Overnight (VND)*</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceOvernight")}*</label>
                                 <input
                                     type="number"
                                     name="overnightPrice"
                                     value={formData.overnightPrice}
                                     onChange={handleChange}
+                                     placeholder={t("room.createOrUpdate.enterPrice")}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
                                 />
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-medium">Price day & night (VND) *</label>
+                                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceFullDay")} *</label>
                                 <input
                                     type="number"
                                     name="defaultRate"
                                     value={formData.defaultRate}
                                     onChange={handleChange}
+                                     placeholder={t("room.createOrUpdate.enterPrice")}
                                     className="w-full border border-[#42578E] rounded-lg p-2"
                                 />
                             </div>
@@ -370,7 +380,7 @@ const UpdateRoomFormModal = ({
 
                         {/* IMAGE UPLOAD */}
                         <div className="mt-6">
-                            <label className="font-semibold">Images</label>
+                            <label className="font-semibold">{t("room.createOrUpdate.images")}</label>
 
                             <div
                                 onClick={() => setImageModalOpen(true)}
@@ -429,10 +439,10 @@ const UpdateRoomFormModal = ({
                                         setImageModalOpen(false);
                                     }}
                                 >
-                                    Cancel
+                                    {t("common.cancelButton")}
                                 </button>
 
-                                <h2 className="text-xl font-semibold">Select images</h2>
+                                <h2 className="text-xl font-semibold">{t("room.createOrUpdate.selectImages")}</h2>
 
                                 <button
                                     className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
@@ -449,7 +459,7 @@ const UpdateRoomFormModal = ({
                                         setImageModalOpen(false);
                                     }}
                                 >
-                                    Save
+                                     {t("common.save")}
                                 </button>
                             </div>
 
@@ -482,16 +492,16 @@ const UpdateRoomFormModal = ({
                                 {tempImages.length === 0 && (
                                     <div className="flex flex-col items-center py-16">
                                         <img src="/defaultImage.png" className="w-20 opacity-70" />
-                                        <p className="mt-4 font-medium">Drag & drop images here</p>
+                                        <p className="mt-4 font-medium">{t("room.createOrUpdate.dragDrop")}</p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            Supported: JPG, PNG
+                                            {t("room.createOrUpdate.supportedFormat")}
                                         </p>
 
                                         <label
                                             htmlFor="pickImg"
                                             className="mt-3 px-6 py-2 border rounded-full bg-white cursor-pointer"
                                         >
-                                            Browse Files
+                                           {t("room.createOrUpdate.browseFiles")}
                                         </label>
 
                                         <input
@@ -570,7 +580,7 @@ const UpdateRoomFormModal = ({
                                                 htmlFor="addMoreImg"
                                                 className="px-6 py-2 border rounded-full cursor-pointer bg-white hover:bg-gray-50"
                                             >
-                                                Browse Files
+                                                {t("room.createOrUpdate.browseFiles")}
                                             </label>
 
                                             <input
@@ -593,11 +603,6 @@ const UpdateRoomFormModal = ({
                     </motion.div>
                 )}
             </AnimatePresence>
-
-
-
-
-
         </>
     );
 };
