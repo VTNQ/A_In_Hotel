@@ -39,7 +39,6 @@ export default function Login() {
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
           hotelId: response.data.hotelId,
-          isFirstLogin: response.data.isFirstLogin,
         });
 
         setSuccess("Đăng nhập thành công!");
