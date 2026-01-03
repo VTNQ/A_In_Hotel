@@ -321,25 +321,209 @@
     "name": "Title",
     "loadError": "Failed to load banner information!",
     "clickSelectImage": "Click to select image",
-    "createOrUpdate":{
-      "titleCreate":"Create New Banner",
-      "enterName":"Enter Banner Name",
-      "createSucess":"Banner created successfully!",
-      "createError":"Error creating banner",
-      "updateSucess":"Banner updated successfully!",
-      "updateError":"Error updated banner",
-      "titleEdit":"Edit Banner",
-      "description":"Description",
-      "enterDescription":"Enter Description",
-      "selectStartAt":"Select Start At",
-      "selectEndAt":"Select End At",
-      "ctaLabel":"Cta Label",
-      "enterCtaLabel":"Enter Cta Label"
+    "createOrUpdate": {
+      "titleCreate": "Create New Banner",
+      "enterName": "Enter Banner Name",
+      "createSucess": "Banner created successfully!",
+      "createError": "Error creating banner",
+      "updateSucess": "Banner updated successfully!",
+      "updateError": "Error updated banner",
+      "titleEdit": "Edit Banner",
+      "description": "Description",
+      "enterDescription": "Enter Description",
+      "selectStartAt": "Select Start At",
+      "selectEndAt": "Select End At",
+      "ctaLabel": "Cta Label",
+      "enterCtaLabel": "Enter Cta Label"
     },
     "startAt": "Start At",
     "endAt": "End At",
     "thumbnail": "Thumbnail",
     "createdAt": "Created At",
     "updatedAt": "Updated At"
+  },
+  "booking": {
+    "title": "Booking Management",
+    "new": "+ New Booking",
+    "searchPlaceholder": "Search by room number, name",
+    "booked": "Booked",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "cancelled": "cancelled",
+    "selectDate": "Select booking date",
+    "today": "Today",
+    "clear": "Clear",
+    "code":"Booking ID",
+    "guestName":"Guest Name",
+    "phone":"Phone",
+    "guestType":"Guest Type",
+    "checkInDate":"Check In Date",
+    "checkOutDate":"Check Out Date",
+    "room":"Room",
+    "totalPrice":"Total Price",
+    "createdDate":"Created Date"
+  },
+  "bookingGuest": {
+    "title": "Guest Information",
+    "step": "Step 1 of 5: Please enter the primary guest’s details to initialize the booking.",
+
+    "identity": "Identity",
+    "contact": "Contact Details",
+    "specifics": "Booking Specifics",
+
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "idNumber": "ID / Passport Number",
+    "guestType": "Guest Type",
+
+    "email": "Email Address",
+    "phone": "Phone Number",
+
+    "companyName": "Company Name",
+    "note": "Notes & Special Requests",
+    "notePlaceholder": "Enter any allergies, room preferences, or special requests here...",
+
+    "cancel": "Cancel booking",
+    "next": "Next: Booking Date & Time →"
+  },
+   "bookingDateTime": {
+    "title": "Booking Dates & Time",
+    "step": "Step 2 of 5: Select check-in/check-out dates, time and stay details.",
+
+    "selectDates": "Select Dates",
+    "totalNights": "Total: {{count}} Nights",
+    "clear": "Clear",
+
+    "bookingDetails": "Booking Details",
+
+    "checkInDate": "Check-in Date",
+    "checkOutDate": "Check-out Date",
+    "checkInTime": "Check-in Time",
+    "checkOutTime": "Check-out Time",
+
+    "package": "Booking Package",
+    "packageOvernight": "Overnight",
+    "packageDayUse": "Day Use",
+    "packageFullDay": "Full Day",
+
+    "adults": "Adults",
+    "children": "Children",
+
+    "duration": "Duration",
+    "night": "night",
+    "nights": "nights",
+
+    "cancel": "Cancel booking",
+    "back": "Back",
+    "next": "Next: Room Selection →"
+  },
+   "roomSelection": {
+    "title": "Select Your Room",
+    "subtitle": "Available rooms · {{count}} Guests",
+
+    "searchRoom": "Search room name",
+    "allRoomTypes": "All Room Types",
+    "noRooms": "No rooms found",
+
+    "yourBooking": "Your Booking",
+
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+
+    "guests": "{{adults}} Adults, {{children}} Children",
+    "edit": "Edit",
+
+    "noRoomSelected": "No room selected yet",
+
+    "taxesFees": "Taxes & Fees",
+    "total": "Total",
+
+    "continue": "Continue to Services →",
+    "notCharged": "You won't be charged yet",
+
+    "cancel": "Cancel booking",
+    "back": "← Back to Dates & Time",
+
+    "roomType": "Room Type",
+    "viewPhotos": "View Photos",
+    "selectRoom": "Select Room",
+    "removeRoom": "Remove",
+
+    "specialRequest": "Special request (optional)",
+    "specialRequestPlaceholder": "e.g. High floor, near elevator, non-smoking...",
+    "specialRequestDisabled": "Select this room to add special request",
+
+    "durationNight": "{{count}} night",
+    "durationNights": "{{count}} nights",
+
+    "overnight": "Overnight",
+    "dayUse": "Day Use",
+    "fullDay": "Full Day"
+  },
+  
+  "serviceSelection": {
+    "title": "Enhance Your Stay",
+    "subtitle": "Customize your experience with our exclusive add-ons.",
+
+    "allServices": "All Services",
+    "noServices": "No services found",
+
+    "addedServices": "Added Services",
+
+    "estimated": "Estimated",
+    "add": "Add to booking",
+    "added": "Added",
+
+    "unit": {
+      "PERNIGHT": "per guest / night",
+      "PERDAY": "per guest / day",
+      "PERUSE": "flat fee",
+      "PERTRIP": "per trip"
+    },
+
+    "bookingSummary": "Booking Summary",
+    "roomsTotal": "Rooms Total ({{count}} rooms)",
+    "totalEstimate": "Total Estimate",
+    "secure": "Secure Booking Process",
+
+    "continue": "Continue to Payment →",
+
+    "cancel": "Cancel booking",
+    "back": "← Back to Room Selection"
+  },
+  "payment": {
+    "title": "Record Payment",
+    "subtitle": "Enter the amount received from the guest.",
+
+    "paidAmount": "Paid Amount",
+    "paidAmountPlaceholder": "Enter amount paid",
+
+    "paymentMethod": "Payment Method",
+    "method": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "BANK_TRANSFER": "Bank Transfer"
+    },
+
+    "outstanding": "Outstanding Balance",
+    "notes": "Notes",
+    "notesPlaceholder": "Optional note",
+
+    "processing": "Processing...",
+    "complete": "Complete Booking",
+
+    "summary": {
+      "title": "Payment Summary",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guests": "{{count}} Guests",
+      "nights": "{{count}} Nights",
+      "total": "Total Amount"
+    },
+
+    "actions": {
+      "cancel": "Cancel booking",
+      "backServices": "← Back to Services"
+    }
   }
 }

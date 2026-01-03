@@ -7,9 +7,11 @@ import { getTokens } from "../../../../util/auth";
 import { getAllRoom } from "../../../../service/api/Room";
 import { getAll } from "../../../../service/api/ExtraService";
 import { getAllCategory } from "../../../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
     const [rooms, setRooms] = useState<any[]>([]);
+    const { t } = useTranslation();
     const [extras, setExtras] = useState<any[]>([]);
     const [roomTypes, setRoomTypes] = useState<any[]>([]);
     const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
@@ -133,9 +135,11 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
     return (
         <div className="bg-gray-50">
-            <h2 className="text-2xl font-semibold mb-1">Select Your Room</h2>
+            <h2 className="text-2xl font-semibold mb-1">{t("roomSelection.title")}</h2>
             <p className="text-sm text-gray-500">
-                Available rooms · {booking.selectDate?.adults || 2} Guests
+                {t("roomSelection.subtitle", {
+                    count: booking.selectDate?.adults || 2,
+                })}
             </p>
 
             <RoomSearchFilter
@@ -153,7 +157,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
                     {loading ? (
                         <RoomSkeleton />
                     ) : rooms.length === 0 ? (
-                        <p className="text-gray-500">No rooms found</p>
+                        <p className="text-gray-500">{t("roomSelection.noRooms")}</p>
                     ) : (
                         rooms.map((room) => (
                             <RoomCard
@@ -191,7 +195,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
             text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
             hover:border-red-300 transition"
                 >
-                    Cancel booking
+                   {t("roomSelection.cancel")}
                 </button>
 
                 {/* BACK */}
@@ -199,7 +203,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
                     onClick={onBack}
                     className="text-sm text-gray-500 hover:underline"
                 >
-                    ← Back to Dates & Time
+                    {t("roomSelection.back")}
                 </button>
             </div>
 

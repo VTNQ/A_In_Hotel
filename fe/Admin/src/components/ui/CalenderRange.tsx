@@ -2,7 +2,9 @@ import { useState } from "react";
 import type { CalendarRangeProps } from "../../type/booking.types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Month from "./Month";
+import { useTranslation } from "react-i18next";
 const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
+    const { t } = useTranslation();
     const [baseMonth, setBaseMonth] = useState(new Date(2023, 9)); // Oct 2023
     const toDateString = (d: Date) => {
         const y = d.getFullYear();
@@ -56,12 +58,12 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
             {/* Header */}
             <div className="flex justify-between items-center mb-4 border-b py-3 border-gray-200">
                 <h3 className="font-semibold text-gray-800">
-                    Select Dates
+                    {t("bookingDateTime.selectDates")}
                 </h3>
                 <div className="flex items-center gap-3">
                     {nights > 0 && (
                         <span className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-600">
-                            Total: {nights} Nights
+                            {t("bookingDateTime.totalNights", { count: nights })}
                         </span>
                     )}
 
@@ -70,7 +72,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
                             onClick={clearDates}
                             className="text-xs text-red-500 hover:underline"
                         >
-                            Clear
+                           {t("bookingDateTime.clear")}
                         </button>
                     )}
                 </div>

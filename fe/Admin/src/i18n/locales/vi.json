@@ -310,24 +310,23 @@
     "banner": {
         "title": "Quản lý Banner",
         "new": "+ Thêm banner",
-        
-        "createOrUpdate":{
-            "titleCreate":"Tạo Banner mới",
-            "titleEdit":"Sửa Banner",
-            "createSucess":"Banner đã được tạo thành công!",
-            "createError":"Lỗi khi tạo Banner",
-            "updateSucess":"Banner đã được cập nhật thành công!",
-            "updateError":"Banner đã được cập nhật thất bại!",
-            "enterName":"Nhập tên Banner",
-            "selectStartAt":"Chọn ngày bắt đầu",
-            "description":"Mô tả",
-            "enterDescription":"Nhập mô tả",
-            "selectEndAt":"Chọn ngày kết thúc",
-            "ctaLabel":"Nhãn CTA",
-            "enterCtaLabel":"Nhập nhãn CTA"
+        "createOrUpdate": {
+            "titleCreate": "Tạo Banner mới",
+            "titleEdit": "Sửa Banner",
+            "createSucess": "Banner đã được tạo thành công!",
+            "createError": "Lỗi khi tạo Banner",
+            "updateSucess": "Banner đã được cập nhật thành công!",
+            "updateError": "Banner đã được cập nhật thất bại!",
+            "enterName": "Nhập tên Banner",
+            "selectStartAt": "Chọn ngày bắt đầu",
+            "description": "Mô tả",
+            "enterDescription": "Nhập mô tả",
+            "selectEndAt": "Chọn ngày kết thúc",
+            "ctaLabel": "Nhãn CTA",
+            "enterCtaLabel": "Nhập nhãn CTA"
         },
         "clickSelectImage": "Nhấn để chọn hình ảnh",
-        "loadError":"Không thể tải thông tin banner",
+        "loadError": "Không thể tải thông tin banner",
         "searchPlaceholder": "Tìm theo id,tên",
         "code": "Mã Banner",
         "name": "Tiêu đề Banner",
@@ -336,5 +335,188 @@
         "thumbnail": "Hình ảnh",
         "createdAt": "Ngày tạo",
         "updatedAt": "Ngày cập nhật"
+    },
+    "booking": {
+        "title": "Quản lý đặt chỗ",
+        "new": "+ Thêm đặt chỗ",
+        "searchPlaceholder": "Tìm kiếm theo số phòng, tên khách",
+        "booked": "Đã đặt",
+        "checkIn": "Nhận phòng",
+        "checkOut": "Trả phòng",
+        "cancelled": "hủy phòng",
+        "selectDate": "Chọn ngày đặt phòng",
+        "today": "Hôm nay",
+        "clear": "Xóa",
+        "code":"Mã đặt chỗ",
+        "guestName":"Tên khách",
+        "phone":"Số điện thoại",
+        "guestType":"Loại khách",
+        "checkInDate":"Ngày nhận phòng",
+        "checkOutDate":"Ngày trả phòng",
+        "room":"Phòng",
+        "totalPrice":"Tổng tiền",
+        "createdDate":"Ngày tạo"
+    },
+    "bookingGuest":{
+        "title": "Thông tin khách lưu trú",
+    "step": "Bước 1/5: Vui lòng nhập thông tin khách chính để khởi tạo đặt phòng.",
+
+    "identity": "Thông tin định danh",
+    "contact": "Thông tin liên hệ",
+    "specifics": "Thông tin đặt phòng",
+
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "idNumber": "Số CMND / Hộ chiếu",
+    "guestType": "Loại khách",
+
+    "email": "Địa chỉ email",
+    "phone": "Số điện thoại",
+
+    "companyName": "Tên công ty",
+    "note": "Ghi chú & yêu cầu đặc biệt",
+    "notePlaceholder": "Nhập dị ứng, yêu cầu phòng hoặc ghi chú đặc biệt...",
+
+    "cancel": "Hủy đặt phòng",
+    "next": "Tiếp theo: Ngày & Giờ đặt phòng →"
+    },
+    "bookingDateTime": {
+    "title": "Ngày & Giờ đặt phòng",
+    "step": "Bước 2/5: Chọn ngày nhận/trả phòng, thời gian và chi tiết lưu trú.",
+
+    "selectDates": "Chọn ngày",
+    "totalNights": "Tổng cộng: {{count}} đêm",
+    "clear": "Xóa",
+
+    "bookingDetails": "Chi tiết đặt phòng",
+
+    "checkInDate": "Ngày nhận phòng",
+    "checkOutDate": "Ngày trả phòng",
+    "checkInTime": "Giờ nhận phòng",
+    "checkOutTime": "Giờ trả phòng",
+
+    "package": "Gói đặt phòng",
+    "packageOvernight": "Qua đêm",
+    "packageDayUse": "Trong ngày",
+    "packageFullDay": "Cả ngày",
+
+    "adults": "Người lớn",
+    "children": "Trẻ em",
+
+    "duration": "Thời gian lưu trú",
+    "night": "đêm",
+    "nights": "đêm",
+
+    "cancel": "Hủy đặt phòng",
+    "back": "Quay lại",
+    "next": "Tiếp theo: Chọn phòng →"
+  },
+  "roomSelection": {
+    "title": "Chọn phòng",
+    "subtitle": "Phòng trống · {{count}} khách",
+
+    "searchRoom": "Tìm theo tên phòng",
+    "allRoomTypes": "Tất cả loại phòng",
+    "noRooms": "Không tìm thấy phòng phù hợp",
+
+    "yourBooking": "Thông tin đặt phòng",
+
+    "checkIn": "Nhận phòng",
+    "checkOut": "Trả phòng",
+
+    "guests": "{{adults}} người lớn, {{children}} trẻ em",
+    "edit": "Chỉnh sửa",
+
+    "noRoomSelected": "Chưa chọn phòng",
+
+    "taxesFees": "Thuế & phí",
+    "total": "Tổng cộng",
+
+    "continue": "Tiếp tục: Dịch vụ →",
+    "notCharged": "Bạn sẽ chưa bị trừ tiền",
+
+    "cancel": "Hủy đặt phòng",
+    "back": "← Quay lại ngày & giờ",
+
+    "roomType": "Loại phòng",
+    "viewPhotos": "Xem hình ảnh",
+    "selectRoom": "Chọn phòng",
+    "removeRoom": "Bỏ chọn",
+
+    "specialRequest": "Yêu cầu đặc biệt (không bắt buộc)",
+    "specialRequestPlaceholder": "VD: tầng cao, gần thang máy, không hút thuốc...",
+    "specialRequestDisabled": "Chọn phòng để thêm yêu cầu",
+
+    "durationNight": "{{count}} đêm",
+    "durationNights": "{{count}} đêm",
+
+    "overnight": "Qua đêm",
+    "dayUse": "Trong ngày",
+    "fullDay": "Cả ngày"
+  },
+  "serviceSelection": {
+    "title": "Nâng cao trải nghiệm lưu trú",
+    "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
+
+    "allServices": "Tất cả dịch vụ",
+    "noServices": "Không có dịch vụ phù hợp",
+
+    "addedServices": "Dịch vụ đã thêm",
+
+    "estimated": "Ước tính",
+    "add": "Thêm vào đặt phòng",
+    "added": "Đã thêm",
+
+    "unit": {
+      "PERNIGHT": "mỗi khách / đêm",
+      "PERDAY": "mỗi khách / ngày",
+      "PERUSE": "phí cố định",
+      "PERTRIP": "theo chuyến"
+    },
+
+    "bookingSummary": "Tóm tắt đặt phòng",
+    "roomsTotal": "Tiền phòng ({{count}} phòng)",
+    "totalEstimate": "Tổng ước tính",
+    "secure": "Quy trình đặt phòng an toàn",
+
+    "continue": "Tiếp tục: Thanh toán →",
+
+    "cancel": "Hủy đặt phòng",
+    "back": "← Quay lại chọn phòng"
+  },
+  "payment": {
+    "title": "Ghi nhận thanh toán",
+    "subtitle": "Nhập số tiền khách đã thanh toán.",
+
+    "paidAmount": "Số tiền đã trả",
+    "paidAmountPlaceholder": "Nhập số tiền đã thanh toán",
+
+    "paymentMethod": "Phương thức thanh toán",
+    "method": {
+      "CASH": "Tiền mặt",
+      "CARD": "Thẻ",
+      "BANK_TRANSFER": "Chuyển khoản"
+    },
+
+    "outstanding": "Số tiền còn lại",
+    "notes": "Ghi chú",
+    "notesPlaceholder": "Ghi chú (không bắt buộc)",
+
+    "processing": "Đang xử lý...",
+    "complete": "Hoàn tất đặt phòng",
+
+    "summary": {
+      "title": "Tóm tắt thanh toán",
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "guests": "{{count}} khách",
+      "nights": "{{count}} đêm",
+      "total": "Tổng thanh toán"
+    },
+
+    "actions": {
+      "cancel": "Hủy đặt phòng",
+      "backServices": "← Quay lại dịch vụ"
     }
+  }
 }

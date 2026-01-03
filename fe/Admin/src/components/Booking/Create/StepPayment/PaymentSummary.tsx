@@ -1,10 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { File_URL } from "../../../../setting/constant/app";
 
 const PaymentSummary = ({ booking }: any) => {
   const rooms = booking.rooms || [];
   const services = booking.services || [];
   const hotel = booking.hotel;
-
+  const { t } = useTranslation();
   const nights = booking.selectDate?.nights || 0;
 
   // Tổng tiền phòng (multi-room)
@@ -51,7 +52,7 @@ const PaymentSummary = ({ booking }: any) => {
       <div className="flex items-start px-5 py-4 text-sm">
         {/* CHECK-IN */}
         <div className="flex-[3] pr-4">
-          <p className="text-gray-400 text-xs">CHECK-IN</p>
+          <p className="text-gray-400 text-xs">{t("payment.summary.checkIn")}</p>
           <p className="font-medium text-gray-800">
             {booking.selectDate?.checkInLabel ||
               booking.selectDate?.checkInDate}
@@ -66,7 +67,7 @@ const PaymentSummary = ({ booking }: any) => {
 
         {/* CHECK-OUT */}
         <div className="flex-[2] pl-4">
-          <p className="text-gray-400 text-xs">CHECK-OUT</p>
+          <p className="text-gray-400 text-xs">{t("payment.summary.checkOut")}</p>
           <p className="font-medium text-gray-800">
             {booking.selectDate?.checkOutLabel ||
               booking.selectDate?.checkOutDate}
@@ -90,7 +91,9 @@ const PaymentSummary = ({ booking }: any) => {
                 {room.roomName}
               </p>
               <p className="text-sm text-gray-500">
-                {booking.guest?.adults || 2} Guests · {nights} Nights
+                {t("payment.summary.guests", { count: booking.guest?.adults || 2 })}
+                ·
+                {t("payment.summary.nights", { count: nights })}
               </p>
             </div>
           </div>
@@ -135,7 +138,7 @@ const PaymentSummary = ({ booking }: any) => {
       {/* ================= TOTAL ================= */}
       <div className="border-t border-gray-200 px-5 py-4 flex justify-between items-center">
         <span className="font-semibold text-gray-900">
-          Total Amount
+          {t("payment.summary.total")}
         </span>
         <span className="text-xl font-bold text-[#42578E]">
           ${Number(totalEstimate).toFixed(2)}
