@@ -3,11 +3,13 @@ import { File_URL } from "../../../../setting/constant/app";
 import calculateRoomPrice from "./CalculateRoomPrice";
 import RoomAssets from "./RoomAssets";
 import RoomAmenities from "./RoomAmenities";
+import { useTranslation } from "react-i18next";
 
 const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
   const priceInfo = calculateRoomPrice({ packageType, room });
 
   const [specialRequest, setSpecialRequest] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!selected) return;
@@ -47,7 +49,7 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
               </h3>
               {room.roomTypeName && (
                 <p className="text-sm text-gray-500">
-                  Room Type: {room.roomTypeName}
+                  {t("roomSelection.roomType")}: {room.roomTypeName}
                 </p>
               )}
             </div>
@@ -78,7 +80,7 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
           {/* SPECIAL REQUEST */}
           <div className="mt-4">
             <label className="block text-xs font-medium text-gray-600 mb-1">
-              Special request (optional)
+              {t("roomSelection.specialRequest")}
             </label>
             <textarea
               rows={2}
@@ -86,8 +88,8 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
               onChange={(e) => setSpecialRequest(e.target.value)}
               placeholder={
                 selected
-                  ? "e.g. High floor, near elevator, non-smoking..."
-                  : "Select this room to add special request"
+                  ? t("roomSelection.specialRequestPlaceholder")
+                  : t("roomSelection.specialRequestDisabled")
               }
               disabled={!selected}
               className={`
@@ -103,7 +105,7 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
           {/* ACTION */}
           <div className="flex justify-between items-center mt-4">
             <button className="text-[#536DB2] text-sm hover:underline">
-              View Photos
+              {t("roomSelection.viewPhotos")}
             </button>
 
             <button
@@ -117,11 +119,13 @@ const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
                 })
               }
               className={`px-4 py-2 rounded-lg text-sm transition ${selected
-                  ? "bg-[#42578E] text-white"
-                  : "border border-[#536DB2] text-[#42578E]"
+                ? "bg-[#42578E] text-white"
+                : "border border-[#536DB2] text-[#42578E]"
                 }`}
             >
-              {selected ? "Remove" : "Select Room"}
+              {selected
+                ? t("roomSelection.removeRoom")
+                : t("roomSelection.selectRoom")}
             </button>
 
           </div>

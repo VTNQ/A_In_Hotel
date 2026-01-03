@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 
 const ServiceTabs = ({ value, onChange, categories }: any) => {
+    const { t } = useTranslation();
     const serviceTabs = [
-        { label: "All Services", value: "" },
+         { label: t("serviceSelection.allServices"), value: "" },
         ...categories.map((c: any) => ({
             label: c.name,
             value: c.id,

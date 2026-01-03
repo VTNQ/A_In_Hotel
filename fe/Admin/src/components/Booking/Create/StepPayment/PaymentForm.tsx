@@ -3,8 +3,10 @@ import Input from "../../../ui/Input";
 import { createBooking } from "../../../../service/api/Booking";
 import { useAlert } from "../../../alert-context";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PaymentForm = ({ booking, onSubmit }: any) => {
+    const { t } = useTranslation();
     const rooms = booking.rooms || [];
     const services = booking.services || [];
     const nights = booking.selectDate?.nights || 0;
@@ -62,7 +64,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
 
             guestType: booking.guest?.guestType ?? 1,
             numberOfGuests: booking.guest?.adults ?? 1,
-            note:booking.guest?.note,
+            note: booking.guest?.note,
             // ===== PAYMENT =====
 
             payment: {
@@ -121,21 +123,21 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
     return (
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <h2 className="text-2xl font-semibold mb-1">
-                Record Payment
+                {t("payment.title")}
             </h2>
             <p className="text-sm text-gray-500 mb-6">
-                Enter the amount received from the guest.
+                {t("payment.subtitle")}
             </p>
 
             <div className="grid grid-cols-2 gap-4">
                 {/* PAID AMOUNT */}
                 <div>
                     <label className="text-sm text-gray-600">
-                        Paid Amount
+                        {t("payment.paidAmount")}
                     </label>
                     <Input
                         type="number"
-                        placeholder="Enter amount paid"
+                        placeholder={t("payment.paidAmountPlaceholder")}
                         value={paidAmountInput}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             let value = e.target.value;
@@ -154,25 +156,23 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
                 {/* PAYMENT METHOD */}
                 <div>
                     <label className="text-sm text-gray-600">
-                        Payment Method
+                        {t("payment.paymentMethod")}
                     </label>
                     <select
                         value={method}
                         onChange={(e) => setMethod(e.target.value)}
                         className="mt-1 w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg px-3 py-2"
                     >
-                        <option value="CASH">Cash</option>
-                        <option value="CARD">Card</option>
-                        <option value="BANK_TRANSFER">
-                            Bank Transfer
-                        </option>
+                        <option value="CASH">{t("payment.method.CASH")}</option>
+                        <option value="CARD">{t("payment.method.CARD")}</option>
+                        <option value="BANK_TRANSFER">{t("payment.method.BANK_TRANSFER")}</option>
                     </select>
                 </div>
 
                 {/* OUTSTANDING */}
                 <div>
                     <label className="text-sm text-gray-600">
-                        Outstanding Balance
+                        {t("payment.outstanding")}
                     </label>
                     <Input
                         type="number"
@@ -184,10 +184,10 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
                 {/* NOTES */}
                 <div>
                     <label className="text-sm text-gray-600">
-                        Notes
+                        {t("payment.notes")}
                     </label>
                     <Input
-                        placeholder="Optional note"
+                        placeholder={t("payment.notesPlaceholder")}
                         value={note}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setNote(e.target.value)
@@ -231,7 +231,9 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
                         </svg>
                     )}
 
-                    {isLoading ? "Processing..." : "Complete Booking"}
+                    {isLoading
+                        ? t("payment.processing")
+                        : t("payment.complete")}
                 </button>
 
             </div>

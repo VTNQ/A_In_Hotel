@@ -21,6 +21,7 @@ public class RoomResponse {
     private Integer capacity;
     private Long idRoomType;
     private String hotelName;
+    private String hotelAddress;
     private String roomTypeName;
     private Integer status;
     private Long hotelId;

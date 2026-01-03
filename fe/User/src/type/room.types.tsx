@@ -2,9 +2,10 @@ import type { ImageResponse } from "./common";
 
 export interface RoomResponse {
     id: number;
-    roomType: string;
+    roomTypeName: string;
     roomName: string;
     hotelName: string;
+    hotelAddress:string;
     capacity: string;
     area: string;
     hotelId: number;

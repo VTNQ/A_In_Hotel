@@ -2,17 +2,18 @@ import { useEffect } from "react";
 import { PACKAGE_TIME_MAP } from "../../../type/booking.types";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
+import { useTranslation } from "react-i18next";
 
-const PACKAGE_OPTIONS = [
-    { label: "Overnight", value: "2" },
-    { label: "Day Use", value: "1" },
-    { label: "Full Day", value: "3" }
-];
 
 const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     const isAutoTimePackage =
         form.package === "2" || form.package === "3";
-
+    const { t } = useTranslation();
+    const PACKAGE_OPTIONS = [
+        { label: t("bookingDateTime.packageDayUse"), value: "1" },
+        { label: t("bookingDateTime.packageOvernight"), value: "2" },
+        { label: t("bookingDateTime.packageFullDay"), value: "3" }
+    ];
     // 🔹 AUTO SET TIME THEO PACKAGE
     useEffect(() => {
         if (PACKAGE_TIME_MAP[form.package]) {
@@ -34,13 +35,13 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     return (
         <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
             <h3 className="font-semibold text-gray-800">
-                Booking Details
+                {t("bookingDateTime.bookingDetails")}
             </h3>
 
-            <Input label="Check-in Date" value={form.checkInDate} readOnly />
+            <Input label={t("bookingDateTime.checkInDate")} value={form.checkInDate} readOnly />
 
             <Input
-                label="Check-in Time"
+                label={t("bookingDateTime.checkInTime")}
                 type="time"
                 value={form.checkInTime}
                 disabled={isAutoTimePackage}
@@ -49,10 +50,10 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                 }
             />
 
-            <Input label="Check-out Date" value={form.checkOutDate} readOnly />
+            <Input label={t("bookingDateTime.checkOutDate")} value={form.checkOutDate} readOnly />
 
             <Input
-                label="Check-out Time"
+                label={t("bookingDateTime.checkOutTime")}
                 type="time"
                 value={form.checkOutTime}
                 disabled={isAutoTimePackage}
@@ -62,7 +63,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
             />
 
             <Select
-                label="Booking Package"
+                label={t("bookingDateTime.package")}
                 value={form.package}
                 options={PACKAGE_OPTIONS.filter((opt) => {
                     if (opt.value === "2" && nights <= 1) return false; // hide Overnight
@@ -73,7 +74,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
 
             <div className="grid grid-cols-2 gap-3">
                 <Input
-                    label="Adults"
+                    label={t("bookingDateTime.adults")}
                     type="number"
                     min={1}
                     value={form.adults}
@@ -83,7 +84,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
                 />
 
                 <Input
-                    label="Children"
+                    label={t("bookingDateTime.children")}
                     type="number"
                     min={0}
                     value={form.children}
@@ -95,9 +96,12 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
 
             <div className="border-t border-gray-200 pt-4 text-sm">
                 <div className="flex justify-between">
-                    <span>Duration</span>
+                    <span>{t("bookingDateTime.duration")}</span>
                     <span className="font-medium">
-                        {nights} {nights > 1 ? "nights" : "night"}
+                        {nights}{" "}
+                        {nights > 1
+                            ? t("bookingDateTime.nights")
+                            : t("bookingDateTime.night")}
                     </span>
                 </div>
             </div>

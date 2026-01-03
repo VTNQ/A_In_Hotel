@@ -5,6 +5,7 @@ import Input from "../../ui/Input";
 import Select from "../../ui/Select";
 import { GUEST_TYPE_OPTIONS } from "../../../type/booking.types";
 import TextArea from "../../ui/TextArea";
+import { useTranslation } from "react-i18next";
 
 const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
     const [form, setForm] = useState({
@@ -18,6 +19,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         note: "",
         ...data
     });
+    const { t } = useTranslation();
 
     const update = (key: string, value: string) => {
         setForm((prev: any) => ({ ...prev, [key]: value }));
@@ -33,19 +35,19 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
     return (
         <div className="bg-white p-6 rounded shadow">
             <h2 className="font-semibold mb-4">
-                Guest Information
+                {t("bookingGuest.title")}
             </h2>
             <p className="text-sm text-gray-500 mb-6">
-                Step 1 of 5: Please enter the primary guest’s details to initialize the booking.
+                {t("bookingGuest.step")}
             </p>
 
             <SectionHeader
-                title="Indentity"
+                title={t("bookingGuest.identity")}
                 icon={<User className="w-5 h-5 text-[#4B62A0]" />}
             />
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <Input
-                    label="First Name"
+                    label={t("bookingGuest.firstName")}
                     placeholder="e.g. Jonathan"
 
                     value={form.firstName}
@@ -53,7 +55,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                         update("firstName", e.target.value)}
                 />
                 <Input
-                    label="Last Name"
+                    label={t("bookingGuest.lastName")}
                     placeholder="e.g. Doe"
                     value={form.lastName}
 
@@ -63,7 +65,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
 
                 <Input
                     type="number"
-                    label="ID / Passport Number"
+                    label={t("bookingGuest.idNumber")}
                     placeholder="Enter ID number"
 
                     value={form.idNumber}
@@ -71,7 +73,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                         update("idNumber", e.target.value)}
                 />
                 <Select
-                    label="Guest Type"
+                    label={t("bookingGuest.guestType")}
                     value={form.guestType}
                     placeholder="Select type"
                     options={GUEST_TYPE_OPTIONS}
@@ -79,13 +81,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                 />
             </div>
             <SectionHeader
-                title="Contact Details"
+                title={t("bookingGuest.contact")}
                 icon={<Mail className="w-5 h-5 text-[#4B62A0]" />}
             />
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <Input
                     type="email"
-                    label="Email Address"
+                    label={t("bookingGuest.email")}
                     placeholder="name@example.com"
                     value={form.email}
 
@@ -94,7 +96,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                 />
                 <Input
                     type="tel"
-                    label="Phone Number"
+                   label={t("bookingGuest.phone")}
                     placeholder="+1 (555) 000-0000"
                     value={form.phone}
 
@@ -104,13 +106,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
             </div>
 
             <SectionHeader
-                title="Booking Specifics"
+                title={t("bookingGuest.specifics")}
                 icon={<ClipboardList className="w-5 h-5 text-[#4B62A0]" />}
             />
 
             <TextArea
-                label="Notes & Special Requests"
-                placeholder="Enter any allergies, room preferences, or special requests here..."
+                  label={t("bookingGuest.note")}
+                placeholder={t("bookingGuest.notePlaceholder")}
                 value={form.note}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => update("note", e.target.value)}
             />
@@ -121,7 +123,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                     text-red-600 border border-red-200 bg-red-50
                     hover:bg-red-100 hover:border-red-300 transition"
                 >
-                    Cancel booking
+                    {t("bookingGuest.cancel")}
                 </button>
 
                 <button
@@ -132,7 +134,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                         : "bg-gray-300 text-gray-400 cursor-not-allowed"
                         }`}
                 >
-                    Next: Booking Date & Time →
+                   {t("bookingGuest.next")}
                 </button>
 
             </div>

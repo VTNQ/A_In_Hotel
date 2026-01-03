@@ -1,6 +1,30 @@
 import { Baby, Bath, BedDouble, Calendar, Coffee, Minus, Plus, Tv, User, Wind } from "lucide-react";
 import RoomCard from "../components/RoomDetail/RoomCard";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import type { RoomResponse } from "../type/room.types";
+import { getRoomById } from "../service/api/Room";
+import { File_URL } from "../setting/constant/app";
 const RoomDetailPage = () => {
+    const [openGallery, setOpenGallery] = useState(false);
+    const { id } = useParams();
+    const [roomv2, setRoomV2] = useState<RoomResponse | null>(null);
+    useEffect(() => {
+        if (!id) return;
+        const fetchRoom = async () => {
+            try {
+                const res = await getRoomById(Number(id));
+                if (res.data.data) {
+                    setRoomV2(res.data.data);
+                } else {
+                    setRoomV2(null);
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchRoom();
+    },[id])
     const room = {
         name: "MINI ROOM",
         address: "Vo Nguyen Giap Street, Ngu Hanh Son, Da Nang",
@@ -9,7 +33,8 @@ const RoomDetailPage = () => {
         images: [
             { url: "https://picsum.photos/800/500?1" },
             { url: "https://picsum.photos/800/500?2" },
-            { url: "https://picsum.photos/800/500?3" }
+            { url: "https://picsum.photos/800/500?3" },
+            { url: "https://picsum.photos/800/500?3" },
         ],
         amenities: [
             "Air conditioning",
@@ -22,8 +47,8 @@ const RoomDetailPage = () => {
             "Hair dryer"
         ]
     }
-
- 
+    const remainImages = room.images.length - 3;
+    const [activeIndex, setActiveIndex] = useState(0);
 
     return (
 
@@ -32,44 +57,41 @@ const RoomDetailPage = () => {
                 backgroundImage: "url('/image/724ed79d34d3b1706617f9c2e66ea6c1fffec304.png')",
             }}>
                 <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden pt-[90px]">
-                    <div className="w-screen">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
+                        <div
+                            className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden cursor-pointer"
+                            onClick={() => setOpenGallery(true)}
+                        >
+                            <img
+                                src={File_URL+roomv2?.images[0]?.url}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-4 h-[400px]">
+                            {roomv2?.images.slice(1, 3).map((img, i) => {
+                                const isLast = i === 1 && roomv2?.images.length > 3;
 
-                            {/* BIG IMAGE */}
-                            <div className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden">
-                                <img
-                                    src={room.images[0]?.url}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-
-                            {/* SMALL IMAGES */}
-                            <div className="flex flex-col gap-4 h-[400px]">
-                                {room.images.slice(1, 3).map((img, i) => (
-                                    <div key={i} className="flex-1 rounded-xl overflow-hidden">
+                                return (
+                                    <div
+                                        key={i}
+                                        className="relative flex-1 rounded-xl overflow-hidden cursor-pointer"
+                                        onClick={() => setOpenGallery(true)}
+                                    >
                                         <img
-                                            src={img.url}
+                                            src={File_URL+ img.url}
                                             className="w-full h-full object-cover hover:scale-105 transition"
                                         />
+
+                                        {isLast && (
+                                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-3xl font-semibold">
+                                                +{remainImages}
+                                            </div>
+                                        )}
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
 
-                        {/* ===== TABS ===== */}
-                        <div className="max-w-7xl mx-auto px-4 mt-6">
-                            <div className="flex gap-8 border-b text-sm">
-                                <button className="pb-3 border-b-2 border-black font-medium">
-                                    Overview
-                                </button>
-                                <button className="pb-3 text-gray-500 hover:text-black">
-                                    Amenities
-                                </button>
-                                <button className="pb-3 text-gray-500 hover:text-black">
-                                    Rooms
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </section>
                 <section className="max-w-7xl mx-auto px-4 pt-[30px] pb-12">
@@ -80,12 +102,12 @@ const RoomDetailPage = () => {
                             {/* ===== HEADER ===== */}
                             <div>
                                 <h1 className="text-2xl font-semibold">
-                                    MINI ROOM <span className="text-base  text-gray-500 font-semibold">(Standard, smart TV 49’)</span>
+                                    {roomv2?.roomName} <span className="text-base  text-gray-500 font-semibold">( {roomv2?.roomTypeName} )</span>
                                 </h1>
 
                                 <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
                                     <span>📍</span>
-                                    126 Đường Đề Thám, Phường Cầu Ông Lãnh, Tp. Hồ Chí Minh
+                                    {roomv2?.hotelAddress}
                                 </p>
                             </div>
 
@@ -94,26 +116,10 @@ const RoomDetailPage = () => {
                                 <h4 className="font-semibold">Overview</h4>
 
                                 <p className="text-sm text-gray-600 leading-relaxed">
-                                    With a stay at The Fullerton Hotel Singapore, you'll be centrally located in
-                                    Singapore, steps from Cavenagh Bridge and Anderson Bridge. This 5-star hotel
-                                    is close to Chinatown Heritage Center and Universal Studios Singapore.
-                                    Make yourself at home in one of the 400 individually furnished guestrooms,
-                                    featuring refrigerators and plasma televisions.
+                                   {roomv2?.note}
                                 </p>
 
-                                <p className="text-sm text-gray-600 leading-relaxed">
-                                    Complimentary wired and wireless Internet access keeps you connected, and
-                                    satellite programming provides entertainment. Private bathrooms with separate
-                                    bathtubs and showers feature deep soaking bathtubs and complimentary toiletries.
-                                    Conveniences include phones, as well as laptop-compatible safes and desks.
-                                </p>
-
-                                <p className="text-sm text-gray-600 leading-relaxed">
-                                    Pamper yourself with a visit to the spa, which offers massages, body treatments,
-                                    and facials. If you're looking for recreational opportunities, you'll find an
-                                    outdoor pool and a fitness center. This Colonial hotel also features
-                                    complimentary wireless Internet access, concierge services, and gift shops/newsstands.
-                                </p>
+                               
                             </div>
 
                             {/* ===== AMENITIES + POLICIES ===== */}
@@ -330,6 +336,46 @@ const RoomDetailPage = () => {
                     </div>
                 </section>
             </div>
+            {openGallery && (
+                <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
+
+                    {/* CLOSE */}
+                    <button
+                        className="absolute top-6 right-6 text-white text-3xl z-50"
+                        onClick={() => setOpenGallery(false)}
+                    >
+                        ✕
+                    </button>
+
+                    {/* MAIN IMAGE */}
+                    <div className="flex flex-col items-center w-full max-w-6xl px-6">
+
+                        <img
+                            src={room.images[activeIndex].url}
+                            className="max-h-[80vh] w-auto object-contain rounded-xl mb-6 transition-all"
+                        />
+
+                        {/* THUMBNAILS */}
+                        <div className="flex gap-3 overflow-x-auto max-w-full pb-2">
+                            {room.images.map((img, i) => (
+                                <img
+                                    key={i}
+                                    src={img.url}
+                                    onClick={() => setActiveIndex(i)}
+                                    className={`
+              h-20 w-28 object-cover rounded-lg cursor-pointer transition
+              ${i === activeIndex
+                                            ? "ring-2 ring-white opacity-100"
+                                            : "opacity-50 hover:opacity-90"}
+            `}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
 
 
 

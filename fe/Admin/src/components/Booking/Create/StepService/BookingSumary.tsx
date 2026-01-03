@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { File_URL } from "../../../../setting/constant/app";
 import { estimateServicePrice } from "../../../../util/estimateServicePrice";
 import { formatBookingDateRange } from "../../../../util/formatDate";
@@ -7,6 +8,7 @@ const BookingSummary = ({
   services,
   onNext,
 }: any) => {
+  const { t } = useTranslation();
   const rooms = booking.rooms || [];
   const nights = booking.selectDate?.nights || 1;
 
@@ -31,7 +33,7 @@ const BookingSummary = ({
       <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sticky top-6">
         {/* HEADER */}
         <h3 className="font-semibold text-gray-900 mb-4">
-          Booking Summary
+          {t("serviceSelection.bookingSummary")}
         </h3>
 
         {/* ROOMS */}
@@ -68,7 +70,7 @@ const BookingSummary = ({
         <div className="text-sm border-t pt-4 mt-4 border-gray-200">
           <div className="flex justify-between">
             <span className="text-gray-500">
-              Rooms Total ({rooms.length} rooms)
+              {t("serviceSelection.roomsTotal", { count: rooms.length })}
             </span>
             <span className="font-medium">
               ${roomsTotal.toFixed(2)}
@@ -80,7 +82,7 @@ const BookingSummary = ({
         {services?.length > 0 && (
           <>
             <p className="text-xs text-[#42578E] mt-4 mb-2 font-semibold">
-              ADDED SERVICES
+               {t("serviceSelection.addedServices")}
             </p>
 
             <div className="space-y-2 text-sm">
@@ -104,7 +106,7 @@ const BookingSummary = ({
           <div className="flex justify-between items-end">
             <div>
               <p className="text-sm text-gray-500">
-                Total Estimate
+                {t("serviceSelection.totalEstimate")}
               </p>
               <p className="text-xs text-gray-400">
                 USD
@@ -121,13 +123,13 @@ const BookingSummary = ({
           onClick={onNext}
           className="w-full mt-6 py-3 rounded-lg bg-[#3d538a] text-white font-medium text-lg"
         >
-          Continue to Payment →
+          {t("serviceSelection.continue")}
         </button>
 
 
 
         <p className="text-xs text-gray-400 mt-3 text-center">
-          Secure Booking Process
+         {t("serviceSelection.secure")}
         </p>
       </div>
     </div>
