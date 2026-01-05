@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 /** --- Type định nghĩa cho props --- */
 interface Column {
@@ -36,6 +37,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onPageChange,
   onSortChange,
 }) => {
+  const { t } = useTranslation();
   /** Xử lý sắp xếp */
   const handleSort = (col: Column) => {
     if (!onSortChange || !col.sortable) return;
@@ -111,7 +113,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
                   colSpan={columns.length}
                   className="py-6 text-center text-gray-500 italic"
                 >
-                  No data available
+                  {t("common.noData")}
                 </td>
               </tr>
             )}
@@ -122,8 +124,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
       {/* Pagination */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 px-4 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-600 rounded-b-2xl">
         <p className="text-center sm:text-left">
-          Showing {(page - 1) * itemsPerPage + 1}–
-          {Math.min(page * itemsPerPage, totalResults)} of {totalResults} results
+          {t("table.showing", {
+            from: (page - 1) * itemsPerPage + 1,
+            to: Math.min(page * itemsPerPage, totalResults),
+            total: totalResults,
+          })}
         </p>
 
         {/* Nút phân trang */}
@@ -150,8 +155,8 @@ const CommonTable: React.FC<CommonTableProps> = ({
                 <button
                   onClick={() => onPageChange(num)}
                   className={`px-3 py-1 rounded-md ${num === page
-                      ? "bg-blue-100 text-blue-700 font-semibold"
-                      : "hover:bg-gray-100"
+                    ? "bg-blue-100 text-blue-700 font-semibold"
+                    : "hover:bg-gray-100"
                     }`}
                 >
                   {num}
@@ -161,7 +166,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
           <button
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
-           className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
+            className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
           >
             ›
           </button>

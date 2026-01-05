@@ -12,12 +12,10 @@ import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.*;
-import org.a_in_hotel.be.mapper.BookingDetailMapper;
-import org.a_in_hotel.be.mapper.BookingMapper;
-import org.a_in_hotel.be.mapper.CheckOutExtraMapper;
-import org.a_in_hotel.be.mapper.PaymentMapper;
+import org.a_in_hotel.be.mapper.*;
 import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.BookingService;
+import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
 import org.springframework.data.domain.Page;
@@ -40,7 +38,17 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository repository;
 
+    private final GeneralService generalService;
+
+    private final RoleRepository roleRepository;
+
     private final BookingMapper mapper;
+
+    private final AccountRepository accountRepository;
+
+    private final CustomerRepository customerRepository;
+
+    private final CustomerMapper customerMapper;
 
     private final BookingDetailMapper detailMapper;
 
@@ -68,6 +76,15 @@ public class BookingServiceImpl implements BookingService {
 
         validateRoomAvailable(request);
         validateRoomSchedule(request);
+
+        Customer customer = customerMapper.toEntity(request,
+                securityUtils.getHotelId(),securityUtils.getCurrentUserId());
+        customerRepository.save(customer);
+
+        Account account = createAccountFromCustomer(request);
+        customer.setAccount(account);
+        customerRepository.save(customer);
+
         Booking booking = mapper.toEntity
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
@@ -80,7 +97,19 @@ public class BookingServiceImpl implements BookingService {
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
-
+    private Account createAccountFromCustomer(BookingRequest data){
+        return accountRepository.findByEmail(data.getEmail())
+                .orElseGet(()->{
+                   Account account = Account.builder()
+                           .email(data.getEmail())
+                           .password(generalService.generateRandomPassword(8))
+                           .role(roleRepository.findById(6L).orElseThrow())
+                           .isActive(true)
+                           .createdBy(securityUtils.getCurrentUserId().toString())
+                           .build();
+                   return accountRepository.save(account);
+                });
+    }
     private void validateRoomAvailable(BookingRequest request) {
         List<Long> roomIds = request.getBookingDetail().stream()
                 .map(BookingDetailRequest::getRoomId)

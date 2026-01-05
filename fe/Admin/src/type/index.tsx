@@ -97,7 +97,6 @@ export interface BookingActionMenuProps {
     onCheckIn?: (booking: any) => void;
     onCheckOut?: (booking: any) => void;
     onSwitchRoom?: (booking: any) => void;
-    onRebook?: (booking: any) => void;
 }
 export interface AssetActionMenuProps {
     asset: {

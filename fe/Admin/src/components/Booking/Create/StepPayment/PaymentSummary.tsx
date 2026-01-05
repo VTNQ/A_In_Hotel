@@ -1,10 +1,18 @@
 import { useTranslation } from "react-i18next";
 import { File_URL } from "../../../../setting/constant/app";
+import { useEffect, useState } from "react";
+import { getHotelById } from "../../../../service/api/Hotel";
+import { getTokens } from "../../../../util/auth";
 
 const PaymentSummary = ({ booking }: any) => {
   const rooms = booking.rooms || [];
   const services = booking.services || [];
-  const hotel = booking.hotel;
+  const [hotelInfo, setHotelInfo] = useState<{
+    thumbnail?:string;
+    name?:string;
+    rating?:number;
+    reviews?:number | string;
+  } | null>(null);
   const { t } = useTranslation();
   const nights = booking.selectDate?.nights || 0;
 
@@ -20,6 +28,23 @@ const PaymentSummary = ({ booking }: any) => {
     (sum: number, s: any) => sum + Number(s.price || 0),
     0
   );
+  useEffect(()=>{
+      const fetchData = async()=>{
+        const hotelId = getTokens()?.hotelId;
+        if(!hotelId) return;
+        try{
+          const res = await getHotelById(hotelId);
+          setHotelInfo({
+            thumbnail: res?.data?.thumbnail?.url,
+            name:res?.data?.name
+          });
+
+        }catch(e){
+          console.error("Fetch hotel failed",e)
+        }
+      }
+      fetchData();
+  },[])
 
   const totalEstimate =
     booking.totalEstimate ?? roomTotal + servicesTotal;
@@ -31,19 +56,18 @@ const PaymentSummary = ({ booking }: any) => {
       <div className="relative h-40">
         <img
           src={
-            hotel?.image
-              ? File_URL + hotel.image
-              : "https://lh3.googleusercontent.com/aida-public/AB6AXuB4XIVRkQ4as-J3NSIG3jd_CZ-f9KIPdOkWPjYWR8bENVcwkv1qgSWILgUT7AMQ6zmy2ieX3svLBKLHc3qRmeFvqly1UhX0F-IqjnVwpAiw_zQdgr1MLMY8KVW7WhBhYl3Fh3qQlTr_boFsAyjD9P1YdsaagTK0JclIHOhVYWHQbHGuna1S263CEmcn5ef-JyF6Bn66xlSvfVNDt2GYX_yv3eX8Er6Obhhbje2NQwNXGm3E1Iq6xAQ29hiLCBW5cP691kDK49gbSiCo"
-          }
+            hotelInfo?.thumbnail
+              ? File_URL + hotelInfo.thumbnail
+              : "/default.webp"  }
           className="w-full h-full object-cover"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
           <h3 className="font-semibold text-lg text-white">
-            {hotel?.name || "Grand Hotel & Spa"}
+            {hotelInfo?.name || "Grand Hotel & Spa"}
           </h3>
           <p className="text-sm text-white/90">
-            ⭐ {hotel?.rating || 4.9} ({hotel?.reviews || "1.2k reviews"})
+            ⭐ {hotelInfo?.rating || 0.0} ({hotelInfo?.reviews || "0 reviews"})
           </p>
         </div>
       </div>

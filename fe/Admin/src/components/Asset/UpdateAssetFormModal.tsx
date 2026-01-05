@@ -309,7 +309,7 @@ const UpdateAssetFormModal = ({
 
                 <div className="sm:col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
-                       {t("asset.createOrUpdate.note")}
+                        {t("asset.createOrUpdate.note")}
                     </label>
                     <textarea
                         name="note"

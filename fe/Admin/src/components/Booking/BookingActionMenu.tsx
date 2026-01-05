@@ -2,6 +2,7 @@ import { Edit, Eye } from "lucide-react";
 import type { BookingActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
+import { useTranslation } from "react-i18next";
 
 const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
     booking,
@@ -10,46 +11,43 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
     onCheckIn,
     onCheckOut,
     onSwitchRoom,
-    onRebook
 }) => {
     const statusCode = booking.status; // now numeric
     let actions: ActionItem[] = [];
+    const { t } = useTranslation();
     let statusLabel = "";
     switch (statusCode) {
        
         case 1:
-            statusLabel = "Booked";
+            statusLabel = t("booking.booked");
             actions = [
-                { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
-                { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(booking) },
-                { label: "Check-in", icon: <Edit size={16} />, onClick: () => onCheckIn?.(booking) },
+                { label: t("booking.viewBooking"), icon: <Eye size={16} />, onClick: () => onView?.(booking) },
+                { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(booking) },
+                { label: t("booking.checkIn"), icon: <Edit size={16} />, onClick: () => onCheckIn?.(booking) },
 
             ];
             break;
 
         case 2:
-            statusLabel = "Checked-in"
+            statusLabel = t("booking.checkIn")
             actions = [
-                { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
-                { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(booking) },
-                { label: "Swith Room", icon: <Edit size={16} />, onClick: () => onSwitchRoom?.(booking) },
-                { label: "Check-out", icon: <Edit size={16} />, onClick: () => onCheckOut?.(booking) },
+                { label: t("booking.viewBooking"), icon: <Eye size={16} />, onClick: () => onView?.(booking) },
+                { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(booking) },
+                { label: t("booking.switchRoom"), icon: <Edit size={16} />, onClick: () => onSwitchRoom?.(booking) },
+                { label: t("booking.checkOut"), icon: <Edit size={16} />, onClick: () => onCheckOut?.(booking) },
 
             ];
             break;
         case 3:
             statusLabel = "Checked-out"
             actions = [
-                { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
-                { label: "Rebook", icon: <Edit size={16} />, onClick: () => onRebook?.(booking) },
-
+                { label:  t("booking.viewBooking"), icon: <Eye size={16} />, onClick: () => onView?.(booking) },
             ];
             break;
         case 4:
             statusLabel = "Cancelled"
             actions = [
-                { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(booking) },
-                { label: "Rebook", icon: <Edit size={16} />, onClick: () => onRebook?.(booking) },
+                { label: t("booking.viewBooking"), icon: <Eye size={16} />, onClick: () => onView?.(booking) },
 
             ];
             break;

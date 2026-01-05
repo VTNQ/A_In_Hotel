@@ -7,6 +7,7 @@ import StepServiceSelection from "../../components/Booking/Create/StepService/St
 import StepPayment from "../../components/Booking/Create/StepPayment/StepPayment";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../components/alert-context";
+import { useTranslation } from "react-i18next";
 
 const CreateBooking = () => {
     const { booking, updateBooking, clearBooking } = useBooking();
@@ -14,14 +15,15 @@ const CreateBooking = () => {
     const back = () => updateBooking({ step: booking.step - 1 });
     const navigate = useNavigate();
     const { showAlert } = useAlert();
+    const { t } = useTranslation();
     const handleCancel = () => {
         showAlert({
             type: "warning",
-            title: "Cancel booking?",
-            description: "All entered information will be lost. This action cannot be undone.",
+            title: t("booking.cancelConfirm.title"),
+            description: t("booking.cancelConfirm.description"),
 
             primaryAction: {
-                label: "Yes, cancel booking",
+                label: t("booking.cancelConfirm.confirm"),
                 onClick: () => {
                     clearBooking();
                     navigate("/Dashboard/booking");
@@ -29,9 +31,8 @@ const CreateBooking = () => {
             },
 
             secondaryAction: {
-                label: "Continue booking",
+                label: t("booking.cancelConfirm.continue"),
                 onClick: () => {
-                    // không cần làm gì
                 },
             },
         });

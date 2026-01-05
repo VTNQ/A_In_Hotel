@@ -47,7 +47,6 @@ const AssetFormModal = ({
             setLoading(true)
             let filters: string[] = [];
             filters.push(`hotel.id==${getTokens()?.hotelId}`)
-            filters.push(`status==3`)
             const filterQuery = filters.join(" and ");
 
             const res = await getAllRoom(

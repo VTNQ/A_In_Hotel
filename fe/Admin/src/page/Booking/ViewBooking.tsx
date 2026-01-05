@@ -162,10 +162,10 @@ const ViewBooking = () => {
                 // Map status code → label + màu sắc
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
 
-                    1: { label: "Booked", color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
-                    2: { label: "Checked-in", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
-                    3: { label: "Checked-out", color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
-                    4: { label: "Cancelled", color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
+                    1: { label: t("booking.booked"), color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
+                    2: { label: t("booking.checkIn"), color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
+                    3: { label: t("booking.checkOut"), color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
+                    4: { label: t("booking.cancelled"), color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
                 };
 
                 // Nếu không khớp code nào, dùng mặc định
@@ -243,7 +243,7 @@ const ViewBooking = () => {
             </div>
             <div className="flex-1 overflow-y-auto">
                 {loading ? (
-                    <p className="text-gray-500">Loading...</p>
+                    <p className="text-gray-500">{t("common.loading")}</p>
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : (
