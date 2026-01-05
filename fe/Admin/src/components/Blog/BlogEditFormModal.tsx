@@ -6,6 +6,7 @@ import { File_URL } from "../../setting/constant/app";
 import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { useTranslation } from "react-i18next";
 
 const BlogEditFormModal = ({
     isOpen,
@@ -14,6 +15,7 @@ const BlogEditFormModal = ({
     blogId
 }: UpdateBlogFormModalProps) => {
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         id: "",
         title: "",
@@ -26,16 +28,16 @@ const BlogEditFormModal = ({
     const [saving, setSaving] = useState(false);
     const { showAlert } = useAlert();
     const categories = [
-        { id: "1", name: "News & Updates" },
-        { id: "2", name: "Offers & Promotions" },
-        { id: "3", name: "Travel Guides" },
-        { id: "4", name: "Local Food" },
-        { id: "5", name: "Booking Tips" },
-        { id: "6", name: "Hotel Services" },
-        { id: "7", name: "Events & Activities" },
-        { id: "8", name: "Nearby Attractions" },
-        { id: "9", name: "Travel Tips" },
-        { id: "10", name: "Guest Experiences" }
+        { id: "1", name: t("blog.blogCategories.newsUpdates") },
+        { id: "2", name: t("blog.blogCategories.offersPromotions") },
+        { id: "3", name: t("blog.blogCategories.travelGuides") },
+        { id: "4", name: t("blog.blogCategories.localFood") },
+        { id: "5", name: t("blog.blogCategories.bookingTips") },
+        { id: "6", name: t("blog.blogCategories.hotelServices") },
+        { id: "7", name: t("blog.blogCategories.eventsActivities") },
+        { id: "8", name: t("blog.blogCategories.nearbyAttractions") },
+        { id: "9", name: t("blog.blogCategories.travelTips") },
+        { id: "10", name: t("blog.blogCategories.guestExperiences") }
     ];
     const [preview, setPreview] = useState<string | null>(null);
     useEffect(() => {
@@ -57,7 +59,7 @@ const BlogEditFormModal = ({
             })
             .catch(() => {
                 showAlert({
-                    title: "Failed to load category information!",
+                    title: t("blog.loadError"),
                     type: "error",
                 });
                 onClose();
@@ -129,7 +131,7 @@ const BlogEditFormModal = ({
                 ])
             );
             const response = await updateBlog(Number(formData.id), cleanedData);
-            const message = response?.data?.message || "Blog updated successfully.";
+            const message = response?.data?.message || t("blog.createOrUpdate.updateSucess");
             showAlert({
                 title: message,
                 type: "success",
@@ -143,7 +145,7 @@ const BlogEditFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update blog. Please try again.",
+                    t("blog.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 4000,
             })
@@ -156,9 +158,9 @@ const BlogEditFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit Blog"
-                saveLabel="Save"
-                cancelLabel="Cancel"
+                title={t("blog.createOrUpdate.titleEdit")}
+                saveLabel={t("common.saveButton")}
+                cancelLabel={t("common.cancelButton")}
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -171,17 +173,17 @@ const BlogEditFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             onSave={handleSave}
-            title="Edit Blog"
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
+            title={t("blog.createOrUpdate.titleEdit")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
         >
             <div className="grid grid-cols-1 gap-4">
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Title *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.name")} *</label>
                     <input
                         type="text"
                         name="title"
-                        placeholder="Enter blog title"
+                        placeholder={t("blog.createOrUpdate.enterTitle")}
                         value={formData.title}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
@@ -189,7 +191,7 @@ const BlogEditFormModal = ({
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">Category *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.category")} *</label>
                     <select
                         name="category"
                         value={formData.category}
@@ -197,7 +199,7 @@ const BlogEditFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
                         {categories.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.name}
@@ -206,20 +208,20 @@ const BlogEditFormModal = ({
                     </select>
                 </div>
                 <div>
-                    <label className="font-medium">Status *</label>
+                    <label className="font-medium">{t("common.status")} *</label>
                     <select
                         name="status"
                         value={formData.status}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
                     >
-                        <option value="1">Draft</option>
-                        <option value="2">Published</option>
-                        <option value="3">Archived</option>
+                        <option value="1">{t("blog.draft")}</option>
+                        <option value="2">{t("blog.published")}</option>
+                        <option value="3">{t("blog.archived")}</option>
                     </select>
                 </div>
                 <div>
-                    <label className="font-medium">Description</label>
+                    <label className="font-medium">{t("blog.description")}</label>
                     <QuillEditor
                         theme="snow"
                         value={formData.description}
@@ -229,7 +231,7 @@ const BlogEditFormModal = ({
                 </div>
 
                 <div>
-                    <label className="font-medium">Content</label>
+                    <label className="font-medium">{t("blog.content")}</label>
                     <QuillEditor
                         theme="snow"
                         value={formData.content}
@@ -239,21 +241,12 @@ const BlogEditFormModal = ({
                 </div>
                 <div className="mb-4">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Thumbnail *
+                        {t("blog.thumbnail")} *
                     </label>
 
                     <div
-                        className="
-      border-2 border-dashed border-[#AFC0E2]
-      hover:border-[#4B62A0]
-      transition
-      rounded-xl
-      bg-[#F6F8FC]
-      cursor-pointer
-      flex flex-col items-center justify-center
-      py-10
-      text-center
-    "
+                        className="border-2 border-dashed border-[#AFC0E2] hover:border-[#4B62A0] transition 
+                        rounded-xl bg-[#F6F8FC] cursor-pointer flex flex-col items-center justify-center py-10 text-center"
                         onClick={() => document.getElementById("thumbnailInput")?.click()}
                     >
                         {preview ? (
@@ -270,7 +263,7 @@ const BlogEditFormModal = ({
                                         className="w-[167px] h-[117px] opacity-60"
                                         alt=""
                                     />
-                                    <p className="text-gray-500 text-sm">Click to select images</p>
+                                    <p className="text-gray-500 text-sm">{t("blog.createOrUpdate.clickSelectImages")}</p>
                                 </div>
                             </>
                         )}

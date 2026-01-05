@@ -10,6 +10,7 @@ import { useAlert } from "../../components/alert-context";
 import ViewAssetInformation from "../../components/Asset/ViewAssetInformation";
 import { getTokens } from "../../util/auth";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const ViewAssetPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -18,6 +19,7 @@ const ViewAssetPage = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [categories, setCategories] = useState<any[]>([]);
+    const { t } = useTranslation();
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState<any | null>(null);
     const [searchValue, setSearchValue] = useState("");
@@ -38,14 +40,14 @@ const ViewAssetPage = () => {
             setLoading(true);
             const response = await updateStatus(row.id, 2);
             const message =
-                response?.data?.message || "Asset Maintenance successfully!";
+                response?.data?.message || t("asset.maintenanceSuccess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to Maintenance Asset. Please try again.",
+                    t("asset.maintenanceError"),
                 type: "error",
             });
         }
@@ -59,14 +61,14 @@ const ViewAssetPage = () => {
             setLoading(true);
             const response = await updateStatus(row.id, 1);
             const message =
-                response?.data?.message || "Asset Active successfully!";
+                response?.data?.message || t("asset.activeSuccess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to Active Asset. Please try again.",
+                    t("asset.activeError"),
                 type: "error",
             });
         }
@@ -76,14 +78,14 @@ const ViewAssetPage = () => {
             setLoading(true);
             const response = await updateStatus(row.id, 4);
             const message =
-                response?.data?.message || "Asset DeActived successfully!";
+                response?.data?.message || t("asset.deactiveSuccess");
             showAlert({ title: message, type: "success", autoClose: 3000 });
             fetchData();
         } catch (err: any) {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to Deactived Asset. Please try again.",
+                    t("asset.deactiveError"),
                 type: "error",
             });
         }
@@ -110,17 +112,17 @@ const ViewAssetPage = () => {
             );
 
             showAlert({
-                title: err?.response?.data?.message || "Failed to update status!",
+                title: err?.response?.data?.message || t("asset.errorUpdateStatus"),
                 type: "error",
             });
         }
 
     }
     const columns = [
-        { key: "assetCode", label: "Asset ID", sortable: true },
+        { key: "assetCode", label: t("asset.code"), sortable: true },
         {
             key: "icon",
-            label: "Icon",
+            label: t("asset.icon"),
             render: (row: any) => (
                 <img
                     src={row.thumbnail != null
@@ -135,35 +137,25 @@ const ViewAssetPage = () => {
                 />
             ),
         },
-        { key: "assetName", label: "Asset Name" },
-        { key: "roomNumber", label: "Room", sortable: true, sortKey: "room.roomNumber" },
-        { key: "categoryName", label: "Category", sortable: true },
+        { key: "assetName", label: t("asset.name") },
+        { key: "roomNumber", label: t("asset.room"), sortable: true, sortKey: "room.roomNumber" },
+        { key: "categoryName", label: t("asset.category"), sortable: true },
         {
             key: "price",
-            label: "Price",
+            label: t("asset.price"),
             render: (row: any) =>
                 `${row.price?.toLocaleString("vi-VN")} ${row.currency || "VNĐ"}`,
             sortable: true
         },
-        { key: "quantity", label: "Quantity", sortable: true },
+        { key: "quantity", label: t("asset.quantity"), sortable: true },
 
 
-        { key: "createdAt", label: "Created Date", sortable: true },
-        { key: "updatedAt", label: "Last Updated Date", sortable: true },
-        {
-            key: "note",
-            label: "Note",
-            render: (row: any) => (
-                <span title={row.note}>
-                    {row.note?.length > 50
-                        ? row.note.substring(0, 50) + "..."
-                        : row.note || "No note"}
-                </span>
-            ),
-        },
+        { key: "createdAt", label: t("asset.createdAt"), sortable: true },
+        { key: "updatedAt", label: t("asset.updatedAt"), sortable: true },
+       
         {
             key: "action",
-            label: "Action",
+            label: t("common.action"),
             render: (row: any) => (
                 <AssetActionMenu
                     asset={row}
@@ -177,16 +169,16 @@ const ViewAssetPage = () => {
         },
         {
             key: "status",
-            label: "Status",
+            label: t("common.status"),
             render: (row: any) => {
                 const statusCode = row.status; // status là số (0–5)
 
                 // Map status code → label + màu sắc
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
-                    1: { label: "Good", color: "bg-green-50 text-green-700", dot: "bg-green-500" },
-                    2: { label: "Maintenance", color: "bg-red-50 text-red-700", dot: "bg-red-500" },
-                    3: { label: "Broken", color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
-                    4: { label: "Deactivated", color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
+                    1: { label: t("asset.status.good"), color: "bg-green-50 text-green-700", dot: "bg-green-500" },
+                    2: { label: t("asset.status.maintenance"), color: "bg-red-50 text-red-700", dot: "bg-red-500" },
+                    3: { label: t("asset.status.broken"), color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
+                    4: { label: t("asset.status.deactivated"), color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
                 };
 
 
@@ -209,7 +201,7 @@ const ViewAssetPage = () => {
         },
         {
             key: "block",
-            label: "Block",
+           label: t("asset.block"),
             render: (row: any) => {
                 const isBlocked = row.status === 3;
                 const isGood = row.status === 1;
@@ -251,7 +243,7 @@ const ViewAssetPage = () => {
 
     const fetchCategory = async () => {
         try {
-            const res = await getAllCategory({ all:true, filter: "isActive==1 and type==3" });
+            const res = await getAllCategory({ all: true, filter: "isActive==1 and type==3" });
             setCategories(res.content || []);
         } catch (err) {
             console.log(err)
@@ -285,7 +277,7 @@ const ViewAssetPage = () => {
             setPage(pageNumber);
         } catch (err: any) {
             console.error("Fetch error:", err);
-            setError("Failed to load data.");
+            setError(t("asset.loadError"));
         } finally {
             setLoading(false);
         }
@@ -309,13 +301,13 @@ const ViewAssetPage = () => {
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-                    Amenties & Asset Tracking
+                    {t("asset.title")}
                 </h1>
                 <button
                     onClick={() => setShowModal(true)}
                     className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
                 >
-                    + New Asset
+                    {t("asset.new")}
                 </button>
             </div>
             <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
@@ -325,36 +317,36 @@ const ViewAssetPage = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by Asset ID, Asset Name"
+                        placeholder={t("asset.searchPlaceholder")}
                         className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Status
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                       {t("common.status")}
                     </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
                     >
-                        <option value="">All</option>
-                        <option value="1">GOOD</option>
-                        <option value="2">MAINTENANCE</option>
-                        <option value="3">BROKEN</option>
-                        <option value="4">DEACTIVATED</option>
+                        <option value="">{t("common.all")}</option>
+                        <option value="1">{t("asset.status.good")}</option>
+                        <option value="2">{t("asset.status.maintenance")}</option>
+                        <option value="3">{t("asset.status.broken")}</option>
+                        <option value="4">{t("asset.status.deactivated")}</option>
                     </select>
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2.5 text-gray-600 text-sm">
-                        Category
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+                        {t("asset.category")}
                     </div>
                     <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+                       className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
                     >
-                        <option value="">All</option>
+                        <option value="">{t("common.all")}</option>
                         {categories.map((item) => (
                             <option key={item.id} value={item.id}>
                                 {item.name}

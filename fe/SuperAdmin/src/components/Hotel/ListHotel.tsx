@@ -10,6 +10,7 @@ import { getAllHotel, UpdateStatusHotel } from "@/service/api/Hotel";
 import HotelFilter from "./HotelFilter";
 import HotelTable from "./HotelTable";
 import HotelEditModal from "./HotelEditModal";
+import { useTranslation } from "react-i18next";
 
 const ListHotel: React.FC = () => {
   const { showAlert } = useAlert();
@@ -20,7 +21,7 @@ const ListHotel: React.FC = () => {
   const [editingRow, setEditingRow] = useState<HotelRow | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 5;
-
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<keyof HotelRow | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -44,7 +45,7 @@ const ListHotel: React.FC = () => {
         id: i.id,
         code: i.code,
         name: i.name,
-        address: i.address ?? "Chưa cập nhật",
+        address: i.address ?? t("hotel.notUpdated"),
         createdOn: i.createdAt,
         status: Number(i.status) as HotelStatus,
         fullName: i.fullName,
@@ -54,7 +55,7 @@ const ListHotel: React.FC = () => {
 
       setRows(list);
     } catch (e: any) {
-      setError(e.message || "Không thể tải dữ liệu");
+      setError(e.message || t("hotel.loadError"));
     } finally {
       setLoading(false);
     }
@@ -71,14 +72,14 @@ const ListHotel: React.FC = () => {
     const prevRows = rows;
 
     setRows((prev) =>
-      prev.filter((r) => r.id !== row.id) 
+      prev.filter((r) => r.id !== row.id)
     );
     try {
       await UpdateStatusHotel(row.id, 0);
     } catch {
       setRows(prevRows);
       showAlert({
-        title: "Xoá khách sạn thất bại",
+        title: t("hotel.deleteError"),
         type: "error",
       });
     }
@@ -101,7 +102,7 @@ const ListHotel: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Hotel List</h2>
+        <h2 className="text-xl font-semibold"> {t("hotel.listTitle")}</h2>
 
         <HotelFilter
           search={search}

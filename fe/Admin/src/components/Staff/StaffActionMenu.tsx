@@ -2,22 +2,24 @@ import { Power } from "lucide-react";
 import type { StaffActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
+import { useTranslation } from "react-i18next";
 
 const StaffActionMenu: React.FC<StaffActionMenuProps> = ({
     staff,
     onActivate,
     onDeactivate,
 }) => {
+    const { t } = useTranslation();
     const actions: ActionItem[] = staff.isActive
         ? [
-            { label: "Deactivate", icon: <Power size={16} />, danger: true, onClick: () => onDeactivate?.(staff) },
+            { label: t("common.deActivate"), icon: <Power size={16} />, danger: true, onClick: () => onDeactivate?.(staff) },
         ] :
         [
-            { label: "Activate", icon: <Power size={16} />, onClick: () => onActivate?.(staff) },
+            { label: t("common.active"), icon: <Power size={16} />, onClick: () => onActivate?.(staff) },
         ]
     return (
         <ActionMenu
-            title={staff.isActive ? "Active" : "Inactive"}
+            title={staff.isActive ? t("common.active") : t("common.inactive")}
             actions={actions}
         />
     );

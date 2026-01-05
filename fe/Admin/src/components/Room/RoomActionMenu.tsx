@@ -2,6 +2,7 @@ import { Eye, Edit, Wrench, Power } from "lucide-react";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import type { RoomActionMenuProps } from "../../type";
+import { useTranslation } from "react-i18next";
 
 const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   room,
@@ -11,6 +12,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   onDeactivate,
   onMaintenance
 }) => {
+   const { t } = useTranslation();
   const statusCode = room.status; // now numeric
   let actions: ActionItem[] = [];
   let statusLabel = "";
@@ -18,53 +20,53 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   // Map status code → name
   switch (statusCode) {
     case 1:
-      statusLabel = "Vacant - Dirty";
+      statusLabel = t("room.roomStatus.vacantDirty");
       actions = [
-        { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) },
-        { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
-        { label: "Maintenance", icon: <Wrench size={16} />, onClick: () => onMaintenance?.(room) },
+        { label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) },
+        { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
+        { label: t("room.roomStatus.maintenance"), icon: <Wrench size={16} />, onClick: () => onMaintenance?.(room) },
       ];
       break;
     case 2:
-      statusLabel = "Occupied";
-      actions = [{ label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) }];
+      statusLabel = t("room.roomStatus.occupied");
+      actions = [{ label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) }];
       break;
     case 3:
-      statusLabel = "Available";
+      statusLabel = t("room.roomStatus.available");
       actions = [
-        { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) },
-        { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
-        { label: "Deactivate", icon: <Power size={16} />, danger: true, onClick: () => onDeactivate?.(room) },
-        { label: "Maintenance", icon: <Wrench size={16} />, onClick: () => onDeactivate?.(room) },
+        { label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) },
+        { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
+        { label: t("common.deActivate"), icon: <Power size={16} />, danger: true, onClick: () => onDeactivate?.(room) },
+        { label: t("room.roomStatus.maintenance"), icon: <Wrench size={16} />, onClick: () => onDeactivate?.(room) },
       ];
       break;
     case 4:
-      statusLabel = "Maintenance";
+      statusLabel = t("room.roomStatus.maintenance");
       actions = [
-        { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) },
-        { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
-        { label: "Deactivate", icon: <Power size={16} />, onClick: () => onDeactivate?.(room) },
+        { label:  t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) },
+        { label:  t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
+        { label:  t("common.deActivate"), icon: <Power size={16} />, onClick: () => onDeactivate?.(room) },
       ];
       break;
     case 5:
-      statusLabel = "Blocked";
+      statusLabel = t("room.roomStatus.blocked");
       actions = [
-        { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) },
-        { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
-        { label: "Deactivate", icon: <Power size={16} />, onClick: () => onDeactivate?.(room) },
+        { label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) },
+        { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
+        { label: t("common.deActivate"), icon: <Power size={16} />, onClick: () => onDeactivate?.(room) },
       ];
       break;
     case 6:
-      statusLabel = "Deactivated";
+      statusLabel = t("common.deActivate");
       actions = [
-        { label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) },
-        { label: "Edit", icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
-        { label: "Activate", icon: <Power size={16} />, onClick: () => onActivate?.(room) },
+        { label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) },
+        { label: t("common.edit"), icon: <Edit size={16} />, onClick: () => onEdit?.(room) },
+        { label: t("common.active"), icon: <Power size={16} />, onClick: () => onActivate?.(room) },
       ];
       break;
     default:
       statusLabel = "Unknown";
-      actions = [{ label: "View", icon: <Eye size={16} />, onClick: () => onView?.(room) }];
+      actions = [{ label: t("room.viewRoom"), icon: <Eye size={16} />, onClick: () => onView?.(room) }];
   }
 
   return <ActionMenu title={statusLabel} actions={actions} />;

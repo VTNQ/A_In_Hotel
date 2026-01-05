@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import type { ViewCategoryProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Category";
+import { useTranslation } from "react-i18next";
 
 const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose, categoryId }) => {
     const [category, setCategory] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     useEffect(() => {
         if (isOpen && categoryId) {
             fetchCategory(categoryId);
@@ -24,7 +26,7 @@ const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose,
         <CommonModalView
             isOpen={isOpen}
             onClose={onClose}
-            title="Category"
+            title={t("category.view.title")}
             width="w-[95vw] sm:w-[520px]"
             widthClose="w-full sm:w-[200px]"
             isBorderBottom={true}
@@ -49,22 +51,20 @@ const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose,
             )}
             {!loading && category && (
                 <>
-                    <h3 className="text-base sm:text-lg font-semibold mt-2 text-[#253150]">
-                        Category Information
-                    </h3>
+                    
 
                     <div
                         className="w-full py-2 rounded-xl text-sm sm:text-[16px] text-[#2B2B2B]"
                         style={{ fontFamily: "Montserrat" }}
                     >
                         <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-y-3 gap-x-4">
-                            <span className="font-semibold text-[#253150]">Category Name</span>
+                            <span className="font-semibold text-[#253150]">{t("category.name")}</span>
                             <span>{category.name}</span>
 
-                            <span className="font-semibold text-[#253150]">Type</span>
+                            <span className="font-semibold text-[#253150]">{t("category.type")}</span>
                             <span>{category.type}</span>
 
-                            <span className="font-semibold text-[#253150]">Capacity</span>
+                            <span className="font-semibold text-[#253150]">{t("category.capacity")}</span>
                             <span>{category.capacity}</span>
                         </div>
 

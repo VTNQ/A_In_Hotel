@@ -1,0 +1,259 @@
+{
+    "common": {
+        "action": "Thao tác",
+        "edit": "Sửa",
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "saving": "Đang lưu...",
+        "tryAgain": "Vui lòng thử lại sau",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "search": "Tìm kiếm...",
+        "phone": "Số điện thoại",
+        "birthday": "Ngày sinh",
+        "gender": "Giới tính",
+        "saveChanges": "Lưu thay đổi",
+        "loadFailed": "Không thể tải dữ liệu",
+        "avatar": "Ảnh đại diện",
+        "upload": "Nhấn để tải ảnh hoặc kéo thả",
+        "uploadHint": "SVG, PNG, JPG (tối đa 800×400px)"
+    },
+    "status": {
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động"
+    },
+    "facility": {
+        "page": {
+            "title": "Quản lý tiện ích"
+        },
+        "status": {
+            "updateSuccess": "Cập nhật trạng thái thành công",
+            "updateFailed": "Cập nhật trạng thái thất bại"
+        },
+        "edit": {
+            "title": "Chỉnh sửa tiện ích",
+            "loading": "Đang tải dữ liệu tiện ích...",
+            "success": "Cập nhật tiện ích thành công",
+            "failed": "Cập nhật tiện ích thất bại"
+        },
+        "table": {
+            "serviceId": "Mã dịch vụ",
+            "icon": "Biểu tượng",
+            "serviceName": "Tên dịch vụ",
+            "category": "Danh mục",
+            "description": "Mô tả",
+            "note": "Ghi chú",
+            "createdAt": "Ngày tạo",
+            "updatedAt": "Cập nhật lần cuối",
+            "status": "Trạng thái",
+            "action": "Hành động"
+        },
+        "create": {
+            "title": "Tạo tiện ích",
+            "submit": "Tạo tiện ích"
+        },
+        "breadcrumb": {
+            "home": "Trang chủ",
+            "facilities": "Tiện ích"
+        },
+        "form": {
+            "name": "Tên tiện ích",
+            "namePlaceholder": "Nhập tên tiện ích",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Mô tả tiện ích (hiển thị cho khách)",
+            "category": "Danh mục",
+            "categoryPlaceholder": "Chọn danh mục",
+            "coverImage": "Ảnh đại diện",
+            "note": "Ghi chú",
+            "notePlaceholder": "Ghi chú nội bộ (không hiển thị cho khách)"
+        }
+    },
+    "sidebar": {
+        "dashboards": "Bảng điều khiển",
+        "home": "Trang chủ",
+        "hotel": "Khách sạn",
+        "account": "Tài khoản",
+        "adminManager": "Quản lý Admin",
+        "childSuperAdminManager": "Quản lý Super Admin con",
+        "systemManagement": "Quản lý hệ thống",
+        "aboutHotel": "Giới thiệu khách sạn",
+        "homepageContent": "Nội dung trang chủ",
+        "policyTerms": "Chính sách & Điều khoản",
+        "footerContent": "Nội dung chân trang",
+        "facilities": "Cơ sở vật chất"
+    },
+    "adminCreate": {
+        "title": "Admin",
+        "formTitle": "Thông tin",
+        "email": "Email",
+        "emailPlaceholder": "Nhập email",
+        "fullName": "Tên đầy đủ",
+        "fullNamePlaceholder": "Nhập tên đầy đủ",
+        "phone": "Số điện thoại",
+        "phonePlaceholder": "Nhập số điện thoại",
+        "birthday": "Ngày sinh",
+        "birthdayPlaceholder": "Chọn ngày sinh",
+        "breadcrumb": {
+            "home": "Trang chủ",
+            "admin": "Danh sách admin"
+        },
+        "gender": "Giới tính",
+        "genderPlaceholder": "Chọn giới tính",
+        "avatar": "Ảnh đại diện",
+        "success": "Tạo tài khoản Admin thành công",
+        "error": "Tạo tài khoản Admin thất bại"
+    },
+    "hotel": {
+        "listTitle": "Danh sách khách sạn",
+        "notUpdated": "Chưa cập nhật",
+        "loadError": "Không thể tải dữ liệu khách sạn",
+        "deleteSuccess": "Xoá khách sạn thành công",
+        "deleteError": "Xoá khách sạn thất bại",
+        "hotelEdit": {
+            "title": "Chỉnh sửa thông tin khách sạn",
+            "loading": "Đang tải dữ liệu khách sạn...",
+            "name": "Tên khách sạn",
+            "address": "Địa chỉ",
+            "manager": "Quản lý",
+            "chooseManager": "Chọn quản lý",
+            "managerDesc": "Chọn một người chịu trách nhiệm quản lý khách sạn.",
+            "image": "Hình ảnh",
+            "uploadHint": "Nhấn để upload ảnh khách sạn",
+            "updateSuccess": "Cập nhật khách sạn thành công",
+            "updateError": "Cập nhật khách sạn thất bại"
+        },
+        "hotelCreate": {
+            "title": "Tạo khách sạn",
+            "formTitle": "Thông tin khách sạn",
+            "name": "Tên khách sạn",
+            "namePlaceholder": "Nhập tên khách sạn",
+            "address": "Địa chỉ",
+            "addressPlaceholder": "Nhập địa chỉ khách sạn",
+            "manager": "Quản lý",
+            "selectManager": "Chọn quản lý",
+            "managerDesc": "Chọn một người chịu trách nhiệm quản lý khách sạn.",
+            "image": "Hình ảnh",
+            "uploadHint": "Nhấn để upload ảnh khách sạn",
+            "success": "Tạo khách sạn thành công",
+            "error": "Tạo khách sạn thất bại"
+        },
+        "breadcrumb": {
+            "home": "Trang chủ",
+            "hotel": "Khách sạn"
+        },
+        "hotelFilter": {
+            "all": "Tất cả",
+            "active": "Hoạt động",
+            "inactive": "Ngừng hoạt động",
+            "searchPlaceholder": "Tìm theo mã, tên",
+            "create": "+ Tạo khách sạn"
+        },
+        "hotelTable": {
+            "loading": "Đang tải...",
+            "code": "Mã",
+            "image": "Hình ảnh",
+            "name": "Tên khách sạn",
+            "address": "Địa chỉ",
+            "manager": "Quản lý"
+        }
+    },
+    "gender": {
+        "male": "Nam",
+        "female": "Nữ"
+    },
+    "admin": {
+        "title": "Danh sách Admin",
+        "add": "Thêm tài khoản",
+        "filterStatus": "Lọc theo trạng thái",
+        "search": {
+            "default": "Tìm theo",
+            "fullName": "Tìm theo tên...",
+            "placeHolder": "Tìm theo",
+            "email": "Tìm theo email...",
+            "phone": "Tìm theo số điện thoại..."
+        },
+        "searchField": {
+            "default": "Mặc định",
+            "fullName": "Tên đầy đủ",
+            "email": "Email",
+            "phone": "Số điện thoại"
+        },
+        "table": {
+            "fullName": "Tên đầy đủ",
+            "email": "Email",
+            "birthday": "Ngày sinh",
+            "phone": "Số điện thoại",
+            "gender": "Giới tính",
+            "avatar": "Ảnh đại diện",
+            "createdAt": "Ngày tạo"
+        }
+    },
+    "childSuperAdmin": {
+        "listTitle": "Danh sách Child SuperAdmin",
+        "add": "Thêm tài khoản",
+        "search": {
+            "default": "Tìm theo",
+            "fullName": "Tìm theo tên...",
+            "email": "Tìm theo email...",
+            "phone": "Tìm theo số điện thoại..."
+        },
+        "searchField": {
+            "default": "Mặc định",
+            "fullName": "Tên đầy đủ",
+            "email": "Email",
+            "phone": "Số điện thoại"
+        },
+        "table": {
+            "fullName": "Tên đầy đủ",
+            "email": "Email",
+            "birthday": "Ngày sinh",
+            "phone": "Số điện thoại",
+            "gender": "Giới tính",
+            "avatar": "Ảnh đại diện",
+            "createdAt": "Ngày tạo"
+        },
+        "title": "Child SuperAdmin",
+        "breadcrumb": {
+            "home": "Trang chủ",
+            "Child": "Child SuperAdmin"
+        },
+        "create": {
+            "title": "Tạo tài khoản Child SuperAdmin",
+            "success": "Tạo tài khoản Child SuperAdmin thành công",
+            "error": "Tạo tài khoản Child SuperAdmin thất bại"
+        },
+        "form": {
+            "info": "Thông tin",
+            "emailPlaceholder": "Nhập email",
+            "fullNamePlaceholder": "Nhập họ và tên",
+            "phonePlaceholder": "Nhập số điện thoại",
+            "birthdayPlaceholder": "Chọn ngày sinh",
+            "genderPlaceholder": "Chọn giới tính"
+        }
+    },
+    "systemContent": {
+        "breadcrumb": {
+            "systemManagement": "Quản lý hệ thống",
+            "systemContent": "Nội dung hệ thống"
+        },
+        "lastUpdated": "Cập nhật gần đây",
+        "upload": "Tải ảnh lên hoặc kéo thả",
+        "uploadHint": "PNG, JPG, GIF tối đa 10MB",
+        "aboutHotel": {
+            "title": "Giới thiệu khách sạn",
+            "editTitle": "Chỉnh sửa nội dung",
+            "form": {
+                "title": "Tiêu đề",
+                "titlePlaceholder": "VD: Chào mừng đến với khách sạn của chúng tôi",
+                "titleHint": "Tiêu đề chính hiển thị cho phần giới thiệu.",
+                "description": "Mô tả",
+                "descriptionPlaceholder": "Nhập mô tả chi tiết về khách sạn, dịch vụ và trải nghiệm...",
+                "descriptionHint": "Mô tả rõ ràng, hấp dẫn về câu chuyện, giá trị và điểm nổi bật của khách sạn.",
+                "cta": "Nội dung nút hành động",
+                "ctaPlaceholder": "VD: Đặt phòng ngay",
+                "ctaHint": "Dòng chữ hiển thị trên nút bên dưới phần mô tả.",
+                "image": "Ảnh nổi bật"
+            }
+        }
+    }
+}

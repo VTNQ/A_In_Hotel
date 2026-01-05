@@ -7,6 +7,7 @@ import { getAllCategory } from "../../service/api/Category";
 import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const UpdateAssetFormModal = ({
     isOpen,
@@ -23,13 +24,13 @@ const UpdateAssetFormModal = ({
         note: "",
         roomId: "",
         image: null as File | null,
-
     });
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
-    const [room,setRooms]= useState<any[]>([]);
+    const [room, setRooms] = useState<any[]>([]);
     const { showAlert } = useAlert();
     useEffect(() => {
         if (!isOpen || !assetId) return;
@@ -53,7 +54,7 @@ const UpdateAssetFormModal = ({
             })
             .catch(() => {
                 showAlert({
-                    title: "Failed to load asset information!",
+                    title: t("asset.loadError"),
                     type: "error",
                 });
                 onClose();
@@ -77,19 +78,18 @@ const UpdateAssetFormModal = ({
             console.log(err)
         }
     }
-    const fetchRooms=async()=>{
+    const fetchRooms = async () => {
         try {
             setLoading(true)
             let filters: string[] = [];
             filters.push(`hotel.id==${getTokens()?.hotelId}`)
-            filters.push(`status==3`)
             const filterQuery = filters.join(" and ");
-            
+
             const res = await getAllRoom(
-            { 
-                 all:true,
-                filter: filterQuery
-            });
+                {
+                    all: true,
+                    filter: filterQuery
+                });
             setRooms(res.data.content || []);
         } catch (err) {
             console.log(err)
@@ -115,10 +115,10 @@ const UpdateAssetFormModal = ({
                 price: formData.price,
                 quantity: formData.quantity,
                 note: formData.note,
-                image:formData.image
+                image: formData.image
             }
             const response = await updateAsset(Number(formData.id), payload);
-            const message = response?.data?.message || "Asset updated successfully.";
+            const message = response?.data?.message || t("asset.createOrUpdate.updateSuccess");
             showAlert({
                 title: message,
                 type: "success",
@@ -132,7 +132,7 @@ const UpdateAssetFormModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update asset. Please try again.",
+                    t("asset.createOrUpdate.updateError"),
                 type: "error",
                 autoClose: 4000,
             })
@@ -149,7 +149,7 @@ const UpdateAssetFormModal = ({
             quantity: "",
             note: "",
             roomId: "",
-            image:null
+            image: null
 
         })
         onClose();
@@ -159,10 +159,10 @@ const UpdateAssetFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title="Edit Amenities & Asset Tracking"
-                saveLabel="Save"
-                cancelLabel="Cancel"
-                 width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
+                title={t("asset.createOrUpdate.titleEdit")}
+                saveLabel={t("common.save")}
+                cancelLabel={t("common.cancelButton")}
+                width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
             >
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -175,13 +175,13 @@ const UpdateAssetFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             onSave={handleUpdate}
-            title="Edit Amenities & Asset Tracking"
-            saveLabel={saving ? "Saving..." : "Save"}
-            cancelLabel="Cancel"
-             width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
+            title={t("asset.createOrUpdate.titleEdit")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
+            cancelLabel={t("common.cancelButton")}
+            width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
         >
-                  <div className="mb-4">
-                <label className="block mb-1 font-medium text-[#253150]">Asset Icon</label>
+            <div className="mb-4">
+                <label className="block mb-1 font-medium text-[#253150]">{t("asset.createOrUpdate.icon")}</label>
                 <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
 
                     <input
@@ -217,12 +217,12 @@ const UpdateAssetFormModal = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]" >
-                        Asset Name *
+                        {t("asset.name")} *
                     </label>
                     <input
                         type="text"
                         name="assetName"
-                        placeholder="Enter asset name"
+                        placeholder={t("asset.createOrUpdate.namePlaceHolder")}
                         value={formData.assetName}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
@@ -232,7 +232,7 @@ const UpdateAssetFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Room Number *
+                        {t("asset.createOrUpdate.room")} *
                     </label>
                     <select
                         name="roomId"
@@ -241,7 +241,7 @@ const UpdateAssetFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
-                        <option value="">Enter number room</option>
+                        <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
                         {room.length > 0 ? (
                             room.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -249,13 +249,13 @@ const UpdateAssetFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Category *
+                        {t("asset.category")} *
                     </label>
                     <select
                         name="categoryId"
@@ -264,7 +264,7 @@ const UpdateAssetFormModal = ({
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
                         required
                     >
-                        <option value="">Select Category</option>
+                        <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
                         {categories.length > 0 ? (
                             categories.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -272,18 +272,18 @@ const UpdateAssetFormModal = ({
                                 </option>
                             ))
                         ) : (
-                            <option disabled>Loading...</option>
+                            <option disabled>{t("common.loading")}</option>
                         )}
                     </select>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Price (VND) *
+                        {t("asset.createOrUpdate.price")} *
                     </label>
                     <input
                         type="number"
                         name="price"
-                        placeholder="Enter room price"
+                        placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
                         value={formData.price}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
@@ -293,12 +293,12 @@ const UpdateAssetFormModal = ({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Quantity
+                        {t("asset.createOrUpdate.quantity")}
                     </label>
                     <input
                         type="number"
                         name="quantity"
-                        placeholder="Enter quantity (e.g. 1)"
+                        placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
                         value={formData.quantity}
                         onChange={handleChange}
                         className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
@@ -309,13 +309,13 @@ const UpdateAssetFormModal = ({
 
                 <div className="sm:col-span-2">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        Notes
+                        {t("asset.createOrUpdate.note")}
                     </label>
                     <textarea
                         name="note"
                         value={formData.note}
                         onChange={handleChange}
-                        placeholder="Add any notes (e.g. near window, pool view)"
+                        placeholder={t("asset.createOrUpdate.notePlaceholder")}
                         className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                         rows={2}
                     />

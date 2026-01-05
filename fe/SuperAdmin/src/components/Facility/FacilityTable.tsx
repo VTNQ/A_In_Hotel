@@ -5,6 +5,7 @@ import { Badge, Pencil } from "lucide-react";
 import { SelectField } from "../ui/select";
 import { Button } from "../ui/button";
 import { STATUS_OPTIONS, STATUS_STYLES, type FacilityStatus } from "@/setting/constant/Facility.constant";
+import { useTranslation } from "react-i18next";
 
 const FacilityTable = ({
     rows,
@@ -14,8 +15,10 @@ const FacilityTable = ({
     onSortChange,
     onEdit,
     onStatusChange }: FacilityTableProps) => {
+    const { t } = useTranslation();
+
     if (loading) {
-        return <div className="py-8 text-center">Đang tải...</div>;
+        return <div className="py-8 text-center">{t("common.loading")}</div>;
     }
     return (
         <Table<keyof facilityRow>
@@ -28,16 +31,22 @@ const FacilityTable = ({
                     <TableHead
                         sortable
                         sortKey="serviceCode"
-                    >Service ID</TableHead>
+                    >{t("facility.table.serviceId")}</TableHead>
 
-                    <TableHead >Icon</TableHead>
-                    <TableHead sortable sortKey="serviceName">Service Name</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead sortable sortKey="category.id">Category</TableHead>
-                    <TableHead sortable sortKey="createdAt">Created Date</TableHead>
-                    <TableHead sortable sortKey="updatedAt">Last Updated</TableHead>
-                    <TableHead >Status</TableHead>
-                    <TableHead>Action</TableHead>
+                    <TableHead>{t("facility.table.icon")}</TableHead>
+                    <TableHead sortable sortKey="serviceName">
+                        {t("facility.table.serviceName")}
+                    </TableHead>
+                    <TableHead>{t("facility.table.description")}</TableHead>
+                    <TableHead sortable sortKey="category.id">{t("facility.table.category")}</TableHead>
+                    <TableHead sortable sortKey="createdAt">
+                        {t("facility.table.createdAt")}
+                    </TableHead>
+                    <TableHead sortable sortKey="updatedAt">
+                        {t("facility.table.updatedAt")}
+                    </TableHead>
+                    <TableHead>{t("facility.table.status")}</TableHead>
+                    <TableHead>{t("facility.table.action")}</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -47,7 +56,7 @@ const FacilityTable = ({
                             colSpan={6}
                             className="h-[240px] text-center text-gray-400"
                         >
-                            Không có dữ liệu
+                           {t("common.noData")}
                         </TableCell>
                     </TableRow>
                 ) : (
@@ -68,14 +77,14 @@ const FacilityTable = ({
                                 />
                             </TableCell>
                             <TableCell>{row.serviceName}</TableCell>
-                            
+
                             <TableCell>{row.categoryName}</TableCell>
                             <TableCell>
                                 {row.description && (
                                     <p className="text-sm text-gray-500">
                                         {row.description.length > 30
                                             ? row.description.slice(0, 60) + "…"
-                                            : row.description   }
+                                            : row.description}
                                     </p>
                                 )}
                             </TableCell>
@@ -84,7 +93,7 @@ const FacilityTable = ({
                                     <p className="text-sm text-gray-500">
                                         {row.note.length > 30
                                             ? row.note.slice(0, 60) + "…"
-                                            : row.note   }
+                                            : row.note}
                                     </p>
                                 )}
                             </TableCell>
@@ -116,7 +125,7 @@ const FacilityTable = ({
                             </TableCell>
                             <TableCell>
                                 <Button size="sm" variant="outline" onClick={() => onEdit(row)}>
-                                    <Pencil className="mr-1 h-4 w-4" /> Sửa
+                                    <Pencil className="mr-1 h-4 w-4" />   {t("common.edit")}
                                 </Button>
                             </TableCell>
                         </TableRow>

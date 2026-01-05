@@ -7,14 +7,9 @@ import { File_URL } from "@/setting/constant/app";
 
 import { ChevronDown, ChevronUp, Search, SearchIcon, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type SearchField = "default" | "fullName" | "email" | "phone";
-const SEARCH_PLACEHOLDER: Record<SearchField, string> = {
-    default: "Tìm Theo",
-    fullName: "Tìm theo Tên ...",
-    email: "Tìm theo email ...",
-    phone: "Tìm theo phone ...",
-};
 type Gender = "MALE" | "FEMALE";
 type GenderFilter = "ALL" | Gender;
 interface BasicRow {
@@ -90,6 +85,13 @@ function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
     );
 }
 const ListChildSuperAdmin: React.FC = () => {
+    const { t } = useTranslation();
+    const SEARCH_PLACEHOLDER: Record<SearchField, string> = {
+        default: t("childSuperAdmin.search.default"),
+        fullName: t("childSuperAdmin.search.fullName"),
+        email: t("childSuperAdmin.search.email"),
+        phone: t("childSuperAdmin.search.phone"),
+    };
     const [rows, setRows] = useState<BasicRow[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -146,48 +148,43 @@ const ListChildSuperAdmin: React.FC = () => {
     const cols: Column<BasicRow>[] = useMemo(
         () => [
             { key: "index", header: "#" },
-            { key: "fullName", header: "Tên đầy đủ", sortable: true },
-            {
-                key: "email",
-                header: "Email",
-
-            },
-            {
-                key: "birthday",
-                header: "Ngày sinh",
-
-            },
-            {
-                key: "phone",
-                header: "số điện thoại",
-
-            },
+            { key: "fullName", header: t("childSuperAdmin.table.fullName"), sortable: true },
+            { key: "email", header: t("childSuperAdmin.table.email") },
+            { key: "birthday", header: t("childSuperAdmin.table.birthday") },
+            { key: "phone", header: t("childSuperAdmin.table.phone") },
             {
                 key: "gender",
-                header: "Giới tính",
+                header: t("childSuperAdmin.table.gender"),
                 sortable: true,
+                cell: (row) => t(`gender.${row.gender.toLowerCase()}`),
             },
-
             {
                 key: "url",
-                header: "Avatar",
+                header: t("childSuperAdmin.table.avatar"),
                 cell: (row) =>
                     row.url ? (
-                        <ThumbWithPreview src={File_URL +row.url} alt={row.fullName || "Banner"} />
+                        <ThumbWithPreview
+                            src={File_URL + row.url}
+                            alt={row.fullName || "Avatar"}
+                        />
                     ) : (
-                        <span className="text-xs text-muted-foreground">Không có ảnh</span>
+                        <span className="text-xs text-muted-foreground">
+                            {t("common.noImage")}
+                        </span>
                     ),
             },
             {
                 key: "createdOn",
-                header: "Ngày tạo",
+                header: t("childSuperAdmin.table.createdAt"),
                 sortable: true,
-                cell: (row) => <span className="text-muted-foreground">{formatDate(row.createdOn)}</span>,
+                cell: (row) => (
+                    <span className="text-muted-foreground">
+                        {formatDate(row.createdOn)}
+                    </span>
+                ),
             },
-
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [t]
     );
 
     const onSort = (key: keyof BasicRow) => {
@@ -208,15 +205,15 @@ const ListChildSuperAdmin: React.FC = () => {
         <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Danh sách Child SuperAdmin</h2>
+                <h2 className="text-xl font-semibold">{t("childSuperAdmin.listTitle")}</h2>
 
                 <div className="flex items-center gap-2">
                     <SelectField<{ value: SearchField; label: string }>
                         items={[
-                            { value: "default", label: "Mặc định" },
-                            { value: "fullName", label: "Tên đầy đủ" },
-                            { value: "email", label: "email" },
-                            { value: "phone", label: "phone" },
+                            { value: "default", label: t("childSuperAdmin.searchField.default") },
+                            { value: "fullName", label: t("childSuperAdmin.searchField.fullName") },
+                            { value: "email", label: t("childSuperAdmin.searchField.email") },
+                            { value: "phone", label: t("childSuperAdmin.searchField.phone") },
                         ]}
                         value={searchField}
                         onChange={(val) => {
@@ -231,9 +228,9 @@ const ListChildSuperAdmin: React.FC = () => {
                     />
                     <SelectField<{ value: "ALL" | Gender; label: string }>
                         items={[
-                            { value: "ALL", label: "Tất cả" },
-                            { value: "MALE", label: "Nam" },
-                            { value: "FEMALE", label: "Nữ" },
+                            { value: "ALL", label: t("common.all") },
+                            { value: "MALE", label: t("gender.male") },
+                            { value: "FEMALE", label: t("gender.female") },
                         ]}
                         value={genderFilter}
                         onChange={(val) => {
@@ -265,7 +262,7 @@ const ListChildSuperAdmin: React.FC = () => {
 
 
                     <Button asChild>
-                        <a href="/Home/ChildSuperAdmin/create">+ Thêm tài khoản</a>
+                        <a href="/Home/ChildSuperAdmin/create">+ {t("childSuperAdmin.add")}</a>
                     </Button>
                 </div>
             </div>
@@ -301,7 +298,7 @@ const ListChildSuperAdmin: React.FC = () => {
                         {loading ? (
                             <TableRow>
                                 <TableCell colSpan={cols.length} className="py-8 text-center">
-                                    Đang tải...
+                                     {t("common.loading")}
                                 </TableCell>
                             </TableRow>
                         ) : filteredRows.length > 0 ? (
@@ -321,7 +318,7 @@ const ListChildSuperAdmin: React.FC = () => {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={cols.length} className="py-8 text-center text-muted-foreground">
-                                    Không có dữ liệu
+                                    {t("common.noData")}
                                 </TableCell>
                             </TableRow>
                         )}
@@ -338,10 +335,10 @@ const ListChildSuperAdmin: React.FC = () => {
                         onClick={() => setUiPage((p) => Math.max(1, p - 1))}
                         disabled={uiPage === 1}
                     >
-                        Trang trước
+                       {t("common.prev")}
                     </Button>
                     <span className="text-sm">
-                        Trang {uiPage}/{totalPages}
+                         {t("common.page")} {uiPage}/{totalPages}
                     </span>
                     <Button
                         variant="outline"
@@ -349,7 +346,7 @@ const ListChildSuperAdmin: React.FC = () => {
                         onClick={() => setUiPage((p) => Math.min(totalPages, p + 1))}
                         disabled={uiPage >= totalPages}
                     >
-                        Trang sau
+                         {t("common.next")}
                     </Button>
                 </div>
             )}

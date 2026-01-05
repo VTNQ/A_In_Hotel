@@ -7,6 +7,7 @@ import { File_URL } from "../../../setting/constant/app";
 import { GetBookingById, handleCheckOut } from "../../../service/api/Booking";
 import { getTokens } from "../../../util/auth";
 import { useAlert } from "../../alert-context";
+import { useTranslation } from "react-i18next";
 
 const ConfirmCheckOut = ({
     open,
@@ -15,6 +16,7 @@ const ConfirmCheckOut = ({
     id
 }: ConfirmCheckOutProps) => {
     const [data, setData] = useState<any>(null);
+    const { t } = useTranslation();
     const [extraService, setExtraService] = useState<any[]>([]);
     const [extraCharges, setExtraCharges] = useState<ExtraCharge[]>([]);
     const [usedExtraServiceIds, setUsedExtraServiceIds] = useState<number[]>([]);
@@ -114,7 +116,7 @@ const ConfirmCheckOut = ({
             const response = await handleCheckOut(data.id, payload);
             showAlert({
                 title:
-                    response?.data?.message || "switch-room successful!",
+                    response?.data?.message || t("confirmCheckOut.confirmCheckOutSuccess"),
                 type: "success",
                 autoClose: 3000,
             });
@@ -124,7 +126,7 @@ const ConfirmCheckOut = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to confirm check-out. Please try again.",
+                    t("confirmCheckOut.confirmCheckOutError"),
                 type: "error",
             });
         } finally {
@@ -133,17 +135,17 @@ const ConfirmCheckOut = ({
     };
 
     return (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm  ${loading ? "scale-100 opacity-70" : "scale-100 opacity-100"}`}>
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm  ${loading ? "scale-100 opacity-90" : "scale-100 opacity-100"}`}>
             <div className="bg-white w-full max-w-2xl rounded-2xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col max-h-[90vh] ring-1 ring-black/5">
 
                 {/* ================= HEADER ================= */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white sticky top-0 z-10">
                     <div>
                         <h1 className="text-xl font-bold text-[#2A3142]">
-                            Confirm Check-out
+                            {t("confirmCheckOut.title")}
                         </h1>
                         <p className="text-xs  text-[#5F6B85] mt-0.5">
-                            Review details before finalizing guest departure
+                            {t("confirmCheckOut.subtitle")}
                         </p>
                     </div>
                     <button
@@ -157,7 +159,7 @@ const ConfirmCheckOut = ({
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <div className="w-10 h-10 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
                         <p className="mt-4 text-sm text-[#5f6b85]">
-                            Loading booking details...
+                            {t("confirmCheckOut.loading")}
                         </p>
                     </div>
                 )}
@@ -178,14 +180,14 @@ const ConfirmCheckOut = ({
                                     {/* HEADER */}
                                     <h2 className="text-xs font-bold text-[#253150] uppercase tracking-wider mb-4 flex items-center gap-2">
                                         <User className="w-4 h-4" />
-                                        Guest Information
+                                        {t("confirmCheckOut.guestInfo")}
                                     </h2>
 
                                     {/* CONTENT */}
                                     <div className="space-y-3 relative z-10">
                                         {/* Guest name */}
                                         <div>
-                                            <p className="text-xs text-gray-500">Guest Name</p>
+                                            <p className="text-xs text-gray-500">{t("confirmCheckOut.guestName")}</p>
                                             <p className="font-bold text-gray-900 text-base">
                                                 {data.guestName}
                                             </p>
@@ -195,7 +197,7 @@ const ConfirmCheckOut = ({
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="flex items-start gap-2">
                                                 <div>
-                                                    <p className="text-xs text-gray-500">Total Guests</p>
+                                                    <p className="text-xs text-gray-500">{t("confirmCheckOut.totalGuests")}</p>
                                                     <div className="flex items-center gap-2">
                                                         <User className="w-4 h-4 text-gray-400" />
                                                         <p className="font-semibold text-gray-800">
@@ -209,7 +211,7 @@ const ConfirmCheckOut = ({
                                             <div className="flex items-start gap-2">
 
                                                 <div>
-                                                    <p className="text-xs text-gray-500 mb-1">Notes</p>
+                                                    <p className="text-xs text-gray-500 mb-1">{t("confirmCheckOut.notes")}</p>
 
                                                     <div className="flex items-center gap-2 mt-[-0.7vh]">
                                                         <FileText className="w-4 h-4 text-gray-400" />
@@ -231,13 +233,13 @@ const ConfirmCheckOut = ({
                                     </div>
                                     <h2 className="text-xs font-bold text-[#253150] uppercase mb-4 flex items-center gap-2">
                                         <Calendar className="w-4 h-4" />
-                                        Room Information
+                                        {t("confirmCheckOut.roomInfo")}
                                     </h2>
 
                                     <div className="space-y-4 relative z-10">
                                         <div>
                                             <p className="text-xs text-gray-500 mb-1">
-                                                Stay Period ({data.nights} nights)
+                                                {t("confirmCheckOut.stayPeriod", { count: data.nights })}
                                             </p>
                                             <div className="inline-flex items-center gap-2 px-3 py-1.5
                                     bg-white rounded-md border border-gray-100 text-sm
@@ -249,7 +251,7 @@ const ConfirmCheckOut = ({
                                         </div>
 
                                         <div>
-                                            <p className="text-xs text-gray-500 mb-1">Rooms Assigned</p>
+                                            <p className="text-xs text-gray-500 mb-1">{t("confirmCheckOut.roomsAssigned")}</p>
                                             <div className="space-y-2">
                                                 {data.details
                                                     ?.filter((d: any) => d.roomId)
@@ -281,24 +283,24 @@ const ConfirmCheckOut = ({
                             {/* PAYMENT */}
                             <div className="bg-[#f6f8fb] rounded-xl p-5 border border-[#d6dbea]">
                                 <h2 className="font-bold text-sm text-[#3A4568] mb-3">
-                                    Payment Summary
+                                    {t("confirmCheckOut.paymentSummary")}
                                 </h2>
 
                                 <div className="grid grid-cols-3 gap-6 divide-x divide-[#d6dbea]">
                                     <div>
-                                        <p className="text-xs text-gray-500">Total Charges</p>
+                                        <p className="text-xs text-gray-500">{t("confirmCheckOut.totalCharges")}</p>
                                         <p className="text-lg font-bold">
                                             {totalCharges.toLocaleString()} ₫
                                         </p>
                                     </div>
                                     <div className="pl-6">
-                                        <p className="text-xs text-gray-500">Amount Paid</p>
+                                        <p className="text-xs text-gray-500">{t("confirmCheckOut.amountPaid")}</p>
                                         <p className="text-lg font-bold text-green-600">
                                             {data?.payment?.[0]?.paidAmount?.toLocaleString()} ₫
                                         </p>
                                     </div>
                                     <div className="pl-6">
-                                        <p className="text-xs text-gray-500">Outstanding</p>
+                                        <p className="text-xs text-gray-500">{t("confirmCheckOut.outstanding")}</p>
                                         <p className="text-lg font-bold text-red-600">
                                             {outstanding.toLocaleString()} ₫
                                         </p>
@@ -308,7 +310,7 @@ const ConfirmCheckOut = ({
 
                             {/* EXTRA CHARGES */}
                             <div className="space-y-3">
-                                <h2 className="text-sm font-bold text-gray-800">Extra Charges</h2>
+                                <h2 className="text-sm font-bold text-gray-800">{t("confirmCheckOut.extraCharges")}</h2>
 
                                 {extraCharges.map((c, idx) => (
                                     <div
@@ -318,7 +320,7 @@ const ConfirmCheckOut = ({
                                         {/* ===== SERVICE SELECT ===== */}
                                         <div className="flex-1">
                                             <SelectV2
-                                                label="Service / Item"
+                                                label={t("confirmCheckOut.serviceItem")}
                                                 value={c.id || undefined}
                                                 iconSrc={c.icon?.url ? File_URL + c.icon.url : undefined}
                                                 options={extraService
@@ -333,7 +335,7 @@ const ConfirmCheckOut = ({
                                                         label: s.serviceName,
                                                     }))
                                                 }
-                                                placeholder="Select service"
+                                                placeholder={t("confirmCheckOut.selectService")}
                                                 onChange={(serviceId) => {
                                                     const service = extraService.find(s => s.id === serviceId);
                                                     if (!service) return;
@@ -354,7 +356,7 @@ const ConfirmCheckOut = ({
                                         {/* ===== AMOUNT ===== */}
                                         <div className="w-40">
                                             <label className="block text-xs text-gray-500 mb-1">
-                                                Amount
+                                                {t("confirmCheckOut.amount")}
                                             </label>
                                             <div className="relative">
                                                 <input
@@ -398,7 +400,7 @@ const ConfirmCheckOut = ({
       transition
     "
                                 >
-                                    + Add more service
+                                    {t("confirmCheckOut.addMoreService")}
                                 </button>
                             </div>
 
@@ -412,7 +414,7 @@ const ConfirmCheckOut = ({
                                 className="px-5 py-2 rounded-xl bg-[#EEF0F7] text-[#2E3A8C] hover:bg-[#e2e6f3]"
                             // className="px-6 py-2.5 rounded-lg text-sm font-semibold bg-white border border-gray-300"
                             >
-                                Cancel
+                                {t("confirmCheckOut.cancel")}
                             </button>
 
                             <button
@@ -426,7 +428,9 @@ const ConfirmCheckOut = ({
                             //   bg-[#0E5E6F] hover:bg-[#094350]
                             //   flex items-center gap-2 disabled:opacity-60"
                             >
-                                {confirming ? "Processing..." : "Check-out"}
+                                {confirming
+                                    ? t("confirmCheckOut.processing")
+                                    : t("confirmCheckOut.confirm")}
                                 <LogOut className="w-4 h-4" />
                             </button>
                         </div>

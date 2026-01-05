@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {  getAllCategories } from "@/service/api/Categories";
+import { getAllCategories } from "@/service/api/Categories";
 import { addExtraService } from "@/service/api/facilities";
 import type { FacilityForm } from "@/type/facility.types";
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const CreateFacilityForm: React.FC = () => {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<any[]>([]);
     const { showAlert } = useAlert();
     const [form, setForm] = useState<FacilityForm>({
@@ -19,7 +21,7 @@ const CreateFacilityForm: React.FC = () => {
         description: "",
         note: "",
         categoryId: null,
-       
+
     });
     const navigate = useNavigate();
     const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -92,7 +94,7 @@ const CreateFacilityForm: React.FC = () => {
                 description: "",
                 note: "",
                 categoryId: null,
-               
+
             })
             setCoverImage(null);
             setPreview(null)
@@ -116,14 +118,13 @@ const CreateFacilityForm: React.FC = () => {
         <div className="space-y-6">
             {/* ===== Page header ===== */}
             <div>
-                <h1 className="text-2xl font-semibold">Create Facility</h1>
+                <h1 className="text-2xl font-semibold">{t("facility.create.title")}</h1>
 
                 <Breadcrumb
                     items={[
-                        { label: "Home", href: "/Home" },
-
-                        { label: "Facilities", href: "/Home/facility" },
-                        { label: "Create Facility" },
+                        { label: t("facility.breadcrumb.home"), href: "/Home" },
+                        { label: t("facility.breadcrumb.facilities"), href: "/Home/facility" },
+                        { label: t("facility.create.title") },
                     ]}
                 />
             </div>
@@ -133,13 +134,13 @@ const CreateFacilityForm: React.FC = () => {
                 {/* Facility name */}
                 <div>
                     <label className="text-sm font-medium">
-                        Facility Name <span className="text-red-500">*</span>
+                        {t("facility.form.name")} <span className="text-red-500">*</span>
                     </label>
                     <Input
                         name="serviceName"
                         value={form.serviceName}
                         onChange={handleChange}
-                        placeholder="Enter facility name"
+                        placeholder={t("facility.form.namePlaceholder")}
                         className="mt-1"
                     />
                 </div>
@@ -147,13 +148,13 @@ const CreateFacilityForm: React.FC = () => {
                 {/* Description (show to customer) */}
                 <div>
                     <label className="text-sm font-medium">
-                        Description <span className="text-red-500">*</span>
+                        {t("facility.form.description")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <Textarea
                         name="description"
                         value={form.description}
                         onChange={handleChange}
-                        placeholder="Describe this facility (shown to customer)"
+                        placeholder={t("facility.form.descriptionPlaceholder")}
                         rows={3}
                         className="mt-1"
                     />
@@ -161,19 +162,19 @@ const CreateFacilityForm: React.FC = () => {
 
                 {/* Category */}
                 <SelectField
-                    label="Category"
+                    label={t("facility.form.category")}
                     items={categories}
                     value={form.categoryId}
                     onChange={(v) =>
                         setForm((prev) => ({ ...prev, categoryId: v }))
                     }
-                    placeholder="Select category"
+                    placeholder={t("facility.form.categoryPlaceholder")}
                     getValue={(i) => i.id}
                     getLabel={(i) => i.name}
                 />
                 {/* Cover Image */}
                 <div>
-                    <label className="text-sm font-medium">Cover Image</label>
+                    <label className="text-sm font-medium">{t("facility.form.coverImage")}</label>
 
                     <div className="mt-2">
                         <label
@@ -215,10 +216,10 @@ const CreateFacilityForm: React.FC = () => {
                                     </svg>
 
                                     <p className="font-medium">
-                                        Click to upload or drag and drop
+                                        {t("common.upload")}
                                     </p>
                                     <p className="text-xs text-gray-400">
-                                        SVG, PNG, JPG (max. 800×400px)
+                                        {t("common.uploadHint")}
                                     </p>
                                 </>
                             )}
@@ -237,12 +238,12 @@ const CreateFacilityForm: React.FC = () => {
 
                 {/* Internal note */}
                 <div>
-                    <label className="text-sm font-medium">Note</label>
+                    <label className="text-sm font-medium">{t("facility.form.note")}</label>
                     <Textarea
                         name="note"
                         value={form.note}
                         onChange={handleChange}
-                        placeholder="Internal note (not shown to customer)"
+                        placeholder={t("facility.form.notePlaceholder")}
                         rows={2}
                         className="mt-1"
                     />
@@ -250,7 +251,7 @@ const CreateFacilityForm: React.FC = () => {
 
                 {/* Actions */}
                 <div className="flex justify-end gap-3 border-t pt-4">
-                    <Button variant="outline" onClick={()=>navigate("/Home/facility")}>Cancel</Button>
+                    <Button variant="outline" onClick={() => navigate("/Home/facility")}>  {t("common.cancel")}</Button>
                     <Button
                         onClick={handleSubmit}
                         disabled={submitting}
@@ -277,10 +278,10 @@ const CreateFacilityForm: React.FC = () => {
                                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                     />
                                 </svg>
-                                Saving...
+                                {t("common.saving")}
                             </span>
                         ) : (
-                            "Create Facility"
+                            t("facility.create.submit")
                         )}
                     </Button>
 

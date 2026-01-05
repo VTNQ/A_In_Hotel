@@ -3,11 +3,13 @@ import { File_URL } from "../../setting/constant/app";
 import type { ViewRoomManagementProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Room";
+import { useTranslation } from "react-i18next";
 
 const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps) => {
     const [activeTab, setActiveTab] = useState("info");
     const [roomData, setRoomData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     useEffect(() => {
         if (isOpen && roomId) {
             fetchRoom(roomId);
@@ -27,12 +29,12 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
         if (images.length > 0) setSelectedImage(images[0]);
     }, [roomData]);
     const tabs = [
-        { key: "info", label: "Information" },
-        { key: "images", label: "Images" }
+        { key: "info", label: t("room.view.tabs.info") },
+        { key: "images", label: t("room.view.tabs.images") }
     ]
     const [selectedImage, setSelectedImage] = useState(images[0]);
     if (!roomData) return null;
-    const handleCloseModal=()=>{
+    const handleCloseModal = () => {
         setActiveTab("info");
         onClose();
     }
@@ -40,7 +42,7 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
         <CommonModalView
             isOpen={isOpen}
             onClose={handleCloseModal}
-            title="View room management"
+            title={t("room.view.title")}
             tabs={tabs}
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -76,21 +78,21 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                                     {/* LEFT COLUMN */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#253150]">Room Name</span>
+                                            <span className="font-semibold text-[#253150]">{t("room.roomName")}</span>
                                             <span>{roomData.roomName}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#253150]">Room ID</span>
-                                            <span>{roomData.roomNumber}</span>
+                                            <span className="font-semibold text-[#253150]">{t("room.code")}</span>
+                                            <span>{roomData.roomCode}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#253150]">Floor</span>
+                                            <span className="font-semibold text-[#253150]">{t("room.createOrUpdate.floor")}</span>
                                             <span>{roomData.floor}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#253150]">Capacity</span>
+                                            <span className="font-semibold text-[#253150]">{t("room.createOrUpdate.capacity")}</span>
                                             <span>{roomData.capacity}</span>
                                         </div>
                                     </div>
@@ -101,22 +103,22 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                                     {/* RIGHT COLUMN */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Room Number</span>
+                                            <span className="font-semibold text-[#2E3451]">{t("room.roomNumber")}</span>
                                             <span>{roomData.roomNumber}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Room type</span>
+                                            <span className="font-semibold text-[#2E3451]">{t("room.roomTypeName")}</span>
                                             <span>{roomData.roomType?.name || "Deluxe"}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Room Area</span>
+                                            <span className="font-semibold text-[#2E3451]">{t("room.view.area")}</span>
                                             <span>{roomData.area}</span>
                                         </div>
 
                                         <div className="flex justify-between">
-                                            <span className="font-semibold text-[#2E3451]">Facilities</span>
+                                            <span className="font-semibold text-[#2E3451]">{t("room.view.facilities")}</span>
                                             <span>{roomData.facilities || "Electronics"}</span>
                                         </div>
                                     </div>
@@ -127,29 +129,29 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                             <div className="mt-2 bg-[#EEF0F7] w-full py-4 px-5 rounded-xl text-[14px] text-[#2E3451]">
                                 <div className="grid grid-cols-[2fr_1fr] gap-y-4">
                                     <div>
-                                        <span className="font-semibold">Price</span>
-                                        <span className="ml-2 text-gray-500">First 2 Hours</span>
+                                        <span className="font-semibold">{t("room.price")}</span>
+                                        <span className="ml-2 text-gray-500">{t("room.first2Hours")}</span>
                                     </div>
                                     <div className="text-right  text-[#2B2B2B]" style={{ fontWeight: '400' }}>
                                         {Number(roomData.hourlyBasePrice).toLocaleString("vi-VN")} VND
                                     </div>
                                     <div>
-                                        <span className="font-semibold">Price</span>
-                                        <span className="ml-2 text-gray-500">Extra Hour</span>
+                                        <span className="font-semibold">{t("room.price")}</span>
+                                        <span className="ml-2 text-gray-500">{t("room.extraHour")}</span>
                                     </div>
                                     <div className="text-right font-semibold text-[#2B2B2B]" style={{ fontWeight: '400' }}>
                                         {Number(roomData.hourlyAdditionalPrice).toLocaleString("vi-VN")} VND
                                     </div>
                                     <div>
-                                        <span className="font-semibold">Price</span>
-                                        <span className="ml-2 text-gray-500">Overnight</span>
+                                        <span className="font-semibold">{t("room.price")}</span>
+                                        <span className="ml-2 text-gray-500">{t("room.overnight")}</span>
                                     </div>
                                     <div className="text-right font-semibold text-[#2B2B2B]" style={{ fontWeight: '400' }}>
                                         {Number(roomData.overnightPrice).toLocaleString("vi-VN")} VND
                                     </div>
                                     <div>
-                                        <span className="font-semibold">Price</span>
-                                        <span className="ml-2 text-gray-500">Day & night</span>
+                                        <span className="font-semibold">{t("room.price")}</span>
+                                        <span className="ml-2 text-gray-500">{t("room.dayNight")}</span>
                                     </div>
                                     <div className="text-right font-semibold text-[#2B2B2B]" style={{ fontWeight: '400' }}>
                                         {Number(roomData.defaultRate).toLocaleString("vi-VN")} VND
@@ -157,9 +159,9 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                                 </div>
                             </div>
                             <div className="mt-2 ml-2">
-                                <h3 className="font-semibold text-[#253150] mb-2">Note</h3>
+                                <h3 className="font-semibold text-[#253150] mb-2">{t("room.createOrUpdate.note")}</h3>
                                 <p className="text-[#2B2B2B] leading-relaxed text-[14px]">
-                                    {roomData.note || "No notes available."}
+                                    {roomData.note || t("room.view.noNote")}
                                 </p>
                                 <div className="mt-4 border-b border-dotted border-gray-400"></div>
                             </div>
@@ -174,7 +176,7 @@ const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps
                                 <img
                                     src={selectedImage || images[0]}
                                     className="w-full h-full object-cover"
-                                    alt="Room Preview"
+                                    alt={t("room.view.imagePreview")}
                                 />
                             </div>
 

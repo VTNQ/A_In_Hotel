@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import type { CommonModalViewProps } from "../../type";
+import { useTranslation } from "react-i18next";
 
 const CommonModalView: React.FC<CommonModalViewProps> = ({
   isOpen,
@@ -15,7 +16,7 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
   withCenter = "text-center",
 }) => {
   if (!isOpen) return null;
-
+  const { t } = useTranslation();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
       <div
@@ -81,7 +82,7 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
         </div>
 
         {/* CONTENT */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-2">
+        <div className="flex-1 overflow-y-auto custom-scroll px-4 sm:px-6 py-2">
           {children}
         </div>
 
@@ -102,7 +103,7 @@ const CommonModalView: React.FC<CommonModalViewProps> = ({
               shadow-sm
             `}
           >
-            Close
+            {t("common.close")}
           </button>
         </div>
       </div>

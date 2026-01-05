@@ -10,14 +10,16 @@ import ConfirmCheckIn from "../../components/Booking/CheckIn/ConfirmCheckIn";
 import ConfirmCheckOut from "../../components/Booking/CheckOut/ConfirmCheckOut";
 import SwitchRoomModal from "../../components/Booking/SwitchRoom/SwitchRoomModal";
 import { getTokens } from "../../util/auth";
+import { useTranslation } from "react-i18next";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [bookingDate, setBookingDate] = useState("");
-    const [openSwitchRoom,setOpenSwitchRoom] = useState(false);
+    const [openSwitchRoom, setOpenSwitchRoom] = useState(false);
     const [sortKey, setSortKey] = useState<string>("id");
+    const { t } = useTranslation();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchValue, setSearchValue] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
@@ -110,26 +112,26 @@ const ViewBooking = () => {
     }, [searchValue, statusFilter, sortKey, sortOrder, bookingDate]);
 
     const columns = [
-        { key: "code", label: "Booking Id", sortable: true },
-        { key: "guestName", label: "Guest Name", sortale: true },
-        { key: "phoneNumber", label: "Phone", sortable: true },
+        { key: "code", label: t("booking.code"), sortable: true },
+        { key: "guestName", label: t("booking.guestName"), sortale: true },
+        { key: "phoneNumber", label: t("booking.phone"), sortable: true },
         { key: "email", label: "Email", sortable: true },
-        { key: "guestType", label: "Guest Type", sortable: true },
+        { key: "guestType", label: t("booking.guestType"), sortable: true },
         {
             key: "checkInDate",
-            label: "Check-in Date",
+            label: t("booking.checkInDate"),
             render: (row: any) => `${row.checkInDate || ""} ${row.checkInTime || ""}`.trim(),
             sortable: true
         },
         {
             key: "checkOutDate",
-            label: "Check-out Date",
+            label: t("booking.checkOutDate"),
             render: (row: any) => `${row.checkOutDate || ""} ${row.checkOutTime || ""}`.trim(),
             sortable: true
         },
         {
             key: "details.roomName",
-            label: "Room",
+            label: t("booking.room"),
             render: (row: any) => {
                 if (!row.details || row.details.length === 0) return "";
 
@@ -145,25 +147,25 @@ const ViewBooking = () => {
         },
         {
             key: "totalPrice",
-            label: "Total Price",
+            label: t("booking.totalPrice"),
             render: (row: any) =>
                 `${(row.totalPrice ?? 0).toLocaleString("vi-VN")} VNĐ`,
             sortable: true
         },
-        { key: "createdAt", label: "Created Date", sortable: true },
+        { key: "createdAt", label: t("booking.createdDate"), sortable: true },
         {
             key: "status",
-            label: "Status",
+            label: t("common.status"),
             render: (row: any) => {
                 const statusCode = row.status; // status là số (0–5)
 
                 // Map status code → label + màu sắc
                 const statusMap: Record<number, { label: string; color: string; dot: string }> = {
 
-                    1: { label: "Booked", color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
-                    2: { label: "Checked-in", color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
-                    3: { label: "Checked-out", color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
-                    4: { label: "Cancelled", color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
+                    1: { label: t("booking.booked"), color: "bg-[#FFDAFB80] text-[#BC00A9]", dot: "bg-[#BC00A9]" },
+                    2: { label: t("booking.checkIn"), color: "bg-[#E0F2EA] text-[#36A877]", dot: "bg-[#33B27F]" },
+                    3: { label: t("booking.checkOut"), color: "bg-[#F9EFCF] text-[#BE7300]", dot: "bg-[#BE7300]" },
+                    4: { label: t("booking.cancelled"), color: "bg-[#FFF4F4] text-[#FF0000]", dot: "bg-[#FF0000]" },
                 };
 
                 // Nếu không khớp code nào, dùng mặc định
@@ -185,13 +187,13 @@ const ViewBooking = () => {
         },
         {
             key: "action",
-            label: "Action",
+            label: t("common.action"),
             render: (row: any) => (
                 <BookingActionMenu
                     booking={row}
                     onCheckOut={() => handleOpenCheckout(row)}
                     onCheckIn={() => handleConfirmCheckIn(row)}
-                    onSwitchRoom={()=>handleSwitchRoom(row)}
+                    onSwitchRoom={() => handleSwitchRoom(row)}
                 />
             ),
         },
@@ -201,9 +203,9 @@ const ViewBooking = () => {
     return (
         <div className="flex flex-col flex-1 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">Booking</h1>
+                <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">{t("booking.title")}</h1>
                 <button onClick={() => navigate("/Dashboard/booking/create")} className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
-                    + New Booking
+                    {t("booking.new")}
                 </button>
             </div>
             <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -213,38 +215,35 @@ const ViewBooking = () => {
                         type="text"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Search by room number, name"
+                        placeholder={t("booking.searchPlaceholder")}
                         className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     />
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-                    <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm">Status</div>
+                <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+                    <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap"> {t("common.status")}</div>
                     <select value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none">
-                        <option value="">All</option>
+                        <option value="">{t("common.all")}</option>
 
-                        <option value="1">Booked</option>
-                        <option value="2">Check-in</option>
-                        <option value="3">Check-out</option>
-                        <option value="4">Cancelled</option>
+                        <option value="1">{t("booking.booked")}</option>
+                        <option value="2">{t("booking.checkIn")}</option>
+                        <option value="3">{t("booking.checkOut")}</option>
+                        <option value="4">{t("booking.cancelled")}</option>
                     </select>
                 </div>
-                <div className="flex w-full lg:w-[220px] items-center border border-[#C2C4C5] rounded-lg overflow-hidden">
-
-                    <div className="bg-[#F1F2F3] px-3 py-2 text-gray-600 text-sm h-full flex items-center">
-                        Booking Date
-                    </div>
-
-                    <div className="flex-1 h-full">
-                        <SimpleDatePicker value={bookingDate} onChange={setBookingDate} />
-                    </div>
-
+                <div className="w-full lg:w-[260px]">
+                 
+                    <SimpleDatePicker
+                        value={bookingDate}
+                        onChange={setBookingDate}
+                    />
                 </div>
+
             </div>
             <div className="flex-1 overflow-y-auto">
                 {loading ? (
-                    <p className="text-gray-500">Loading...</p>
+                    <p className="text-gray-500">{t("common.loading")}</p>
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : (
@@ -281,7 +280,7 @@ const ViewBooking = () => {
             />
             <SwitchRoomModal
                 open={openSwitchRoom}
-                onConfirm={()=>fetchData()}
+                onConfirm={() => fetchData()}
                 onClose={() => setOpenSwitchRoom(false)}
                 id={selectedBooking?.id}
             />

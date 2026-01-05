@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SECTIONS } from "./Section";
+import { useTranslation } from "react-i18next";
 
 const SideBarItem = ({
   item,
@@ -12,6 +13,7 @@ const SideBarItem = ({
   onNavigate?: () => void;
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
@@ -23,8 +25,6 @@ const SideBarItem = ({
 
   const isActive =
     item.path && location.pathname.startsWith(item.path);
-
-  // ⭐ Auto open nếu route con đang active
   useEffect(() => {
     if (isParentActive) {
       setOpen(true);
@@ -32,16 +32,16 @@ const SideBarItem = ({
   }, [isParentActive]);
 
   const handleClick = () => {
-  if (item.children) {
-    setOpen((prev) => !prev);
-  } else if (item.onClick) {
-    item.onClick();
-    onNavigate?.();
-  } else if (item.path) {
-    navigate(item.path);
-    onNavigate?.();
-  }
-};
+    if (item.children) {
+      setOpen((prev) => !prev);
+    } else if (item.onClick) {
+      item.onClick();
+      onNavigate?.();
+    } else if (item.path) {
+      navigate(item.path);
+      onNavigate?.();
+    }
+  };
 
 
   return (
@@ -57,7 +57,7 @@ const SideBarItem = ({
         `}
       >
         {item.icon && <item.icon size={18} />}
-        <span className="text-sm">{item.label}</span>
+        <span className="text-sm">{t(item.label)}</span>
 
         {item.children && (
           <span className="ml-auto">
@@ -97,7 +97,7 @@ const SideBarItem = ({
                     ${isChildActive ? "bg-[#2A3553]" : ""}
                   `}
                 >
-                  {child.label}
+                  {t(child.label)}
                 </div>
               );
             })}
@@ -139,8 +139,8 @@ const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                   {section.title}
                 </h2>
               )}
-              {section.items.map((item: any, j: number) => (
-                <SideBarItem key={j} item={item} onNavigate={onClose} />
+              {section.items.map((item: any) => (
+                <SideBarItem key={item.label} item={item} onNavigate={onClose} />
               ))}
             </div>
           ))}

@@ -1,0 +1,266 @@
+{
+    "common": {
+        "action": "Action",
+        "edit": "Edit",
+        "save": "Save",
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "tryAgain": "Please try again later",
+        "search": "Search...",
+        "all": "All",
+        "loading": "Loading...",
+        "noData": "No data",
+        "noImage": "No image",
+        "loadFailed": "Failed to load data",
+        "prev": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "email": "Email",
+        "fullName": "Full name",
+        "phone": "Phone",
+        "birthday": "Birthday",
+        "gender": "Gender",
+        "avatar": "Avatar",
+        "upload": "Click to upload or drag and drop",
+        "uploadHint": "SVG, PNG, JPG (max. 800×400px)",
+        "saveChanges": "Save Changes"
+    },
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+    },
+    "facility": {
+        "page": {
+            "title": "Facility Management"
+        },
+        "edit": {
+            "title": "Edit Facility",
+            "loading": "Loading facility data...",
+            "success": "Facility updated successfully",
+            "failed": "Failed to update facility"
+        },
+        "status": {
+            "updateSuccess": "Status updated successfully",
+            "updateFailed": "Failed to update status"
+        },
+        "table": {
+            "serviceId": "Service ID",
+            "icon": "Icon",
+            "serviceName": "Service Name",
+            "category": "Category",
+            "description": "Description",
+            "note": "Note",
+            "createdAt": "Created Date",
+            "updatedAt": "Last Updated",
+            "status": "Status",
+            "action": "Action"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "facilities": "Facilities"
+        },
+        "create": {
+            "title": "Create Facility",
+            "submit": "Create Facility"
+        },
+        "form": {
+            "name": "Facility Name",
+            "namePlaceholder": "Enter facility name",
+            "description": "Description",
+            "descriptionPlaceholder": "Describe this facility (shown to customer)",
+            "category": "Category",
+            "categoryPlaceholder": "Select category",
+            "coverImage": "Cover Image",
+            "note": "Note",
+            "notePlaceholder": "Internal note (not shown to customer)"
+        }
+    },
+    "adminCreate": {
+        "title": "Admin",
+        "formTitle": "Information",
+        "email": "Email",
+        "emailPlaceholder": "Enter email",
+        "fullName": "Full name",
+        "breadcrumb": {
+            "home": "Home",
+            "admin": "List Admin"
+        },
+        "fullNamePlaceholder": "Enter full name",
+        "phone": "Phone number",
+        "phonePlaceholder": "Enter phone number",
+        "birthday": "Birthday",
+        "birthdayPlaceholder": "Select birthday",
+        "gender": "Gender",
+        "genderPlaceholder": "Select gender",
+        "avatar": "Avatar",
+        "success": "Admin account created successfully",
+        "error": "Failed to create admin account"
+    },
+    "sidebar": {
+        "dashboards": "Dashboards",
+        "home": "Home",
+        "hotel": "Hotel",
+        "account": "Account",
+        "adminManager": "Admin Manager",
+        "childSuperAdminManager": "Child SuperAdmin Manager",
+        "systemManagement": "System Management",
+        "aboutHotel": "About Hotel",
+        "homepageContent": "Homepage Content",
+        "policyTerms": "Policy & Terms",
+        "footerContent": "Footer Content",
+        "facilities": "Facilities"
+    },
+    "hotel": {
+        "listTitle": "Hotel List",
+        "notUpdated": "Not updated",
+        "loadError": "Unable to load hotel data",
+        "deleteSuccess": "Hotel deleted successfully",
+        "deleteError": "Failed to delete hotel",
+        "hotelCreate": {
+            "title": "Create Hotel",
+            "formTitle": "Hotel Information",
+            "name": "Hotel Name",
+            "namePlaceholder": "Enter hotel name",
+            "address": "Address",
+            "addressPlaceholder": "Enter hotel address",
+            "manager": "Manager",
+            "selectManager": "Select manager",
+            "managerDesc": "Choose one person to manage the hotel.",
+            "image": "Image",
+            "uploadHint": "Click to upload hotel photos",
+            "success": "Hotel created successfully",
+            "error": "Failed to create hotel"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "hotel": "Hotel"
+        },
+        "hotelEdit": {
+            "title": "Edit Hotel Information",
+            "loading": "Loading hotel data...",
+            "name": "Hotel Name",
+            "address": "Address",
+            "manager": "Manager",
+            "chooseManager": "Choose a manager",
+            "managerDesc": "Choose one person to manage the hotel.",
+            "image": "Image",
+            "uploadHint": "Click to upload hotel image",
+            "updateSuccess": "Hotel updated successfully",
+            "updateError": "Failed to update hotel"
+        },
+        "hotelFilter": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive",
+            "searchPlaceholder": "Search by code, name",
+            "create": "+ Create Hotel"
+        },
+        "hotelTable": {
+            "loading": "Loading...",
+            "code": "Code",
+            "image": "Image",
+            "name": "Name",
+            "address": "Address",
+            "manager": "Manager"
+        }
+    },
+    "gender": {
+        "male": "male",
+        "female": "female"
+    },
+    "admin": {
+        "title": "Admin List",
+        "filterStatus": "Filter by status",
+        "add": "Add account",
+        "search": {
+            "default": "Search by",
+            "fullName": "Search by name...",
+            "email": "Search by email...",
+            "phone": "Search by phone..."
+        },
+        "searchField": {
+            "default": "Default",
+            "fullName": "Full name",
+            "placeHolder": "Search by",
+            "email": "Email",
+            "phone": "Phone"
+        },
+        "table": {
+            "fullName": "Full Name",
+            "email": "Email",
+            "birthday": "Birthday",
+            "phone": "Phone",
+            "gender": "Gender",
+            "avatar": "Avatar",
+            "createdAt": "Created At"
+        }
+    },
+    "childSuperAdmin": {
+        "listTitle": "Child SuperAdmin List",
+        "add": "Add account",
+        "search": {
+            "default": "Search by",
+            "fullName": "Search by name...",
+            "email": "Search by email...",
+            "phone": "Search by phone..."
+        },
+        "searchField": {
+            "default": "Default",
+            "fullName": "Full name",
+            "email": "Email",
+            "phone": "Phone"
+        },
+        "table": {
+            "fullName": "Full Name",
+            "email": "Email",
+            "birthday": "Birthday",
+            "phone": "Phone",
+            "gender": "Gender",
+            "avatar": "Avatar",
+            "createdAt": "Created At"
+        },
+        "title": "Child SuperAdmin",
+        "breadcrumb": {
+            "home": "Home",
+            "Child": "Child SuperAdmin"
+        },
+        "create": {
+            "title": "Create Child SuperAdmin Account",
+            "success": "Child SuperAdmin account created successfully",
+            "error": "Failed to create Child SuperAdmin account"
+        },
+        "form": {
+            "info": "Information",
+            "emailPlaceholder": "Enter email",
+            "fullNamePlaceholder": "Enter full name",
+            "phonePlaceholder": "Enter phone number",
+            "birthdayPlaceholder": "Select birthday",
+            "genderPlaceholder": "Select gender"
+        }
+    },
+    "systemContent": {
+        "breadcrumb": {
+            "systemManagement": "System Management",
+            "systemContent": "System Content"
+        },
+        "lastUpdated": "Last updated recently",
+        "upload": "Upload a file or drag and drop",
+        "uploadHint": "PNG, JPG, GIF up to 10MB",
+        "aboutHotel": {
+            "title": "About Hotel",
+            "editTitle": "Edit Content",
+            "form": {
+                "title": "Title",
+                "titlePlaceholder": "e.g. Welcome to Our Hotel",
+                "titleHint": "The main headline displayed for the About section.",
+                "description": "Description",
+                "descriptionPlaceholder": "Enter a detailed description about the hotel...",
+                "descriptionHint": "Provide a clear and engaging description highlighting the hotel's story and values.",
+                "cta": "Call to Action Text",
+                "ctaPlaceholder": "e.g. Book Your Stay Now",
+                "ctaHint": "This text will appear on the button below the description.",
+                "image": "Featured Image"
+            }
+        }
+    }
+}

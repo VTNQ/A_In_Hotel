@@ -4,13 +4,15 @@ import RoomHero from "../components/Room/RoomHero";
 import Navbar from "../components/Navbar";
 import RoomFilterSideBar from "../components/Room/RoomFilterSidebar";
 import RoomGrid from "../components/Room/RoomGrid";
-import Pagination from "../components/Room/Pagination";
-import RoomDetail from "../components/Room/RoomDetail";
 import ExploreOtherRooms from "../components/Room/ExploreOtherRooms";
+import RoomPagination from "../components/Room/RoomPagination";
+import RoomDetail from "../components/Room/RoomDetail";
 
 const RoomPage = () => {
     const [selectedRoom, setSelectedRoom] = useState<RoomResponse | null>(null);
     const [roomGrid, setRoomGrid] = useState<RoomResponse[]>([]);
+    const [page,setPage]= useState(1);
+    const [totalPages,setTotalPages] = useState(1);
 
     return (
         <>
@@ -31,10 +33,17 @@ const RoomPage = () => {
                         {/* ROOM GRID */}
                         <div className="lg:col-span-6 space-y-6">
                             <RoomGrid
+                                page={page}
+                                onPageInfo={setTotalPages}
                                 onSelect={setSelectedRoom}
                                 onLoaded={setRoomGrid}
+                                selectedRoomId={selectedRoom?.id}
                             />
-                            <Pagination />
+                            <RoomPagination
+                                page={page}
+                                totalPages={totalPages}
+                                onChange={setPage}
+                            />
                         </div>
 
                         {/* ROOM DETAIL */}

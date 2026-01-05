@@ -11,6 +11,7 @@ import { AddHotel } from "@/service/api/Hotel";
 import { useNavigate } from "react-router-dom";
 import type { HotelFormData } from "@/type/hotel.types";
 import Breadcrumb from "../Breadcrumb";
+import { useTranslation } from "react-i18next";
 
 
 /**
@@ -21,6 +22,7 @@ import Breadcrumb from "../Breadcrumb";
  */
 export default function CreateHotel() {
     const { showAlert } = useAlert();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [users, setUsers] = useState<UserResponse[]>([]);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -64,8 +66,8 @@ export default function CreateHotel() {
             navigate('/Home/hotel');
         } catch (error: any) {
             showAlert({
-                title: "Tạo khách sạn thất bại",
-                description: error?.response.data.message || "Vui lòng thử lại sau",
+                title: t("hotel.hotelCreate.error"),
+                description: error?.response.data.message || t("common.tryAgain"),
                 type: "error",
                 autoClose: 4000,
             })
@@ -77,13 +79,11 @@ export default function CreateHotel() {
             {/* Header */}
 
             <div >
-                <h1 className="text-2xl font-semibold">Create Hotel</h1>
+                <h1 className="text-2xl font-semibold">{t("hotel.hotelCreate.title")}</h1>
                 <Breadcrumb
                     items={[
-                        { label: "Home", href: "/Home" },
-
-                        { label: "Hotel", href: "/Home/hotel" },
-                        { label: "Create Hotel" },
+                        { label: t("hotel.breadcrumb.home"), href: "/Home" },
+                        { label: t("hotel.breadcrumb.hotel"), href: "/Home/hotel" },
                     ]}
                 />
 
@@ -93,17 +93,17 @@ export default function CreateHotel() {
             <div className="mx-auto grid mt-5  grid-cols-1 gap-6 lg:grid-cols-1">
                 <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
                     <div className="flex items-center justify-between border-b border-gray-100 p-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Hotel</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">{t("hotel.hotelCreate.formTitle")}</h3>
 
                     </div>
                     <div className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <Label htmlFor="Hotel Name">Hotel Name</Label>
+                                <Label htmlFor="Hotel Name">{t("hotel.hotelCreate.name")}</Label>
                                 <Input value={formData.name} onChange={(val) => setFormData((prev) => ({ ...prev, name: val.target.value }))} placeholder="Enter Name Hotel" />
                             </div>
                             <div>
-                                <Label htmlFor="Address">Address</Label>
+                                <Label htmlFor="Address">{t("hotel.hotelCreate.address")}</Label>
                                 <Textarea value={formData.address} placeholder="Enter Address Hotel" onChange={(val) => setFormData((prev) => ({ ...prev, address: val.target.value }))} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]" rows={3} />
                             </div>
                             <div>
@@ -118,9 +118,9 @@ export default function CreateHotel() {
                                             idUser: val ? Number(val) : null,
                                         }))
                                     }
-                                    label="Manager"
-                                    placeholder="Select Manager"
-                                    description="Choose one person to be in charge of the room."
+                                    label={t("hotel.hotelCreate.manager")}
+                                    placeholder={t("hotel.hotelCreate.selectManager")}
+                                    description={t("hotel.hotelCreate.managerDesc")}
                                     clearable
                                     size="md"
                                     getValue={(u) => String(u.id)}
@@ -128,7 +128,7 @@ export default function CreateHotel() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>Image</Label>
+                                <Label>{t("hotel.hotelCreate.image")}</Label>
 
                                 <div className="relative mt-2 w-[13%]">
                                     <input
@@ -172,10 +172,10 @@ export default function CreateHotel() {
                                                     </svg>
                                                 </div>
                                                 <p className="text-sm font-medium text-slate-600">
-                                                    Click to upload hotel photos
+                                                     {t("hotel.hotelCreate.uploadHint")}
                                                 </p>
                                                 <p className="text-xs text-slate-400">
-                                                    JPG, PNG 
+                                                    JPG, PNG
                                                 </p>
                                             </>
                                         ) : (
@@ -206,7 +206,7 @@ export default function CreateHotel() {
                                     </div>
                                 </div>
                             </div>
-                            <Button type="submit" >Lưu</Button>
+                            <Button type="submit" > {t("common.save")}</Button>
                         </form>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import type { Status } from "@/type/common";
+import { useTranslation } from "react-i18next";
 
 const HotelFilter = ({
   search,
@@ -11,13 +12,14 @@ const HotelFilter = ({
   statusFilter,
   onStatusFilterChange,
 }: HotelFilterProps) => {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2">
       <SelectField
         items={[
-          { value: "ALL", label: "All" },
-          { value: "1", label: "Active" },
-          { value: "0", label: "InActive" },
+          { value: "ALL", label: t("hotel.hotelFilter.all") },
+          { value: "1", label: t("hotel.hotelFilter.active") },
+          { value: "0", label: t("hotel.hotelFilter.inactive") },
         ]}
         value={statusFilter === "ALL" ? "ALL" : String(statusFilter)}
         onChange={(v) =>
@@ -35,12 +37,12 @@ const HotelFilter = ({
         <Input
           className="pl-9"
           value={search}
-          placeholder="Search by code,name"
+          placeholder={t("hotel.hotelFilter.searchPlaceholder")}
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
       <Button asChild>
-        <a href="/Home/hotel/create">+ Create Hotel</a>
+        <a href="/Home/hotel/create">{t("hotel.hotelFilter.create")}</a>
       </Button>
     </div>
   )

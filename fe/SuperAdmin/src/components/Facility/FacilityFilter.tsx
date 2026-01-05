@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import type { FacilityStatus } from "@/setting/constant/Facility.constant";
+import { useTranslation } from "react-i18next";
 
 const FacilityFiler = ({
     search,
@@ -11,13 +12,15 @@ const FacilityFiler = ({
     statusFilter,
     onStatusFilterChange,
 }: FacilityFilterProps) => {
+    const { t } = useTranslation();
+
     return (
         <div className="flex items-center gap-2">
             <SelectField
                 items={[
-                    { value: "ALL", label: "Tất cả" },
-                    { value: "true", label: "Hoạt động" },
-                    { value: "false", label: "Không hoạt động" },
+                    { value: "ALL", label: t("common.all") },
+                    { value: "true", label: t("status.active") },
+                    { value: "false", label: t("status.inactive") },
                 ]}
                 value={statusFilter === "ALL" ? "ALL" : String(statusFilter)}
                 onChange={(v) =>
@@ -35,11 +38,12 @@ const FacilityFiler = ({
                 <Input
                     className="pl-9"
                     value={search}
+                      placeholder={t("common.search")}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
             </div>
             <Button asChild>
-                <a href="/Home/facility/create">+ Thêm tiện ích</a>
+                <a href="/Home/facility/create"> + {t("facility.create.title")}</a>
             </Button>
         </div>
     )

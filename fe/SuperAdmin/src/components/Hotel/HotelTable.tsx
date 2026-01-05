@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { File_URL } from "@/setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const HotelTable = ({
     rows,
@@ -13,10 +14,11 @@ const HotelTable = ({
     sortDir,
     onSortChange
 }: HotelTableProps) => {
+    const { t } = useTranslation();
     if (loading) {
-        return <div className="py-8 text-center">Đang tải...</div>;
+        return <div className="py-8 text-center">{t("hotel.hotelTable.loading")}</div>;
     }
-
+    
     return (
         <Table<keyof HotelRow>
             sortKey={sortKey}
@@ -26,13 +28,13 @@ const HotelTable = ({
 
             <TableHeader>
                 <TableRow>
-                    <TableHead sortable sortKey="code">code</TableHead>
-                    <TableHead>Image</TableHead>
-                    <TableHead sortable sortKey="name">name</TableHead>
-                    <TableHead>address</TableHead>
-                    <TableHead>Manager</TableHead>
+                    <TableHead sortable sortKey="code">{t("hotel.hotelTable.code")}</TableHead>
+                    <TableHead>{t("hotel.hotelTable.image")}</TableHead>
+                    <TableHead sortable sortKey="name"> {t("hotel.hotelTable.name")}</TableHead>
+                    <TableHead>{t("hotel.hotelTable.address")}</TableHead>
+                    <TableHead>{t("hotel.hotelTable.manager")}</TableHead>
 
-                    <TableHead>action</TableHead>
+                    <TableHead>{t("common.action")}</TableHead>
                 </TableRow>
             </TableHeader>
 
@@ -84,7 +86,7 @@ const HotelTable = ({
                                     onClick={() => onEdit(row)}
                                 >
                                     <Pencil className="mr-1 h-4 w-4" />
-                                    Edit
+                                     {t("common.edit")}
                                 </Button>
 
                                 {/* Delete */}

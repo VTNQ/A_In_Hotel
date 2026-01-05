@@ -7,6 +7,7 @@ import { getAll } from "../../../../service/api/ExtraService";
 import { getAllCategory } from "../../../../service/api/Category";
 import { getTokens } from "../../../../util/auth";
 import { estimateServicePrice } from "../../../../util/estimateServicePrice";
+import { useTranslation } from "react-i18next";
 
 const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
     const [services, setServices] = useState<any[]>([]);
@@ -15,6 +16,7 @@ const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
 
     const [category, setCategory] = useState("");
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
 
     const hotelId = getTokens()?.hotelId;
     useEffect(() => {
@@ -82,9 +84,9 @@ const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
         <div className="bg-gray-50 min-h-screen p-6">
             {/* HEADER */}
             <div className="mb-6">
-                <h2 className="text-2xl font-semibold">Enhance Your Stay</h2>
+                <h2 className="text-2xl font-semibold">  {t("serviceSelection.title")}</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                    Customize your experience with our exclusive add-ons.
+                     {t("serviceSelection.subtitle")}
                 </p>
             </div>
 
@@ -102,7 +104,7 @@ const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
                     {loading ? (
                         <ServiceSkeleton />
                     ) : services.length === 0 ? (
-                        <p className="text-gray-500">No services found</p>
+                        <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
                     ) : (
                         services.map((service) => (
                             <ServiceCard
@@ -135,14 +137,14 @@ const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
                 />
             </div>
             <div className="flex justify-between items-center mt-8">
-                <button  className="px-4 py-2 rounded-lg text-sm font-medium
+                <button className="px-4 py-2 rounded-lg text-sm font-medium
             text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
             hover:border-red-300 transition">
-                    Cancel booking
+                    {t("serviceSelection.cancel")}
                 </button>
 
                 <button onClick={onBack} className="text-sm text-gray-500 hover:underline">
-                    ← Back to Room Selection
+                     {t("serviceSelection.back")}
                 </button>
             </div>
         </div>

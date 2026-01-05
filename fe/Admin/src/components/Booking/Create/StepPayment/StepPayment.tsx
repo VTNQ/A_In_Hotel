@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import PaymentForm from "./PaymentForm";
 import PaymentSummary from "./PaymentSummary";
 
 const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
+  const { t } = useTranslation();
   return (
     <div>
       <div className="grid grid-cols-3 gap-6 items-start">
@@ -35,7 +37,7 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
             transition
           "
         >
-          Cancel booking
+          {t("payment.actions.cancel")}
         </button>
 
         {/* BACK */}
@@ -43,7 +45,7 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
           onClick={onBack}
           className="text-sm text-gray-500 hover:underline"
         >
-          ← Back to Services
+         {t("payment.actions.backServices")}
         </button>
       </div>
     </div>
