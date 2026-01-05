@@ -15,6 +15,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "../ui/dialog";
+import { useTranslation } from "react-i18next";
 
 const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   open,
@@ -25,6 +26,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState<FacilityForm>({
     serviceName: "",
@@ -120,7 +122,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       const response = await updateExtraServcie(Number(facilityId), payload);
 
       showAlert({
-        title: response?.data?.message || "Cập nhật thành công",
+        title: response?.data?.message || t("facility.edit.success"),
         type: "success",
         autoClose: 4000,
       });
@@ -139,9 +141,9 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       onSubmit();
     } catch (err: any) {
       showAlert({
-        title: "Update facilities failed",
+        title: t("facility.edit.failed"),
         description:
-          err?.response?.data?.message || "Vui lòng thử lại sau",
+          err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
         autoClose: 4000,
       });
@@ -173,13 +175,13 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       >
 
         <DialogHeader>
-          <DialogTitle>Edit Facility</DialogTitle>
+          <DialogTitle>{t("facility.edit.title")}</DialogTitle>
         </DialogHeader>
         {fetching ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
             <span className="ml-3 text-sm text-gray-500">
-              Loading facility data...
+              {t("facility.edit.title")}
             </span>
           </div>
         ) : (
@@ -187,25 +189,25 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
             <div className="space-y-4 py-2">
               {/* Name */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Name</label>
+                <label className="text-sm font-medium">{t("facility.form.name")}</label>
                 <Input
                   name="serviceName"
                   value={formData.serviceName}
                   onChange={handleChange}
-                  placeholder="Enter facility name"
+                  placeholder={t("facility.form.namePlaceholder")}
                 />
               </div>
 
               {/* Category */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Category</label>
+                <label className="text-sm font-medium"> {t("facility.form.category")}</label>
                 <SelectField
                   items={categories}
                   value={formData.categoryId}
                   onChange={(v) =>
                     setFormData((prev) => ({ ...prev, categoryId: String(v) }))
                   }
-                  placeholder="Select category"
+                  placeholder={t("facility.form.categoryPlaceholder")}
                   getValue={(i) => String(i.id)}
                   getLabel={(i) => i.name}
                 />
@@ -213,7 +215,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
 
               {/* Cover Image */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Cover Image</label>
+                <label className="text-sm font-medium">{t("facility.form.coverImage")}</label>
 
                 <label
                   htmlFor="cover-upload"
@@ -224,13 +226,13 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                   {preview ? (
                     <img
                       src={preview}
-                      alt="Preview"
+                      alt={t("facility.form.preview")}
                       className="h-full w-full rounded-lg object-cover"
                     />
                   ) : (
                     <div className="text-center text-sm text-gray-500">
-                      <p className="font-medium">Click to upload</p>
-                      <p className="text-xs">PNG, JPG, SVG</p>
+                      <p className="font-medium">{t("facility.form.upload")}</p>
+                      <p className="text-xs">{t("facility.form.imageHint")}</p>
                     </div>
                   )}
                 </label>
@@ -246,34 +248,34 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
 
               {/* Description */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Description</label>
+                <label className="text-sm font-medium">{t("facility.form.description")}</label>
                 <Textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={3}
-                  placeholder="Shown to customer"
+                  placeholder={t("facility.form.descriptionHint")}
                 />
               </div>
 
               {/* Note */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Note</label>
+                <label className="text-sm font-medium">{t("facility.form.note")}</label>
                 <Textarea
                   name="note"
                   value={formData.note}
                   onChange={handleChange}
                   rows={2}
-                  placeholder="Internal note"
+                  placeholder={t("facility.form.noteHint")}
                 />
               </div>
 
               <DialogFooter>
                 <Button variant="outline" onClick={handleClose} disabled={loading}>
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button onClick={handleSubmit} disabled={loading}>
-                  {loading ? "Đang lưu..." : "Lưu"}
+                  {loading ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>
             </div>

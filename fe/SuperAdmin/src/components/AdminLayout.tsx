@@ -9,7 +9,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Search,
-  Globe,
   Moon,
   SunMedium,
   Bell,
@@ -27,6 +26,8 @@ import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
 import UserDropdown from "./UserDropdown";
 import { useAuthWatcher } from "@/hooks/useAuthWatcher";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 /**
  * AdminLayout
@@ -36,8 +37,43 @@ import { useAuthWatcher } from "@/hooks/useAuthWatcher";
  * - Hỗ trợ Dark mode toggle
  */
 export default function AdminLayout() {
+  
    const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
+   const { t } = useTranslation();
+   const SECTIONS: SectionSpec[] = [
+  {
+    title: t("sidebar.dashboards"),
+    items: [
+      { label: t("sidebar.home"), icon: Home, path: "/Home" },
+      { label: t("sidebar.hotel"), icon: Hotel, path: '/Home/hotel' },
+      {
+        label: t("sidebar.account"),
+        icon: Users,
+        children: [
+          { label: t("sidebar.adminManager"), icon: Briefcase, path: "/Home/Admin" },
+          { label: t("sidebar.childSuperAdminManager"), icon: Lock, path: "/Home/ChildSuperAdmin" }
+        ],
+      },
+
+      {
+        label: t("sidebar.systemManagement"),
+        icon: Settings,
+        children: [
+          { label:t("sidebar.aboutHotel"), icon: Hotel, path: "/Home/system-content/about-hotel" },
+          { label: t("sidebar.homepageContent"), icon: LayoutDashboard, path: "/Home/system-content/home" },
+          { label: t("sidebar.policyTerms"), icon: Lock, path: "/Home/system-content/policy" },
+          { label: t("sidebar.footerContent"), icon: Boxes, path: "/Home/system-content/footer" },
+        ],
+      },
+      {
+        label:  t("sidebar.facilities"),
+        icon: Building2,
+        path: "/Home/facility",
+      },
+    ],
+  }
+];
   const [showModal, setShowModal] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
 
@@ -75,8 +111,8 @@ export default function AdminLayout() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <IconBtn label="Search"><Search className="h-5 w-5" /></IconBtn>
-            <IconBtn label="Language"><Globe className="h-5 w-5" /></IconBtn>
+            <IconBtn label={t("topbar.search")}><Search className="h-5 w-5" /></IconBtn>
+            <LanguageSwitcher />
             <IconBtn label="Theme" onClick={() => setDark((v) => !v)}>
               {dark ? <SunMedium className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </IconBtn>
@@ -102,7 +138,7 @@ export default function AdminLayout() {
 
       {/* Main layout */}
       <div className="flex">
-        <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
+        <Sidebar collapsed={collapsed} sections={SECTIONS} onToggle={() => setCollapsed((v) => !v)} />
         <main className="flex-1 p-6 max-w-[80%]">
           <AlertProvider>
             <Outlet />
@@ -137,39 +173,6 @@ function IconBtn({ children, label, onClick, badge, dot }: { children: React.Rea
 
 // --------------------------- Sidebar ----------------------------
 
-const SECTIONS: SectionSpec[] = [
-  {
-    title: "Dashboards",
-    items: [
-      { label: "Home", icon: Home, path: "/Home" },
-      { label: "Hotel", icon: Hotel, path: '/Home/hotel' },
-      {
-        label: "Account",
-        icon: Users,
-        children: [
-          { label: "Admin Manager", icon: Briefcase, path: "/Home/Admin" },
-          { label: "Child SuperAdmin Manager", icon: Lock, path: "/Home/ChildSuperAdmin" }
-        ],
-      },
-
-      {
-        label: "System Management",
-        icon: Settings,
-        children: [
-          { label: "About Hotel", icon: Hotel, path: "/Home/system-content/about-hotel" },
-          { label: "Homepage Content", icon: LayoutDashboard, path: "/Home/system-content/home" },
-          { label: "Policy & Terms", icon: Lock, path: "/Home/system-content/policy" },
-          { label: "Footer Content", icon: Boxes, path: "/Home/system-content/footer" },
-        ],
-      },
-      {
-        label: "Facilities",
-        icon: Building2,
-        path: "/Home/facility",
-      },
-    ],
-  }
-];
 function isItemActive(item: ItemSpec, pathname: string): boolean {
   if (item.path) {
     // match chính xác
@@ -194,7 +197,7 @@ function isItemActive(item: ItemSpec, pathname: string): boolean {
 }
 
 
-function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+function Sidebar({ collapsed, sections, onToggle }: { collapsed: boolean; sections: SectionSpec[]; onToggle: () => void }) {
   const widthClass = collapsed ? "w-20" : "w-72";
 
   return (
@@ -214,7 +217,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
       </div>
 
       <nav className="no-scrollbar h-full overflow-y-auto px-2 pb-6">
-        {SECTIONS.map((section, idx) => (
+        {sections.map((section, idx) => (
           <SidebarSection key={section.title} section={section} collapsed={collapsed} defaultOpen={idx < 2} />
         ))}
       </nav>

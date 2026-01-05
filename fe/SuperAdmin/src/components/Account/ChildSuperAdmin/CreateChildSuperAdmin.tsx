@@ -10,6 +10,8 @@ import { format } from "date-fns";
 import { GENDER_OPTIONS, type Gender, type SuperAdminForm } from "@/type/Account/SuperAdmin/SuperAdminForm";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react"; // spinner icon
+import { useTranslation } from "react-i18next";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const CreateChildSuperAdmin = () => {
   const { showAlert } = useAlert();
@@ -22,7 +24,7 @@ const CreateChildSuperAdmin = () => {
     birthday: undefined,
     image: null,
   });
-
+  const { t } = useTranslation();
   const handleTextChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -66,8 +68,9 @@ const CreateChildSuperAdmin = () => {
       })
     } catch (error: any) {
       showAlert({
-        title: "Tạo tài khoản thất bại",
-        description: error?.response?.data?.message || "Vui lòng thử lại sau",
+        title: t("childSuperAdmin.create.error"),
+        description:
+          error?.response?.data?.message || t("common.tryAgain"),
         type: "error",
         autoClose: 4000,
       });
@@ -80,25 +83,29 @@ const CreateChildSuperAdmin = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Child SuperAdmin</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Child SuperAdmin <span className="mx-1">»</span> Tạo tài khoản Child SuperAdmin
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("childSuperAdmin.title")}</h1>
+          <Breadcrumb
+            items={[
+              { label: t("childSuperAdmin.breadcrumb.home"), href: "/Home" },
+              { label: t("childSuperAdmin.breadcrumb.Child"), href: "/Home/ChildSuperAdmin" },
+              { label: t("adminCreate.title") },
+            ]}
+          />
         </div>
       </div>
       <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-1">
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 p-4">
-            <h3 className="text-lg font-semibold text-gray-800">Thông tin</h3>
+            <h3 className="text-lg font-semibold text-gray-800"> {t("childSuperAdmin.form.info")}</h3>
           </div>
           <div className="p-6">
             <form className="space-y-4" onSubmit={handleSubmit}>
               {/* Email */}
               <div>
-                <Label>Email</Label>
+                <Label>{t("common.email")}</Label>
                 <Input
                   name="email"
-                  placeholder="Nhập email"
+                  placeholder={t("childSuperAdmin.form.emailPlaceholder")}
                   type="email"
                   value={formData.email}
                   onChange={handleTextChange}
@@ -108,10 +115,10 @@ const CreateChildSuperAdmin = () => {
 
               {/* Tên đầy đủ */}
               <div>
-                <Label>Tên đầy đủ</Label>
+                <Label>{t("common.fullName")}</Label>
                 <Input
                   name="fullName"
-                  placeholder="Nhập Tên đầy đủ"
+                  placeholder={t("childSuperAdmin.form.fullNamePlaceholder")}
                   value={formData.fullName}
                   onChange={handleTextChange}
                   className="mt-3"
@@ -120,10 +127,10 @@ const CreateChildSuperAdmin = () => {
 
               {/* Số điện thoại */}
               <div>
-                <Label>Số điện thoại</Label>
+                <Label>{t("common.phone")}</Label>
                 <Input
                   name="phone"
-                  placeholder="Nhập số điện thoại"
+                  placeholder={t("childSuperAdmin.form.phonePlaceholder")}
                   value={formData.phone}
                   onChange={handleTextChange}
                   className="mt-3"
@@ -132,18 +139,18 @@ const CreateChildSuperAdmin = () => {
 
               {/* Ngày sinh */}
               <div>
-                <Label>Ngày sinh</Label>
+                <Label>{t("common.birthday")}</Label>
                 <DatePickerField
                   value={formData.birthday}
                   onChange={handleBirthDay}
                   className="mt-3"
-                  placeholder="Nhập ngày sinh"
+                  placeholder={t("childSuperAdmin.form.birthdayPlaceholder")}
                 />
               </div>
 
               {/* Giới tính */}
               <div>
-                <Label className="mb-3">Giới tính</Label>
+                <Label className="mb-3">{t("common.gender")}</Label>
                 <SelectField
                   items={GENDER_OPTIONS}
                   value={formData.gender}
@@ -154,9 +161,9 @@ const CreateChildSuperAdmin = () => {
                     }));
                   }}
 
-                  placeholder="Chọn giới tính"
+                  placeholder={t("childSuperAdmin.form.genderPlaceholder")}
                   getValue={(item) => item.value}
-                  getLabel={(item) => item.label}
+                  getLabel={(item) => t(item.labelKey)}
                   clearable={false}
                 />
 
@@ -164,7 +171,7 @@ const CreateChildSuperAdmin = () => {
 
               {/* Avatar */}
               <div>
-                <Label>Ảnh Avatar</Label>
+                <Label>{t("common.avatar")}</Label>
                 <UploadField
                   className="w-full mt-2"
                   value={formData.image}
@@ -182,10 +189,10 @@ const CreateChildSuperAdmin = () => {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Đang lưu...
+                   {t("common.saving")}
                   </span>
                 ) : (
-                  "Lưu"
+                   t("common.save")
                 )}
               </Button>
             </form>

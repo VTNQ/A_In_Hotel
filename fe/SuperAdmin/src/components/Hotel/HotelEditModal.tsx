@@ -17,6 +17,7 @@ import { SelectField } from "../ui/select";
 import { Button } from "../ui/button";
 import type { UserResponse } from "@/type/UserResponse";
 import { File_URL } from "@/setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const HotelEditModal: React.FC<HotelEditProps> = ({
   open,
@@ -30,6 +31,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { t } = useTranslation();
   useEffect(() => {
     return () => {
       if (imagePreview?.startsWith("blob:")) {
@@ -93,7 +95,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       const response = await updateHotel(Number(hotelId), payload);
 
       showAlert({
-        title: response?.data?.message ?? "Update hotel success",
+        title: response?.data?.message ?? t("hotel.hotelEdit.updateSuccess"),
         type: "success",
         autoClose: 4000,
       });
@@ -102,9 +104,11 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       onSubmit();
     } catch (err: any) {
       showAlert({
-        title: "Update hotel failed",
+        title: t("hotel.hotelEdit.updateError"),
         description:
-          err?.response?.data?.message || err?.message || "Please try again later",
+          err?.response?.data?.message ||
+          err?.message ||
+          t("common.tryAgain"),
         type: "error",
         autoClose: 4000,
       });
@@ -125,20 +129,20 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit hotel information</DialogTitle>
+          <DialogTitle> {t("hotel.hotelEdit.title")}</DialogTitle>
         </DialogHeader>
         {fetching ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
             <span className="ml-3 text-sm text-gray-500">
-              Loading hotel data...
+              {t("hotel.hotelEdit.loading")}
             </span>
           </div>
         ) : (
           <>
             <div className="space-y-4 py-2">
               <div className="grid gap-2">
-                <label className="text-sm">Hotel name</label>
+                <label className="text-sm"> {t("hotel.hotelEdit.name")}</label>
                 <Input
                   value={formData.name}
                   onChange={(e) =>
@@ -148,7 +152,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
               </div>
 
               <div className="grid gap-2">
-                <label className="text-sm">Address</label>
+                <label className="text-sm">{t("hotel.hotelEdit.address")}</label>
                 <Textarea
                   value={formData.address}
                   onChange={(e) =>
@@ -167,9 +171,9 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                       idUser: val ? Number(val) : null,
                     }))
                   }
-                  label="Manager"
-                  placeholder="Choose a manager"
-                  description="Choose one person to be in charge of the room."
+                  label={t("hotel.hotelEdit.manager")}
+                  placeholder={t("hotel.hotelEdit.chooseManager")}
+                  description={t("hotel.hotelEdit.managerDesc")}
                   clearable
                   size="md"
                   getValue={(u) => String(u.id)}
@@ -177,7 +181,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                 />
               </div>
               <div>
-                <label className="text-sm">Image</label>
+                <label className="text-sm">{t("hotel.hotelEdit.image")}</label>
                 <div className="relative mt-2 w-[26%]">
                   <input
                     ref={fileInputRef}
@@ -200,7 +204,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     {!imagePreview ? (
                       <>
                         <p className="text-sm font-medium text-slate-600">
-                          Click để upload ảnh khách sạn
+                          {t("hotel.hotelEdit.uploadHint")}
                         </p>
                       </>
                     ) : (
@@ -238,10 +242,12 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={loading}>
-            Cancel
+           {t("common.cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Đang lưu..." : "Lưu"}
+         {loading
+              ? t("common.saving")
+              : t("common.save")}
           </Button>
         </DialogFooter>
       </DialogContent>
