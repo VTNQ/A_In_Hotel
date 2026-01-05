@@ -3,11 +3,13 @@ import { getSystemContentByKey, updateSystemContent } from "@/service/api/System
 import { File_URL } from "@/setting/constant/app";
 import type { AboutHotelContentForm } from "@/type/SystemContent";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AboutHotelContent = () => {
+    const { t } = useTranslation();
     const [form, setForm] = useState<AboutHotelContentForm>({
         description: "",
-        id:"",
+        id: "",
         ctaText: "",
         title: "",
         image: null,
@@ -44,13 +46,13 @@ const AboutHotelContent = () => {
         }
     };
 
-    const handleSubmit =async () => {
+    const handleSubmit = async () => {
         try {
             const payload = {
-               title:form.title,
-               description:form.description,
-               ctaText:form.ctaText,
-               image:form.image
+                title: form.title,
+                description: form.description,
+                ctaText: form.ctaText,
+                image: form.image
             }
             const response = await updateSystemContent(Number(form.id), payload);
             const message = response?.data?.message || "System Content updated successfully.";
@@ -60,7 +62,7 @@ const AboutHotelContent = () => {
                 autoClose: 3000,
             });
 
-        
+
         } catch (err: any) {
             console.error("Update error:", err);
             showAlert({
@@ -70,7 +72,7 @@ const AboutHotelContent = () => {
                 type: "error",
                 autoClose: 4000,
             })
-        } 
+        }
     };
     const previewImage = form.image
         ? URL.createObjectURL(form.image)
@@ -81,11 +83,14 @@ const AboutHotelContent = () => {
             {/* Header */}
             <div className="mb-6">
                 <h1 className="text-2xl font-semibold text-gray-900">
-                    About Hotel Content
+                    {t("systemContent.aboutHotel.title")}
                 </h1>
                 <p className="text-sm text-gray-500 mt-1">
-                    System Management / System Content /{" "}
-                    <span className="text-blue-600">About Hotel</span>
+                    {t("systemContent.breadcrumb.systemManagement")} /{" "}
+                    {t("systemContent.breadcrumb.systemContent")} /{" "}
+                    <span className="text-blue-600">
+                        {t("systemContent.aboutHotel.title")}
+                    </span>
                 </p>
             </div>
 
@@ -93,9 +98,9 @@ const AboutHotelContent = () => {
             <div className="bg-white rounded-xl shadow-sm border">
                 {/* Card Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b">
-                    <h2 className="font-medium text-gray-900">Edit Content</h2>
+                    <h2 className="font-medium text-gray-900">{t("systemContent.aboutHotel.editTitle")}</h2>
                     <span className="text-xs text-gray-400">
-                        Last updated: 2 hours ago
+                        {t("systemContent.lastUpdated")}
                     </span>
                 </div>
 
@@ -104,7 +109,7 @@ const AboutHotelContent = () => {
                     {/* Description */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Title <span className="text-red-500">*</span>
+                            {t("systemContent.aboutHotel.form.title")}{" "} <span className="text-red-500">*</span>
                         </label>
 
                         <div className="relative">
@@ -116,19 +121,19 @@ const AboutHotelContent = () => {
                                 name="title"
                                 value={form.title}
                                 onChange={handleChange}
-                                placeholder="e.g. Welcome to Our Hotel"
+                                placeholder={t("systemContent.aboutHotel.form.titlePlaceholder")}
                                 className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm
                  focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
                         </div>
 
                         <p className="text-xs text-gray-400 mt-1">
-                            The main headline displayed for the About section.
+                            {t("systemContent.aboutHotel.form.titleHint")}
                         </p>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Description <span className="text-red-500">*</span>
+                            {t("systemContent.aboutHotel.form.description")}{" "} <span className="text-red-500">*</span>
                         </label>
 
                         <textarea
@@ -136,14 +141,15 @@ const AboutHotelContent = () => {
                             value={form.description}
                             onChange={handleChange}
                             rows={8}
-                            placeholder="Enter a detailed description about the hotel, its atmosphere, services, and unique experiences..."
+                            placeholder={t(
+                                "systemContent.aboutHotel.form.descriptionPlaceholder"
+                            )}
                             className="w-full border border-gray-300 rounded-md p-3 text-sm text-gray-700
                focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
 
                         <p className="text-xs text-gray-400 mt-1">
-                            Provide a clear and engaging description that highlights the hotel's story,
-                            values, and unique selling points.
+                             {t("systemContent.aboutHotel.form.descriptionHint")}
                         </p>
                     </div>
 
@@ -153,25 +159,25 @@ const AboutHotelContent = () => {
                         {/* CTA */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Call to Action Text
+                             {t("systemContent.aboutHotel.form.cta")}
                             </label>
                             <input
                                 type="text"
                                 name="ctaText"
                                 value={form.ctaText}
                                 onChange={handleChange}
-                                placeholder="e.g. Book Your Stay Now"
+                               placeholder={t("systemContent.aboutHotel.form.ctaPlaceholder")}
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
                             <p className="text-xs text-gray-400 mt-1">
-                                This text will appear on the button below the description.
+                                 {t("systemContent.aboutHotel.form.ctaHint")}
                             </p>
                         </div>
 
                         {/* Image Upload */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Featured Image
+                               {t("systemContent.aboutHotel.form.image")}
                             </label>
 
                             <div className="flex gap-4 items-start">
@@ -195,10 +201,10 @@ const AboutHotelContent = () => {
                                         onChange={handleImageChange}
                                     />
                                     <span className="text-blue-600 text-sm">
-                                        Upload a file or drag and drop
+                                        {t("systemContent.upload")}
                                     </span>
                                     <span className="text-xs text-gray-400 mt-1">
-                                        PNG, JPG, GIF up to 10MB
+                                      {t("systemContent.uploadHint")}
                                     </span>
                                 </label>
                             </div>
@@ -209,13 +215,13 @@ const AboutHotelContent = () => {
                     {/* Actions */}
                     <div className="flex justify-end gap-3 pt-4 border-t">
                         <button className="px-4 py-2 rounded-md border text-gray-600 hover:bg-gray-100">
-                            Cancel
+                          {t("common.cancel")}
                         </button>
                         <button
                             onClick={handleSubmit}
                             className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
                         >
-                            Save Changes
+                            {t("common.saveChanges")}
                         </button>
                     </div>
                 </div>

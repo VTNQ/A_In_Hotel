@@ -8,10 +8,11 @@ import type { SortDir } from "@/type/common";
 import type { facilityRow, StatusFilter } from "@/type/facility.types";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const FacilityPage: React.FC = () => {
     const { showAlert } = useAlert();
-
+    const { t } = useTranslation();
     const [rows, setRows] = useState<facilityRow[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -43,7 +44,7 @@ const FacilityPage: React.FC = () => {
             });
             setRows(resp.data.content);
         } catch (e: any) {
-            setError(e.message || "Không thể tải dữ liệu");
+            setError(e.message || t("common.loadFailed"));
         } finally {
             setLoading(false);
         }
@@ -64,12 +65,12 @@ const FacilityPage: React.FC = () => {
         try {
             await updateStatusFacilities(row.id, next);
             showAlert({
-              title: "Cập nhật trạng thái thành công",
-              type: "success",
+                title: t("facility.status.updateSuccess"),
+                type: "success",
             });
         } catch {
             showAlert({
-                title: "Cập nhật trạng thái thất bại",
+                title: t("facility.status.updateFailed"),
                 type: "error",
             });
         }
@@ -79,7 +80,7 @@ const FacilityPage: React.FC = () => {
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Manager Facilities</h2>
+                <h2 className="text-xl font-semibold"> {t("facility.page.title")}</h2>
                 <FacilityFiler
                     search={search}
                     onSearchChange={setSearch}
@@ -104,7 +105,7 @@ const FacilityPage: React.FC = () => {
                 facilityId={Number(editingRow?.id)}
                 onClose={() => setEditingRow(null)}
                 onSubmit={fetchFacilities}
-          
+
             />
 
         </div>

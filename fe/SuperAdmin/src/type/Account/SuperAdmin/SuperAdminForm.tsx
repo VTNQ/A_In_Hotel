@@ -1,7 +1,10 @@
 export type Gender = "0" | "1";
-export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: "0", label: "Nam" },
-  { value: "1", label: "Nữ" },
+export const GENDER_OPTIONS: {
+  value: Gender;
+  labelKey: string;
+}[] = [
+  { value: "0", labelKey: "gender.male" },
+  { value: "1", labelKey: "gender.female" },
 ];
 
 export type SuperAdminForm={
