@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+  import { useEffect, useState } from "react";
 import type { ViewBlogProps } from "../../type";
 import { findById } from "../../service/api/Blog";
 import CommonModalView from "../ui/CommonModalView";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const ViewBlog: React.FC<ViewBlogProps> = ({ isOpen, onClose, blogId }) => {
     const [blogData, setBlogdData] = useState<any>(null);
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (isOpen && blogId) {
@@ -26,15 +28,15 @@ const ViewBlog: React.FC<ViewBlogProps> = ({ isOpen, onClose, blogId }) => {
     }
     if (!blogData) return null;
     const statusMap: Record<number, { text: string; color: string }> = {
-        1: { text: "Draft", color: "text-gray-500" },
-        2: { text: "Published", color: "text-green-600" },
-        3: { text: "Archived", color: "text-red-600" },
+        1: { text: t("blog.statusMap.draft"), color: "text-gray-500" },
+        2: { text: t("blog.statusMap.published"), color: "text-green-600" },
+        3: { text: t("blog.statusMap.archived"), color: "text-red-600" },
       };
     return (
         <CommonModalView
             isOpen={isOpen}
             onClose={handleCloseModal}
-            title="View Blog"
+            title={t("blog.viewTitle")}
             width="w-[650px]"
         >
             {loading && (
@@ -57,7 +59,7 @@ const ViewBlog: React.FC<ViewBlogProps> = ({ isOpen, onClose, blogId }) => {
             )}
             {!loading && (
                 <div className="space-y-5 text-[#2B2B2B]">
-                    <div className="w-full h-[260px] rounded-xl overflow-hidden shadow">
+                    <div className="w-full h-[260px] rounded-xl overflow-hidden custom-scroll shadow">
                         <img
                             src={File_URL + (blogData.image?.url || "")}
                             alt="Thumbnail"
@@ -67,25 +69,25 @@ const ViewBlog: React.FC<ViewBlogProps> = ({ isOpen, onClose, blogId }) => {
                     <div>
                         <h3 className="font-semibold text-[20px] text-[#253150]">{blogData.title}</h3>
                         <p className="text-sm text-gray-500 mt-1">
-                            Blog Code: <span className="font-medium">{blogData.blogCode}</span>
+                            {t("blog.blogCode")}:{" "}<span className="font-medium">{blogData.blogCode}</span>
                         </p>
                     </div>
                     <div>
-                        <h4 className="font-semibold text-[#253150] mb-1">Description</h4>
+                        <h4 className="font-semibold text-[#253150] mb-1">{t("blog.description")}</h4>
                         <div
                             className="prose text-[14px]"
                             dangerouslySetInnerHTML={{ __html: blogData.description }}
                         />
                     </div>
                     <div>
-                        <h4 className="font-semibold text-[#253150] mb-1">Content</h4>
+                        <h4 className="font-semibold text-[#253150] mb-1">{t("blog.content")}</h4>
                         <div
                             className="prose text-[14px]"
                             dangerouslySetInnerHTML={{ __html: blogData.content }}
                         />
                     </div>
                     <div className="border-t border-gray-300 pt-3 text-[14px]">
-                        <p><strong>Status:</strong> {statusMap[blogData.status]?.text || "Unknown"}</p>
+                        <p><strong>{t("blog.status")}:</strong>  {t(statusMap[blogData.status]?.text || "common.unknown")}</p>
                     </div>
                 </div>
             )}

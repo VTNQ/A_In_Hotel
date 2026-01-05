@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import type { SwitchRoomModalProps } from "../../../type/booking.types";
 import type { Room } from "../../../type/room.types";
 import { CheckCircle, X } from "lucide-react";
@@ -8,6 +8,7 @@ import { findByIdAndDetailsActiveTrue, handleSwitchRoom } from "../../../service
 import Input from "../../ui/Input";
 import { useAlert } from "../../alert-context";
 import { getTokens } from "../../../util/auth";
+import { useTranslation } from "react-i18next";
 
 const SwitchRoomModal = ({
     open,
@@ -20,6 +21,7 @@ const SwitchRoomModal = ({
     const [availableRooms, setAvailableRooms] = useState<any[]>([]);
     const [booking, setBooking] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     const [confirming, setConfirming] = useState(false);
     const { showAlert } = useAlert();
     const usedRoomIds = useMemo(
@@ -144,7 +146,7 @@ const SwitchRoomModal = ({
 
             showAlert({
                 title:
-                    response?.data?.message || "switch-room successful!",
+                    response?.data?.message || t("switchRoom.success"),
                 type: "success",
                 autoClose: 3000,
             });
@@ -154,7 +156,7 @@ const SwitchRoomModal = ({
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to confirm switch-room. Please try again.",
+                     t("switchRoom.error"),
                 type: "error",
             });
         } finally {
@@ -188,9 +190,9 @@ const SwitchRoomModal = ({
                 {/* ================= HEADER ================= */}
                 <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200">
                     <div>
-                        <h1 className="text-xl font-bold">Switch Room</h1>
+                        <h1 className="text-xl font-bold">{t("switchRoom.title")}</h1>
                         <p className="text-sm text-gray-500">
-                            Manage room changes and verify details.
+                            {t("switchRoom.subtitle")}
                         </p>
                     </div>
                     <button onClick={() => {
@@ -204,7 +206,7 @@ const SwitchRoomModal = ({
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <div className="w-10 h-10 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
                         <p className="mt-4 text-sm text-[#5f6b85]">
-                            Loading booking details...
+                            {t("switchRoom.loading")}
                         </p>
                     </div>
                 )}
@@ -215,16 +217,16 @@ const SwitchRoomModal = ({
 
                             {/* ===== CURRENT BOOKING ===== */}
                             <div>
-                                <h2 className="font-semibold mb-4">Current Booking</h2>
+                                <h2 className="font-semibold mb-4">{t("switchRoom.currentBooking")}</h2>
 
                                 <div className="bg-white rounded-xl border border-gray-200">
                                     {/* ===== HEADER ===== */}
                                     <div className="grid grid-cols-12 px-6 py-3 text-xs font-semibold text-gray-500 bg-gray-50">
-                                        <div className="col-span-2">Room</div>
-                                        <div className="col-span-2">Type</div>
-                                        <div className="col-span-2">Rate</div>
-                                        <div className="col-span-4">New Room Selection</div>
-                                        <div className="col-span-2">Reason</div>
+                                        <div className="col-span-2">{t("switchRoom.room")}</div>
+                                        <div className="col-span-2">{t("switchRoom.roomType")}</div>
+                                        <div className="col-span-2">{t("switchRoom.rate")}</div>
+                                        <div className="col-span-4">{t("switchRoom.newRoomSelection")}</div>
+                                        <div className="col-span-2">{t("switchRoom.reason")}</div>
                                     </div>
 
                                     {/* ===== BODY ===== */}
@@ -253,7 +255,7 @@ const SwitchRoomModal = ({
                                                         <SelectV2
                                                             value={selected[d.id]?.id}
                                                             options={roomOptions}
-                                                            placeholder="Select room..."
+                                                            placeholder={t("switchRoom.selectRoom")}
                                                             onChange={(roomId) => {
                                                                 const room =
                                                                     availableRooms.find(r => r.id === roomId) || null;
@@ -272,7 +274,7 @@ const SwitchRoomModal = ({
                                                 <div className="col-span-3">
                                                     <Input
                                                         type="text"
-                                                        placeholder="Reason for switch"
+                                                        placeholder={t("switchRoom.reasonPlaceholder")}
                                                         value={reasons[d.id] || ""}
                                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                             const value = e.target.value;
@@ -300,12 +302,12 @@ const SwitchRoomModal = ({
                                     {/* ===== CONFIRM SELECTION ===== */}
                                     <div className="p-6">
                                         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                                            Confirm Selection
+                                            {t("switchRoom.confirmSelection")}
                                         </h3>
 
                                         <div className="space-y-3">
                                             {summary.rows.length === 0 ? (
-                                                <p className="text-sm text-gray-400">No room selected</p>
+                                                <p className="text-sm text-gray-400">{t("switchRoom.noRoomSelected")}</p>
 
                                             ) : (
                                                 summary.rows.map((r: any) => (
@@ -326,7 +328,7 @@ const SwitchRoomModal = ({
 
                                                         <div className="flex flex-col">
                                                             <span className="text-sm font-medium">
-                                                                Room {r.from}
+                                                                {t("switchRoom.room")} {r.from}
                                                             </span>
 
                                                             {r.selected ? (
@@ -336,12 +338,12 @@ const SwitchRoomModal = ({
                                                                     </span>
 
                                                                     <span className="text-xs italic text-gray-400">
-                                                                        Reason: {r.reason || "—"}
+                                                                        {t("switchRoom.reasonLabel")}: {r.reason || "—"}
                                                                     </span>
                                                                 </>
                                                             ) : (
                                                                 <span className="text-xs text-gray-400">
-                                                                    No change selected
+                                                                    {t("switchRoom.noChangeSelected")}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -355,7 +357,7 @@ const SwitchRoomModal = ({
                                     {/* ===== PRICE IMPACT ===== */}
                                     <div className="p-6 bg-gray-50/50">
                                         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                                            Price Impact
+                                            {t("switchRoom.priceImpact")}
                                         </h3>
 
                                         <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 space-y-2">
@@ -377,15 +379,15 @@ const SwitchRoomModal = ({
                                                             }
                                                         >
                                                             {r.diff! > 0
-                                                                ? `+${r.diff!.toLocaleString()} ₫/night`
-                                                                : "No change"}
+                                                                ? `+${r.diff!.toLocaleString()} ${t("switchRoom.pricing.perNight")}`
+                                                                : t("switchRoom.noChange")}
                                                         </span>
                                                     </div>
                                                 ))}
 
                                             <div className="pt-3 mt-3 border-t border-blue-200 flex justify-between items-center">
                                                 <span className="text-xs font-bold text-blue-800 uppercase">
-                                                    Total Difference
+                                                    {t("switchRoom.totalDifference")}
                                                 </span>
                                                 <span className="text-sm font-bold text-blue-800">
                                                     +{summary.total.toLocaleString()} ₫
@@ -407,7 +409,7 @@ const SwitchRoomModal = ({
                                 onClick={onClose}
                                 className="px-5 py-2 rounded-xl bg-[#EEF0F7] text-[#2E3A8C] hover:bg-[#e2e6f3]"
                             >
-                                Cancel
+                                {t("common.cancelButton")}
                             </button>
 
                             <button
@@ -419,8 +421,9 @@ const SwitchRoomModal = ({
                                 disabled={summary.rows.every((r: any) => !r.selected)}
                             >
                                 <CheckCircle size={18} />
-                                {confirming ? "Processing..." : "Confirm Switch"}
-
+                                {confirming
+                                    ? t("switchRoom.processing")
+                                    : t("switchRoom.confirm")}
                             </button>
                         </div>
                     </>

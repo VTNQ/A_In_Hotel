@@ -52,7 +52,7 @@ const AssetActionMenu: React.FC<AssetActionMenuProps> = ({
             ];
             break;
         default:
-            statusLabel = "Unknown";
+            statusLabel = t("common.unKnown");
             actions = [{ label: t("common.view"), icon: <Eye size={16} />, onClick: () => onView?.(asset) }];
     }
     return <ActionMenu title={statusLabel} actions={actions} />;

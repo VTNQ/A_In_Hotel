@@ -100,7 +100,9 @@ public class Booking {
     @Column(name = "hotel_id")
     private Long hotelId;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
     @PrePersist
     public void prePersist() {
         if(this.code == null || this.code.isEmpty()) {

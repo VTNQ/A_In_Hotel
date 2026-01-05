@@ -2,6 +2,7 @@ import { BedDouble, Calendar, CheckCircle2, CreditCard, User, X } from "lucide-r
 import type { CheckInBookingResponse } from "../../../type/booking.types";
 import { useEffect, useState } from "react";
 import { findByIdAndDetailsActiveTrue } from "../../../service/api/Booking";
+import { useTranslation } from "react-i18next";
 
 const ConfirmCheckIn = ({
   open,
@@ -10,6 +11,7 @@ const ConfirmCheckIn = ({
   onConfirm,
 }: CheckInBookingResponse) => {
   const [data, setData] = useState<any>(null);
+   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const [confirming, setConfirming] = useState(false);
@@ -71,11 +73,13 @@ const ConfirmCheckIn = ({
   const getDurationLabel = () => {
     switch (data?.bookingPackage) {
       case 1:
-        return "2 hours";
+        return t("confirmCheckIn.twoHours");
       case 2:
-        return `${data?.nights} nights`;
+        return data?.nights === 1
+        ? t("confirmCheckIn.night", { count: 1 })
+        : t("confirmCheckIn.nights", { count: data?.nights });
       case 3:
-        return "Full day";
+        return t("confirmCheckIn.fullDay");
       default:
         return "";
     }
@@ -101,10 +105,10 @@ const ConfirmCheckIn = ({
         <div className="flex items-start justify-between px-6 py-5 border-b border-gray-200">
           <div>
             <h1 className="text-xl font-semibold text-[#253150]">
-              Confirm Check-in
+             {t("confirmCheckIn.title")}
             </h1>
             <p className="text-sm text-[#5f6b85] mt-1">
-              Please review guest and payment details below.
+             {t("confirmCheckIn.subtitle")}
             </p>
           </div>
 
@@ -121,7 +125,7 @@ const ConfirmCheckIn = ({
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
             <p className="mt-4 text-sm text-[#5f6b85]">
-              Loading booking details...
+              {t("confirmCheckIn.loading")}
             </p>
           </div>
         )}
@@ -135,27 +139,27 @@ const ConfirmCheckIn = ({
                 <div className="flex items-center gap-2 mb-3">
                   <User className="w-4 h-4 text-[#253150]" />
                   <h2 className="font-semibold text-[#253150] uppercase">
-                    Guest Information
+                    {t("confirmCheckIn.guestInfo")}
                   </h2>
                 </div>
 
                 <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-[#5f6b85]">GUEST NAME</p>
+                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.guestName")}</p>
                     <p className="font-medium text-[#253150]">
                       {data.guestName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">NO. OF GUESTS</p>
+                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.numberOfGuests")}</p>
                     <p className="font-medium text-[#253150]">
-                      {data.numberOfGuests} Adults
+                      {data.numberOfGuests} {t("confirmCheckIn.adults")}
                     </p>
                   </div>
 
                   {data.note && (
                     <div className="col-span-2">
-                      <p className="text-xs text-[#5f6b85] mb-1">NOTES</p>
+                      <p className="text-xs text-[#5f6b85] mb-1">{t("confirmCheckIn.notes")}</p>
                       <div className="bg-[#f6f8fb] border border-dashed border-[#d6dbea] rounded-lg px-3 py-2">
                         {data.note}
                       </div>
@@ -169,7 +173,7 @@ const ConfirmCheckIn = ({
                 <div className="flex items-center gap-2 mb-3">
                   <Calendar className="w-4 h-4 text-[#253150]" />
                   <h2 className="font-semibold text-[#253150] uppercase">
-                    Room Information
+                    {t("confirmCheckIn.roomInfo")}
                   </h2>
                 </div>
 
@@ -213,25 +217,25 @@ const ConfirmCheckIn = ({
                 <div className="flex items-center gap-2 mb-3">
                   <CreditCard className="w-4 h-4 text-[#253150]" />
                   <h2 className="font-semibold text-[#253150] uppercase">
-                    Payment Summary
+                    {t("confirmCheckIn.paymentSummary")}
                   </h2>
                 </div>
 
                 <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-xs text-[#5f6b85]">TOTAL</p>
+                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.total")}</p>
                     <p className="font-semibold text-[#253150]">
                       {data.totalPrice?.toLocaleString()} VND
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">PAID</p>
+                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.paid")}</p>
                     <p className="font-semibold text-green-600">
                       {data.payment[0]?.paidAmount?.toLocaleString()} VND
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">OUTSTANDING</p>
+                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.outstanding")}</p>
                     <p className="font-semibold text-red-600">
                       {outstanding.toLocaleString()} VND
                     </p>
@@ -246,7 +250,7 @@ const ConfirmCheckIn = ({
                 onClick={onCancel}
                 className="px-5 py-2 rounded-xl bg-[#EEF0F7] text-[#2E3A8C] hover:bg-[#e2e6f3]"
               >
-                Cancel
+                {t("common.cancelButton")}
               </button>
               <button
                 onClick={handleConfirm}
@@ -259,12 +263,12 @@ const ConfirmCheckIn = ({
                 {confirming ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Processing...
+                    {t("confirmCheckIn.processing")}
                   </>
                 ) : (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                    Check-in
+                   {t("confirmCheckIn.confirm")}
                   </>
                 )}
               </button>

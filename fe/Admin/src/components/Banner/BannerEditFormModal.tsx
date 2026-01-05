@@ -264,17 +264,8 @@ const BannerEditFormModal = ({
                     </label>
 
                     <div
-                        className="
-      border-2 border-dashed border-[#AFC0E2]
-      hover:border-[#4B62A0]
-      transition
-      rounded-xl
-      bg-[#F6F8FC]
-      cursor-pointer
-      flex flex-col items-center justify-center
-      py-10
-      text-center
-    "
+                        className="border-2 border-dashed border-[#AFC0E2] hover:border-[#4B62A0] transition
+                        rounded-xl bg-[#F6F8FC] cursor-pointer flex flex-col items-center justify-center py-10 text-center"
                         onClick={() => document.getElementById("thumbnailInput")?.click()}
                     >
                         {preview ? (

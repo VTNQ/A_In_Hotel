@@ -72,7 +72,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, asset
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <span className="text-gray-400 text-sm">No Image</span>
+                                        <span className="text-gray-400 text-sm">{t("common.noImage")}</span>
                                     )}
                                 </div>
                             </div>

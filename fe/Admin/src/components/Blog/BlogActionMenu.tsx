@@ -43,7 +43,7 @@ const BlogActionMenu:React.FC<BlogActionMenuProps>=({
             ]
             break;
             default:
-                statusLabel = "Unknown";
+                statusLabel = t("commom.unKnown");
                 actions = [{ label: t("blog.viewBlog"), icon: <Eye size={16} />, onClick: () => onView?.(blog) }];
     }
     return <ActionMenu title={statusLabel} actions={actions} />;
