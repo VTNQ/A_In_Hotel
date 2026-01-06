@@ -243,6 +243,8 @@
             "title": "Giới thiệu khách sạn",
             "editTitle": "Chỉnh sửa nội dung",
             "form": {
+                "success":"Cập nhật nội dung thành công.",
+                "error":"Cập nhật nội dung thất bại",
                 "title": "Tiêu đề",
                 "titlePlaceholder": "VD: Chào mừng đến với khách sạn của chúng tôi",
                 "titleHint": "Tiêu đề chính hiển thị cho phần giới thiệu.",

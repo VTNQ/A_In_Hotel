@@ -250,6 +250,8 @@
             "title": "About Hotel",
             "editTitle": "Edit Content",
             "form": {
+                "sucess":"System Content updated successfully.",
+                "error":"Failed to update system content",
                 "title": "Title",
                 "titlePlaceholder": "e.g. Welcome to Our Hotel",
                 "titleHint": "The main headline displayed for the About section.",

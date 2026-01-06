@@ -100,8 +100,8 @@ const CreateFacilityForm: React.FC = () => {
             setPreview(null)
         } catch (err: any) {
             showAlert({
-                title: "create facilities failed",
-                description: err?.response.data.message || "Vui lòng thử lại sau",
+                title: t("facility.create.error"),
+                description: err?.response.data.message || t("common.tryAgain"),
                 type: "error",
                 autoClose: 4000,
             })
