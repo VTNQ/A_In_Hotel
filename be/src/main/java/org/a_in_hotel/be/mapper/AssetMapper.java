@@ -34,7 +34,8 @@ public interface AssetMapper  extends CommonMapper {
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "roomId",source = "room.id")
     @Mapping(target = "roomNumber",source = "room.roomNumber")
-    @Mapping(target = "thumbnail", source = "thumbnail")
+    @Mapping(target = "thumbnail", expression = "java(mapImageV2(entity.getId(),"
+            + "\"Asset\",imageRepository))")
     @Mapping(target = "note",source = "note")
     AssetResponse toResponse(Asset entity, @Context ImageRepository imageRepository);
 

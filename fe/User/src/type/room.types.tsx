@@ -8,6 +8,9 @@ export interface RoomResponse {
     hotelAddress:string;
     capacity: string;
     area: string;
+    hourlyBasePrice:number;
+    overnightPrice:number;
+    hourlyAdditionalPrice:number;
     hotelId: number;
     note: string;
     defaultRate: number;

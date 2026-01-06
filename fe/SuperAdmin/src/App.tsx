@@ -31,9 +31,6 @@ function App() {
           <Route path='facility/create' element={<CreateFacilityForm/>}/>
           <Route path='hotel/create' element={<AddHotelPage />} />
           <Route path='Hotel' element={<HotelPage />} />
-          {/* <Route path='banner/create' element={<AddBannerPage />} />
-          <Route path='banner' element={<BannerPage />} />
-          <Route path='banner/edit/:id' element={<EditBannerPage />} /> */}
         </Route>
       </Routes>
     </>
