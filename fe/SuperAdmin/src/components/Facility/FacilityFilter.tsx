@@ -38,7 +38,7 @@ const FacilityFiler = ({
                 <Input
                     className="pl-9"
                     value={search}
-                      placeholder={t("common.search")}
+                    placeholder={t("common.search")}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
             </div>
