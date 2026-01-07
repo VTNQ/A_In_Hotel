@@ -358,7 +358,7 @@
     "new": "+ New Booking",
     "searchPlaceholder": "Search by room number, name",
     "booked": "Booked",
-       "cancelConfirm": {
+    "cancelConfirm": {
       "title": "Cancel booking?",
       "description": "All entered information will be lost. This action cannot be undone.",
       "confirm": "Yes, cancel booking",
@@ -576,5 +576,46 @@
     "processing": "Processing...",
     "success": "Room switched successfully!",
     "error": "Failed to confirm room switch. Please try again."
+  },
+  "bookingView": {
+    "servicesPayments": "Services & Payments",
+    "actual": "Actual",
+    "pending": "Pending",
+    "awaitCheckIn": "Awaiting check-in",
+    "roomInformation": "Room Information",
+    "currentRoomAllocations": "Current active room allocations",
+    "roomNumber": "Room Number",
+    "roomType": "Room Type",
+    "recordRoomChanges": "Record of all room changes during stay",
+    "fromRoom": "From",
+    "toRoom": "To",
+    "billSummary": "Bill Summary",
+    "roomTotal": "Room Total",
+    "serviceTotal": "Service Total",
+    "switchRoomFee": "Switch Room Fee",
+    "discount": "Discount",
+    "grandTotal": "Grand Total",
+    "paymentStatus": "Payment Status",
+    "paidAmount": "Paid Amount",
+    "remainingAmount": "Remaining Amount",
+    "lastMethod": "Last Method",
+    "extraServicesDiscounts": "Extra Services & Discounts",
+    "service": "Service",
+    "price": "Price"
+  },
+  "bookingEdit": {
+    "title": "Edit Guest Information",
+    "guestName": "Guest Name",
+    "surname": "Surname",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "guestType": "Guest Type",
+    "guestTypeOptions": {
+      "individual": "Individual",
+      "company": "Company",
+      "vip": "VIP"
+    },
+    "updateSuccess": "Update guest information successfully",
+    "updateError": "Update guest information failed"
   }
 }

@@ -61,6 +61,7 @@ public interface BookingDetailMapper {
         }
     }
     @Mapping(target = "roomId",source = "room.id")
+    @Mapping(target = "roomCode",source = "room.roomCode")
     @Mapping(target = "extraServiceId",source = "extraService.id")
     BookingDetailResponse toResponse(BookingDetail bookingDetail);
 }

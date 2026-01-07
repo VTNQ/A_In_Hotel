@@ -42,7 +42,11 @@ export const GUEST_TYPE_OPTIONS = [
   { label: "Công ty", value: GuestType.COMPANY },
   { label: "VIP", value: GuestType.VIP },
 ];
-
+export const GUEST_TYPE_MAP: Record<number, string> = {
+  1: "Regular",
+  2: "Member",
+  3: "VIP",
+};
 export interface BookingDateTime {
   checkInDate?: string;
   checkOutDate?: string;
@@ -89,6 +93,17 @@ export interface CheckInBookingResponse {
   id: number;
   onCancel: () => void;
   onConfirm: () => void;
+}
+export interface ViewBookingModalProps {
+  open: boolean;
+  onClose: () => void;
+  id: number;
+}
+export interface UpdateBookingModalProps {
+  open:boolean;
+  onClose:()=>void;
+  id:number;
+  onSuccess:()=>void;
 }
 export interface ExtraCharge {
   id?: number | undefined;

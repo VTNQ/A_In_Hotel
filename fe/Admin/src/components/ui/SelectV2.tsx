@@ -138,10 +138,12 @@ const SelectV2 = ({
             {open && (
                 <div
                     className="
-      absolute top-full left-0 z-50
-      mt-2 w-full
-      rounded-xl border border-gray-200
-      bg-white shadow-xl overflow-hidden
+     absolute top-full left-0
+    mt-2 w-full
+    rounded-xl border border-gray-200
+    bg-white shadow-xl
+    overflow-hidden
+    z-[1000]
     "
                 >
                     <div className="max-h-56 overflow-auto">

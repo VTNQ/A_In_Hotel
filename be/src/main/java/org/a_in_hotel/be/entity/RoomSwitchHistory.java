@@ -25,8 +25,9 @@ public class RoomSwitchHistory {
     @JoinColumn(name = "booking_id",nullable = false)
     private Booking booking;
 
-    @Column(name = "from_room_id",nullable = false)
-    private Long fromRoomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_room_id",nullable = false)
+    private Room fromRoomId;
 
     @Column(name = "from_room_number",nullable = false)
     private String fromRoomNumber;
@@ -34,8 +35,9 @@ public class RoomSwitchHistory {
     @Column(name = "from_room_name")
     private String fromRoomName;
 
-    @Column(name = "to_room_id",nullable = false)
-    private Long toRoomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_room_id",nullable = false)
+    private Room toRoomId;
 
     @Column(name = "to_room_number",nullable = false)
     private String toRoomNumber;
