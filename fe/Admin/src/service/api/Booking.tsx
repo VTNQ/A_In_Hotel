@@ -43,3 +43,7 @@ export const handleSwitchRoom = async (id: number, data: any) =>{
     return await Http.patch(`/api/bookings/${id}/switch-room`, data);
 
 }
+
+export const editInformationGuest =  async (id:number, data:any)=>{
+    return await Http.put(`/api/bookings/${id}`,data)
+}

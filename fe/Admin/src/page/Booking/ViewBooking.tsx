@@ -11,6 +11,9 @@ import ConfirmCheckOut from "../../components/Booking/CheckOut/ConfirmCheckOut";
 import SwitchRoomModal from "../../components/Booking/SwitchRoom/SwitchRoomModal";
 import { getTokens } from "../../util/auth";
 import { useTranslation } from "react-i18next";
+import ViewBookingModal from "../../components/Booking/View/ViewBookingModal";
+import EditBookingModal from "../../components/Booking/EditBookingModal";
+import { GUEST_TYPE_MAP } from "../../type/booking.types";
 
 const ViewBooking = () => {
     const [data, setData] = useState<any[]>([]);
@@ -27,9 +30,11 @@ const ViewBooking = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
     const [openCheckout, setOpenCheckout] = useState(false);
+    const [openViewBooking, setOpenViewBooking] = useState(false)
 
     const [open, setOpen] = useState(false)
     const [totalResults, setTotalResults] = useState(0);
+    const [openEditBooking, setOpenEditBooking] = useState<any | null>(null);
     const { showAlert } = useAlert();
     const navigate = useNavigate();
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,9 +44,17 @@ const ViewBooking = () => {
         setOpen(true)
         setSelectedBooking(row)
     }
+    const handleEditBooking = (booking: any) => {
+        setSelectedBooking(booking);
+        setOpenEditBooking(true);
+    }
     const handleOpenCheckout = (booking: any) => {
         setSelectedBooking(booking);
         setOpenCheckout(true);
+    };
+    const handleOpenViewBooking = (booking: any) => {
+        setSelectedBooking(booking);
+        setOpenViewBooking(true);
     };
     const handleSwitchRoom = (booking: any) => {
         setSelectedBooking(booking);
@@ -116,7 +129,13 @@ const ViewBooking = () => {
         { key: "guestName", label: t("booking.guestName"), sortale: true },
         { key: "phoneNumber", label: t("booking.phone"), sortable: true },
         { key: "email", label: "Email", sortable: true },
-        { key: "guestType", label: t("booking.guestType"), sortable: true },
+        {
+            key: "guestType",
+            label: t("booking.guestType"),
+            sortable: true,
+            render: (value: any) => GUEST_TYPE_MAP[value.guestType] ?? "--",
+        },
+
         {
             key: "checkInDate",
             label: t("booking.checkInDate"),
@@ -193,6 +212,8 @@ const ViewBooking = () => {
                     booking={row}
                     onCheckOut={() => handleOpenCheckout(row)}
                     onCheckIn={() => handleConfirmCheckIn(row)}
+                    onView={() => handleOpenViewBooking(row)}
+                    onEdit={() => handleEditBooking(row)}
                     onSwitchRoom={() => handleSwitchRoom(row)}
                 />
             ),
@@ -233,7 +254,7 @@ const ViewBooking = () => {
                     </select>
                 </div>
                 <div className="w-full lg:w-[260px]">
-                 
+
                     <SimpleDatePicker
                         value={bookingDate}
                         onChange={setBookingDate}
@@ -284,7 +305,17 @@ const ViewBooking = () => {
                 onClose={() => setOpenSwitchRoom(false)}
                 id={selectedBooking?.id}
             />
-
+            <ViewBookingModal
+                open={openViewBooking}
+                id={selectedBooking?.id}
+                onClose={() => setOpenViewBooking(false)}
+            />
+            <EditBookingModal
+                open={openEditBooking}
+                onClose={() => setOpenEditBooking(false)}
+                id={selectedBooking?.id}
+                onSuccess={() => fetchData()}
+            />
         </div>
     )
 }

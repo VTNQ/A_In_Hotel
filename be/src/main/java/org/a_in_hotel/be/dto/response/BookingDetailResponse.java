@@ -16,6 +16,8 @@ public class BookingDetailResponse {
 
     private Long roomId;
 
+    private String roomCode;
+
     private String roomName;
 
     private String roomNumber;
@@ -28,7 +30,6 @@ public class BookingDetailResponse {
 
     private Long extraServiceId;
 
-    private Integer quantity;
 
     private BigDecimal price;
 

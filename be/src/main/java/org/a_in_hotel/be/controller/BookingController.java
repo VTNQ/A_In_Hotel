@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BookingRequest;
 import org.a_in_hotel.be.dto.request.CheckOutRequest;
+import org.a_in_hotel.be.dto.request.EditGuestRequest;
 import org.a_in_hotel.be.dto.request.SwitchRoomRequest;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
@@ -55,6 +56,11 @@ public class BookingController {
                     @PathVariable Long id
             ){
         return ResponseEntity.ok(RequestResponse.success(service.findById(id)));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<RequestResponse<Void>> editInformation(@PathVariable Long id, @RequestBody EditGuestRequest request){
+        service.updateGuestInformation(id,request);
+        return ResponseEntity.ok(RequestResponse.success("Booking updated successfully!"));
     }
 
     @PatchMapping("/{id}/check-in")

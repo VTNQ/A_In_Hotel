@@ -29,7 +29,7 @@ public class BookingResponse {
 
     private String phoneNumber;
 
-    private String guestType;
+    private Integer guestType;
 
     private Integer numberOfGuests;
 
@@ -44,7 +44,10 @@ public class BookingResponse {
     private Integer BookingPackage;
 
     private Integer status;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private OffsetDateTime checkedInAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private OffsetDateTime checkedOutAt;
     private List<PaymentResponse> payment;
 
     private BigDecimal totalPrice;
@@ -55,5 +58,8 @@ public class BookingResponse {
     private OffsetDateTime updatedAt;
 
     private List<BookingDetailResponse> details = new ArrayList<>();
+
+    private List<RoomSwitchHistoryResponse> roomSwitchHistories = new ArrayList<>();
+
 
 }

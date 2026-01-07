@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -230,6 +231,26 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
     }
 
+    @Override
+    public void updateGuestInformation(Long id,EditGuestRequest request) {
+        Booking booking = repository.getReferenceById(id);
+        mapper.updateEntity(booking,request);
+        Customer customer = booking.getCustomer();
+        if(customer!=null){
+            customer.setFirstName(request.getGuestName());
+            customer.setLastName(request.getSurname());
+            customer.setPhoneNumber(request.getPhoneNumber());
+            customer.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+
+            Account account = customer.getAccount();
+            if (account != null) {
+                account.setEmail(request.getEmail()); // nếu cho phép
+                account.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+            }
+        }
+        repository.save(booking);
+    }
+
     private void validateSwitchRoomItems(
             Booking booking,
             List<RoomSwitchItem> items
@@ -321,11 +342,11 @@ public class BookingServiceImpl implements BookingService {
         RoomSwitchHistory history = new RoomSwitchHistory();
         history.setBooking(booking);
 
-        history.setFromRoomId(oldRoom.getId());
+        history.setFromRoomId(oldRoom);
         history.setFromRoomNumber(oldRoom.getRoomNumber());
         history.setFromRoomName(oldRoom.getRoomName());
 
-        history.setToRoomId(newRoom.getId());
+        history.setToRoomId(newRoom);
         history.setToRoomNumber(newRoom.getRoomNumber());
         history.setToRoomName(newRoom.getRoomName());
         history.setOldPrice(oldPrice);

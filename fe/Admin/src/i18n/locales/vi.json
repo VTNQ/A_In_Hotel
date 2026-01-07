@@ -579,5 +579,46 @@
         "processing": "Đang xử lý...",
         "success": "Chuyển phòng thành công!",
         "error": "Xác nhận chuyển phòng thất bại. Vui lòng thử lại."
+    },
+    "bookingView": {
+        "servicesPayments": "Dịch vụ & Thanh toán",
+        "actual": "Thực tế",
+        "pending": "Đang chờ",
+        "awaitCheckIn": "Đang chờ làm thủ tục nhận phòng",
+        "roomInformation": "Thông tin phòng",
+        "currentRoomAllocations": "Phòng đang được sử dụng",
+        "roomNumber": "Số phòng",
+        "roomType": "Loại phòng",
+        "recordRoomChanges": "Lịch sử chuyển phòng trong thời gian lưu trú",
+        "fromRoom": "Từ phòng",
+        "toRoom": "Sang phòng",
+        "billSummary": "Tóm tắt hóa đơn",
+        "roomTotal": "Tiền phòng",
+        "serviceTotal": "Tiền dịch vụ",
+        "switchRoomFee": "Phí chuyển phòng",
+        "discount": "Giảm giá",
+        "grandTotal": "Tổng cộng",
+        "paymentStatus": "Trạng thái thanh toán",
+        "paidAmount": "Đã thanh toán",
+        "remainingAmount": "Số tiền còn lại",
+        "lastMethod": "Phương thức gần nhất",
+        "extraServicesDiscounts": "Dịch vụ & Giảm giá",
+        "service": "Dịch vụ",
+        "price": "Giá"
+    },
+    "bookingEdit": {
+        "title": "Chỉnh sửa thông tin khách",
+        "guestName": "Tên khách",
+        "surname": "Họ",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "guestType": "Loại khách",
+        "guestTypeOptions": {
+            "individual": "Cá nhân",
+            "company": "Công ty",
+            "vip": "VIP"
+        },
+        "updateSuccess": "Cập nhật thông tin khách thành công",
+        "updateError": "Cập nhật thông tin khách thất bại"
     }
 }
