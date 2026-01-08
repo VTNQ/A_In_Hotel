@@ -55,7 +55,7 @@ const AboutHotelContent = () => {
                 image: form.image
             }
             const response = await updateSystemContent(Number(form.id), payload);
-            const message = response?.data?.message || "System Content updated successfully.";
+            const message = response?.data?.message || t("systemContent.aboutHotel.form.success");
             showAlert({
                 title: message,
                 type: "success",
@@ -68,7 +68,7 @@ const AboutHotelContent = () => {
             showAlert({
                 title:
                     err?.response?.data?.message ||
-                    "Failed to update asset. Please try again.",
+                     t("systemContent.aboutHotel.form.error"),
                 type: "error",
                 autoClose: 4000,
             })

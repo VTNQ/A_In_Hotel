@@ -65,7 +65,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
         </div>
 
         {/* CONTENT */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 custom-scroll">
+        <div className="flex-1 overflow-y-auto overflow-x-visible px-4 sm:px-6 py-4 custom-scroll">
           {children}
         </div>
 

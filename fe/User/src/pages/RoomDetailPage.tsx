@@ -1,14 +1,29 @@
-import { Baby, Bath, BedDouble, Calendar, Coffee, Minus, Plus, Tv, User, Wind } from "lucide-react";
+import { Baby, BedDouble, Calendar, Minus, Plus, User } from "lucide-react";
 import RoomCard from "../components/RoomDetail/RoomCard";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { RoomResponse } from "../type/room.types";
 import { getRoomById } from "../service/api/Room";
 import { File_URL } from "../setting/constant/app";
+import { GetAsset } from "../service/api/Asset";
+import { useBookingSearch } from "../context/booking/BookingSearchContext";
+import type { PriceType } from "../type/booking.types";
 const RoomDetailPage = () => {
     const [openGallery, setOpenGallery] = useState(false);
     const { id } = useParams();
     const [roomv2, setRoomV2] = useState<RoomResponse | null>(null);
+    const [amenities, setAmenities] = useState<any[]>([]);
+    const fetchAmenities = async () => {
+        try {
+            const res = await GetAsset({
+                all: true,
+                filter: `room.id==${id}`
+            })
+            setAmenities(res.data.content || []);
+        } catch (err) {
+            console.log(err)
+        }
+    }
     useEffect(() => {
         if (!id) return;
         const fetchRoom = async () => {
@@ -24,7 +39,13 @@ const RoomDetailPage = () => {
             }
         }
         fetchRoom();
-    },[id])
+        fetchAmenities();
+    }, [id]);
+    const { search } = useBookingSearch();
+    const adults = search?.adults ?? 0;
+    const children = search?.children ?? 0;
+    const checkIn = search?.checkIn ?? "";
+    const checkOut = search?.checkOut ?? "";
     const room = {
         name: "MINI ROOM",
         address: "Vo Nguyen Giap Street, Ngu Hanh Son, Da Nang",
@@ -49,7 +70,55 @@ const RoomDetailPage = () => {
     }
     const remainImages = room.images.length - 3;
     const [activeIndex, setActiveIndex] = useState(0);
+    const formatDate = (date?: string | null) => {
+        if (!date) return "--/--/----";
+        return new Date(date).toLocaleDateString("vi-VN");
+    };
+    const [PriceType, setPriceType] = useState<PriceType | null>(null);
+    const [extraHours, setExtraHours] = useState(0);
+    const calcNights = (checkIn?: string, checkOut?: string): number => {
+        if (!checkIn || !checkOut) return 0;
 
+        const start = new Date(checkIn);
+        const end = new Date(checkOut);
+
+        const diff = end.getTime() - start.getTime();
+        return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    };
+    const nights = calcNights(checkIn, checkOut);
+    const isMultiDay = nights > 1;
+    const calculateTotal = () => {
+        if (!roomv2 || !PriceType) {
+            return {
+                base: 0,
+                service: 0,
+                total: 0,
+            };
+        }
+        let basePrice = 0;
+
+        if (PriceType === "HOURLY") {
+            basePrice =
+                roomv2.hourlyBasePrice +
+                extraHours * roomv2.hourlyAdditionalPrice;
+        }
+
+        if (PriceType === "OVERNIGHT") {
+            basePrice = roomv2.overnightPrice;
+        }
+
+        if (PriceType == "DAILY") {
+            basePrice = roomv2.defaultRate * Math.max(1, nights);
+        }
+        const serviceFee = basePrice * 0.1;
+
+        return {
+            base: basePrice,
+            service: serviceFee,
+            total: basePrice + serviceFee,
+        };
+    }
+    const priceResult = calculateTotal();
     return (
 
         <>
@@ -63,7 +132,7 @@ const RoomDetailPage = () => {
                             onClick={() => setOpenGallery(true)}
                         >
                             <img
-                                src={File_URL+roomv2?.images[0]?.url}
+                                src={File_URL + roomv2?.images[0]?.url}
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -78,7 +147,7 @@ const RoomDetailPage = () => {
                                         onClick={() => setOpenGallery(true)}
                                     >
                                         <img
-                                            src={File_URL+ img.url}
+                                            src={File_URL + img.url}
                                             className="w-full h-full object-cover hover:scale-105 transition"
                                         />
 
@@ -116,10 +185,10 @@ const RoomDetailPage = () => {
                                 <h4 className="font-semibold">Overview</h4>
 
                                 <p className="text-sm text-gray-600 leading-relaxed">
-                                   {roomv2?.note}
+                                    {roomv2?.note}
                                 </p>
 
-                               
+
                             </div>
 
                             {/* ===== AMENITIES + POLICIES ===== */}
@@ -130,16 +199,19 @@ const RoomDetailPage = () => {
                                     <h4 className="font-semibold mb-4">Amenities</h4>
 
                                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-gray-700">
-                                        <li className="flex items-center gap-3"><Wind size={16} /> Air Conditioning</li>
-                                        <li className="flex items-center gap-3"><Tv size={16} /> TV in Room</li>
-                                        <li className="flex items-center gap-3"><Coffee size={16} /> Business Center</li>
-                                        <li className="flex items-center gap-3"><BedDouble size={16} /> Parking Garage</li>
-                                        <li className="flex items-center gap-3"><Bath size={16} /> Hair Dryer</li>
-                                        <li className="flex items-center gap-3"><Coffee size={16} /> Slippers</li>
-                                        <li className="flex items-center gap-3"><Tv size={16} /> Free tea & coffee</li>
-                                        <li className="flex items-center gap-3"><Coffee size={16} /> Free bottled water</li>
-                                        <li className="flex items-center gap-3"><Bath size={16} /> Minibar drinks</li>
-                                        <li className="flex items-center gap-3"><Wind size={16} /> WiFi</li>
+                                        {amenities.map((item) => (
+                                            <li
+                                                key={item.id}
+                                                className="flex items-center gap-3"
+                                            >
+                                                <img
+                                                    src={File_URL + item.thumbnail?.url}
+                                                    alt={item.assetName}
+                                                    className="w-4 h-4 object-contain"
+                                                />
+                                                <span>{item.assetName}</span>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
 
@@ -191,11 +263,11 @@ const RoomDetailPage = () => {
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-2">
                                             <User size={16} />
-                                            <span>Adult: 2</span>
+                                            <span>Adult: {adults}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Baby size={16} />
-                                            <span>Children: 0</span>
+                                            <span>Children: {children}</span>
                                         </div>
                                     </div>
 
@@ -216,13 +288,13 @@ const RoomDetailPage = () => {
                                     <div className="flex justify-between items-center">
                                         <span>Check in</span>
                                         <span className="flex items-center gap-1">
-                                            <Calendar size={14} /> 21/12/2025
+                                            <Calendar size={14} /> {formatDate(checkIn)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span>Check out</span>
                                         <span className="flex items-center gap-1">
-                                            <Calendar size={14} /> 23/12/2025
+                                            <Calendar size={14} /> {formatDate(checkOut)}
                                         </span>
                                     </div>
                                 </div>
@@ -231,41 +303,67 @@ const RoomDetailPage = () => {
 
                                 {/* ===== PRICE OPTIONS ===== */}
                                 <div className="space-y-3">
-                                    <label className="flex items-center gap-3 border rounded-lg p-3 cursor-pointer">
-                                        <input type="radio" name="price" className="accent-[#b38a58]" />
+                                    <label
+                                        className={`flex items-center gap-3 border rounded-lg p-3 cursor-pointer
+                                        ${isMultiDay ? "opacity-50 pointer-events-none" : ""}`}
+                                    >
+                                        <input type="radio"
+                                            name="price"
+                                            disabled={isMultiDay}
+                                            checked={PriceType === "HOURLY"}
+                                            className="accent-[#b38a58]"
+                                            onChange={() => {
+                                                setPriceType("HOURLY");
+                                                setExtraHours(0);
+                                            }} />
                                         <div>
                                             <p className="text-xs text-gray-500">2 giờ đầu</p>
-                                            <p className="font-semibold text-[#b38a58]">200.000 đ</p>
+                                            <p className="font-semibold text-[#b38a58]">{roomv2?.hourlyBasePrice} đ</p>
                                         </div>
                                     </label>
 
-                                    <label className="flex items-center gap-3 border rounded-lg p-3 cursor-pointer">
-                                        <input type="radio" name="price" className="accent-[#b38a58]" />
+                                    <label className={`flex items-center gap-3 border rounded-lg p-3 cursor-pointer
+                                        ${isMultiDay ? "opacity-50 pointer-events-none" : ""}`}>
+                                        <input type="radio"
+                                            name="price"
+                                            disabled={isMultiDay}
+                                            checked={PriceType === "OVERNIGHT"}
+                                            onChange={() => {
+                                                setPriceType("OVERNIGHT");
+                                                setExtraHours(0);
+                                            }} className="accent-[#b38a58]" />
                                         <div>
                                             <p className="text-xs text-gray-500">Qua đêm (sau 22h)</p>
-                                            <p className="font-semibold text-[#b38a58]">360.000 đ</p>
+                                            <p className="font-semibold text-[#b38a58]">{roomv2?.overnightPrice} đ</p>
                                         </div>
                                     </label>
 
                                     <label className="flex items-center gap-3 border rounded-lg p-3 cursor-pointer">
-                                        <input type="radio" name="price" className="accent-[#b38a58]" />
+                                        <input type="radio" name="price" checked={PriceType === "DAILY"}
+                                            onChange={() => {
+                                                setPriceType("DAILY");
+                                                setExtraHours(0);
+                                            }} className="accent-[#b38a58]" />
                                         <div>
                                             <p className="text-xs text-gray-500">Giá phòng ngày đêm</p>
-                                            <p className="font-semibold text-[#b38a58]">450.000 đ</p>
+                                            <p className="font-semibold text-[#b38a58]">{roomv2?.defaultRate} đ</p>
                                         </div>
                                     </label>
                                 </div>
 
                                 {/* ===== EXTRA HOURS ===== */}
-                                <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
-                                    <span>Thêm giờ nghỉ +70.000/h</span>
+                                <div className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm
+                                        ${PriceType !== "HOURLY"
+                                        ? "opacity-50 pointer-events-none bg-gray-100"
+                                        : "bg-gray-50"}`}>
+                                    <span>Thêm giờ nghỉ +{roomv2?.hourlyAdditionalPrice}/h</span>
 
                                     <div className="flex items-center gap-2">
-                                        <button className="w-6 h-6 rounded-full border flex items-center justify-center">
+                                        <button onClick={() => setExtraHours(Math.max(0, extraHours - 1))} className="w-6 h-6 rounded-full border flex items-center justify-center">
                                             <Minus size={14} />
                                         </button>
-                                        <span>0</span>
-                                        <button className="w-6 h-6 rounded-full border flex items-center justify-center">
+                                        <span>{extraHours}</span>
+                                        <button  onClick={() => setExtraHours(extraHours + 1)} className="w-6 h-6 rounded-full border flex items-center justify-center">
                                             <Plus size={14} />
                                         </button>
                                         <span className="ml-1">giờ</span>
@@ -275,18 +373,18 @@ const RoomDetailPage = () => {
                                 {/* ===== TOTAL ===== */}
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span>3 night</span>
-                                        <span>1.350.000 vnd</span>
+                                        <span>{nights} night</span>
+                                        <span>{priceResult.base.toLocaleString()} vnd</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>Service (*10%)</span>
-                                        <span>135.000 vnd</span>
+                                        <span>{priceResult.service.toLocaleString()} vnd</span>
                                     </div>
                                 </div>
 
                                 <div className="flex justify-between font-semibold border-t pt-3">
                                     <span>Total Cost</span>
-                                    <span>1.485.000 vnd</span>
+                                    <span>{priceResult.total.toLocaleString()} vnd</span>
                                 </div>
 
                                 {/* ===== BUTTON ===== */}

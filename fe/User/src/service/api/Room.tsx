@@ -24,6 +24,7 @@ export const getRoom = async(options:GetAllOptions)=>{
             all,
           },
           skipAuth: true,
+          withCredentials: true,
     })
     return resp.data;
 }
@@ -33,5 +34,5 @@ export const getRepresentativeRoomsOfHotels=async()=>{
 }
 
 export const getRoomById = async(id:number)=>{
-    return await Http.get<ApiResponse<RoomResponse>>(`/api/rooms/findById/${id}`);
+    return await Http.get<ApiResponse<RoomResponse>>(`/api/rooms/findById/${id}`,{skipAuth:true});
 }

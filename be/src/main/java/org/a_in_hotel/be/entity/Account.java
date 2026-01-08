@@ -47,11 +47,13 @@ public class Account implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     private Staff staff;
-
+    @OneToOne(mappedBy = "account",fetch = FetchType.LAZY)
+    private Customer customer;
     @Transient
     private Image image;
 

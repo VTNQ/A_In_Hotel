@@ -33,3 +33,5 @@ export interface BookingSearchContextValue {
     search: BookingSearch | null;
     setSearch: (s: BookingSearch) => void;
 };
+
+export type PriceType = "HOURLY" | "OVERNIGHT" | "DAILY";

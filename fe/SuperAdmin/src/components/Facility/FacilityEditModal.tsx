@@ -136,7 +136,6 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       });
       setCoverImage(null);
       setPreview(null);
-
       onClose();
       onSubmit();
     } catch (err: any) {

@@ -4,6 +4,7 @@ import org.a_in_hotel.be.Enum.BookingPackage;
 import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.Enum.GuestType;
 import org.a_in_hotel.be.dto.request.BookingRequest;
+import org.a_in_hotel.be.dto.request.EditGuestRequest;
 import org.a_in_hotel.be.dto.request.PaymentRequest;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.Booking;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mapper(componentModel = "spring", imports = {GuestType.class, BookingPackage.class, BookingStatus.class},
-        uses = { BookingDetailMapper.class } )
+        uses = { BookingDetailMapper.class, SwitchRoomHistoryMapper.class } )
 public interface BookingMapper extends CommonMapper {
     @Mappings({
             @Mapping(target = "guestType",
@@ -34,6 +35,7 @@ public interface BookingMapper extends CommonMapper {
             @Mapping(target = "updatedBy", source = "userId"),
             @Mapping(target = "payment", ignore = true)
     })
+
     Booking toEntity(
             BookingRequest request,
             @Context BookingDetailMapper detailMapper,
@@ -71,11 +73,10 @@ public interface BookingMapper extends CommonMapper {
                         extraServiceRepository,
                         userId));
     }
-    @Mapping(
-            target = "guestType",
-            expression = "java(org.a_in_hotel.be.Enum.GuestType.fromCode(booking.getGuestType()).getDescription())"
-    )
+
+
     @Mapping(target = "payment",source = "payment")
     BookingResponse toResponse(Booking booking);
-
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntity(@MappingTarget Booking booking, EditGuestRequest request);
 }
