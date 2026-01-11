@@ -24,11 +24,13 @@ public interface BookingService {
 
     void confirmCheckIn(Long bookingId);
 
+    void cancelBooking(Long bookingId);
+
     void confirmCheckOut(Long bookingId, CheckOutRequest request);
 
     void switchRoom(Long bookingId, SwitchRoomRequest request);
 
     BookingResponse findByIdAndDetailsActiveTrue(Long id);
 
-    void updateGuestInformation(Long id,EditGuestRequest request);
+
 }

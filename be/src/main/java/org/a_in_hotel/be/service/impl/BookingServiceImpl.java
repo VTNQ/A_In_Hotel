@@ -185,6 +185,26 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
+    public void cancelBooking(Long bookingId) {
+         Booking booking = repository.getReferenceById(bookingId);
+        if (!booking.getStatus().equals(BookingStatus.BOOKED.getCode())) {
+            throw new IllegalStateException("Only BOOKED booking can be cancel");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED.getCode());
+        booking.setCanceledAt(OffsetDateTime.now());
+        booking.setUpdatedBy(securityUtils.getCurrentUserId().toString());
+        booking.getDetails().forEach(detail -> {
+            if (detail.getRoom() != null) {
+                detail.getRoom().setStatus(RoomStatus.AVAILABLE.getCode());
+            }
+        });
+
+        repository.save(booking);
+    }
+
+    @Override
+    @Transactional
     public void confirmCheckOut(Long bookingId, CheckOutRequest request) {
 
         Booking booking = getBookingWithAllowedStatuses(bookingId, BookingStatus.CHECKIN.getCode());
@@ -229,26 +249,6 @@ public class BookingServiceImpl implements BookingService {
         return repository.findByIdFetchActiveDetail(id)
                 .map(mapper::toResponse)
                 .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
-    }
-
-    @Override
-    public void updateGuestInformation(Long id,EditGuestRequest request) {
-        Booking booking = repository.getReferenceById(id);
-        mapper.updateEntity(booking,request);
-        Customer customer = booking.getCustomer();
-        if(customer!=null){
-            customer.setFirstName(request.getGuestName());
-            customer.setLastName(request.getSurname());
-            customer.setPhoneNumber(request.getPhoneNumber());
-            customer.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-
-            Account account = customer.getAccount();
-            if (account != null) {
-                account.setEmail(request.getEmail()); // nếu cho phép
-                account.setUpdatedBy(securityUtils.getCurrentUserId().toString());
-            }
-        }
-        repository.save(booking);
     }
 
     private void validateSwitchRoomItems(

@@ -1,7 +1,11 @@
-const steps = ["Guest Info","Booking Date & Time", "Rooms","Services", "Payment"];
+import { useTranslation } from "react-i18next";
 
-const BookingStepper = ({ step }: { step: number }) => (
-    <div className="flex mb-6">
+
+const BookingStepper = ({ step }: { step: number }) => {
+    const {t} = useTranslation();
+const steps = [t("booking.guestInfo"),t("booking.bookingDateTime"), t("booking.Rooms"),t("booking.Services"), t("booking.payment")];
+    return(
+         <div className="flex mb-6">
         {steps.map((s, i) => (
             <div key={s} className="flex items-center flex-1">
                 <div
@@ -15,5 +19,6 @@ const BookingStepper = ({ step }: { step: number }) => (
             </div>
         ))}
     </div>
-)
+    )
+}
 export default BookingStepper;
