@@ -361,6 +361,11 @@
         "checkOut": "Trả phòng",
         "cancelled": "Hủy phòng",
         "selectDate": "Chọn ngày đặt phòng",
+        "guestInfo":"Thông tin khách lưu trú",
+        "bookingDateTime":"Ngày & Giờ đặt phòng",
+        "service":"Dịch vụ bổ sung",
+        "Rooms":"Phòng",
+        "payment":"Thanh toán",
         "cancelConfirm": {
             "title": "Hủy đặt phòng?",
             "description": "Tất cả thông tin đã nhập sẽ bị mất. Hành động này không thể hoàn tác.",
