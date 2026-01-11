@@ -365,6 +365,10 @@
       "continue": "Continue booking"
     },
     "checkIn": "Check In",
+    "actualCheckIn": "Actual Check In",
+    "actualCheckOut": "Actual Check Out",
+    "notCheckedIn": "Not checked in",
+    "notCheckedOutIn":"Not checked out",
     "checkOut": "Check Out",
     "cancelled": "cancelled",
     "selectDate": "Select booking date",
