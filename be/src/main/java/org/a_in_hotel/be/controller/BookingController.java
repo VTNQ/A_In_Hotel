@@ -57,18 +57,17 @@ public class BookingController {
             ){
         return ResponseEntity.ok(RequestResponse.success(service.findById(id)));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<RequestResponse<Void>> editInformation(@PathVariable Long id, @RequestBody EditGuestRequest request){
-        service.updateGuestInformation(id,request);
-        return ResponseEntity.ok(RequestResponse.success("Booking updated successfully!"));
-    }
 
     @PatchMapping("/{id}/check-in")
     public ResponseEntity<RequestResponse<Void>> checkIn(@PathVariable Long id){
         service.confirmCheckIn(id);
         return ResponseEntity.ok(RequestResponse.success("Check-in successfully"));
     }
-
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<RequestResponse<Void>> cancel(@PathVariable Long id){
+        service.cancelBooking(id);
+        return ResponseEntity.ok(RequestResponse.success("Cancel booking successfully"));
+    }
     @PatchMapping("/{id}/check-out")
     public ResponseEntity<RequestResponse<Void>> checkOut(@PathVariable Long id, @RequestBody CheckOutRequest request){
         service.confirmCheckOut(id,request);
