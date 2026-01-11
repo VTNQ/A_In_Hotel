@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { PACKAGE_TIME_MAP } from "../../../type/booking.types";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
@@ -12,23 +12,49 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     { label: t("bookingDateTime.packageOvernight"), value: "2" },
     { label: t("bookingDateTime.packageFullDay"), value: "3" },
   ];
-  // 🔹 AUTO SET TIME THEO PACKAGE
-  useEffect(() => {
-    if (PACKAGE_TIME_MAP[form.package]) {
-      const time = PACKAGE_TIME_MAP[form.package];
-      onChange("checkInTime", time.checkIn);
-      onChange("checkOutTime", time.checkOut);
+  
+ const packageOptions = useMemo(() => {
+    // ≥ 2 đêm → CHỈ full day
+    if (nights >= 2) {
+      return PACKAGE_OPTIONS.filter((o) => o.value === "3");
     }
-  }, [form.package, onChange]);
 
-  // 🔹 AUTO SET PACKAGE = FULL DAY KHI nights >= 1
+    // 0 hoặc 1 đêm → show đủ nhưng disable sai
+    return PACKAGE_OPTIONS.map((opt) => ({
+      ...opt,
+      disabled:
+        (opt.value === "1" && nights !== 0) || // Day Use chỉ khi 0 đêm
+        (opt.value === "2" && nights !== 1) || // Overnight chỉ khi 1 đêm
+        (opt.value === "3" && nights < 1),     // Full Day chỉ khi ≥2 đêm
+    }));
+  }, [nights, t]);
+  // 🔹 AUTO SET TIME THEO PACKAGE
   useEffect(() => {
     if (!form.checkInDate || !form.checkOutDate) return;
 
-    if (nights >= 1 && form.package !== "3") {
-      onChange("package", "3"); // ✅ ĐÚNG
+    if (nights === 0 && form.package !== "1") {
+      onChange("package", "1");
     }
-  }, [nights, form.checkInDate, form.checkOutDate, form.package, onChange]);
+
+    if (nights === 1 && form.package !== "2") {
+      onChange("package", "2");
+    }
+
+    if (nights >= 2 && form.package !== "3") {
+      onChange("package", "3");
+    }
+  }, [nights, form.checkInDate, form.checkOutDate]);
+
+  /* ======================
+     AUTO SET TIME BY PACKAGE
+  ====================== */
+  useEffect(() => {
+    const time = PACKAGE_TIME_MAP[form.package];
+    if (!time) return;
+
+    onChange("checkInTime", time.checkIn);
+    onChange("checkOutTime", time.checkOut);
+  }, [form.package]);
 
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
@@ -71,10 +97,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
       <Select
         label={t("bookingDateTime.package")}
         value={form.package}
-        options={PACKAGE_OPTIONS.map((opt) => ({
-          ...opt,
-          disabled: opt.value === "2" && nights <= 1, // disable Overnight
-        }))}
+        options={packageOptions}
         onChange={(v) => onChange("package", v)}
       />
 
