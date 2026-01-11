@@ -94,6 +94,7 @@ export interface BookingActionMenuProps {
     };
     onView?: (booking: any) => void;
     onEdit?: (booking: any) => void;
+    onCancel?: (booking: any) => void;
     onCheckIn?: (booking: any) => void;
     onCheckOut?: (booking: any) => void;
     onSwitchRoom?: (booking: any) => void;

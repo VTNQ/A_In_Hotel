@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GetAllBookings, handleCheckIn } from "../../service/api/Booking";
+import { cancelBooking, GetAllBookings, handleCheckIn } from "../../service/api/Booking";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import SimpleDatePicker from "../../components/ui/SimpleDatePicker";
@@ -12,7 +12,6 @@ import SwitchRoomModal from "../../components/Booking/SwitchRoom/SwitchRoomModal
 import { getTokens } from "../../util/auth";
 import { useTranslation } from "react-i18next";
 import ViewBookingModal from "../../components/Booking/View/ViewBookingModal";
-import EditBookingModal from "../../components/Booking/EditBookingModal";
 import { GUEST_TYPE_MAP } from "../../type/booking.types";
 
 const ViewBooking = () => {
@@ -34,7 +33,6 @@ const ViewBooking = () => {
 
   const [open, setOpen] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
-  const [openEditBooking, setOpenEditBooking] = useState<any | null>(null);
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,13 +42,26 @@ const ViewBooking = () => {
     setOpen(true);
     setSelectedBooking(row);
   };
-  const handleEditBooking = (booking: any) => {
-    setSelectedBooking(booking);
-    setOpenEditBooking(true);
-  };
   const handleOpenCheckout = (booking: any) => {
     setSelectedBooking(booking);
     setOpenCheckout(true);
+  };
+  const handleCancelBooking = async(booking: any) => {
+    try {
+      const response = await cancelBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.cancelSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
   };
   const handleOpenViewBooking = (booking: any) => {
     setSelectedBooking(booking);
@@ -182,14 +193,15 @@ const ViewBooking = () => {
       key: "checkedInAt",
       label: t("booking.actualCheckIn"),
       sortable: true,
-      render: (value: any) => (value.checkedInAt ? value.checkedInAt : t("booking.notCheckedIn")),
+      render: (value: any) =>
+        value.checkedInAt ? value.checkedInAt : t("booking.notCheckedIn"),
     },
     {
-        key:"checkedOutAt",
-        label:t("booking.actualCheckOut"),
-        sortable:true,
-        render:(value:any)=>(value.checkedOutAt?value.checkedOutAt:t("booking.notCheckedOutIn"))
-    
+      key: "checkedOutAt",
+      label: t("booking.actualCheckOut"),
+      sortable: true,
+      render: (value: any) =>
+        value.checkedOutAt ? value.checkedOutAt : t("booking.notCheckedOutIn"),
     },
     {
       key: "status",
@@ -247,10 +259,10 @@ const ViewBooking = () => {
       render: (row: any) => (
         <BookingActionMenu
           booking={row}
+          onCancel={()=>handleCancelBooking(row)}
           onCheckOut={() => handleOpenCheckout(row)}
           onCheckIn={() => handleConfirmCheckIn(row)}
           onView={() => handleOpenViewBooking(row)}
-          onEdit={() => handleEditBooking(row)}
           onSwitchRoom={() => handleSwitchRoom(row)}
         />
       ),
@@ -349,12 +361,7 @@ const ViewBooking = () => {
         id={selectedBooking?.id}
         onClose={() => setOpenViewBooking(false)}
       />
-      <EditBookingModal
-        open={openEditBooking}
-        onClose={() => setOpenEditBooking(false)}
-        id={selectedBooking?.id}
-        onSuccess={() => fetchData()}
-      />
+   
     </div>
   );
 };

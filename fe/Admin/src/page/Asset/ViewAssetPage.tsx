@@ -153,20 +153,7 @@ const ViewAssetPage = () => {
         { key: "createdAt", label: t("asset.createdAt"), sortable: true },
         { key: "updatedAt", label: t("asset.updatedAt"), sortable: true },
        
-        {
-            key: "action",
-            label: t("common.action"),
-            render: (row: any) => (
-                <AssetActionMenu
-                    asset={row}
-                    onEdit={() => handleEdit(row)}
-                    onView={() => handleView(row)}
-                    onActivate={() => handleActive(row)}
-                    onDeactivate={() => handleDeActived(row)}
-                    onMaintenance={() => handleMaintenance(row)}
-                />
-            ),
-        },
+      
         {
             key: "status",
             label: t("common.status"),
@@ -238,6 +225,20 @@ const ViewAssetPage = () => {
                     </label>
                 );
             },
+        },
+          {
+            key: "action",
+            label: t("common.action"),
+            render: (row: any) => (
+                <AssetActionMenu
+                    asset={row}
+                    onEdit={() => handleEdit(row)}
+                    onView={() => handleView(row)}
+                    onActivate={() => handleActive(row)}
+                    onDeactivate={() => handleDeActived(row)}
+                    onMaintenance={() => handleMaintenance(row)}
+                />
+            ),
         },
     ]
 

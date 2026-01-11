@@ -44,6 +44,6 @@ export const handleSwitchRoom = async (id: number, data: any) =>{
 
 }
 
-export const editInformationGuest =  async (id:number, data:any)=>{
-    return await Http.put(`/api/bookings/${id}`,data)
+export const cancelBooking = async (id:number)=>{
+    return await Http.patch(`/api/bookings/${id}/cancel`)
 }

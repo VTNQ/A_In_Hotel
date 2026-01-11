@@ -96,6 +96,9 @@ public class Booking {
     @Column(name = "checked_out_at")
     private OffsetDateTime checkedOutAt;
 
+    @Column(name = "canceled_at")
+    private OffsetDateTime canceledAt;
+
     @Column(name = "hotel_id")
     private Long hotelId;
 
