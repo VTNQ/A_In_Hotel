@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import type { UpdateExtraServiceFormModalProps } from "../../type";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateExtraService } from "../../service/api/ExtraService";
 import { getAllCategory } from "../../service/api/Category";
 import { File_URL } from "../../setting/constant/app";
 import { useTranslation } from "react-i18next";
+import type { UpdateExtraServiceFormModalProps } from "../../type/extraService.types";
 
 const UpdateExtraServiceFormModal = ({
     isOpen,

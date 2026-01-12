@@ -1,8 +1,8 @@
 import { Power } from "lucide-react";
-import type { StaffActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
+import type { StaffActionMenuProps } from "../../type/staff.types";
 
 const StaffActionMenu: React.FC<StaffActionMenuProps> = ({
     staff,

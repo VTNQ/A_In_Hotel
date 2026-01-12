@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import type { UpdateBlogFormModalProps } from "../../type";
 import { useAlert } from "../alert-context";
 import { findById, updateBlog } from "../../service/api/Blog";
 import { File_URL } from "../../setting/constant/app";
@@ -7,6 +6,7 @@ import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useTranslation } from "react-i18next";
+import type { UpdateBlogFormModalProps } from "../../type/blog.types";
 
 const BlogEditFormModal = ({
     isOpen,

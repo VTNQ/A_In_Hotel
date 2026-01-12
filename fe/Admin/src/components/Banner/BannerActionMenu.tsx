@@ -1,8 +1,8 @@
 import { Edit } from "lucide-react";
-import type { BannerActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
+import type { BannerActionMenuProps } from "../../type/banner.types";
 
 const BannerActionMenu: React.FC<BannerActionMenuProps> = ({
     banner,

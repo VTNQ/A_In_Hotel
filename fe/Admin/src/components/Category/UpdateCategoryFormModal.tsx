@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAlert } from "../alert-context";
-import type { UpdateCategoryFormModalProps } from "../../type";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import type { UpdateCategoryFormModalProps } from "../../type/category.types";
 
 const UpdateCategoryFormModal = ({
     isOpen,
