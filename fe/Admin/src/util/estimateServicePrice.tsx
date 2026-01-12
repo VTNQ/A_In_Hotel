@@ -1,5 +1,5 @@
 import type { Booking } from "../type/booking.types";
-import type { ExtraService } from "../type/service.types";
+import type { ExtraService } from "../type/extraService.types";
 
 
 export const estimateServicePrice = (
