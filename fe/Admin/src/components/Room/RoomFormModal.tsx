@@ -4,9 +4,9 @@ import { X } from "lucide-react";
 import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { createRoom } from "../../service/api/Room";
-import type { RoomFormModalProps } from "../../type";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import type { RoomFormModalProps } from "../../type/room.types";
 
 const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 

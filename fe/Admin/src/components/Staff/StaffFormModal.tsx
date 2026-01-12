@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { StaffFormModalProps } from "../../type";
 import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { create } from "../../service/api/Staff";
 import CustomDatePicker from "../ui/CustomDatePicker";
 import { useTranslation } from "react-i18next";
+import type { StaffFormModalProps } from "../../type/staff.types";
 const StaffFormModal = ({
     isOpen,
     onClose,

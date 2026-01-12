@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { ViewCategoryProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import type { ViewCategoryProps } from "../../type/category.types";
 
 const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose, categoryId }) => {
     const [category, setCategory] = useState<any>(null);

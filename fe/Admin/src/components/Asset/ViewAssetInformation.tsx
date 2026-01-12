@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import type { ViewAssetProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Asset";
 import { File_URL } from "../../setting/constant/app";
 import { useTranslation } from "react-i18next";
+import type { ViewAssetProps } from "../../type/asset.types";
 
 const ViewAssetInformation: React.FC<ViewAssetProps> = ({ isOpen, onClose, assetId }) => {
     const [asset, setAsset] = useState<any>(null);

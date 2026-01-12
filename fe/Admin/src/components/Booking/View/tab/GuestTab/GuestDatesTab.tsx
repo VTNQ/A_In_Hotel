@@ -1,8 +1,5 @@
 import BookingDateTimeCard from "./BookingDateTimeCard";
 import GuestInformationCard from "./GuestInformationCard";
-
-
-
 const GuestDatesTab = ({data}:any)=>{
     return(
         <div className="px-6 py-6 custom-scroll">

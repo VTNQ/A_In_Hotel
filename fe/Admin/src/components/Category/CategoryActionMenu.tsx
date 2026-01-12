@@ -1,8 +1,8 @@
 import { Edit, Eye, Power } from "lucide-react";
-import type { CategoryActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
+import type { CategoryActionMenuProps } from "../../type/category.types";
 
 const CategoryActionMenu: React.FC<CategoryActionMenuProps> = ({
     category,

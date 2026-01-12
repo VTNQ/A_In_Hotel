@@ -1,11 +1,11 @@
 import { useState } from "react";
-import type { BlogFormModalProps } from "../../type";
 import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useAlert } from "../alert-context";
 import { createBlog } from "../../service/api/Blog";
 import { useTranslation } from "react-i18next";
+import type { BlogFormModalProps } from "../../type/blog.types";
 const BlogFormModal = ({
     isOpen,
     onClose,

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { File_URL } from "../../setting/constant/app";
-import type { ViewRoomManagementProps } from "../../type";
 import CommonModalView from "../ui/CommonModalView";
 import { findById } from "../../service/api/Room";
 import { useTranslation } from "react-i18next";
+import type { ViewRoomManagementProps } from "../../type/room.types";
 
 const ViewRoomManagement = ({ isOpen, onClose, roomId }: ViewRoomManagementProps) => {
     const [activeTab, setActiveTab] = useState("info");

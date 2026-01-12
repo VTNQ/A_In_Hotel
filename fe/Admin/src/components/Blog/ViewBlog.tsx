@@ -1,9 +1,9 @@
-  import { useEffect, useState } from "react";
-import type { ViewBlogProps } from "../../type";
+import { useEffect, useState } from "react";
 import { findById } from "../../service/api/Blog";
 import CommonModalView from "../ui/CommonModalView";
 import { File_URL } from "../../setting/constant/app";
 import { useTranslation } from "react-i18next";
+import type { ViewBlogProps } from "../../type/blog.types";
 
 const ViewBlog: React.FC<ViewBlogProps> = ({ isOpen, onClose, blogId }) => {
     const [blogData, setBlogdData] = useState<any>(null);

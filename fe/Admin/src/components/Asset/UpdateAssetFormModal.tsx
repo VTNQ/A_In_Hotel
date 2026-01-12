@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import type { UpdateAssetFormModalProps } from "../../type";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateAsset } from "../../service/api/Asset";
@@ -8,6 +7,7 @@ import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
 import { File_URL } from "../../setting/constant/app";
 import { useTranslation } from "react-i18next";
+import type { UpdateAssetFormModalProps } from "../../type/asset.types";
 
 const UpdateAssetFormModal = ({
     isOpen,

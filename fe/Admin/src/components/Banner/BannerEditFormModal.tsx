@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import type { BannerEditFormModalProps } from "../../type";
 import { File_URL } from "../../setting/constant/app";
 import { useAlert } from "../alert-context";
 import DateTimePicker from "../ui/DateTimePicker";
@@ -7,6 +6,7 @@ import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import { findById, updateBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
+import type { BannerEditFormModalProps } from "../../type/banner.types";
 
 const BannerEditFormModal = ({
     isOpen,
