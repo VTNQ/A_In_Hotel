@@ -1,8 +1,8 @@
 import { Edit, Power } from "lucide-react";
-import type { ExtraServiceActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
+import type { ExtraServiceActionMenuProps } from "../../type/extraService.types";
 
 const ExtraServiceActionMenu: React.FC<ExtraServiceActionMenuProps> = ({
     service,

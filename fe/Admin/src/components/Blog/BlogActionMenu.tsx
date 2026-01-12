@@ -1,8 +1,8 @@
 import { Archive, CheckCircle, Edit, Eye, RotateCcw } from "lucide-react";
-import type { BlogActionMenuProps } from "../../type";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
+import type { BlogActionMenuProps } from "../../type/blog.types";
 
 const BlogActionMenu:React.FC<BlogActionMenuProps>=({
     blog,

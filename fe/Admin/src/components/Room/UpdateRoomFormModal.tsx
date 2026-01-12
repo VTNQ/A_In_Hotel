@@ -7,13 +7,9 @@ import { findById, updateRoom } from "../../service/api/Room";
 import { File_URL } from "../../setting/constant/app";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import type { UpdateRoomFormModalProps } from "../../type/room.types";
 
-interface UpdateRoomFormModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSuccess?: () => void;
-    roomId: number | null;
-}
+
 
 const UpdateRoomFormModal = ({
     isOpen,

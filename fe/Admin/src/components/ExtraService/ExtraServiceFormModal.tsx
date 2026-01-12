@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import CommonModal from "../ui/CommonModal";
-import type { ExtraServiceFormModalProps } from "../../type";
 import { addExtraService } from "../../service/api/ExtraService";
 import { useAlert } from "../alert-context";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import type { ExtraServiceFormModalProps } from "../../type/extraService.types";
 
 const ExtraServiceFormModal = ({
     isOpen,

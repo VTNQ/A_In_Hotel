@@ -1,8 +1,8 @@
 import { Eye, Edit, Wrench, Power } from "lucide-react";
 import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
-import type { RoomActionMenuProps } from "../../type";
 import { useTranslation } from "react-i18next";
+import type { RoomActionMenuProps } from "../../type/room.types";
 
 const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   room,
