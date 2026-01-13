@@ -30,6 +30,7 @@ export interface CustomDatePickerProps {
   value: Date | null;
   onChange: (value: Date | null) => void;
   placeholder?: string;
+    minDate?: Date;
 }
 export interface BookingActionMenuProps {
   booking: {

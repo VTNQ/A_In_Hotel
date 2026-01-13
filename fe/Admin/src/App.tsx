@@ -11,6 +11,7 @@ import ViewBlogPage from './page/Blog/ViewBlogPage'
 import ViewBooking from './page/Booking/ViewBooking'
 import ViewBanner from './page/Banner/ViewBanner'
 import CreateBooking from './page/Booking/CreateBooking'
+import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
 
 function App() {
   return(
@@ -29,6 +30,7 @@ function App() {
           <Route path='booking/create' element={<CreateBooking/>}/>
           <Route path='post/banner' element={<ViewBanner/>}/>
           <Route path='post/blog' element={<ViewBlogPage/>}/>
+          <Route path='voucher' element={<ViewVoucherPage/>}/>
         </Route>
       </Routes>
     </>
