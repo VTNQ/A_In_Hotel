@@ -192,6 +192,7 @@ const ViewRoomPage = () => {
           4: { label: t("room.roomStatus.maintenance"), color: "bg-red-50 text-red-700", dot: "bg-red-500" },
           5: { label: t("room.roomStatus.blocked"), color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
           6: { label: t("room.roomStatus.deactivated"), color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
+          7: {label: t("room.roomStatus.reserved"), color: "bg-purple-50 text-purple-700",dot:"bg-purple-500"}
         };
 
         // Nếu không khớp code nào, dùng mặc định

@@ -193,6 +193,7 @@
         "roomStatus": {
             "vacantDirty": "Phòng trống - Chưa dọn",
             "occupied": "Đang có khách",
+            "reserved": "Đã đặt trước",
             "available": "Sẵn sàng",
             "maintenance": "Bảo trì",
             "blocked": "Bị khóa",

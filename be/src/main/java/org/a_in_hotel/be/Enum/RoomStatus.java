@@ -6,7 +6,8 @@ public enum RoomStatus {
     AVAILABLE(3),
     MAINTENANCE(4),
     BLOCKED(5),
-    DEACTIVATED(6);
+    DEACTIVATED(6),
+    RESERVED(7);
     private final int code;
 
     RoomStatus(int code) {

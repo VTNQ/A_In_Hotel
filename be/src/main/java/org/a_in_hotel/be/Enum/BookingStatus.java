@@ -16,7 +16,7 @@ public enum BookingStatus {
 
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 

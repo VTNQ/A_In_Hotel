@@ -95,6 +95,7 @@ public class BookingServiceImpl implements BookingService {
         payment.setBooking(booking);
         booking.getPayment().add(payment);
         repository.save(booking);
+        markRoomReserved(booking);
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
@@ -110,6 +111,18 @@ public class BookingServiceImpl implements BookingService {
                            .build();
                    return accountRepository.save(account);
                 });
+    }
+
+    private void markRoomReserved(Booking booking){
+        if (BookingStatus.CANCELLED.getCode().equals(booking.getStatus())) {
+            return;
+        }
+
+        booking.getDetails().forEach(detail -> {
+            Room room = detail.getRoom();
+            room.setStatus(RoomStatus.RESERVED.getCode());
+            roomRepository.save(room);
+        });
     }
     private void validateRoomAvailable(BookingRequest request) {
         List<Long> roomIds = request.getBookingDetail().stream()
