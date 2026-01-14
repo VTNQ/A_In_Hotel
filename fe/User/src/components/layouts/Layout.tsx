@@ -1,21 +1,24 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../Navbar";
 import Footer from "../Home/Footer";
+import Navbar from "../Navbar";
+import { AlertProvider } from "../alert-context";
 
 const Layout = () => {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* Navbar */}
-      <Navbar />
+    <AlertProvider>
+      <div className="flex min-h-screen flex-col bg-gray-50">
+        {/* Navbar */}
+        <Navbar />
 
-      {/* Content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
+        {/* Content */}
+        <main className="flex-1 relative">
+          <Outlet />
+        </main>
 
-      {/* Footer luôn ở đáy */}
-      <Footer />
-    </div>
+        {/* Footer */}
+        <Footer />
+      </div>
+    </AlertProvider>
   );
 };
 

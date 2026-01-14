@@ -1,9 +1,12 @@
 // src/pages/LoginPage.tsx
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { AlertModal, type AlertType } from "../components/AlertModal";
+import { saveTokens } from "../util/auth";
+import { login } from "../service/api/Authenticate";
+import { useAlert } from "../components/alert-context";
 
-const LOGO_URL =
-  "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
+const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
 const BG_URL =
   "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg"; // ảnh nền bạn gửi
 
@@ -66,6 +69,54 @@ function SocialButton({
 
 export default function LoginPage() {
   const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const isFilled = email.trim() !== "" && password.trim() !== "";
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { showAlert } = useAlert();
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isFilled || loading) return;
+
+    setLoading(true);
+
+    try {
+      const response = await login(email, password);
+
+      if (response.data.role === "USER") {
+        saveTokens({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+          accessTokenAt: response.data.accessTokenExpiryAt,
+          refreshTokenAt: response.data.refreshTokenExpiryAt,
+        });
+
+        showAlert({
+          title: "Đăng nhập thành công!",
+          type: "success",
+          autoClose: 3000,
+        });
+        navigate("/")
+      } else {
+        showAlert({
+          title: "Bạn không có quyền truy cập hệ thống.",
+          type: "error",
+          autoClose: 3000,
+        });
+      }
+    } catch (err) {
+      showAlert({
+        title:"Đăng nhập thất bại. Vui lòng thử lại.",
+        type: "error",
+        autoClose: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="relative min-h-screen w-full">
@@ -106,6 +157,8 @@ export default function LoginPage() {
                 </span>
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="
                     w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
                     outline-none placeholder:text-gray-400
@@ -116,9 +169,13 @@ export default function LoginPage() {
               </label>
 
               <label className="block">
-                <span className="mb-1 block text-sm text-gray-700">Password</span>
+                <span className="mb-1 block text-sm text-gray-700">
+                  Password
+                </span>
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="
                     w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
                     outline-none placeholder:text-gray-400
@@ -130,12 +187,46 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="
-                  w-full rounded-[14px] bg-[#b08a66] px-4 py-3 font-medium text-white
-                  shadow transition hover:brightness-105 active:translate-y-px
-                "
+                disabled={!isFilled || loading}
+                onClick={handleLogin}
+                className={`
+    w-full rounded-[14px] px-4 py-3 font-medium text-white
+    shadow transition
+    ${
+      loading
+        ? "bg-[#b08a66]/80 cursor-not-allowed"
+        : "bg-[#b08a66] hover:brightness-105 active:translate-y-px"
+    }`}
               >
-                Sign in
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    {/* Spinner */}
+                    <svg
+                      className="h-5 w-5 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                    </svg>
+
+                    <span>Signing in...</span>
+                  </span>
+                ) : (
+                  "Sign in"
+                )}
               </button>
 
               <div className="mt-2 flex items-center justify-between text-sm">
@@ -160,7 +251,10 @@ export default function LoginPage() {
 
               <p className="mt-6 text-center text-sm text-gray-600">
                 Don’t have an account?{" "}
-                <NavLink to="/Register" className="font-medium text-[#b08a66] hover:underline">
+                <NavLink
+                  to="/Register"
+                  className="font-medium text-[#b08a66] hover:underline"
+                >
                   Sign up
                 </NavLink>
               </p>

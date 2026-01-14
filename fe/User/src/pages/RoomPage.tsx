@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { RoomResponse } from "../type/room.types";
 import RoomHero from "../components/Room/RoomHero";
-import Navbar from "../components/Navbar";
+
 import RoomFilterSideBar from "../components/Room/RoomFilterSidebar";
 import RoomGrid from "../components/Room/RoomGrid";
 import ExploreOtherRooms from "../components/Room/ExploreOtherRooms";
@@ -13,10 +13,9 @@ const RoomPage = () => {
     const [roomGrid, setRoomGrid] = useState<RoomResponse[]>([]);
     const [page,setPage]= useState(1);
     const [totalPages,setTotalPages] = useState(1);
-
+    
     return (
-        <>
-            <Navbar />
+        <>           
             <div className="bg-[#FBF7F2] min-h-screen">
                 <RoomHero />
 
