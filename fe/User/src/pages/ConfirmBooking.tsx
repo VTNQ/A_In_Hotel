@@ -11,47 +11,60 @@ import { File_URL } from "../setting/constant/app";
 
 export default function ConfirmBooking() {
   const [extraServices, setExtraServices] = useState<ExtraService[]>([]);
-  const { search,setSearch } = useBookingSearch();
+  const { search, setSearch } = useBookingSearch();
+  const [loading, setLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
   const [room, setRoom] = useState<any>(null);
-  const [formData,setFormData] = useState({
-    firstName:"",
-    lastName:"",
-    email:"",
-    phone:"",
-    paidAmount:"",
-    note:"",
-    bookingnote:"",
-    idNumber:""
-  })
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    paidAmount: "",
+    note: "",
+    bookingnote: "",
+    idNumber: "",
+  });
 
   useEffect(() => {
-    const fetchExtraServices = async () => {
+    let mounted = true;
+
+    const fetchData = async () => {
       try {
-        const res = await getExtraService({
+        setLoadingPage(true);
+
+        // fetch extra services
+        const extraRes = await getExtraService({
           all: true,
           filter: `hotelId==${search?.hotelId}`,
         });
-        setExtraServices(res?.data?.content || []);
-      } catch (err) {
-        console.error("Failed to load extra services", err);
-      }
-    };
-    const fetchRoom = async () => {
-      try {
-        const res = await getRoomById(Number(search?.roomId));
-        setRoom(res.data.data);
-      } catch (err) {
-        console.error("Failed to load room", err);
-      }
-    };
-    if (search?.roomId) {
-      fetchRoom();
-    } else {
-      setRoom(null);
-    }
 
-    fetchExtraServices();
-  }, []);
+        if (mounted) {
+          setExtraServices(extraRes?.data?.content || []);
+        }
+
+        // fetch room
+        if (search?.roomId) {
+          const roomRes = await getRoomById(Number(search.roomId));
+          if (mounted) {
+            setRoom(roomRes.data.data);
+          }
+        } else {
+          setRoom(null);
+        }
+      } catch (err) {
+        console.error("Failed to load booking data", err);
+      } finally {
+        if (mounted) setLoadingPage(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      mounted = false;
+    };
+  }, [search?.hotelId, search?.roomId]);
   const [selectedServices, setSelectedServices] = useState<ExtraService[]>([]);
   const toggleService = (service: ExtraService) => {
     setSelectedServices((prev) =>
@@ -129,104 +142,131 @@ export default function ConfirmBooking() {
   const extraServiceTotal = selectedServices.reduce((total, service) => {
     return total + calculateExtraServicePrice(service);
   }, 0);
-  const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const { name, value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const grandTotal = roomBasePrice + extraServiceTotal;
- const bookingDetail = [
-  // room chính
-  {
-    roomId: search?.roomId!,
-    specialRequest: formData.bookingnote || "",
-    extraServiceId: null,
-    price: roomBasePrice,
-  },
+  const bookingDetail = [
+    // room chính
+    {
+      roomId: search?.roomId!,
+      specialRequest: formData.bookingnote || "",
+      extraServiceId: null,
+      price: roomBasePrice,
+    },
 
-  // extra services
-  ...selectedServices.map((service) => ({
-    roomId: search?.roomId!,
-    specialRequest: null,
-    extraServiceId: service.id,
-    price: calculateExtraServicePrice(service),
-  })),
-];
-const TIME_TO_LOCAL: Record<PriceType, string> = {
-  OVERNIGHT: "22:00:00",
-  DAILY: "14:00:00",
-  HOURLY: "00:00:00",
-};
-const BOOKING_PACKAGE_MAP: Record<PriceType, number> = {
-  HOURLY: 1,
-  OVERNIGHT: 2,
-  DAILY: 3,
-};
-const CHECKOUT_TIME = "12:00:00";
-const bookingPayload = {
-  guestName: formData.firstName,
-  surname: formData.lastName,
-  idNumber:formData.idNumber,
-  email: formData.email,
-  phoneNumber: formData.phone,
-  guestType:
-    customerType === "individual"
-      ? 1
-      : customerType === "company"
-      ? 2
-      : 3,
+    // extra services
+    ...selectedServices.map((service) => ({
+      roomId: search?.roomId!,
+      specialRequest: null,
+      extraServiceId: service.id,
+      price: calculateExtraServicePrice(service),
+    })),
+  ];
+  const TIME_TO_LOCAL: Record<PriceType, string> = {
+    OVERNIGHT: "22:00:00",
+    DAILY: "14:00:00",
+    HOURLY: "00:00:00",
+  };
+  const BOOKING_PACKAGE_MAP: Record<PriceType, number> = {
+    HOURLY: 1,
+    OVERNIGHT: 2,
+    DAILY: 3,
+  };
+  const CHECKOUT_TIME = "12:00:00";
+  const bookingPayload = {
+    guestName: formData.firstName,
+    surname: formData.lastName,
+    idNumber: formData.idNumber,
+    email: formData.email,
+    phoneNumber: formData.phone,
+    guestType:
+      customerType === "individual" ? 1 : customerType === "company" ? 2 : 3,
 
-  numberOfGuests:
-    (search?.adults ?? 0) + (search?.children ?? 0),
+    numberOfGuests: (search?.adults ?? 0) + (search?.children ?? 0),
 
-  checkInDate: search?.checkIn,
-  checkOutDate: search?.checkOut,
+    checkInDate: search?.checkIn,
+    checkOutDate: search?.checkOut,
 
-  checkInTime: TIME_TO_LOCAL[priceType],
-  checkOutTime: CHECKOUT_TIME,
+    checkInTime: TIME_TO_LOCAL[priceType],
+    checkOutTime: CHECKOUT_TIME,
 
-  bookingPackage: BOOKING_PACKAGE_MAP[priceType],
+    bookingPackage: BOOKING_PACKAGE_MAP[priceType],
 
-  totalPrice: grandTotal,
-  hotelId:search?.hotelId,
+    totalPrice: grandTotal,
+    hotelId: search?.hotelId,
 
-  note: formData.note,
+    note: formData.note,
 
-  bookingDetail,
-};
-const handleSubmit = async () => {
-  try {
-     await createBooking(bookingPayload);
+    bookingDetail,
+  };
+  const handleSubmit = async () => {
+    if (loading) return;
+    try {
+      setLoading(true);
 
-    // ✅ LƯU guestName VÀO CONTEXT
-    setSearch({
-      ...search,
-      guestName: `${formData.firstName} ${formData.lastName}`,
-    });
-    setFormData({
-        firstName:"",
-    lastName:"",
-    email:"",
-    phone:"",
-    paidAmount:"",
-    note:"",
-    bookingnote:"",
-    idNumber:""
-    });
-    setCustomerType("");
-    setSelectedServices([]);
-    navigate("/booking-success");
+      await createBooking(bookingPayload);
 
-  } catch (err) {
-    console.error(err);
-    alert("Booking failed");
+      // ✅ LƯU guestName VÀO CONTEXT
+      setSearch({
+        ...search,
+        guestName: `${formData.firstName} ${formData.lastName}`,
+      });
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        paidAmount: "",
+        note: "",
+        bookingnote: "",
+        idNumber: "",
+      });
+      setCustomerType("");
+      setSelectedServices([]);
+      navigate("/booking-success");
+    } catch (err) {
+      console.error(err);
+      alert("Booking failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loadingPage) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="flex flex-col items-center gap-3">
+          <svg
+            className="h-8 w-8 animate-spin text-[#967D60]"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
+          <p className="text-sm text-gray-500">Loading booking data...</p>
+        </div>
+      </div>
+    );
   }
-};
+
   return (
     <div className="min-h-screen bg-gray-100 pt-24 pb-12">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -240,17 +280,17 @@ const handleSubmit = async () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
-                name="firstName"
-                value={formData.firstName}
-             onChange={handleChange}
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   placeholder="First name *"
                 />
 
                 <input
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   placeholder="Last name *"
                 />
@@ -258,7 +298,6 @@ const handleSubmit = async () => {
                   name="idNumber"
                   value={formData.idNumber}
                   onChange={handleChange}
-
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   placeholder="CCCD / Passport number *"
                 />
@@ -273,16 +312,16 @@ const handleSubmit = async () => {
               <h2 className="text-lg font-semibold mb-4">Contact Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   placeholder="Enter email"
                 />
                 <input
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   placeholder="Enter phone number"
                 />
@@ -335,10 +374,47 @@ const handleSubmit = async () => {
               </div>
             </section>
 
-   
             {/* Submit */}
-            <button onClick={handleSubmit} className="w-full bg-brown-400 bg-[#967D60] hover:bg-[#7a5e41] text-white py-3 rounded-lg font-semibold transition">
-              Confirm & Proceed
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className={`
+    w-full rounded-lg py-3 font-semibold text-white transition
+    ${
+      loading
+        ? "bg-[#967D60]/70 cursor-not-allowed"
+        : "bg-[#967D60] hover:bg-[#7a5e41] active:translate-y-px"
+    }
+  `}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  {/* Spinner */}
+                  <svg
+                    className="h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  <span>Processing...</span>
+                </span>
+              ) : (
+                "Confirm & Proceed"
+              )}
             </button>
           </div>
         </div>
