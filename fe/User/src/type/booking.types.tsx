@@ -20,18 +20,23 @@ export interface RoomsGuestsSelectProps {
 }
 
 export interface BookingSearch {
-    hotelId: number;
-    checkIn: string;
-    checkOut: string;
-    rooms: number;
-    adults: number;
-    children: number;
+    hotelId?: number;
+    checkIn?: string;
+    checkOut?: string;
+    rooms?: number;
+    adults?: number;
+    children?: number;
     priceRanges?: string[];
     timeTypes?: string[];
+    roomId?:number;
+    priceType?:string;
+    guestName?: string;
+    totalPrice?:number;
 }
 export interface BookingSearchContextValue {
     search: BookingSearch | null;
     setSearch: (s: BookingSearch) => void;
+    clearSearch: () => void;
 };
 
 export type PriceType = "HOURLY" | "OVERNIGHT" | "DAILY";

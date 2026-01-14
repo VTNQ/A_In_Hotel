@@ -21,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
     WHERE d.room.id = :roomId
       AND b.checkInDate < :newCheckOutDate
       AND b.checkOutDate > :newCheckInDate
-      And b.status not in (1,2,4)
+      And b.status not in (3,4)
 """)
     boolean existsOverlappingBookingsSingle(
             @Param("roomId") Long roomId,

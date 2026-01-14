@@ -65,6 +65,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
             guestType: booking.guest?.guestType ?? 1,
             numberOfGuests: booking.guest?.adults ?? 1,
             note: booking.guest?.note,
+            idNumber:booking.guest?.idNumber,
             // ===== PAYMENT =====
 
             payment: {

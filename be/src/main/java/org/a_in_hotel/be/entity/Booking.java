@@ -30,6 +30,9 @@ public class Booking {
     @Column(name = "guest_name")
     private String guestName;
 
+    @Column(name = "id_number")
+    private String idNumber;
+
     @Column(name = "code")
     private String code;
 
