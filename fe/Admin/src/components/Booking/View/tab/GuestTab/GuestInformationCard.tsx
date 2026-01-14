@@ -71,6 +71,12 @@ const GuestInformationCard = ({ data }: any) => {
                         {data?.email}
                     </div>
                 </div>
+                <div>
+                    <div className="text-xs font-semibold text-slate-500 dark:text-muted-dark uppercase tracking-wider mb-1">{t("bookingGuest.idNumber")}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white font-mono">
+                        {data?.idNumber}
+                    </div>
+                </div>
             </div>
             <div className="mt-5 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3">
                 <div className="flex items-center gap-2 mb-1 text-xs font-bold uppercase tracking-wider text-yellow-800">

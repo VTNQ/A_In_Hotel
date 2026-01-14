@@ -13,9 +13,13 @@ interface RoomGridProps {
   selectedRoomId?: number;
 }
 
-const RoomGrid = ({ page,
+const RoomGrid = ({
+  page,
   onPageInfo,
-  onSelect, onLoaded, selectedRoomId }: RoomGridProps) => {
+  onSelect,
+  onLoaded,
+  selectedRoomId,
+}: RoomGridProps) => {
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const { search } = useBookingSearch();
@@ -30,7 +34,7 @@ const RoomGrid = ({ page,
         setLoading(true);
         setRooms([]);
 
-        const totalGuests = search.adults + search.children;
+        const totalGuests = (search?.adults ?? 0) + (search?.children ?? 0);
 
         const res = await getRoom({
           page,
@@ -64,9 +68,7 @@ const RoomGrid = ({ page,
   return (
     <div className="space-y-6">
       {loading &&
-        Array.from({ length: 5 }).map((_, i) => (
-          <RoomCardSkeleton key={i} />
-        ))}
+        Array.from({ length: 5 }).map((_, i) => <RoomCardSkeleton key={i} />)}
       {!loading && rooms.length === 0 && (
         <div className="py-10 text-center text-sm text-gray-500">
           No rooms found

@@ -9,6 +9,7 @@ import HotelRoomPage from './pages/HotelRoomPage';
 import RoomDetailPage from './pages/RoomDetailPage';
 import ConfirmBooking from './pages/ConfirmBooking';
 import GalleryPage from './pages/GalleryPage';
+import BookingSuccess from './pages/BookingSuccess';
 function App() {
 
   return (
@@ -24,6 +25,7 @@ function App() {
     <Route path='/Room/:id' element={<RoomDetailPage/>}/>
     <Route path='/Login' element={<LoginPage/>}/>
     <Route path="/Register" element={<RegisterPage/>} />
+    <Route path="/booking-success" element={<BookingSuccess />} />
     </Route>
   
   </Routes>

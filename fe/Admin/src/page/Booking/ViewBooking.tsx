@@ -140,6 +140,7 @@ const ViewBooking = () => {
 
   const columns = [
     { key: "code", label: t("booking.code"), sortable: true },
+    {key:"idNumber",label:t("bookingGuest.idNumber"),sortable:true},
     { key: "guestName", label: t("booking.guestName"), sortale: true },
     { key: "phoneNumber", label: t("booking.phone"), sortable: true },
     { key: "email", label: "Email", sortable: true },

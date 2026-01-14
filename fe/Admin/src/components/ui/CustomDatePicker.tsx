@@ -3,18 +3,34 @@ import { Portal } from "./Portal";
 import type { CustomDatePickerProps } from "../../type";
 
 const monthNames = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
-
 
 export default function CustomDatePicker({
   value,
   onChange,
   placeholder = "Select date",
+  minDate,
 }: CustomDatePickerProps) {
+  const normalizeDate = (d: Date) => {
+    const nd = new Date(d);
+    nd.setHours(0, 0, 0, 0);
+    return nd;
+  };
 
-  const today = new Date();
+  const today = normalizeDate(new Date());
+  const min = minDate ? normalizeDate(minDate) : null;
 
   const [isOpen, setIsOpen] = useState(false);
   const [month, setMonth] = useState(value?.getMonth() ?? today.getMonth());
@@ -65,8 +81,10 @@ export default function CustomDatePicker({
   const firstDay = new Date(year, month, 1).getDay();
 
   const selectDay = (day: number) => {
-    const d = new Date(year, month, day);
-    if (d > today) return;
+    const d = normalizeDate(new Date(year, month, day));
+
+    if (min && d < min) return;
+
     d.setHours(12, 0, 0, 0);
     onChange(d);
     setIsOpen(false);
@@ -97,7 +115,9 @@ export default function CustomDatePicker({
         }}
         className="border border-gray-300 p-2 rounded-xl bg-white cursor-pointer text-[15px]"
       >
-        {value ? value.toISOString().split("T")[0] : (
+        {value ? (
+          value.toISOString().split("T")[0]
+        ) : (
           <span className="text-gray-400">{placeholder}</span>
         )}
       </div>
@@ -122,7 +142,9 @@ export default function CustomDatePicker({
                   className="text-[16px] bg-transparent outline-none"
                 >
                   {monthNames.map((m, i) => (
-                    <option key={i} value={i}>{m}</option>
+                    <option key={i} value={i}>
+                      {m}
+                    </option>
                   ))}
                 </select>
 
@@ -131,10 +153,13 @@ export default function CustomDatePicker({
                   onChange={(e) => setYear(Number(e.target.value))}
                   className="text-[16px] bg-transparent outline-none"
                 >
-                  {Array.from({ length: 70 }, (_, i) =>
-                    today.getFullYear() - i
+                  {Array.from(
+                    { length: 70 },
+                    (_, i) => today.getFullYear() - i
                   ).map((y) => (
-                    <option key={y} value={y}>{y}</option>
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -157,7 +182,7 @@ export default function CustomDatePicker({
 
             {/* Weekdays */}
             <div className="grid grid-cols-7 text-center text-gray-500 text-[14px] mb-2">
-              {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
                 <div key={d}>{d}</div>
               ))}
             </div>
@@ -170,18 +195,22 @@ export default function CustomDatePicker({
 
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
-                const d = new Date(year, month, day);
-                const disabled = d > today;
+                const d = normalizeDate(new Date(year, month, day));
+                const disabled = min ? d < min : false;
 
                 return (
                   <div
                     key={day}
                     onClick={() => !disabled && selectDay(day)}
                     className={`
-                      h-10 w-10 flex items-center justify-center rounded-lg
-                      text-[15px] cursor-pointer transition
-                      ${disabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-purple-100"}
-                    `}
+        h-10 w-10 flex items-center justify-center rounded-lg
+        text-[15px] transition
+        ${
+          disabled
+            ? "text-gray-300 cursor-not-allowed"
+            : "text-gray-700 cursor-pointer hover:bg-purple-100"
+        }
+      `}
                   >
                     {day}
                   </div>

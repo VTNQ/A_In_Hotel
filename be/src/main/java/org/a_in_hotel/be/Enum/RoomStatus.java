@@ -6,20 +6,21 @@ public enum RoomStatus {
     AVAILABLE(3),
     MAINTENANCE(4),
     BLOCKED(5),
-    DEACTIVATED(6);
-    private final int code;
+    DEACTIVATED(6),
+    RESERVED(7);
+    private final Integer code;
 
     RoomStatus(int code) {
         this.code = code;
     }
 
-    public static RoomStatus fromCode(int code) {
+    public static RoomStatus fromCode(Integer code) {
         for (RoomStatus t : values()) {
             if (t.code == code) return t;
         }
         throw new IllegalArgumentException("Invalid room status code: " + code);
     }
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 }

@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
         validateRoomSchedule(request);
 
         Customer customer = customerMapper.toEntity(request,
-                securityUtils.getHotelId(),securityUtils.getCurrentUserId());
+                securityUtils.getHotelId()!=null?securityUtils.getHotelId() : request.getHotelId(),securityUtils.getCurrentUserId() !=null ?securityUtils.getCurrentUserId() :1);
         customerRepository.save(customer);
 
         Account account = createAccountFromCustomer(request);
@@ -90,11 +90,14 @@ public class BookingServiceImpl implements BookingService {
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId());
-
-        Payment payment = paymentMapper.toEntity(request.getPayment());
-        payment.setBooking(booking);
-        booking.getPayment().add(payment);
+        if(request.getPayment()!=null){
+            Payment payment = paymentMapper.toEntity(request.getPayment());
+            payment.setBooking(booking);
+            booking.getPayment().add(payment);
+        }
+        markRoomReserved(booking);
         repository.save(booking);
+
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
@@ -110,6 +113,34 @@ public class BookingServiceImpl implements BookingService {
                            .build();
                    return accountRepository.save(account);
                 });
+    }
+
+    private void markRoomReserved(Booking booking){
+        if (BookingStatus.CANCELLED.getCode().equals(booking.getStatus())) {
+            return;
+        }
+
+        if (booking.getDetails() == null || booking.getDetails().isEmpty()) {
+            return;
+        }
+
+        for (BookingDetail detail : booking.getDetails()) {
+
+            Long roomId = detail.getRoom().getId();
+            if (roomId == null) {
+                continue;
+            }
+
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Room not found: " + roomId)
+                    );
+
+            // Chỉ update khi room còn AVAILABLE
+            if (RoomStatus.AVAILABLE.getCode().equals(room.getStatus())) {
+                room.setStatus(RoomStatus.RESERVED.getCode());
+            }
+        }
     }
     private void validateRoomAvailable(BookingRequest request) {
         List<Long> roomIds = request.getBookingDetail().stream()
@@ -127,7 +158,7 @@ public class BookingServiceImpl implements BookingService {
                             new IllegalArgumentException("Room ID " + roomId + " not found")
                     );
 
-            if (room.getStatus() != RoomStatus.AVAILABLE.getCode()) {
+            if (room.getStatus() != RoomStatus.AVAILABLE.getCode() && room.getStatus()!=null) {
                 throw new IllegalArgumentException(
                         "Room ID " + roomId + " is not available"
                 );
