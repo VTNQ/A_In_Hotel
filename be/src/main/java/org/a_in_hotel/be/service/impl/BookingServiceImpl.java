@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,6 +41,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
 
     private final GeneralService generalService;
+
+    private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
 
@@ -106,7 +109,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseGet(()->{
                    Account account = Account.builder()
                            .email(data.getEmail())
-                           .password(generalService.generateRandomPassword(8))
+                           .password(passwordEncoder.encode(generalService.generateRandomPassword(8)))
                            .role(roleRepository.findById(6L).orElseThrow())
                            .isActive(true)
                            .createdBy(securityUtils.getCurrentUserId().toString())
