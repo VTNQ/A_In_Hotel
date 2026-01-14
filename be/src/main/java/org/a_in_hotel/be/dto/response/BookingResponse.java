@@ -24,7 +24,7 @@ public class BookingResponse {
     private String surname;
 
     private String code;
-
+    private String idNumber;
     private String email;
 
     private String phoneNumber;

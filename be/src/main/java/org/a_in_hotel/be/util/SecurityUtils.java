@@ -16,14 +16,14 @@ public class SecurityUtils {
     public Long getCurrentUserId() {
         String token = extractToken();
         if (token == null) {
-            throw new RuntimeException("Token không hợp lệ hoặc không tồn tại!");
+            return null;
         }
         return jwtService.extractUserId(token);
     }
     public Long getHotelId(){
         String token = extractToken();
         if (token == null) {
-            throw new RuntimeException("Token không hợp lệ hoặc không tồn tại!");
+           return null;
         }
         return jwtService.extractHotelId(token);
     }

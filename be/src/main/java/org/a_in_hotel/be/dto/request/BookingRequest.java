@@ -17,6 +17,9 @@ public class BookingRequest {
     private String guestName;
 
     private String surname;
+    private Long hotelId;
+
+    private String idNumber;
 
     private String email;
 

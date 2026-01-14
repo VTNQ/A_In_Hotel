@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
         validateRoomSchedule(request);
 
         Customer customer = customerMapper.toEntity(request,
-                securityUtils.getHotelId(),securityUtils.getCurrentUserId());
+                securityUtils.getHotelId()!=null?securityUtils.getHotelId() : request.getHotelId(),securityUtils.getCurrentUserId() !=null ?securityUtils.getCurrentUserId() :1);
         customerRepository.save(customer);
 
         Account account = createAccountFromCustomer(request);
@@ -90,12 +90,14 @@ public class BookingServiceImpl implements BookingService {
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId());
-
-        Payment payment = paymentMapper.toEntity(request.getPayment());
-        payment.setBooking(booking);
-        booking.getPayment().add(payment);
-        repository.save(booking);
+        if(request.getPayment()!=null){
+            Payment payment = paymentMapper.toEntity(request.getPayment());
+            payment.setBooking(booking);
+            booking.getPayment().add(payment);
+        }
         markRoomReserved(booking);
+        repository.save(booking);
+
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
@@ -118,11 +120,23 @@ public class BookingServiceImpl implements BookingService {
             return;
         }
 
-        booking.getDetails().forEach(detail -> {
+        if (booking.getDetails() == null || booking.getDetails().isEmpty()) {
+            return;
+        }
+
+        for (BookingDetail detail : booking.getDetails()) {
+
             Room room = detail.getRoom();
-            room.setStatus(RoomStatus.RESERVED.getCode());
-            roomRepository.save(room);
-        });
+
+            if (room == null) {
+                continue;
+            }
+
+            // Chỉ update khi room còn AVAILABLE
+            if (RoomStatus.AVAILABLE.getCode().equals(room.getStatus())) {
+                room.setStatus(RoomStatus.RESERVED.getCode());
+            }
+        }
     }
     private void validateRoomAvailable(BookingRequest request) {
         List<Long> roomIds = request.getBookingDetail().stream()

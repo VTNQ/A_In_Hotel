@@ -8,19 +8,19 @@ public enum RoomStatus {
     BLOCKED(5),
     DEACTIVATED(6),
     RESERVED(7);
-    private final int code;
+    private final Integer code;
 
     RoomStatus(int code) {
         this.code = code;
     }
 
-    public static RoomStatus fromCode(int code) {
+    public static RoomStatus fromCode(Integer code) {
         for (RoomStatus t : values()) {
             if (t.code == code) return t;
         }
         throw new IllegalArgumentException("Invalid room status code: " + code);
     }
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 }
