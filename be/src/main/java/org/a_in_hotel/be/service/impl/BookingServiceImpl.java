@@ -126,11 +126,15 @@ public class BookingServiceImpl implements BookingService {
 
         for (BookingDetail detail : booking.getDetails()) {
 
-            Room room = detail.getRoom();
-
-            if (room == null) {
+            Long roomId = detail.getRoom().getId();
+            if (roomId == null) {
                 continue;
             }
+
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Room not found: " + roomId)
+                    );
 
             // Chỉ update khi room còn AVAILABLE
             if (RoomStatus.AVAILABLE.getCode().equals(room.getStatus())) {
@@ -154,7 +158,7 @@ public class BookingServiceImpl implements BookingService {
                             new IllegalArgumentException("Room ID " + roomId + " not found")
                     );
 
-            if (room.getStatus() != RoomStatus.AVAILABLE.getCode()) {
+            if (room.getStatus() != RoomStatus.AVAILABLE.getCode() && room.getStatus()!=null) {
                 throw new IllegalArgumentException(
                         "Room ID " + roomId + " is not available"
                 );
