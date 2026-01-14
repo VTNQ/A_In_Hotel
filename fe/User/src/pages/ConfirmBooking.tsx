@@ -7,6 +7,7 @@ import type { PriceType } from "../type/booking.types";
 import { getRoomById } from "../service/api/Room";
 import { createBooking } from "../service/api/bookings";
 import { useNavigate } from "react-router-dom";
+import { File_URL } from "../setting/constant/app";
 
 export default function ConfirmBooking() {
   const [extraServices, setExtraServices] = useState<ExtraService[]>([]);
@@ -347,7 +348,7 @@ const handleSubmit = async () => {
           {/* Room */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1505691938895-1758d7feb511"
+              src={File_URL + room?.images[0]?.url || "Alt room"}
               alt="Room"
               className="w-full h-48 object-cover"
             />
