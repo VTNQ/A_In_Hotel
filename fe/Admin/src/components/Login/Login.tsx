@@ -91,12 +91,10 @@ export default function Login() {
           alt="A-IN HOTEL"
           className="h-[120%] md:h-[100px] w-auto"
         />
-
       </header>
 
       {/* SCENE */}
       <div className="relative w-full max-w-6xl flex justify-center">
-
         {/* Ghế (trái, giữa theo chiều dọc) */}
         <img
           src="/Layer_1.png"
@@ -136,7 +134,6 @@ export default function Login() {
             />
           </div>
 
-
           {/* Chân phải */}
           {/* Chân phải (dùng hình) */}
           <div className="absolute  right-36 top-8 w-36 h-52  hidden md:block">
@@ -160,11 +157,12 @@ export default function Login() {
             />
           </div>
 
-
           {/* Form nằm trên bàn */}
           <div className="hidden md:block absolute -top-56 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
-            <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
-      p-5 transition-colors focus-within:border-black mt-[2vh] ">
+            <div
+              className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
+      p-5 transition-colors focus-within:border-black mt-[2vh] "
+            >
               <form className="space-y-4" onSubmit={handleLogin}>
                 <div>
                   <label className="block text-sm font-medium text-slate-700">
@@ -194,10 +192,16 @@ export default function Login() {
                 </div>
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2 text-sm text-slate-600">
-                    <input type="checkbox" className="h-4 w-4 text-indigo-600 border-slate-300" />
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 text-indigo-600 border-slate-300"
+                    />
                     Remember password
                   </label>
-                  <a href="/register" className="text-sm text-indigo-600 hover:underline">
+                  <a
+                    href="/register"
+                    className="text-sm text-indigo-600 hover:underline"
+                  >
                     Forgot Password?
                   </a>
                 </div>
@@ -205,14 +209,17 @@ export default function Login() {
                   type="submit"
                   disabled={!isFilled || loading}
                   onClick={handleLogin}
-                  className={`relative w-full h-[40px] rounded-md py-2 font-semibold text-white transition-colors ${!isFilled || loading
+                  className={`relative w-full h-[40px] rounded-md py-2 font-semibold text-white transition-colors ${
+                    !isFilled || loading
                       ? "bg-[#7C7C7C] cursor-not-allowed"
-                      : "bg-[#4B62A0] hover:bg-[#3c4e7f]"}`}
+                      : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+                  }`}
                 >
                   {/* Text */}
                   <span
-                    className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
-                      }`}
+                    className={`transition-opacity duration-200 ${
+                      loading ? "opacity-0" : "opacity-100"
+                    }`}
                   >
                     Login
                   </span>
@@ -243,9 +250,20 @@ export default function Login() {
                     </span>
                   )}
                 </button>
-
               </form>
-            
+              <AlertModal
+                open={modalOpen}
+                onOpenChange={handleModalOpenChange}
+                type={modalCfg?.type ?? "info"}
+                title={modalCfg?.title ?? ""}
+                description={modalCfg?.description}
+                closable
+                autoClose={modalCfg?.type === "success" ? 1600 : undefined}
+                primaryAction={{
+                  label: "OK",
+                  autoFocus: true,
+                }}
+              />
             </div>
           </div>
           <div className="block md:hidden absolute -top-40 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-full">
@@ -262,7 +280,6 @@ export default function Login() {
             >
               {/* Box trắng */}
               <div className="bg-[#EEF0F7] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,.08)] p-5 transition-colors">
-
                 <form className="space-y-4" onSubmit={handleLogin}>
                   <div>
                     <label className="block text-sm font-medium text-[#42578E]">
@@ -311,11 +328,13 @@ export default function Login() {
                           d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0 0-1.414z"
                         />
                       </svg>
-
                       Remember password
                     </label>
 
-                    <a href="/register" className="text-sm text-[#007AFF] hover:underline">
+                    <a
+                      href="/register"
+                      className="text-sm text-[#007AFF] hover:underline"
+                    >
                       Forgot Password?
                     </a>
                   </div>
@@ -329,15 +348,17 @@ export default function Login() {
               disabled={!isFilled || loading}
               onClick={handleLogin}
               className={`relative w-full h-[40px] mt-4 rounded-md py-2 font-semibold text-white transition-colors
-    ${!isFilled || loading
-                  ? "bg-[#7C7C7C] cursor-not-allowed"
-                  : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
-                }`}
+    ${
+      !isFilled || loading
+        ? "bg-[#7C7C7C] cursor-not-allowed"
+        : "bg-[#4B62A0] hover:bg-[#3c4e7f]"
+    }`}
             >
               {/* Text */}
               <span
-                className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
-                  }`}
+                className={`transition-opacity duration-200 ${
+                  loading ? "opacity-0" : "opacity-100"
+                }`}
               >
                 Login
               </span>
@@ -368,12 +389,8 @@ export default function Login() {
                 </span>
               )}
             </button>
-
           </div>
-
-
         </div>
-
       </div>
     </div>
   );
