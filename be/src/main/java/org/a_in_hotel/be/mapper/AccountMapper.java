@@ -3,6 +3,7 @@ package org.a_in_hotel.be.mapper;
 import org.a_in_hotel.be.Enum.Gender;
 import org.a_in_hotel.be.dto.request.AccountDTO;
 import org.a_in_hotel.be.dto.request.StaffRequest;
+import org.a_in_hotel.be.dto.request.UserDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
@@ -13,6 +14,8 @@ import org.mapstruct.Mapping;
 public interface AccountMapper extends CommonMapper {
     @Mapping(target = "role", source = "idRole", qualifiedByName = "mapRoleFromId")
     Account toEntity(AccountDTO dto);
+
+    Account toEntityUser(UserDTO dto);
     @Mapping(target = "role",source = "dto.idRole",qualifiedByName = "mapRoleFromId")
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")

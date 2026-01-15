@@ -8,7 +8,9 @@ import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.AccountDTO;
 import org.a_in_hotel.be.dto.request.LoginDTO;
+import org.a_in_hotel.be.dto.request.UserDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
+import org.a_in_hotel.be.dto.response.CustomerProfileResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.dto.response.TokenResponse;
 import org.a_in_hotel.be.entity.Account;
@@ -64,6 +66,16 @@ public class AccountController {
         }
 
     }
+    @PostMapping(value = "/register/user")
+    public ResponseEntity<RequestResponse<Void>>registerUser(@Valid @RequestBody UserDTO userDTO){
+        try {
+            accountService.saveUser(userDTO);
+            return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
     @GetMapping("/role")
     public ResponseEntity<RequestResponse<String>> getUserRole(@RequestParam("email") String email) {
         try {
@@ -86,6 +98,15 @@ public class AccountController {
             return ResponseEntity.ok(RequestResponse.success(accountDTO,"lấy account Theo token thành công"));
 
         }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/user/profile")
+    public ResponseEntity<RequestResponse<CustomerProfileResponse>>profileUser(){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(accountService.getAccountUserProfile()));
+        }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }

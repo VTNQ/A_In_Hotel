@@ -245,19 +245,7 @@ export default function Login() {
                 </button>
 
               </form>
-              <AlertModal
-                open={modalOpen}
-                onOpenChange={handleModalOpenChange}
-                type={modalCfg?.type ?? "info"}
-                title={modalCfg?.title ?? ""}
-                description={modalCfg?.description}
-                closable
-                autoClose={modalCfg?.type === "success" ? 1600 : undefined}
-                primaryAction={{
-                  label: "OK",
-                  autoFocus: true,
-                }}
-              />
+            
             </div>
           </div>
           <div className="block md:hidden absolute -top-40 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-full">

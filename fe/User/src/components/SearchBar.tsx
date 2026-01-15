@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
 import DateSelect from "./Home/DateSelect";
 import type { HotelResponse } from "../type/hotel.types";
@@ -7,13 +6,20 @@ import { getHotel } from "../service/api/Hotel";
 import RoomGuestsSelect from "./Home/RoomsGuestsSelect";
 
 import { useBookingSearch } from "../context/booking/BookingSearchContext";
-
-
+import { useClickOutside } from "../hook/useClickOutside";
 
 export default function SearchBar() {
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
-  const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(null);
+  const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
+    null
+  );
   const [openHotel, setOpenHotel] = useState(false);
+
+  const selectRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(selectRef, () => {
+    setOpenHotel(false);
+  });
   const { setSearch } = useBookingSearch();
   const [dateRange, setDateRange] = useState<{
     checkIn: string | null;
@@ -38,12 +44,12 @@ export default function SearchBar() {
         setSelectedHotel(list[0]);
       }
     } catch (error: any) {
-      console.error("failed to load hotel list")
+      console.error("failed to load hotel list");
     }
-  }
+  };
   useEffect(() => {
     fetchHotel();
-  }, [])
+  }, []);
   const handleSearch = () => {
     if (!selectedHotel) {
       alert("Please select hotel");
@@ -51,7 +57,7 @@ export default function SearchBar() {
     }
 
     if (!dateRange.checkIn || !dateRange.checkOut) {
-      alert("Please select check-in & check-out date")
+      alert("Please select check-in & check-out date");
       return;
     }
 
@@ -64,17 +70,13 @@ export default function SearchBar() {
       children: guests.children,
     });
 
-   
-
-    window.location.href="/Room";
-    
-  }
+    window.location.href = "/Room";
+  };
   return (
-
     <div className="relative z-50 w-full bg-[#F6F3F0] backdrop-blur-md py-4 shadow-md">
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex items-center gap-4">
-          <div className="relative flex-1">
+          <div className="relative flex-1" ref={selectRef}>
             <label className="text-xs text-gray-500 mb-1 block">
               Destination
             </label>
@@ -87,13 +89,13 @@ export default function SearchBar() {
                 <MapPin size={18} className="text-gray-500 shrink-0" />
                 <span className="font-medium text-sm text-gray-800 truncate">
                   {selectedHotel ? selectedHotel.name : "Select hotel"}
-
                 </span>
               </div>
 
               <svg
-                className={`w-4 h-4 text-gray-500 transition-transform ${openHotel ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 text-gray-500 transition-transform ${
+                  openHotel ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -134,8 +136,6 @@ export default function SearchBar() {
                             {h.address}
                           </div>
                         </div>
-
-
                       </div>
                     </button>
                   );
@@ -143,14 +143,11 @@ export default function SearchBar() {
               </div>
             )}
           </div>
-          <DateSelect
-            value={dateRange}
-            onChange={(v) => setDateRange(v)}
-          />
+          <DateSelect value={dateRange} onChange={(v) => setDateRange(v)} />
           <RoomGuestsSelect
             value={guests}
             onChange={(val) => {
-              setGuests(val)
+              setGuests(val);
             }}
           />
           <div className="w-[220px] flex flex-col gap-2">
@@ -166,7 +163,6 @@ export default function SearchBar() {
               Search
             </button>
           </div>
-
         </div>
       </div>
     </div>

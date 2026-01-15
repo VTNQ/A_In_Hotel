@@ -8,12 +8,16 @@ import { getRoomById } from "../service/api/Room";
 import { createBooking } from "../service/api/bookings";
 import { useNavigate } from "react-router-dom";
 import { File_URL } from "../setting/constant/app";
+import { getTokens } from "../util/auth";
+import { useAlert } from "../components/alert-context";
+import { getProfile } from "../service/api/Authenticate";
 
 export default function ConfirmBooking() {
   const [extraServices, setExtraServices] = useState<ExtraService[]>([]);
   const { search, setSearch } = useBookingSearch();
   const [loading, setLoading] = useState(false);
   const [loadingPage, setLoadingPage] = useState(true);
+  const { showAlert } = useAlert();
   const [room, setRoom] = useState<any>(null);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,6 +29,20 @@ export default function ConfirmBooking() {
     bookingnote: "",
     idNumber: "",
   });
+  useEffect(() => {
+    const tokens = getTokens();
+    if (!tokens) {
+      showAlert({
+        title: "Please login to continue booking",
+        type: "warning",
+        autoClose: 3000,
+      });
+       setTimeout(() => {
+      navigate("/login", { replace: true });
+    }, 300);
+    }
+   
+  }, [getTokens]);
 
   useEffect(() => {
     let mounted = true;
@@ -32,7 +50,17 @@ export default function ConfirmBooking() {
     const fetchData = async () => {
       try {
         setLoadingPage(true);
-
+        const profile = await getProfile();
+        console.log(profile)
+        if (mounted && profile) {
+          setFormData((prev) => ({
+            ...prev,
+            firstName: profile?.data.firstName || "",
+            lastName: profile?.data.lastName || "",
+            email: profile?.data.email || "",
+            phone: profile?.data.phone || "",
+          }));
+        }
         // fetch extra services
         const extraRes = await getExtraService({
           all: true,

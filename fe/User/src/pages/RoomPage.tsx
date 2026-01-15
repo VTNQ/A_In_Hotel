@@ -13,6 +13,7 @@ const RoomPage = () => {
     const [roomGrid, setRoomGrid] = useState<RoomResponse[]>([]);
     const [page,setPage]= useState(1);
     const [totalPages,setTotalPages] = useState(1);
+    const [priceRanges,setPriceRanges] = useState<string[]>([]);
     
     return (
         <>           
@@ -26,13 +27,17 @@ const RoomPage = () => {
 
                         {/* FILTER */}
                         <div className="lg:col-span-3">
-                            <RoomFilterSideBar />
+                            <RoomFilterSideBar
+                                priceRanges={priceRanges}
+                                onPriceChange={setPriceRanges}
+                            />
                         </div>
 
                         {/* ROOM GRID */}
                         <div className="lg:col-span-6 space-y-6">
                             <RoomGrid
                                 page={page}
+                                priceRange={priceRanges}
                                 onPageInfo={setTotalPages}
                                 onSelect={setSelectedRoom}
                                 onLoaded={setRoomGrid}

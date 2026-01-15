@@ -1,17 +1,22 @@
 import { Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DateRangeProps } from "../../type/booking.types";
 import CalendarUI from "../ui/CalenderUI";
+import { useClickOutside } from "../../hook/useClickOutside";
 
 export default function DateSelect({ value, onChange }: DateRangeProps) {
   const [open, setOpen] = useState(false);
-  const [checkIn, setCheckIn] = useState<string | null>(
-    value?.checkIn ?? null
-  );
-  const [checkOut, setCheckOut] = useState<string | null>(
-    value?.checkOut ?? null
-  );
-
+  const [checkIn, setCheckIn] = useState<string | null>(null);
+  const [checkOut, setCheckOut] = useState<string | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+ 
+  useClickOutside(wrapperRef, () => {
+    setOpen(false);
+  });
+   useEffect(() => {
+    setCheckIn(value?.checkIn ?? null);
+    setCheckOut(value?.checkOut ?? null);
+  }, [value?.checkIn, value?.checkOut]);
   const onSelectDate = (date: string) => {
     // chọn lại từ đầu
     if (!checkIn || (checkIn && checkOut)) {
@@ -36,7 +41,7 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
   };
 
   return (
-    <div className="relative flex-1">
+    <div ref={wrapperRef} className="relative flex-1">
       <label className="text-xs text-gray-500 mb-1 block">
         Select date
       </label>

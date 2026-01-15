@@ -5,6 +5,7 @@ import { getHotel } from "../../service/api/Hotel";
 import DateSelect from "../Home/DateSelect";
 import RoomGuestsSelect from "../Home/RoomsGuestsSelect";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
+import type { RoomFilterSideBarProps } from "../../type/common";
 
 const PRICE_OPTIONS = [
   { label: "$0 - $200", value: "0-200", count: 200 },
@@ -14,10 +15,16 @@ const PRICE_OPTIONS = [
   { label: "$2,000 - $5,000", value: "2000-5000", count: 230 },
 ];
 
-const RoomFilterSideBar = () => {
-  const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(null);
+const RoomFilterSideBar = ({
+  priceRanges,
+  onPriceChange,
+}: RoomFilterSideBarProps) => {
+  const { search, setSearch } = useBookingSearch();
+  const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
+    null
+  );
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
-  const [priceRanges, setPriceRanges] = useState<string[]>([]);
+
   const [dateRange, setDateRange] = useState<{
     checkIn: string | null;
     checkOut: string | null;
@@ -28,8 +35,6 @@ const RoomFilterSideBar = () => {
     adults: 2,
     children: 0,
   });
-
-  const { setSearch } = useBookingSearch();
   const TIME_OPTIONS = [
     { label: "2 Giờ đầu", value: "HOURLY" },
     { label: "Qua đêm", value: "OVERNIGHT" },
@@ -39,17 +44,33 @@ const RoomFilterSideBar = () => {
   useEffect(() => {
     const fetchHotel = async () => {
       try {
-        const res = await getHotel({ all: true });
+        const res = await getHotel({ all: true, filter: "status==1" });
         const list = res?.content ?? [];
         setHotels(list);
-        if (list.length > 0) setSelectedHotel(list[0]);
+        if (search?.hotelId) {
+          const found = list.find((h) => h.id === Number(search.hotelId));
+          setSelectedHotel(found || null);
+        }
       } catch {
         console.error("failed to load hotel list");
       }
     };
     fetchHotel();
-  }, []);
-
+  }, [search?.hotelId]);
+  useEffect(() => {
+    console.log(search?.checkIn);
+    setDateRange({
+      checkIn: search?.checkIn || null,
+      checkOut: search?.checkOut || null,
+    });
+  }, [search?.checkIn, search?.checkOut]);
+  useEffect(() => {
+    setGuests({
+      rooms: search?.rooms ?? 1,
+      adults: search?.adults ?? 2,
+      children: search?.children ?? 0,
+    });
+  }, [search?.rooms, search?.adults, search?.children]);
   const handleSearch = () => {
     if (!selectedHotel) {
       alert("Please select hotel");
@@ -69,9 +90,8 @@ const RoomFilterSideBar = () => {
       adults: guests.adults,
       children: guests.children,
       priceRanges,
-      timeTypes, // 👈 THÊM
+      timeTypes,
     });
-
   };
 
   return (
@@ -79,7 +99,9 @@ const RoomFilterSideBar = () => {
       {/* TOP CARD */}
       <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
         <div>
-          <label className="text-sm font-medium text-gray-700">Destination</label>
+          <label className="text-sm font-medium text-gray-700">
+            Destination
+          </label>
           <SelectHotelButton
             hotels={hotels}
             value={selectedHotel}
@@ -88,7 +110,9 @@ const RoomFilterSideBar = () => {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700">Select date</label>
+          <label className="text-sm font-medium text-gray-700">
+            Select date
+          </label>
           <DateSelect value={dateRange} onChange={setDateRange} />
         </div>
 
@@ -108,11 +132,9 @@ const RoomFilterSideBar = () => {
       </div>
       <div className="bg-white rounded-xl shadow-sm">
         <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
-         Thời gian thuê
+          Thời gian thuê
         </div>
-         <div className="p-4">
-          
-
+        <div className="p-4">
           {TIME_OPTIONS.map((p) => (
             <label
               key={p.value}
@@ -132,7 +154,6 @@ const RoomFilterSideBar = () => {
                 />
                 {p.label}
               </span>
-     
             </label>
           ))}
         </div>
@@ -157,10 +178,10 @@ const RoomFilterSideBar = () => {
                   type="checkbox"
                   checked={priceRanges.includes(p.value)}
                   onChange={() =>
-                    setPriceRanges((prev) =>
-                      prev.includes(p.value)
-                        ? prev.filter((v) => v !== p.value)
-                        : [...prev, p.value]
+                    onPriceChange(
+                      priceRanges.includes(p.value)
+                        ? priceRanges.filter((v) => v !== p.value)
+                        : [...priceRanges, p.value]
                     )
                   }
                 />
