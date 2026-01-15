@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { register } from "../service/api/Authenticate";
+import { useAlert } from "../components/alert-context";
+import { BASE_API } from "../setting/constant/app";
 const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // chỉnh đường dẫn nếu bạn đặt logo nơi khác
 const BG_URL =
   "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg";
@@ -6,16 +9,19 @@ const BRAND = "#b08a66"; // màu chủ đạo theo logo
 
 function SocialButton({
   provider,
-  onClick,
 }: {
   provider: "google" | "facebook";
-  onClick?: () => void;
 }) {
   const isGoogle = provider === "google";
+  const handleClick = () => {
+    if (isGoogle) {
+      window.location.href = `${BASE_API}/oauth2/authorization/google`;
+    }
+  };
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       className="
         inline-flex items-center gap-2 rounded-full border border-gray-300
         bg-white px-4 py-2 text-sm shadow-sm transition
@@ -62,10 +68,111 @@ function SocialButton({
 }
 
 export default function RegisterPage() {
-  const [remember, setRemember] = useState(false);
+  const { showAlert } = useAlert();
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState<{
+    fullName?: string;
+    phone?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
 
+  const validateField = (name: string, value: string) => {
+    let error = "";
+
+    switch (name) {
+      case "fullName":
+        if (!value.trim()) error = "Full name is required";
+        break;
+
+      case "phone":
+        if (!value.trim()) error = "Phone number is required";
+        else if (!/^\+?\d{9,12}$/.test(value)) error = "Invalid phone number";
+        break;
+
+      case "email":
+        if (!value.trim()) error = "Email is required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          error = "Invalid email address";
+        break;
+
+      case "password":
+        if (!value) error = "Password is required";
+        else if (value.length < 6)
+          error = "Password must be at least 6 characters";
+        break;
+
+      case "confirmPassword":
+        if (value !== formData.password) error = "Passwords do not match";
+        break;
+    }
+
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+  const [saving, setSaving] = useState(false);
+  const parseFullName = (fullName: string) => {
+    const parts = fullName.trim().split(/\s+/);
+
+    return {
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
+    };
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setSaving(true);
+    try {
+      e.preventDefault();
+      const { firstName, lastName } = parseFullName(formData.fullName);
+
+      const payload = {
+        firstName,
+        lastName,
+        phone: formData.phone,
+        email: formData.email,
+        password: formData.confirmPassword,
+      };
+      await register(payload);
+      showAlert({
+        title: "Đăng ký thành công!",
+        type: "success",
+        autoClose: 3000,
+      });
+      setFormData({
+        fullName: "",
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (err: any) {
+      showAlert({
+        title: "Đăng ký thất bại. Vui lòng thử lại.",
+        type: "error",
+        autoClose: 3000,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    validateField(name, value);
+  };
+  const isFormValid =
+    Object.values(errors).every((e) => !e) &&
+    Object.values(formData).every((v) => v.trim() !== "");
+  const isSubmitDisabled = !isFormValid || saving;
   return (
-    <main className="relative min-h-screen w-full">
+    <main className="relative min-h-screen w-full pt-20 pb-16">
       {/* Background */}
       <img
         src={BG_URL}
@@ -98,21 +205,46 @@ export default function RegisterPage() {
               Register
             </h1>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
                   Fullname
                 </span>
                 <input
                   type="text"
-                  className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
-                    outline-none placeholder:text-gray-400
-                    focus:border-[var(--brand)]
-                  "
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  className={`w-full rounded-[14px] border px-4 py-3 outline-none
+                ${errors.fullName ? "border-red-500" : "border-gray-300"}
+                `}
                   placeholder="Nguyen Van A"
                   style={{ ["--brand" as any]: BRAND }}
                 />
+                {errors.fullName && (
+                  <p className="mt-1 text-sm text-red-500">{errors.fullName}</p>
+                )}
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-sm text-gray-700">
+                  Phone number
+                </span>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`w-full rounded-[14px] border ${
+                    errors.phone ? "border-red-500" : "border-gray-300"
+                  } bg-white px-4 py-3
+                  outline-none placeholder:text-gray-400
+                  focus:border-[var(--brand)]`}
+                  placeholder="+8412345678"
+                  style={{ ["--brand" as any]: BRAND }}
+                />
+                {errors.phone && (
+                  <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                )}
               </label>
 
               <label className="block">
@@ -121,28 +253,42 @@ export default function RegisterPage() {
                 </span>
                 <input
                   type="email"
-                  className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full rounded-[14px] border  ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  } bg-white px-4 py-3
                     outline-none placeholder:text-gray-400
-                    focus:border-[var(--brand)]
-                  "
+                    focus:border-[var(--brand)]`}
                   placeholder="you@example.com"
                   style={{ ["--brand" as any]: BRAND }}
                 />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                )}
               </label>
 
               <label className="block">
-                <span className="mb-1 block text-sm text-gray-700">Password</span>
+                <span className="mb-1 block text-sm text-gray-700">
+                  Password
+                </span>
                 <input
                   type="password"
-                  className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full rounded-[14px] border  ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  } bg-white px-4 py-3
                     outline-none placeholder:text-gray-400
-                    focus:border-[var(--brand)]
-                  "
+                    focus:border-[var(--brand)]`}
                   placeholder="••••••••"
                   style={{ ["--brand" as any]: BRAND }}
                 />
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                )}
               </label>
 
               <label className="block">
@@ -151,37 +297,79 @@ export default function RegisterPage() {
                 </span>
                 <input
                   type="password"
-                  className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`w-full rounded-[14px] border  ${
+                    errors.confirmPassword
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } bg-white px-4 py-3
                     outline-none placeholder:text-gray-400
-                    focus:border-[var(--brand)]
-                  "
+                    focus:border-[var(--brand)]`}
                   placeholder="••••••••"
                   style={{ ["--brand" as any]: BRAND }}
                 />
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </label>
-
               <button
                 type="submit"
-                className="
-                  w-full rounded-[14px] px-4 py-3 font-medium text-white
-                  shadow transition hover:brightness-105 active:translate-y-px
-                "
+                disabled={isSubmitDisabled}
+                className={`
+    w-full h-[52px] rounded-[14px]
+    font-medium text-white
+    flex items-center justify-center gap-2
+    shadow transition
+    ${
+      isSubmitDisabled
+        ? "cursor-not-allowed opacity-70"
+        : "hover:brightness-105 active:translate-y-px"
+    }
+  `}
                 style={{ backgroundColor: BRAND }}
               >
-                Create account
+                {saving ? (
+                  <>
+                    <svg
+                      className="h-5 w-5 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
+                      />
+                    </svg>
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <span>Create account</span>
+                )}
               </button>
 
               <div className="mt-2 flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2">
-                  <input
+                  {/* <input
                     type="checkbox"
                     checked={remember}
                     onChange={(e) => setRemember(e.target.checked)}
                     className="h-4 w-4 rounded border-gray-300 text-[var(--brand)] focus:ring-[var(--brand)]"
                     style={{ ["--brand" as any]: BRAND }}
                   />
-                  <span className="text-gray-700">Remember me</span>
+                  <span className="text-gray-700">Remember me</span> */}
                 </label>
                 <a href="#" className="text-gray-500 hover:underline">
                   Forgot password?
@@ -195,7 +383,11 @@ export default function RegisterPage() {
 
               <p className="mt-6 text-center text-sm text-gray-600">
                 Already have an account?{" "}
-                <a href="/Login" className="font-medium" style={{ color: BRAND }}>
+                <a
+                  href="/Login"
+                  className="font-medium"
+                  style={{ color: BRAND }}
+                >
                   Sign in
                 </a>
               </p>
@@ -206,6 +398,3 @@ export default function RegisterPage() {
     </main>
   );
 }
-
-
-

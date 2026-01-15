@@ -66,3 +66,7 @@ export interface CustomerTypeSelectProps {
   onChange?: (value: string) => void;
   options: SelectOption[];
 }
+export interface RoomFilterSideBarProps {
+  priceRanges:string[];
+  onPriceChange:(v:string[])=>void;
+}

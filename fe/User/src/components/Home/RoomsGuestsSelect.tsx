@@ -1,17 +1,25 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RoomsGuestsSelectProps } from "../../type/booking.types";
 import { Minus, Plus, Users } from "lucide-react";
+import { useClickOutside } from "../../hook/useClickOutside";
 
-const RoomGuestsSelect = ({
-  value,
-  onChange
-}: RoomsGuestsSelectProps) => {
+const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
   const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useClickOutside(wrapperRef, () => {
+    setOpen(false);
+  });
 
-  const [rooms, setRooms] = useState(value?.rooms ?? 1);
-  const [adults, setAdults] = useState(value?.adults ?? 1);
-  const [children, setChildren] = useState(value?.children ?? 0);
+  const [rooms, setRooms] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  useEffect(() => {
+    if (!value) return;
 
+    setRooms(value.rooms ?? 1);
+    setAdults(value.adults ?? 1);
+    setChildren(value.children ?? 0);
+  }, [value?.rooms, value?.adults, value?.children]);
   const totalGuests = adults + children;
 
   const apply = () => {
@@ -21,7 +29,7 @@ const RoomGuestsSelect = ({
       children,
     });
     setOpen(false);
-  }
+  };
 
   const Row = ({
     label,
@@ -55,9 +63,9 @@ const RoomGuestsSelect = ({
         </button>
       </div>
     </div>
-  )
+  );
   return (
-    <div className="relative flex-1">
+    <div ref={wrapperRef} className="relative flex-1">
       <label className="text-xs text-gray-500 mb-1 block">
         Select rooms and guests
       </label>
@@ -66,7 +74,6 @@ const RoomGuestsSelect = ({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="w-full h-[56px] bg-white border border-[#866F56] rounded-xl px-4 flex items-center gap-3 text-left"
-
       >
         <Users size={18} className="text-gray-500" />
         <span className="text-sm font-medium text-gray-800">
@@ -111,6 +118,6 @@ const RoomGuestsSelect = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 export default RoomGuestsSelect;

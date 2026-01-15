@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.config;
 
 import org.a_in_hotel.be.service.AccountService;
+import org.a_in_hotel.be.service.impl.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -15,10 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,24 +28,20 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final JwtService jwtService;
     private final AccountService accountService;
-    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
     private final JwtFilter jwtFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-
+    private final CustomOAuth2UserService customOAuth2UserService;
     public SecurityConfiguration(
-            @Lazy JwtService jwtService,
             @Lazy AccountService accountService,
             @Lazy JwtFilter jwtFilter,
             @Lazy OAuth2SuccessHandler oAuth2SuccessHandler,
-            @Lazy OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService
+            @Lazy CustomOAuth2UserService customOAuth2UserService
     ) {
-        this.jwtService = jwtService;
         this.accountService = accountService;
         this.jwtFilter = jwtFilter;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
-        this.oAuth2UserService = oauth2UserService;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
     @Bean
     public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
@@ -90,13 +83,13 @@ public class SecurityConfiguration {
                 // OAuth2 config
                 .oauth2Login(oauth -> oauth
                         .loginPage("/oauth2/authorization/google")
-                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                 )
                 .authenticationProvider(authenticationProvider())
                 // đặt JWT filter trước OAuth2LoginAuthenticationFilter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, OAuth2AuthorizationRequestRedirectFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

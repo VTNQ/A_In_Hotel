@@ -16,7 +16,14 @@ export interface RoomResponse {
     defaultRate: number;
     images: ImageResponse[];
 }
-
+export interface RoomGridProps {
+  page: number;
+  priceRange:string[];
+  onPageInfo: (totalPages: number) => void;
+  onSelect: (room: RoomResponse) => void;
+  onLoaded: (rooms: RoomResponse[]) => void;
+  selectedRoomId?: number;
+}
 export interface RoomCardProps {
     room: RoomResponse;
     onClick: () => void;
