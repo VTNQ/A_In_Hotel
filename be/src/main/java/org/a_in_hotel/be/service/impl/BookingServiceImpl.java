@@ -81,13 +81,10 @@ public class BookingServiceImpl implements BookingService {
         validateRoomAvailable(request);
         validateRoomSchedule(request);
 
-        Customer customer = customerMapper.toEntity(request,
-                securityUtils.getHotelId()!=null?securityUtils.getHotelId() : request.getHotelId(),securityUtils.getCurrentUserId() !=null ?securityUtils.getCurrentUserId() :1);
-        customerRepository.save(customer);
+        Customer customer = getOrCreateCustomer(request);
 
-        Account account = createAccountFromCustomer(request);
-        customer.setAccount(account);
-        customerRepository.save(customer);
+        // 3. Ensure customer has account
+        ensureCustomerHasAccount(customer, request);
 
         Booking booking = mapper.toEntity
                 (request, detailMapper, roomRepository, extraServiceRepository,
@@ -104,18 +101,49 @@ public class BookingServiceImpl implements BookingService {
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
-    private Account createAccountFromCustomer(BookingRequest data){
-        return accountRepository.findByEmail(data.getEmail())
-                .orElseGet(()->{
-                   Account account = Account.builder()
-                           .email(data.getEmail())
-                           .password(passwordEncoder.encode(generalService.generateRandomPassword(8)))
-                           .role(roleRepository.findById(6L).orElseThrow())
-                           .isActive(true)
-                           .createdBy(securityUtils.getCurrentUserId().toString())
-                           .build();
-                   return accountRepository.save(account);
+    private Customer getOrCreateCustomer(BookingRequest request) {
+
+        return customerRepository.findByEmail(request.getEmail())
+                .orElseGet(() -> {
+                    Customer customer = customerMapper.toEntity(
+                            request,
+                            securityUtils.getHotelId(),
+                           securityUtils.getCurrentUserId()
+                    );
+                    return customerRepository.save(customer);
                 });
+    }
+    private void ensureCustomerHasAccount(Customer customer, BookingRequest request) {
+
+        // Nếu customer đã có account → STOP
+        if (customer.getAccount() != null) {
+            return;
+        }
+
+        Account account = accountRepository.findByEmail(request.getEmail())
+                .orElseGet(() -> createAccountFromCustomer(request));
+
+        customer.setAccount(account);
+        account.setCustomer(customer); // nếu mapping 2 chiều
+
+        customerRepository.save(customer);
+    }
+    private Account createAccountFromCustomer(BookingRequest request) {
+
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(
+                        generalService.generateRandomPassword(8)))
+                .role(roleRepository.findById(6L)
+                        .orElseThrow(() -> new RuntimeException("Role not found")))
+                .isActive(true)
+                .createdBy(
+                        securityUtils.getCurrentUserId() != null
+                                ? securityUtils.getCurrentUserId().toString()
+                                : "SYSTEM")
+                .build();
+
+        return accountRepository.save(account);
     }
 
     private void markRoomReserved(Booking booking){

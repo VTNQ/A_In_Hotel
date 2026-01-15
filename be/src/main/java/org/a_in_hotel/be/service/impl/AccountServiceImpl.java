@@ -5,18 +5,16 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.request.AccountDTO;
+import org.a_in_hotel.be.dto.request.UserDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
+import org.a_in_hotel.be.dto.response.CustomerProfileResponse;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
-import org.a_in_hotel.be.entity.Account;
-import org.a_in_hotel.be.entity.Image;
-import org.a_in_hotel.be.entity.Staff;
+import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.AccountMapper;
+import org.a_in_hotel.be.mapper.CustomerMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.mapper.StaffMapper;
-import org.a_in_hotel.be.repository.AccountRepository;
-import org.a_in_hotel.be.repository.ImageRepository;
-import org.a_in_hotel.be.repository.RoleRepository;
-import org.a_in_hotel.be.repository.StaffRepository;
+import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.AccountService;
 import org.a_in_hotel.be.util.EmailService;
 import org.a_in_hotel.be.util.GeneralService;
@@ -42,7 +40,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class AccountServiceImpl implements AccountService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -55,6 +53,10 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     private GeneralService generalService;
     @Autowired
     private RoleRepository  roleRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerMapper customerMapper;
     @Autowired
     private StaffMapper staffMapper;
     @Autowired
@@ -110,6 +112,27 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
     }
 
     @Override
+    @Transactional
+    public void saveUser(UserDTO userDTO) {
+        try{
+
+            Account account = accountMapper.toEntityUser(userDTO);
+            account.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            Role role = roleRepository.getReferenceById(6L);
+            account.setRole(role);
+            accountRepository.save(account);
+            Customer customer = customerMapper.toEntityUser(userDTO);
+            customer.setAccount(account);
+            customerRepository.save(customer);
+            emailService.sendRegistrationEmail(userDTO.getEmail(),userDTO.getFirstName()+" "+ userDTO.getLastName()
+                    ,userDTO.getEmail(),userDTO.getPassword());
+        }catch (Exception e){
+            log.error("save error:{}",e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Account getAccountFromToken(String token) {
         try {
             if (token.startsWith("Bearer ")) {
@@ -121,6 +144,12 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         } catch (Exception e) {
             throw new RuntimeException("Invalid token", e);
         }
+    }
+
+    @Override
+    public CustomerProfileResponse getAccountUserProfile() {
+        Account account = accountRepository.getReferenceById(securityUtils.getCurrentUserId());
+        return customerMapper.toProfile(account.getCustomer());
     }
 
     @Override
@@ -155,8 +184,5 @@ public class AccountServiceImpl implements AccountService, OAuth2UserService<OAu
         return account.orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        return null;
-    }
+
 }

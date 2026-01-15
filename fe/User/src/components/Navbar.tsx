@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, Globe } from "lucide-react";
+import { Menu, Globe, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { clearTokens, getTokens, isAccessExpired } from "../util/auth";
 
 type LangKey = "en" | "vi" | "kr" | "jp" | "cn";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const tokens = getTokens();
+  const isLoggedIn = !!tokens && !isAccessExpired();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -42,9 +46,11 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
-      ${isHome && !isScrolled
-        ? "bg-transparent py-5"
-        : "bg-white py-2 shadow-md backdrop-blur-lg"}`}
+      ${
+        isHome && !isScrolled
+          ? "bg-transparent py-5"
+          : "bg-white py-2 shadow-md backdrop-blur-lg"
+      }`}
     >
       <div className="max-w-[1300px] mx-auto flex items-center justify-between gap-8 px-6 md:px-10">
         {/* ===== LEFT ===== */}
@@ -76,14 +82,18 @@ export default function Navbar() {
 
         {/* ===== LOGO ===== */}
         <div
-          className="flex flex-col items-center cursor-pointer"
+          className="flex flex-col items-center cursor-pointer ml-20"
           onClick={() => navigate("/")}
         >
           <img
             src="/image/Vector.png"
             alt="A-IN HOTEL"
             className={`mb-1 transition-all duration-300
-            ${isScrolled ? "h-8 brightness-0 invert-[0.2]" : "h-10 brightness-200"}`}
+            ${
+              isScrolled
+                ? "h-8 brightness-0 invert-[0.2]"
+                : "h-10 brightness-200"
+            }`}
           />
           <h1
             className={`font-bold tracking-wide transition-all duration-300
@@ -101,8 +111,6 @@ export default function Navbar() {
               { label: "AIR BNB", path: "/airbnb" },
               { label: "CAMPING", path: "/camping" },
               { label: "OUR PRODUCT", path: "/product" },
-              { label: "Log in", path: "/login" },
-              { label: "Sign up", path: "/register" },
             ].map((item) => (
               <button
                 key={item.label}
@@ -113,6 +121,75 @@ export default function Navbar() {
                 {item.label}
               </button>
             ))}
+            {!isLoggedIn && (
+              <>
+                <button
+                  onClick={() => navigate("/login")}
+                  className={`hover:text-[#B38A58] transition-colors
+        ${isScrolled ? "text-[#3A3125]" : "text-white"}`}
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => navigate("/register")}
+                  className={`px-4 py-1.5 rounded-full transition
+        ${isScrolled ? "bg-[#B38A58] text-white" : "bg-white text-[#3A3125]"}`}
+                >
+                  Sign up
+                </button>
+              </>
+            )}
+            {isLoggedIn && (
+              <div
+                className="relative"
+                onMouseEnter={() => setIsUserMenuOpen(true)}
+                onMouseLeave={() => setIsUserMenuOpen(false)}
+              >
+                <button className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full border flex items-center justify-center
+  ${isScrolled ? "border-[#3A3125]" : "border-white/70"}`}
+                  >
+                    <User
+                      className={`${
+                        isScrolled ? "text-[#3A3125]" : "text-white"
+                      }`}
+                      size={18}
+                    />
+                  </div>
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 top-full pt-2">
+                    <div className="w-44 bg-white rounded-md shadow-lg overflow-hidden">
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        My profile
+                      </button>
+
+                      <button
+                        onClick={() => navigate("/booking")}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        My booking
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          clearTokens();
+                          navigate("/login");
+                        }}
+                        className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* LANGUAGE – luôn ở cuối */}
@@ -123,15 +200,13 @@ export default function Navbar() {
           >
             <button
               className={`flex items-center border rounded-md px-2 py-1 transition-colors
-              ${isScrolled
-                ? "border-[#3A3125] hover:bg-[#3A3125]/10"
-                : "border-[#b38a58] hover:bg-[#b38a58]/20"}`}
+              ${
+                isScrolled
+                  ? "border-[#3A3125] hover:bg-[#3A3125]/10"
+                  : "border-[#b38a58] hover:bg-[#b38a58]/20"
+              }`}
             >
-              <img
-                src={flagMap[lang]}
-                alt={lang}
-                className="w-5 h-4 mr-2"
-              />
+              <img src={flagMap[lang]} alt={lang} className="w-5 h-4 mr-2" />
               <Globe
                 className={`w-4 h-4 ${
                   isScrolled ? "text-[#3A3125]" : "text-[#b38a58]"

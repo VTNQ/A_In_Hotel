@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 import RoomCard from "./RoomCard";
 import { getRoom } from "../../service/api/Room";
-import type { RoomResponse } from "../../type/room.types";
+import type { RoomGridProps, RoomResponse } from "../../type/room.types";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import RoomCardSkeleton from "./RoomCardSkeleton";
-
-interface RoomGridProps {
-  page: number;
-  onPageInfo: (totalPages: number) => void;
-  onSelect: (room: RoomResponse) => void;
-  onLoaded: (rooms: RoomResponse[]) => void;
-  selectedRoomId?: number;
-}
-
 const RoomGrid = ({
   page,
   onPageInfo,
   onSelect,
   onLoaded,
   selectedRoomId,
+  priceRange,
 }: RoomGridProps) => {
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const { search } = useBookingSearch();
+const buildPriceFilter = (ranges: string[]) => {
+  if (!ranges.length) return "";
 
+  return ranges
+    .map(r => {
+      const [min, max] = r.split("-").map(Number);
+      return `(basePrice>=${min};basePrice<=${max})`;
+    })
+    .join(",");
+};
   useEffect(() => {
     if (!search) return;
 
@@ -35,12 +36,17 @@ const RoomGrid = ({
         setRooms([]);
 
         const totalGuests = (search?.adults ?? 0) + (search?.children ?? 0);
-
+        let filter =
+         `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`;
+         const priceFilter = buildPriceFilter(priceRange);
+         if(priceFilter){
+          filter+= `;(${priceFilter})`
+         }
         const res = await getRoom({
           page,
           size: 5,
           sort: "basePrice,asc",
-          filter: `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`,
+          filter,
         });
 
         if (!mounted) return;
@@ -63,7 +69,7 @@ const RoomGrid = ({
     return () => {
       mounted = false;
     };
-  }, [search, page]);
+  }, [search, page,priceRange]);
 
   return (
     <div className="space-y-6">

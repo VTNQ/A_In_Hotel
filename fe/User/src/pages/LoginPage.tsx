@@ -1,10 +1,10 @@
 // src/pages/LoginPage.tsx
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { AlertModal, type AlertType } from "../components/AlertModal";
 import { saveTokens } from "../util/auth";
 import { login } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
+import { BASE_API } from "../setting/constant/app";
 
 const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
 const BG_URL =
@@ -12,16 +12,25 @@ const BG_URL =
 
 function SocialButton({
   provider,
-  onClick,
 }: {
   provider: "google" | "facebook";
-  onClick?: () => void;
 }) {
   const isGoogle = provider === "google";
+   const handleClick = () => {
+    if (provider === "google") {
+      window.location.href =
+        `${BASE_API}/oauth2/authorization/google`;
+    }
+    if (provider === "facebook") {
+      window.location.href =
+        `${BASE_API}/oauth2/authorization/facebook`;
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       className="
         inline-flex items-center gap-2 rounded-full border border-gray-300
         bg-white px-4 py-2 text-sm shadow-sm transition

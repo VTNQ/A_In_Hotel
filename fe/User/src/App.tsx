@@ -10,13 +10,14 @@ import RoomDetailPage from './pages/RoomDetailPage';
 import ConfirmBooking from './pages/ConfirmBooking';
 import GalleryPage from './pages/GalleryPage';
 import BookingSuccess from './pages/BookingSuccess';
+import OAuth2Success from './pages/OAuth2SuccessPage';
 function App() {
 
   return (
   <Routes>
     <Route element={<Layout/>}>
     <Route path='/' element={<HomePage/>}/>
-   
+   <Route path="/oauth2/success" element={<OAuth2Success />} />
     <Route path="/event-promotion" element={<EventPromotionPage />} />
     <Route path='/Room' element={<RoomPage/>}/>
     <Route path='/Hotel/Room/:id' element={<HotelRoomPage/>}/>

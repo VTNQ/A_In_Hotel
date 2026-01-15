@@ -20,6 +20,7 @@ import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
+
 public class GeneralService {
     @Value("${minio.bucket-name}")
     private String bucketName;
