@@ -30,24 +30,24 @@ const BlogDetailPage = () => {
     fetchBlog();
   }, [id]);
   useEffect(() => {
-  if (!blog) return;
+    if (!blog) return;
 
-  const fetchRelated = async () => {
-    try {
-      const resp = await getBlog({
-        page: 1,
-        size: 3,
-        filter: `status==2;id!=${blog.id}`,
-      });
+    const fetchRelated = async () => {
+      try {
+        const resp = await getBlog({
+          page: 1,
+          size: 3,
+          filter: `status==2;id!=${blog.id}`,
+        });
 
-      setRelatedBlogs(resp?.content || []);
-    } catch (err) {
-      console.error("Get related blogs failed", err);
-    }
-  };
+        setRelatedBlogs(resp?.content || []);
+      } catch (err) {
+        console.error("Get related blogs failed", err);
+      }
+    };
 
-  fetchRelated();
-}, [blog]);
+    fetchRelated();
+  }, [blog]);
 
   const formatDate = (date?: string) => {
     if (!date) return "";
@@ -68,7 +68,10 @@ const BlogDetailPage = () => {
 
   if (!blog) return null;
   return (
-    <main className="flex-1 " style={{fontFamily:"'Plus Jakarta Sans', sans-serif"}}>
+    <main
+      className="flex-1 "
+      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+    >
       <section className="relative w-full h-[70vh] min-h-[520px] overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -149,51 +152,50 @@ const BlogDetailPage = () => {
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
               Related Articles
             </h3>
-            <a
+            <button
+              onClick={() => navigate("/blog")}
               className="text-primary font-bold text-sm flex items-center gap-2 hover:underline"
-              href="#"
             >
               View All blog <ArrowRight />
-            </a>
+            </button>
           </div>
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-  {relatedBlogs.map((item) => (
-    <div
-      key={item.id}
-      onClick={()=>navigate(`/blog/${item.id}`)}
-      className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group cursor-pointer"
-    >
-      <div className="h-48 overflow-hidden">
-        <img
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          src={File_URL + item.image?.url}
-          alt={item.title}
-        />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {relatedBlogs.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => navigate(`/blog/${item.id}`)}
+                className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group cursor-pointer"
+              >
+                <div className="h-48 overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    src={File_URL + item.image?.url}
+                    alt={item.title}
+                  />
+                </div>
 
-      <div className="p-6">
-        <p className="text-primary text-[10px] font-bold uppercase mb-2">
-          {item.category}
-        </p>
+                <div className="p-6">
+                  <p className="text-primary text-[10px] font-bold uppercase mb-2">
+                    {item.category}
+                  </p>
 
-        <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3 line-clamp-2">
-          {item.title}
-        </h4>
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3 line-clamp-2">
+                    {item.title}
+                  </h4>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-          {item.description?.replace(/<[^>]*>/g, "")}
-        </p>
-      </div>
-    </div>
-  ))}
+                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+                    {item.description?.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              </div>
+            ))}
 
-  {!loading && relatedBlogs.length === 0 && (
-    <div className="col-span-full text-center text-sm text-gray-500">
-      No related articles found.
-    </div>
-  )}
-</div>
-
+            {!loading && relatedBlogs.length === 0 && (
+              <div className="col-span-full text-center text-sm text-gray-500">
+                No related articles found.
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </main>
