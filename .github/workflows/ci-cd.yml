@@ -148,6 +148,9 @@ jobs:
           key: ${{ env.SERVER_SSH_KEY }}
           port: ${{ env.SERVER_PORT }}
           script: |
+            cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
+            git remote set-url origin "https://${{ env.GITHUB_TOKEN_FOR_VPS }}@github.com/VTNQ/A_In_Hotel.git"
+            git reset --hard origin/deploy_web
             git clean -fd
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-superadmin:latest
