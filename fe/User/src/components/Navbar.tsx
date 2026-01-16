@@ -77,12 +77,19 @@ export default function Navbar() {
             >
               PROMOTION
             </button>
+            <button
+              onClick={() => navigate("/blog")}
+              className={`hover:text-[#B38A58] transition-colors
+              ${isScrolled ? "text-[#3A3125]" : "text-white"}`}
+            >
+              BLOG
+            </button>
           </nav>
         </div>
 
         {/* ===== LOGO ===== */}
         <div
-          className="flex flex-col items-center cursor-pointer ml-20"
+          className="flex flex-col items-center cursor-pointer ml-15"
           onClick={() => navigate("/")}
         >
           <img
@@ -111,6 +118,7 @@ export default function Navbar() {
               { label: "AIR BNB", path: "/airbnb" },
               { label: "CAMPING", path: "/camping" },
               { label: "OUR PRODUCT", path: "/product" },
+        
             ].map((item) => (
               <button
                 key={item.label}
