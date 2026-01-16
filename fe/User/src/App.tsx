@@ -11,6 +11,8 @@ import ConfirmBooking from './pages/ConfirmBooking';
 import GalleryPage from './pages/GalleryPage';
 import BookingSuccess from './pages/BookingSuccess';
 import OAuth2Success from './pages/OAuth2SuccessPage';
+import BlogPage from './pages/BlogPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 function App() {
 
   return (
@@ -25,6 +27,8 @@ function App() {
     <Route path='/gallery' element={<GalleryPage/>}/>
     <Route path='/Room/:id' element={<RoomDetailPage/>}/>
     <Route path='/Login' element={<LoginPage/>}/>
+    <Route path='/blog' element={<BlogPage/>}/>
+    <Route path='/blog/:id' element={<BlogDetailPage/>}/>
     <Route path="/Register" element={<RegisterPage/>} />
     <Route path="/booking-success" element={<BookingSuccess />} />
     </Route>
