@@ -27,3 +27,8 @@ export const getBlog =async (options:GetAllOptions={})=>{
     });
     return resp.data.data;
 }
+
+export const getBlogById = async(id:number)=>{
+    return await Http.get<ApiResponse<BlogResponse>>(`/api/blogs/${id}`,{skipAuth:true});
+
+}
