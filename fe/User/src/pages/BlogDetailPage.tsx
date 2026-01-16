@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { BlogResponse } from "../type/blog.types";
 import { useEffect, useState } from "react";
 import { getBlog, getBlogById } from "../service/api/Blog";
@@ -8,6 +8,7 @@ import { ArrowRight } from "lucide-react";
 
 const BlogDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [blog, setBlog] = useState<BlogResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [relatedBlogs, setRelatedBlogs] = useState<BlogResponse[]>([]);
@@ -159,7 +160,8 @@ const BlogDetailPage = () => {
   {relatedBlogs.map((item) => (
     <div
       key={item.id}
-      className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group"
+      onClick={()=>navigate(`/blog/${item.id}`)}
+      className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group cursor-pointer"
     >
       <div className="h-48 overflow-hidden">
         <img
