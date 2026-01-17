@@ -75,6 +75,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name:  Force update to latest code
+        run: |
+          git fetch --all
+          git reset --hard origin/deploy_web
       - name: Build backend
         run: |
           cd be
@@ -150,6 +154,7 @@ jobs:
           script: |
             cd /home/${{ env.SERVER_USER }}/Desktop/A_In_Hotel
             git remote set-url origin "https://${{ env.GITHUB_TOKEN_FOR_VPS }}@github.com/VTNQ/A_In_Hotel.git"
+            git fetch --all
             git reset --hard origin/deploy_web
             git clean -fd
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
