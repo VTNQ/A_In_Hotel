@@ -152,7 +152,7 @@
         "new": "+ Thêm Phòng",
         "roomName": "Tên Phòng",
         "roomTypeName": "Loại phòng",
-        "searchPlaceholder": "Tìm theo tên hoặc số phòng",
+        "searchPlaceholder": "Tìm theo mã phòng hoặc số phòng",
         "priceFullDay": "Giá/Cả ngày",
         "createOrUpdate": {
             "titleCreate": "Tạo phòng mới",
@@ -327,8 +327,8 @@
         "expired": "Hết hạn",
         "errorLoad": "Không thể tải dữ liệu",
         "searchPlaceholder": "Tìm theo mã hoặc tên",
-        "changeSuccess":"Cập nhật voucher thành công",
-        "changeError":"Cập nhật voucher thất bại",
+        "changeSuccess": "Cập nhật voucher thành công",
+        "changeError": "Cập nhật voucher thất bại",
         "code": "Mã",
         "name": "Tên",
         "discountType": "Loại giảm",
@@ -462,8 +462,8 @@
         "checkOutTime": "Giờ trả phòng",
         "package": "Gói đặt phòng",
         "packageOvernight": "Qua đêm",
-        "packageDayUse": "Trong ngày",
-        "packageFullDay": "Cả ngày",
+        "packageDayUse": "Thuê giờ",
+        "packageFullDay": "Ngảy đêm",
         "adults": "Người lớn",
         "children": "Trẻ em",
         "duration": "Thời gian lưu trú",
@@ -513,6 +513,7 @@
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",
+        "searchPlaceholder": "Tìm kiếm theo tên dịch vụ",
         "addedServices": "Dịch vụ đã thêm",
         "estimated": "Ước tính",
         "add": "Thêm vào đặt phòng",
@@ -660,6 +661,12 @@
         "extraServicesDiscounts": "Dịch vụ & Giảm giá",
         "service": "Dịch vụ",
         "price": "Giá"
+    },
+    "logoutConfirm": {
+        "title": "Bạn có chắc chắn muốn đăng xuất?",
+        "description": "Bạn sắp đăng xuất khỏi trang quản trị.",
+        "cancel": "Không, ở lại",
+        "confirm": "Có, đăng xuất"
     },
     "bookingEdit": {
         "title": "Chỉnh sửa thông tin khách",

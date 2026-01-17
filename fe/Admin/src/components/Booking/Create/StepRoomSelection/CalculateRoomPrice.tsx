@@ -26,6 +26,7 @@ const calculateRoomPrice = ({
     case "1": { // Day Use
       const base = Number(room.hourlyBasePrice ?? 0);
       const extraHours = Math.max(0, hours - 2);
+      
       const extra =
         extraHours * Number(room.hourlyAdditionalPrice ?? 0);
 
