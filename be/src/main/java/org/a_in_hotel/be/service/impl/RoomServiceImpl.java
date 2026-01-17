@@ -43,6 +43,7 @@ public class RoomServiceImpl implements RoomService {
     private final ImageRepository roomImageRepository;
     private final SecurityUtils securityUtils;
     private ImageMapper roomImageMapper;
+    private static final List<String> SEARCH_FIELDS = List.of("roomCode","roomNumber","roomName");
     @Autowired
     public RoomServiceImpl(RoomMapper roomMapper,
                            RoomRepository roomRepository,
@@ -174,8 +175,7 @@ public class RoomServiceImpl implements RoomService {
             String filter,
             String searchField,
             String searchValue,
-            boolean all,
-            List<String> searchFields
+            boolean all
     ) {
         try {
             log.info("start to get list room");
@@ -183,26 +183,20 @@ public class RoomServiceImpl implements RoomService {
             Specification<Room> sortable = RSQLJPASupport.toSort(sort);
             Specification<Room> filterable = RSQLJPASupport.toSpecification(filter);
             Specification<Room> searchable =
-                    SearchHelper.buildSearchSpec(searchField, searchValue, searchFields);
-
+                    SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
             Pageable pageable = all
                     ? Pageable.unpaged()
                     : PageRequest.of(page - 1, size);
-
-            // 1️⃣ Query rooms
             Page<Room> roomPage =
                     roomRepository.findAll(
                             sortable.and(filterable).and(searchable),
                             pageable
                     );
-
-            // 2️⃣ Collect assetIds
             List<Long> assetIds = roomPage.getContent().stream()
                     .flatMap(room -> room.getAssets().stream())
                     .map(Asset::getId)
                     .toList();
 
-            // 3️⃣ Batch load images
             Map<Long, Image> imageMap = roomImageRepository
                     .findByEntityTypeAndEntityIdIn("Asset", assetIds)
                     .stream()
@@ -211,15 +205,11 @@ public class RoomServiceImpl implements RoomService {
                             img -> img,
                             (a, b) -> a // nếu trùng, lấy cái đầu
                     ));
-
-            // 4️⃣ Set thumbnail cho asset
             roomPage.getContent().forEach(room ->
                     room.getAssets().forEach(asset ->
                             asset.setThumbnail(imageMap.get(asset.getId()))
                     )
             );
-
-            // 5️⃣ Map to response
             return roomPage.map(roomMapper::toResponse);
 
         } catch (Exception e) {

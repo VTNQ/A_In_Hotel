@@ -13,22 +13,12 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     { label: t("bookingDateTime.packageFullDay"), value: "3" },
   ];
   
- const packageOptions = useMemo(() => {
-    // ≥ 2 đêm → CHỈ full day
-    if (nights >= 2) {
-      return PACKAGE_OPTIONS.filter((o) => o.value === "3");
-    }
-
-    // 0 hoặc 1 đêm → show đủ nhưng disable sai
-    return PACKAGE_OPTIONS.map((opt) => ({
-      ...opt,
-      disabled:
-        (opt.value === "1" && nights !== 0) || // Day Use chỉ khi 0 đêm
-        (opt.value === "2" && nights !== 1) || // Overnight chỉ khi 1 đêm
-        (opt.value === "3" && nights < 1),     // Full Day chỉ khi ≥2 đêm
-    }));
-  }, [nights, t]);
-  // 🔹 AUTO SET TIME THEO PACKAGE
+const packageOptions = useMemo(() => {
+  return PACKAGE_OPTIONS.map((opt) => ({
+    ...opt,
+    disabled: opt.value === "2" && nights > 1, // ✅ chỉ overnight
+  }));
+}, [nights, t]);
   useEffect(() => {
     if (!form.checkInDate || !form.checkOutDate) return;
 

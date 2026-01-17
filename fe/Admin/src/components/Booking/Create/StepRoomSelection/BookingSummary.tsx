@@ -1,6 +1,7 @@
 import { CalendarDays, Users } from "lucide-react";
 import calculateRoomPrice from "./CalculateRoomPrice";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 const BookingSummary = ({
   rooms = [],
@@ -8,10 +9,28 @@ const BookingSummary = ({
   guests,
   onNext,
   onEditGuests,
-  packageType
+  packageType,
 }: any) => {
+  const calculateHours = (
+    checkInDate: string,
+    checkInTime: string,
+    checkOutDate: string,
+    checkOutTime: string,
+  ): number => {
+    const checkIn = dayjs(`${checkInDate} ${checkInTime}`);
+    const checkOut = dayjs(`${checkOutDate} ${checkOutTime}`);
+
+    const hours = checkOut.diff(checkIn, "hour", true); // true = decimal
+    return Math.max(0, Math.round(hours));
+  };
+  const hours = calculateHours(
+    bookingDate.checkInDate,
+    bookingDate.checkInTime,
+    bookingDate.checkOutDate,
+    bookingDate.checkOutTime,
+  );
   const totalPrice = rooms.reduce((sum: number, room: any) => {
-    const { price } = calculateRoomPrice({ packageType, room });
+    const { price } = calculateRoomPrice({ packageType, room, hours });
     return sum + price;
   }, 0);
   const { t } = useTranslation();
@@ -20,7 +39,7 @@ const BookingSummary = ({
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <CalendarDays className="w-5 h-5 text-[#42578E]" />
-        <h3 className=" text-gray-800">  {t("roomSelection.yourBooking")}</h3>
+        <h3 className=" text-gray-800"> {t("roomSelection.yourBooking")}</h3>
       </div>
 
       {/* Dates */}
@@ -34,18 +53,25 @@ const BookingSummary = ({
           <p className="font-medium text-gray-800">
             {bookingDate?.checkInDate || "--"}
           </p>
+          <p className="text-xs text-gray-500">
+            {bookingDate?.checkInTime || "--"}
+          </p>
         </div>
 
         {/* CHECK-OUT (HẸP HƠN) */}
         <div className="flex flex-col justify-center pl-4 min-h-[48px]">
-          <p className="text-gray-400 text-xs"> {t("roomSelection.checkOut")}</p>
+          <p className="text-gray-400 text-xs">
+            {" "}
+            {t("roomSelection.checkOut")}
+          </p>
           <p className="font-medium text-gray-800">
             {bookingDate?.checkOutDate || "--"}
           </p>
+          <p className="text-xs text-gray-500">
+            {bookingDate?.checkOutTime || "--"}
+          </p>
         </div>
       </div>
-
-
 
       {/* Guests */}
       <div className="flex justify-between items-center mb-4 text-sm border-t pt-4 border-gray-200">
@@ -76,7 +102,10 @@ const BookingSummary = ({
           {rooms.map((room: any) => {
             const { price } = calculateRoomPrice({ packageType, room });
             return (
-              <div key={room.id} className="flex justify-between text-sm font-medium">
+              <div
+                key={room.id}
+                className="flex justify-between text-sm font-medium"
+              >
                 <span>{room.roomName}</span>
                 <span>${price}</span>
               </div>
@@ -84,7 +113,6 @@ const BookingSummary = ({
           })}
         </div>
       )}
-
 
       {/* Price */}
       <div className="border-t border-gray-200 pt-4 text-sm space-y-2">
@@ -103,14 +131,14 @@ const BookingSummary = ({
         disabled={rooms.length === 0}
         onClick={onNext}
         className={`w-full mt-4 py-2 rounded-lg
-  ${rooms.length
-            ? "bg-[#42578E] text-white"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
+  ${
+    rooms.length
+      ? "bg-[#42578E] text-white"
+      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+  }`}
       >
         {t("roomSelection.continue")}
       </button>
-
 
       {/* Footer text */}
       <p className="text-xs text-gray-400 mt-2 text-center">

@@ -64,7 +64,6 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
                 />
 
                 <Input
-                    type="number"
                     label={t("bookingGuest.idNumber")}
                     placeholder="Enter ID number"
 

@@ -4,9 +4,28 @@ import calculateRoomPrice from "./CalculateRoomPrice";
 import RoomAssets from "./RoomAssets";
 import RoomAmenities from "./RoomAmenities";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
-const RoomCard = ({ room, service, selected, onSelect, packageType }: any) => {
-  const priceInfo = calculateRoomPrice({ packageType, room });
+const RoomCard = ({ room,bookingDate, service, selected, onSelect, packageType }: any) => {
+  const calculateHours = (
+  checkInDate: string,
+  checkInTime: string,
+  checkOutDate: string,
+  checkOutTime: string
+): number => {
+  const checkIn = dayjs(`${checkInDate} ${checkInTime}`);
+  const checkOut = dayjs(`${checkOutDate} ${checkOutTime}`);
+
+  const hours = checkOut.diff(checkIn, "hour", true); // true = decimal
+  return Math.max(0, Math.round(hours));
+};
+const hours = calculateHours(
+  bookingDate.checkInDate,
+  bookingDate.checkInTime,
+  bookingDate.checkOutDate,
+  bookingDate.checkOutTime
+);
+  const priceInfo = calculateRoomPrice({ packageType, room,hours });
 
   const [specialRequest, setSpecialRequest] = useState("");
   const { t } = useTranslation();

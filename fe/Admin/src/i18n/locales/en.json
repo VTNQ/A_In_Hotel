@@ -133,8 +133,8 @@
     "new": "+ New Voucher",
     "errorLoad": "Failed to load data",
     "expired": "Expired",
-    "changeSuccess":"Voucher change status success",
-    "changeError":"Voucher change status error",
+    "changeSuccess": "Voucher change status success",
+    "changeError": "Voucher change status error",
     "searchPlaceholder": "Search by code or name",
     "code": "Code",
     "name": "Name",
@@ -175,7 +175,7 @@
     "roomNumber": "Room Number",
     "new": "+ New Room",
     "price": "Price",
-    "searchPlaceholder": "Search by room number, room name",
+    "searchPlaceholder": "Search by room code, room name",
     "image": "Image",
     "first2Hours": "First 2 hours",
     "extraHour": "Extra hour",
@@ -514,6 +514,7 @@
     "title": "Enhance Your Stay",
     "subtitle": "Customize your experience with our exclusive add-ons.",
     "allServices": "All Services",
+    "searchPlaceholder": "Search by service name",
     "noServices": "No services found",
     "addedServices": "Added Services",
     "estimated": "Estimated",
@@ -586,6 +587,12 @@
     "outstanding": "Outstanding",
     "confirm": "Check-in",
     "processing": "Processing..."
+  },
+  "logoutConfirm": {
+    "title": "Are you sure you want to log out?",
+    "description": "You are about to log out of the admin panel.",
+    "cancel": "No, stay logged in",
+    "confirm": "Yes, log out"
   },
   "confirmCheckOut": {
     "title": "Confirm Check-out",
