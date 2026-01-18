@@ -158,6 +158,7 @@
             "titleCreate": "Tạo phòng mới",
             "roomType": "Loại phòng",
             "selectRoomType": "Chọn loại phòng",
+            "titleEdit": "Sửa phòng",
             "roomNumber": "Số phòng",
             "enterRoomNumber": "Nhập số phòng",
             "roomName": "Tên phòng",

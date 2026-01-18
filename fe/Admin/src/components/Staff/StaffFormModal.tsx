@@ -102,7 +102,7 @@ const StaffFormModal = ({
 
             title={t("staff.titleCreate")}
             onSave={handleSave}
-            saveLabel={loading ? t("common.saving...") : t("common.save")}
+            saveLabel={loading ? t("common.saving") : t("common.save")}
              cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
         >
