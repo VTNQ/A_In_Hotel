@@ -83,7 +83,7 @@ const ExtraServiceFormModal = ({
                 note: formData.note.trim(),
                 extraCharge: formData.extraCharge,
                 image: formData.image,
-                type: 1
+                type: 2
             }
             const response = await addExtraService(payload);
 
