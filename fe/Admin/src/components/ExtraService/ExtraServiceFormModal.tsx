@@ -147,7 +147,7 @@ const ExtraServiceFormModal = ({
             onClose={handleCancel}
             title={t("extraService.createOrUpdate.titleCreate")}
             onSave={handleSave}
-            saveLabel={saving ? t("common.saving...") : t("common.save")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
             cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
         >
