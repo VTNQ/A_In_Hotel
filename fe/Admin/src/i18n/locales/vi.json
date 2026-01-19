@@ -12,6 +12,7 @@
         "view": "Xem chi tiết",
         "status": "Trạng thái",
         "action": "Hành động",
+        "none":"Không có",
         "active": "Hoạt động",
         "unKnown": "Không xác định",
         "deActivate": "Hủy kích hoạt",
@@ -683,5 +684,29 @@
         },
         "updateSuccess": "Cập nhật thông tin khách thành công",
         "updateError": "Cập nhật thông tin khách thất bại"
+    },
+    "promotion": {
+        "title": "Quản lý chương trình khuyến mãi",
+        "new": "+ Thêm chương trình",
+        "code": "Mã chương trình",
+        "name": "Tên chương trình",
+        "type": "Loại khuyến mãi",
+        "discountValue": "Giá trị giảm",
+         "createdBy": "Người tạo",
+        "startDate":"Ngày bắt đầu",
+        "value":"Giá trị",
+        "endDate":"Ngày kết thúc",
+        "typeView": {
+            "percent": "Giảm theo %",
+            "fixed": "Giảm số tiền cố định",
+            "special": "Giá đặc biệt"
+        },
+        "priority": "Độ ưu tiên",
+        "searchPlaceholder": "Tìm kiếm theo ID,tên",
+        "errorLoad": "Không thể tải dữ liệu",
+        "status": {
+            "enabled": "Hoạt động",
+            "Disabled": "Không hoạt động"
+        }
     }
 }

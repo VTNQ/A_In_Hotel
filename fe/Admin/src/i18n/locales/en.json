@@ -15,6 +15,7 @@
     "active": "Active",
     "deActivate": "Deactivate",
     "action": "action",
+    "none":"None",
     "createdAt": "Created At",
     "inactive": "Inactive",
     "status": "Status",
@@ -679,5 +680,29 @@
     },
     "updateSuccess": "Update guest information successfully",
     "updateError": "Update guest information failed"
+  },
+  "promotion":{
+    "title":"Manager Promotion",
+    "new":"+ New Promotion",
+    "code":"Promotion Code",
+    "name":"Promotion Name",
+    "startDate":"Start Date",
+     "createdBy": "Created By",
+    "value":"value",
+    "endDate":"End Date",
+    "type":"Type",
+    "discountValue":"Discount Value",
+    "priority":"Priority",
+    "searchPlaceholder":"Search by Promotion Code, Promotion Name",
+    "errorLoad":"Failed to load data",
+     "typeView": {
+      "percent": "Percentage discount",
+      "fixed": "Fixed amount discount",
+      "special": "Special price"
+    },
+    "status":{
+      "enabled":"Enabled",
+      "disabled":"Disabled"
+    }
   }
 }
