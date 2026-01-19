@@ -90,13 +90,15 @@ public class BookingServiceImpl implements BookingService {
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId());
+        repository.save(booking);
         if(request.getPayment()!=null){
             Payment payment = paymentMapper.toEntity(request.getPayment());
             payment.setBooking(booking);
             booking.getPayment().add(payment);
         }
+
         markRoomReserved(booking);
-        repository.save(booking);
+
 
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
@@ -157,10 +159,15 @@ public class BookingServiceImpl implements BookingService {
 
         for (BookingDetail detail : booking.getDetails()) {
 
+            if (detail.getRoom() == null) {
+                continue;
+            }
+
             Long roomId = detail.getRoom().getId();
             if (roomId == null) {
                 continue;
             }
+
 
             Room room = roomRepository.findById(roomId)
                     .orElseThrow(() ->

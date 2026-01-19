@@ -83,7 +83,7 @@ const ExtraServiceFormModal = ({
                 note: formData.note.trim(),
                 extraCharge: formData.extraCharge,
                 image: formData.image,
-                type: 1
+                type: 2
             }
             const response = await addExtraService(payload);
 
@@ -147,7 +147,7 @@ const ExtraServiceFormModal = ({
             onClose={handleCancel}
             title={t("extraService.createOrUpdate.titleCreate")}
             onSave={handleSave}
-            saveLabel={saving ? t("common.saving...") : t("common.save")}
+            saveLabel={saving ? t("common.saving") : t("common.save")}
             cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
         >

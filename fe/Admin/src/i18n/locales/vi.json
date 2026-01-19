@@ -12,6 +12,7 @@
         "view": "Xem chi tiết",
         "status": "Trạng thái",
         "action": "Hành động",
+        "none":"Không có",
         "active": "Hoạt động",
         "unKnown": "Không xác định",
         "deActivate": "Hủy kích hoạt",
@@ -152,12 +153,13 @@
         "new": "+ Thêm Phòng",
         "roomName": "Tên Phòng",
         "roomTypeName": "Loại phòng",
-        "searchPlaceholder": "Tìm theo tên hoặc số phòng",
+        "searchPlaceholder": "Tìm theo mã phòng hoặc số phòng",
         "priceFullDay": "Giá/Cả ngày",
         "createOrUpdate": {
             "titleCreate": "Tạo phòng mới",
             "roomType": "Loại phòng",
             "selectRoomType": "Chọn loại phòng",
+            "titleEdit": "Sửa phòng",
             "roomNumber": "Số phòng",
             "enterRoomNumber": "Nhập số phòng",
             "roomName": "Tên phòng",
@@ -327,8 +329,8 @@
         "expired": "Hết hạn",
         "errorLoad": "Không thể tải dữ liệu",
         "searchPlaceholder": "Tìm theo mã hoặc tên",
-        "changeSuccess":"Cập nhật voucher thành công",
-        "changeError":"Cập nhật voucher thất bại",
+        "changeSuccess": "Cập nhật voucher thành công",
+        "changeError": "Cập nhật voucher thất bại",
         "code": "Mã",
         "name": "Tên",
         "discountType": "Loại giảm",
@@ -462,8 +464,8 @@
         "checkOutTime": "Giờ trả phòng",
         "package": "Gói đặt phòng",
         "packageOvernight": "Qua đêm",
-        "packageDayUse": "Trong ngày",
-        "packageFullDay": "Cả ngày",
+        "packageDayUse": "Thuê giờ",
+        "packageFullDay": "Ngảy đêm",
         "adults": "Người lớn",
         "children": "Trẻ em",
         "duration": "Thời gian lưu trú",
@@ -513,6 +515,7 @@
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",
+        "searchPlaceholder": "Tìm kiếm theo tên dịch vụ",
         "addedServices": "Dịch vụ đã thêm",
         "estimated": "Ước tính",
         "add": "Thêm vào đặt phòng",
@@ -661,6 +664,12 @@
         "service": "Dịch vụ",
         "price": "Giá"
     },
+    "logoutConfirm": {
+        "title": "Bạn có chắc chắn muốn đăng xuất?",
+        "description": "Bạn sắp đăng xuất khỏi trang quản trị.",
+        "cancel": "Không, ở lại",
+        "confirm": "Có, đăng xuất"
+    },
     "bookingEdit": {
         "title": "Chỉnh sửa thông tin khách",
         "guestName": "Tên khách",
@@ -675,5 +684,29 @@
         },
         "updateSuccess": "Cập nhật thông tin khách thành công",
         "updateError": "Cập nhật thông tin khách thất bại"
+    },
+    "promotion": {
+        "title": "Quản lý chương trình khuyến mãi",
+        "new": "+ Thêm chương trình",
+        "code": "Mã chương trình",
+        "name": "Tên chương trình",
+        "type": "Loại khuyến mãi",
+        "discountValue": "Giá trị giảm",
+         "createdBy": "Người tạo",
+        "startDate":"Ngày bắt đầu",
+        "value":"Giá trị",
+        "endDate":"Ngày kết thúc",
+        "typeView": {
+            "percent": "Giảm theo %",
+            "fixed": "Giảm số tiền cố định",
+            "special": "Giá đặc biệt"
+        },
+        "priority": "Độ ưu tiên",
+        "searchPlaceholder": "Tìm kiếm theo ID,tên",
+        "errorLoad": "Không thể tải dữ liệu",
+        "status": {
+            "enabled": "Hoạt động",
+            "Disabled": "Không hoạt động"
+        }
     }
 }

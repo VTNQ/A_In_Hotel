@@ -16,7 +16,7 @@ public interface RoomService {
 
     RoomResponse findById(Long id);
 
-    Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all,List<String> searchFields);
+    Page<RoomResponse> getListRoom(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
 
     void updateStatus(Long id, Integer status);
 

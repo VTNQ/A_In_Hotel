@@ -4,13 +4,17 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SECTIONS } from "./Section";
 import { useTranslation } from "react-i18next";
+import { clearTokens } from "../../util/auth";
+import ConfirmLogoutModal from "../logout/ConfirmLogoutModal";
 
 const SideBarItem = ({
   item,
   onNavigate,
+  onAction,
 }: {
   item: any;
   onNavigate?: () => void;
+  onAction?: (action: string) => void;
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -19,29 +23,32 @@ const SideBarItem = ({
 
   const isParentActive =
     item.children &&
-    item.children.some((c: any) =>
-      location.pathname.startsWith(c.path)
-    );
+    item.children.some((c: any) => location.pathname.startsWith(c.path));
 
-  const isActive =
-    item.path && location.pathname.startsWith(item.path);
+  const isActive = item.path && location.pathname.startsWith(item.path);
   useEffect(() => {
     if (isParentActive) {
       setOpen(true);
     }
   }, [isParentActive]);
 
-  const handleClick = () => {
-    if (item.children) {
-      setOpen((prev) => !prev);
-    } else if (item.onClick) {
-      item.onClick();
-      onNavigate?.();
-    } else if (item.path) {
-      navigate(item.path);
-      onNavigate?.();
-    }
-  };
+const handleClick = () => {
+  if (item.children) {
+    setOpen((prev) => !prev);
+    return;
+  }
+
+  if (item.action) {
+    onAction?.(item.action);
+    onNavigate?.();
+    return;
+  }
+
+  if (item.path) {
+    navigate(item.path);
+    onNavigate?.();
+  }
+};
 
 
   return (
@@ -108,11 +115,22 @@ const SideBarItem = ({
   );
 };
 
-
 const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const [openLogout, setOpenLogout] = useState(false);
+  const handleAction = (action: string) => {
+    if (action === "LOGOUT") {
+      setOpenLogout(true);
+    }
+  };
+
+  const handleConfirmLogout = () => {
+    clearTokens();
+    window.location.href = "/";
+  };
   return (
-    <aside
-      className={`
+    <>
+      <aside
+        className={`
       fixed lg:static z-50
       h-screen w-64
       bg-[#1D263E] text-white
@@ -120,34 +138,45 @@ const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
       ${open ? "translate-x-0" : "-translate-x-full"}
       lg:translate-x-0
       `}
-    >
-      <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
-          <img src="/asset/logo-ainhotel.png" className="w-32" />
-          <button
-            onClick={onClose}
-            className="lg:hidden text-gray-400 hover:text-white"
-          >
-            ✕
-          </button>
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
+            <img src="/asset/logo-ainhotel.png" className="w-32" />
+            <button
+              onClick={onClose}
+              className="lg:hidden text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+          <nav className="flex-1 overflow-y-auto custom-scroll px-3 mt-4">
+            {SECTIONS.map((section, i) => (
+              <div key={i}>
+                {section.title && (
+                  <h2 className="px-4 text-xs uppercase text-gray-500 mb-1">
+                    {section.title}
+                  </h2>
+                )}
+                {section.items.map((item: any) => (
+                  <SideBarItem
+                    key={item.label}
+                    item={item}
+                    onAction={handleAction}
+                    onNavigate={onClose}
+                  />
+                ))}
+              </div>
+            ))}
+          </nav>
         </div>
-        <nav className="flex-1 overflow-y-auto custom-scroll px-3 mt-4">
-          {SECTIONS.map((section, i) => (
-            <div key={i}>
-              {section.title && (
-                <h2 className="px-4 text-xs uppercase text-gray-500 mb-1">
-                  {section.title}
-                </h2>
-              )}
-              {section.items.map((item: any) => (
-                <SideBarItem key={item.label} item={item} onNavigate={onClose} />
-              ))}
-            </div>
-          ))}
-        </nav>
-      </div>
-    </aside>
-  )
+      </aside>
+      <ConfirmLogoutModal
+        open={openLogout}
+        onCancel={() => setOpenLogout(false)}
+        onConfirm={handleConfirmLogout}
+      />
+    </>
+  );
 };
 
 export default SideBar;

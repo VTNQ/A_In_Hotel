@@ -8,6 +8,11 @@ export type GetAllOptions = {
   searchValue?: string;
   all?: boolean;
 };
+export interface ConfirmLogoutModalProps {
+  open: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+};
 
 export interface MenuItem {
   label: string;

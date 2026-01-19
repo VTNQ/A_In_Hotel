@@ -190,7 +190,7 @@ const UpdateRoomFormModal = ({
             <CommonModal
                 isOpen={true}
                 onClose={handleCancel}
-                title={t("room.createOrUpdate.titleUpdate")}
+                title={t("room.createOrUpdate.titleEdit")}
                 saveLabel={t("common.save")}
                 cancelLabel={t("common.cancel")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
@@ -207,9 +207,9 @@ const UpdateRoomFormModal = ({
                 isOpen={isOpen}
                 onClose={handleCancel}
                 onSave={handleUpdate}
-                title={t("room.createOrUpdate.titleUpdate")}
+                title={t("room.createOrUpdate.titleEdit")}
                 width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
-                saveLabel={loading ? t("common.saving...") : t("common.save")}
+                saveLabel={loading ? t("common.saving") : t("common.save")}
                 cancelLabel={t("common.cancelButton")}
             >
 

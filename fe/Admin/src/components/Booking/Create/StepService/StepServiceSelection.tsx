@@ -10,145 +10,155 @@ import { estimateServicePrice } from "../../../../util/estimateServicePrice";
 import { useTranslation } from "react-i18next";
 
 const StepServiceSelection = ({ booking, onBack, onNext }: any) => {
-    const [services, setServices] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [selectedServices, setSelectedServices] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
-    const [category, setCategory] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { t } = useTranslation();
+  const hotelId = getTokens()?.hotelId;
+  useEffect(() => {
+    if (!hotelId) return;
 
-    const hotelId = getTokens()?.hotelId;
-    useEffect(() => {
-        if (!hotelId) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        let filters = [
+          `hotelId==${hotelId}`,
+          `price>0`,
+          `isActive==true`,
+          `type==2`,
+        ];
 
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                let filters = [
-                    `hotelId==${hotelId}`,
-                    `price>0`,
-                    `isActive==true`,
-                    `type==2`
-                ];
+        if (category) {
+          filters.push(`category.id==${category}`);
+        }
 
-                if (category) {
-                    filters.push(`category.id==${category}`);
-                }
+        const [categoryResp, serviceResp] = await Promise.all([
+          getAllCategory({
+            all: true,
+            filter: "isActive==true and type==2",
+          }),
+          getAll({
+            all: true,
+            filter: filters.join(" and "),
+            searchValue: search,
+          }),
+        ]);
 
-                const [categoryResp, serviceResp] = await Promise.all([
-                    getAllCategory({
-                        all: true,
-                        filter: "isActive==true and type==2",
-                    }),
-                    getAll({
-                        all: true,
-                        filter: filters.join(" and "),
-                    }),
-                ]);
-
-                setCategories(categoryResp?.content || []);
-                setServices(serviceResp.data?.content || []);
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [hotelId, category]);
-
-
-    /* ===================== SELECT SERVICE ===================== */
-    const toggleService = (service: any) => {
-        setSelectedServices((prev) =>
-            prev.some((s) => s.id === service.id)
-                ? prev.filter((s) => s.id !== service.id)
-                : [...prev, service]
-        );
+        setCategories(categoryResp?.content || []);
+        setServices(serviceResp.data?.content || []);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const ServiceSkeleton = () => (
-        <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-                <div
-                    key={i}
-                    className="h-28 bg-gray-200 rounded-lg animate-pulse"
-                />
-            ))}
-        </div>
+    fetchData();
+  }, [hotelId, category, search]);
+
+  /* ===================== SELECT SERVICE ===================== */
+  const toggleService = (service: any) => {
+    setSelectedServices((prev) =>
+      prev.some((s) => s.id === service.id)
+        ? prev.filter((s) => s.id !== service.id)
+        : [...prev, service],
     );
+  };
 
-    return (
-        <div className="bg-gray-50 min-h-screen p-6">
-            {/* HEADER */}
-            <div className="mb-6">
-                <h2 className="text-2xl font-semibold">  {t("serviceSelection.title")}</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                     {t("serviceSelection.subtitle")}
-                </p>
-            </div>
+  const ServiceSkeleton = () => (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-28 bg-gray-200 rounded-lg animate-pulse" />
+      ))}
+    </div>
+  );
 
-            {/* TABS */}
-            <ServiceTabs
-                value={category}
-                categories={categories}
-                disabled={loading}
-                onChange={setCategory}
-            />
+  return (
+    <div className="bg-gray-50 min-h-screen p-6">
+      {/* HEADER */}
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold">
+          {" "}
+          {t("serviceSelection.title")}
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          {t("serviceSelection.subtitle")}
+        </p>
+      </div>
 
-            <div className="grid grid-cols-3 gap-6 mt-6">
-                {/* LEFT */}
-                <div className="col-span-2 space-y-4">
-                    {loading ? (
-                        <ServiceSkeleton />
-                    ) : services.length === 0 ? (
-                        <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
-                    ) : (
-                        services.map((service) => (
-                            <ServiceCard
-                                key={service.id}
-                                service={service}
-                                booking={booking}
-                                selected={selectedServices.some(
-                                    (s) => s.id === service.id
-                                )}
-                                onToggle={() => toggleService(service)}
-                            />
-                        ))
-                    )}
-                </div>
+      {/* TABS */}
+      <ServiceTabs
+        value={category}
+        categories={categories}
+        disabled={loading}
+        onChange={setCategory}
+        search={search}
+        onSearch={setSearch}
+      />
 
-                {/* RIGHT */}
-                <BookingSummary
-                    booking={booking}
-                    services={selectedServices}
-                    onNext={() =>
-                        onNext({
-                            services: selectedServices.map((s) => ({
-                                extraServiceId: s.id,
-                                unit: s.unit,
-                                price: estimateServicePrice(s, booking),
-                                serviceName: s.serviceName ?? s.name,
-                            })),
-                        })
-                    }
-                />
-            </div>
-            <div className="flex justify-between items-center mt-8">
-                <button className="px-4 py-2 rounded-lg text-sm font-medium
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        {/* LEFT */}
+        <div className="col-span-2 space-y-4">
+          {loading ? (
+            <ServiceSkeleton />
+          ) : services.length === 0 ? (
+            <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
+          ) : (
+            services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                booking={booking}
+                selected={selectedServices.some((s) => s.id === service.id)}
+                onToggle={() => toggleService(service)}
+              />
+            ))
+          )}
+        </div>
+
+        {/* RIGHT */}
+        <BookingSummary
+          booking={booking}
+          services={selectedServices}
+          onNext={() =>
+            onNext({
+              services: selectedServices.map((s) => ({
+                extraServiceId: s.id,
+                unit: s.unit,
+                price: estimateServicePrice(s, booking),
+                serviceName: s.serviceName ?? s.name,
+              })),
+            })
+          }
+        />
+      </div>
+      <div className="flex justify-between items-center mt-8">
+        <button
+          className="px-4 py-2 rounded-lg text-sm font-medium
             text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
-            hover:border-red-300 transition">
-                    {t("serviceSelection.cancel")}
-                </button>
+            hover:border-red-300 transition"
+        >
+          {t("serviceSelection.cancel")}
+        </button>
 
-                <button onClick={onBack} className="text-sm text-gray-500 hover:underline">
-                     {t("serviceSelection.back")}
-                </button>
-            </div>
-        </div>
-    );
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-2
+    px-4 py-2
+    rounded-xl
+    bg-gray-100
+    text-sm font-medium text-gray-700
+    hover:bg-gray-200 transition"
+        >
+          {t("serviceSelection.back")}
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default StepServiceSelection;
