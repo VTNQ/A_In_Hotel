@@ -17,8 +17,8 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
       {/* Image */}
       <div className="w-[260px] h-[200px] shrink-0">
         <img
-          src={File_URL + room.images[0].url}
-          alt={room.images[0].altText}
+          src={File_URL + room?.images[0]?.url}
+          alt={room?.images[0]?.altText}
           className="w-full h-full object-cover"
         />
       </div>

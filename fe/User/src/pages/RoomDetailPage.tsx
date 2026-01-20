@@ -3,13 +3,21 @@ import RoomCard from "../components/RoomDetail/RoomCard";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { RoomResponse } from "../type/room.types";
-import { getRoomById } from "../service/api/Room";
+import { getRoom, getRoomById } from "../service/api/Room";
 import { File_URL } from "../setting/constant/app";
 import { GetAsset } from "../service/api/Asset";
 import { useBookingSearch } from "../context/booking/BookingSearchContext";
 import type { PriceType } from "../type/booking.types";
+import RoomCardSkeleton from "../components/RoomDetail/RoomCardSkeleton";
+import RoomGallerySkeleton from "../components/RoomDetail/RoomGallerySkeleton";
+import RoomHeaderSkeleton from "../components/RoomDetail/RoomHeaderSkeleton";
+import AmenitiesSkeleton from "../components/RoomDetail/AmenitiesSkeleton";
+import BookingBoxSkeleton from "../components/RoomDetail/BookingBoxSkeleton";
 const RoomDetailPage = () => {
   const [openGallery, setOpenGallery] = useState(false);
+  const [loadingRooms, setLoadingRooms] = useState(false);
+  const [loadingRoomDetail, setLoadingRoomDetail] = useState(true);
+
   const { id } = useParams();
   const { setSearch } = useBookingSearch();
   const [roomv2, setRoomV2] = useState<RoomResponse | null>(null);
@@ -30,6 +38,7 @@ const RoomDetailPage = () => {
     if (!id) return;
     const fetchRoom = async () => {
       try {
+        setLoadingRoomDetail(true);
         const res = await getRoomById(Number(id));
         if (res.data.data) {
           setRoomV2(res.data.data);
@@ -38,6 +47,8 @@ const RoomDetailPage = () => {
         }
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoadingRoomDetail(false);
       }
     };
     fetchRoom();
@@ -76,6 +87,27 @@ const RoomDetailPage = () => {
     if (!date) return "--/--/----";
     return new Date(date).toLocaleDateString("vi-VN");
   };
+  const [otherRooms, setOtherRooms] = useState<RoomResponse[]>([]);
+
+  const fetchOtherRooms = async (hotelId: number, currentRoomId: number) => {
+    try {
+      setLoadingRooms(true);
+      const res = await getRoom({
+        filter: `hotel.id==${hotelId} and id!=${currentRoomId} and status==3`,
+      });
+      const rooms = res.data.content || [];
+      setOtherRooms(rooms.filter((r: any) => r.id !== currentRoomId));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingRooms(false);
+    }
+  };
+  useEffect(() => {
+    if (!roomv2) return;
+
+    fetchOtherRooms(roomv2.hotelId, roomv2.id);
+  }, [roomv2]);
   const [PriceType, setPriceType] = useState<PriceType | null>(null);
   const [extraHours, setExtraHours] = useState(0);
   const calcNights = (checkIn?: string, checkOut?: string): number => {
@@ -151,41 +183,45 @@ const RoomDetailPage = () => {
         }}
       >
         <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden pt-[90px]">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
-            <div
-              className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden cursor-pointer"
-              onClick={() => setOpenGallery(true)}
-            >
-              <img
-                src={File_URL + roomv2?.images[0]?.url}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex flex-col gap-4 h-[400px]">
-              {roomv2?.images.slice(1, 3).map((img, i) => {
-                const isLast = i === 1 && roomv2?.images.length > 3;
+          {loadingRoomDetail ? (
+            <RoomGallerySkeleton />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
+              <div
+                className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden cursor-pointer"
+                onClick={() => setOpenGallery(true)}
+              >
+                <img
+                  src={File_URL + roomv2?.images[0]?.url}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col gap-4 h-[400px]">
+                {roomv2?.images.slice(1, 3).map((img, i) => {
+                  const isLast = i === 1 && roomv2?.images.length > 3;
 
-                return (
-                  <div
-                    key={i}
-                    className="relative flex-1 rounded-xl overflow-hidden cursor-pointer"
-                    onClick={() => setOpenGallery(true)}
-                  >
-                    <img
-                      src={File_URL + img.url}
-                      className="w-full h-full object-cover hover:scale-105 transition"
-                    />
+                  return (
+                    <div
+                      key={i}
+                      className="relative flex-1 rounded-xl overflow-hidden cursor-pointer"
+                      onClick={() => setOpenGallery(true)}
+                    >
+                      <img
+                        src={File_URL + img.url}
+                        className="w-full h-full object-cover hover:scale-105 transition"
+                      />
 
-                    {isLast && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-3xl font-semibold">
-                        +{remainImages}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                      {isLast && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-3xl font-semibold">
+                          +{remainImages}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </section>
         <section className="max-w-7xl mx-auto px-4 pt-[30px] pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -193,17 +229,23 @@ const RoomDetailPage = () => {
             <div className="lg:col-span-2 space-y-8">
               {/* ===== HEADER ===== */}
               <div>
-                <h1 className="text-2xl font-semibold">
-                  {roomv2?.roomName}{" "}
-                  <span className="text-base  text-gray-500 font-semibold">
-                    ( {roomv2?.roomTypeName} )
-                  </span>
-                </h1>
+                {loadingRoomDetail ? (
+                  <RoomHeaderSkeleton />
+                ) : (
+                  <>
+                    <h1 className="text-2xl font-semibold">
+                      {roomv2?.roomName}{" "}
+                      <span className="text-base  text-gray-500 font-semibold">
+                        ( {roomv2?.roomTypeName} )
+                      </span>
+                    </h1>
 
-                <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                  <span>📍</span>
-                  {roomv2?.hotelAddress}
-                </p>
+                    <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                      <span>📍</span>
+                      {roomv2?.hotelAddress}
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* ===== OVERVIEW ===== */}
@@ -220,19 +262,22 @@ const RoomDetailPage = () => {
                 {/* AMENITIES */}
                 <div className="bg-transparent border border-[#2B2B2B] rounded-xl p-5 h-fit">
                   <h4 className="font-semibold mb-4">Amenities</h4>
-
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-gray-700">
-                    {amenities.map((item) => (
-                      <li key={item.id} className="flex items-center gap-3">
-                        <img
-                          src={File_URL + item.thumbnail?.url}
-                          alt={item.assetName}
-                          className="w-4 h-4 object-contain"
-                        />
-                        <span>{item.assetName}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {loadingRoomDetail ? (
+                    <AmenitiesSkeleton />
+                  ) : (
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-gray-700">
+                      {amenities.map((item) => (
+                        <li key={item.id} className="flex items-center gap-3">
+                          <img
+                            src={File_URL + item.thumbnail?.url}
+                            alt={item.assetName}
+                            className="w-4 h-4 object-contain"
+                          />
+                          <span>{item.assetName}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
                 {/* POLICIES */}
@@ -281,7 +326,10 @@ const RoomDetailPage = () => {
 
             {/* RIGHT – BOOKING */}
             <div className="lg:sticky lg:top-[120px] h-fit bg-white">
-              <div className="rounded-xl p-5 shadow-sm space-y-5 ">
+              {loadingRoomDetail ?(
+                <BookingBoxSkeleton/>
+              ):(
+                <div className="rounded-xl p-5 shadow-sm space-y-5 ">
                 {/* ===== GUEST & BED INFO ===== */}
                 <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
                   <div className="space-y-2">
@@ -450,10 +498,14 @@ const RoomDetailPage = () => {
                 </div>
 
                 {/* ===== BUTTON ===== */}
-                <button onClick={handleBooking} className="w-full bg-[#b38a58] text-white py-2 rounded-lg">
+                <button
+                  onClick={handleBooking}
+                  className="w-full bg-[#b38a58] text-white py-2 rounded-lg"
+                >
                   Booking
                 </button>
               </div>
+              )}
             </div>
           </div>
         </section>
@@ -463,7 +515,7 @@ const RoomDetailPage = () => {
               className="w-full h-[320px] border-0"
               loading="lazy"
               src={`https://www.google.com/maps?q=${encodeURIComponent(
-                room.address
+                room.address,
               )}&output=embed`}
             />
           </div>
@@ -475,10 +527,25 @@ const RoomDetailPage = () => {
 
               <div className="bg-[#F2F2F2] rounded-xl shadow-sm p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <RoomCard title="STANDARD" price="250,000" />
-                  <RoomCard title="STANDARD" price="250,000" />
-                  <RoomCard title="SUPERIOR" price="280,000" />
-                  <RoomCard title="DELUXE" price="300,000" />
+                  {loadingRooms
+                    ? Array.from({ length: 4 }).map((_, i) => (
+                        <RoomCardSkeleton key={i} />
+                      ))
+                    : otherRooms
+                        .slice(0, 4)
+                        .map((room) => (
+                          <RoomCard
+                            key={room.id}
+                            id={room.id}
+                            title={room.roomName}
+                            price={room.defaultRate}
+                            image={room.images?.[0]?.url}
+                            size={room.area}
+                            guests={room.capacity}
+                            bed="Double bed"
+                            description={room.note}
+                          />
+                        ))}
                 </div>
                 <div className="flex flex-col items-center mt-10 text-gray-600 cursor-pointer group">
                   <div className="w-10 h-10 rounded-full border font-bold border-gray-300 flex items-center justify-center group-hover:bg-gray-100 transition">
