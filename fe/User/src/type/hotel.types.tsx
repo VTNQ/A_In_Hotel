@@ -3,4 +3,8 @@ export interface HotelResponse {
     name:string;
     code:string;
     address:string;
+    hotlines:HotelHotlineResponse[]
+}
+export interface HotelHotlineResponse{
+    phone:string;
 }

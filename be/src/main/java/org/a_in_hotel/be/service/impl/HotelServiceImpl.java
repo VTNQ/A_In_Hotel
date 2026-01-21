@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.HotelStatus;
+import org.a_in_hotel.be.dto.request.HotelHotlineRequest;
 import org.a_in_hotel.be.dto.request.HotelRequest;
 import org.a_in_hotel.be.dto.request.HotelUpdate;
 import org.a_in_hotel.be.dto.response.FacilityResponse;
@@ -13,6 +14,7 @@ import org.a_in_hotel.be.dto.response.HotelResponse;
 import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.exception.ErrorHandler;
+import org.a_in_hotel.be.mapper.HotelHotlineMapper;
 import org.a_in_hotel.be.mapper.HotelMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.*;
@@ -36,6 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,6 +54,7 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final EmailService emailService;
+    private final HotelHotlineMapper mapper;
     private final AccountRepository accountRepository;
     private final AssetRepository assetRepository;
     private final ExtraServiceRepository extraServiceRepository;
@@ -69,7 +74,7 @@ public class HotelServiceImpl implements HotelService {
 
             hotelRepository.findByAccount_Id(hotel.getIdUser()) // giả sử HotelRequest có idUser = accountId
                     .ifPresent(existingHotel -> {
-                        String ownerName=staffRepository.findByAccountId(existingHotel.getAccount().getId())
+                        String ownerName = staffRepository.findByAccountId(existingHotel.getAccount().getId())
                                 .map(Staff::getFullName)
                                 .orElse(existingHotel.getAccount().getEmail());
 
@@ -81,23 +86,24 @@ public class HotelServiceImpl implements HotelService {
                         throw new IllegalArgumentException(msg);
                     });
 
-            Hotel hotelEntity = hotelMapper.toEntity(hotel,securityUtils.getCurrentUserId());
+            Hotel hotelEntity = hotelMapper.toEntity(hotel, securityUtils.getCurrentUserId());
 
             hotelRepository.save(hotelEntity);
-            if(file!=null && !file.isEmpty()){
+            createHotelHotline(hotelEntity,hotel.getHotlines());
+            if (file != null && !file.isEmpty()) {
                 try {
-                    FileUploadMeta fileUploadMeta = generalService.saveFile(file,"hotel");
+                    FileUploadMeta fileUploadMeta = generalService.saveFile(file, "hotel");
                     Image hotelImage = imageMapper.toBannerImage(fileUploadMeta);
                     hotelImage.setEntityType("hotel");
                     hotelImage.setEntityId(hotelEntity.getId());
                     imageRepository.save(hotelImage);
-                }catch (Exception e){
+                } catch (Exception e) {
                     throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,
-                            "Lỗi khi lưu hình ảnh :"+e.getMessage());
+                            "Lỗi khi lưu hình ảnh :" + e.getMessage());
                 }
             }
             sendAdminAssignmentEmail(hotelEntity);
-            log.info("Hotel created successfully by {}",securityUtils.getCurrentUserEmail());
+            log.info("Hotel created successfully by {}", securityUtils.getCurrentUserEmail());
         } catch (DataIntegrityViolationException e) {
             String field = resolveConstraintField(e);
             log.warn("Duplicate entry on field: {}", field);
@@ -107,11 +113,22 @@ public class HotelServiceImpl implements HotelService {
             throw e;
         }
     }
-
-    private void sendAdminAssignmentEmail(Hotel hotel){
+    private void createHotelHotline(Hotel hotel, List<HotelHotlineRequest> requests){
+        if(requests == null || requests.isEmpty()){
+            return;
+        }
+        List<HotelHotline> list = new ArrayList<>();
+        for (HotelHotlineRequest request : requests){
+            HotelHotline hotelHotline = mapper.toEntity(request);
+            hotelHotline.setHotel(hotel);
+            list.add(hotelHotline);
+        }
+        hotel.setHotlines(list);
+    }
+    private void sendAdminAssignmentEmail(Hotel hotel) {
         Account adminAccount = hotel.getAccount();
-        if(adminAccount == null){
-            log.warn("Hotel {} has no admin account assigned",hotel.getName());
+        if (adminAccount == null) {
+            log.warn("Hotel {} has no admin account assigned", hotel.getName());
             return;
         }
 
@@ -126,7 +143,7 @@ public class HotelServiceImpl implements HotelService {
                     fullName,
                     hotel.getName()
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Failed to send admin assignment email", e);
         }
     }
@@ -134,11 +151,11 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void update(HotelUpdate hotel, Long id, MultipartFile file) {
         try {
-           Hotel currentHotel = hotelRepository.findById(id)
-                   .orElseThrow(()->new EntityNotFoundException(
-                           "Hotel id=" + id + " không tồn tại"));
+            Hotel currentHotel = hotelRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Hotel id=" + id + " không tồn tại"));
 
-           Long newAccountId = hotel.getIdUser();
+            Long newAccountId = hotel.getIdUser();
             Long oldAccountId = currentHotel.getAccount() != null
                     ? currentHotel.getAccount().getId()
                     : null;
@@ -149,7 +166,7 @@ public class HotelServiceImpl implements HotelService {
                     securityUtils.getCurrentUserId()
             );
 
-            if(newAccountId !=null && !newAccountId.equals(oldAccountId)){
+            if (newAccountId != null && !newAccountId.equals(oldAccountId)) {
                 hotelRepository.findByAccount_Id(newAccountId)
                         .ifPresent(otherHotel -> {
                             if (!otherHotel.getId().equals(currentHotel.getId())) {
@@ -206,8 +223,11 @@ public class HotelServiceImpl implements HotelService {
                 newImage.setEntityId(currentHotel.getId());
                 imageRepository.save(newImage);
             }
-            hotelRepository.save(currentHotel);
 
+
+            updateHotline(currentHotel,hotel);
+
+            hotelRepository.save(currentHotel);
             sendAdminAssignmentEmail(currentHotel);
 
             log.info(
@@ -228,6 +248,35 @@ public class HotelServiceImpl implements HotelService {
             log.error("Unexpected error updating hotel id={}", id, e);
             throw e;
         }
+    }
+
+    private void updateHotline(Hotel currentHotel,HotelUpdate request){
+
+        if (request.getHotlines() == null) return;
+
+        if (currentHotel.getId() == null) {
+            throw new IllegalStateException("Hotel must be saved before updating hotlines");
+        }
+            Set<String> requestPhones = request.getHotlines()
+                    .stream()
+                    .map(HotelHotlineRequest::getPhone)
+                    .collect(Collectors.toSet());
+            currentHotel.getHotlines()
+                    .removeIf(h->!requestPhones.contains(h.getPhone()));
+            Set<String> existingPhones = currentHotel.getHotlines()
+                    .stream()
+                    .map(HotelHotline::getPhone)
+                    .collect(Collectors.toSet());
+            request.getHotlines().stream()
+                    .map(HotelHotlineRequest::getPhone)
+                    .filter(phone->!existingPhones.contains(phone))
+                    .forEach(phone->{
+                        HotelHotline hotline = new HotelHotline();
+                        hotline.setPhone(phone);
+                        hotline.setHotel(currentHotel);
+                        currentHotel.getHotlines().add(hotline);
+                    });
+
     }
 
     @Override
@@ -274,9 +323,9 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelResponse getHotelById(Long id) {
-        return  hotelRepository.findById(id)
-                .map(hotel -> hotelMapper.toResponse(hotel, staffRepository,imageRepository))
-                .orElseThrow(()->new IllegalArgumentException("Hotel not found"));
+        return hotelRepository.findById(id)
+                .map(hotel -> hotelMapper.toResponse(hotel, staffRepository, imageRepository))
+                .orElseThrow(() -> new IllegalArgumentException("Hotel not found"));
     }
 
     /**

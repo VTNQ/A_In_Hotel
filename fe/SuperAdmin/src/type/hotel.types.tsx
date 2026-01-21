@@ -1,11 +1,16 @@
 
 import type { ImageResponse, Status } from "./common";
 
+export interface HotelHotlineForm {
+    phone:string;
+}
+
 export interface HotelFormData {
     name: string;
     address: string;
     idUser?: number | null;
     image:null | File;
+    hotlines:HotelHotlineForm[];
 }
 
 

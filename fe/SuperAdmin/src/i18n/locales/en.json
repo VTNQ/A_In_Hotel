@@ -118,6 +118,10 @@
         "deleteError": "Failed to delete hotel",
         "hotelCreate": {
             "title": "Create Hotel",
+            "hotlines": "Hotel hotlines",
+            "hotlinePlaceholder": "Enter hotline number",
+            "addHotline": "Add hotline",
+            "hotlineDesc": "You can add multiple hotline numbers for this hotel",
             "formTitle": "Hotel Information",
             "name": "Hotel Name",
             "namePlaceholder": "Enter hotel name",
@@ -138,6 +142,9 @@
         "hotelEdit": {
             "title": "Edit Hotel Information",
             "loading": "Loading hotel data...",
+            "hotlines": "Hotel hotlines",
+            "hotlinePlaceholder": "Enter hotline number",
+            "addHotline": "Add hotline",
             "name": "Hotel Name",
             "address": "Address",
             "manager": "Manager",
@@ -250,8 +257,8 @@
             "title": "About Hotel",
             "editTitle": "Edit Content",
             "form": {
-                "sucess":"System Content updated successfully.",
-                "error":"Failed to update system content",
+                "sucess": "System Content updated successfully.",
+                "error": "Failed to update system content",
                 "title": "Title",
                 "titlePlaceholder": "e.g. Welcome to Our Hotel",
                 "titleHint": "The main headline displayed for the About section.",
