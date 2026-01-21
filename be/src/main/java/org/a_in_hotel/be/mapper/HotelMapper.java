@@ -33,6 +33,7 @@ public interface HotelMapper  extends CommonMapper {
     @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "instantToLong")
     @Mapping(source = "account.id", target = "fullName", qualifiedByName = "mapAccountIdToFullName")
     @Mapping(source = "account.id", target = "idUser")
+    @Mapping(source = "hotlines",target = "hotlines")
     @Mapping(target = "thumbnail", expression = "java(mapImageV2(hotel.getId(),"
             + "\"hotel\",imageRepository))")
     HotelResponse toResponse(Hotel hotel,
@@ -43,5 +44,6 @@ public interface HotelMapper  extends CommonMapper {
     @Mapping(target = "code", ignore = true)     // không cho update code
     @Mapping(source = "dto.idUser", target = "account", qualifiedByName = "mapUserIdToAccount")
     @Mapping(target = "updatedBy", source = "userId")
+    @Mapping(target = "hotlines",ignore = true)
     void updateEntity(HotelUpdate dto, @MappingTarget Hotel entity,Long userId);
 }

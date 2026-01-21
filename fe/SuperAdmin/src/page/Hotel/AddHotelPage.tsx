@@ -1,10 +1,10 @@
 import CreateHotel from "@/components/Hotel/CreateHotel";
 
 const AddHotelPage = () => {
-    return (
-        <>
-            <CreateHotel />
-        </>
-    )
-}
+  return (
+    <>
+      <CreateHotel />
+    </>
+  );
+};
 export default AddHotelPage;

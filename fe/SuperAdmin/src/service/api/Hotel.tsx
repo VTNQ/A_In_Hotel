@@ -1,5 +1,6 @@
 import type { GetAllOptions } from "@/type/GetAllOptions";
 import Http from "../http/http";
+import { toFormData } from "@/util/util";
 
 export const AddHotel = async (hotelData: any) => {
   const formData = new FormData();
@@ -38,25 +39,16 @@ export const UpdateStatusHotel = async (hotelId: number, status: 0 | 1) => {
 };
 export const updateHotel = async (hotelId: number, data: any) => {
   try {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image" && value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
-    });
-    if (data.image) {
-      formData.append("image", data.image);
-    }
+    const formData = toFormData(data);
 
     return await Http.put(`/api/hotels/update/${hotelId}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-
   } catch (err) {
-    console.error("Lỗi khi tạo banner:", err);
+    console.error("Lỗi update hotel:", err);
     throw err;
   }
-}
+};
 
 export const getHotelById = async (id: number) => {
   return await Http.get(`/api/hotels/${id}`);

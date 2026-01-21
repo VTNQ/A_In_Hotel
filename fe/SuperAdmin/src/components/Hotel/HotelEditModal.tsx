@@ -38,12 +38,13 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         URL.revokeObjectURL(imagePreview);
       }
     };
-  }, [imagePreview])
+  }, [imagePreview]);
   const [formData, setFormData] = useState<HotelFormData>({
     name: "",
     address: "",
     idUser: null,
-    image: null as File | null
+    image: null as File | null,
+    hotlines: [],
   });
 
   const fetchUsers = async () => {
@@ -60,21 +61,28 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
     if (!open || !hotelId) return;
 
     const fetchData = async () => {
-      setFetching(true)
+      setFetching(true);
       try {
         const response = await getHotelById(Number(hotelId));
         setFormData({
           name: response?.data?.data?.name || "",
           address: response?.data?.data?.address || "",
           idUser: response?.data?.data?.idUser ?? null,
-          image: null as File | null
+          image: null as File | null,
+          hotlines:
+            response?.data?.data?.hotlines?.map((h: any) => ({
+              phone: h.phone,
+            })) || [],
         });
-        setImagePreview(response?.data?.data?.thumbnail ?
-          File_URL + response?.data?.data?.thumbnail?.url : null)
+        setImagePreview(
+          response?.data?.data?.thumbnail
+            ? File_URL + response?.data?.data?.thumbnail?.url
+            : null,
+        );
       } catch (err) {
         console.error("Failed to fetch hotel:", err);
       } finally {
-        setFetching(false)
+        setFetching(false);
       }
     };
 
@@ -90,8 +98,9 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         name: formData.name,
         address: formData.address,
         idUser: formData.idUser,
-        image: formData.image
-      }
+        image: formData.image,
+        hotlines: formData.hotlines.filter((h) => h.phone.trim() !== ""),
+      };
       const response = await updateHotel(Number(hotelId), payload);
 
       showAlert({
@@ -106,9 +115,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       showAlert({
         title: t("hotel.hotelEdit.updateError"),
         description:
-          err?.response?.data?.message ||
-          err?.message ||
-          t("common.tryAgain"),
+          err?.response?.data?.message || err?.message || t("common.tryAgain"),
         type: "error",
         autoClose: 4000,
       });
@@ -121,13 +128,17 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       name: "",
       address: "",
       idUser: null,
-      image: null as File | null
-    })
+      image: null as File | null,
+      hotlines: [],
+    });
     onClose();
-  }
+  };
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md max-h-[90vh]  overflow-y-auto
+    custom-scrollbar"
+      >
         <DialogHeader>
           <DialogTitle> {t("hotel.hotelEdit.title")}</DialogTitle>
         </DialogHeader>
@@ -152,7 +163,9 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
               </div>
 
               <div className="grid gap-2">
-                <label className="text-sm">{t("hotel.hotelEdit.address")}</label>
+                <label className="text-sm">
+                  {t("hotel.hotelEdit.address")}
+                </label>
                 <Textarea
                   value={formData.address}
                   onChange={(e) =>
@@ -164,7 +177,9 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
               <div className="grid gap-2">
                 <SelectField<UserResponse>
                   items={users}
-                  value={formData.idUser != null ? String(formData.idUser) : null}
+                  value={
+                    formData.idUser != null ? String(formData.idUser) : null
+                  }
                   onChange={(val) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -180,6 +195,55 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                   getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-sm">
+                  {t("hotel.hotelEdit.hotlines")}
+                </label>
+                <div className="space-y-2">
+                  {formData.hotlines.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Input
+                        placeholder={t("hotel.hotelEdit.hotlinePlaceholder")}
+                        value={item.phone}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData((prev) => {
+                            const hotlines = [...prev.hotlines];
+                            hotlines[index] = { phone: value };
+                            return { ...prev, hotlines };
+                          });
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            hotlines: prev.hotlines.filter(
+                              (_, i) => i !== index,
+                            ),
+                          }));
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      hotlines: [...prev.hotlines, { phone: "" }],
+                    }))
+                  }
+                >
+                  + {t("hotel.hotelEdit.addHotline")}
+                </Button>
+              </div>
               <div>
                 <label className="text-sm">{t("hotel.hotelEdit.image")}</label>
                 <div className="relative mt-2 w-[26%]">
@@ -187,8 +251,9 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
-                    className={`absolute inset-0 cursor-pointer opacity-0 ${imagePreview ? "pointer-events-none" : "z-10"
-                      }`}
+                    className={`absolute inset-0 cursor-pointer opacity-0 ${
+                      imagePreview ? "pointer-events-none" : "z-10"
+                    }`}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
@@ -239,15 +304,12 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
           </>
         )}
 
-
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={loading}>
-           {t("common.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
-         {loading
-              ? t("common.saving")
-              : t("common.save")}
+            {loading ? t("common.saving") : t("common.save")}
           </Button>
         </DialogFooter>
       </DialogContent>

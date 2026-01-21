@@ -1,12 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { type HotelResponse } from "../../type/hotel.types";
+import { getHotel } from "../../service/api/Hotel";
+
 export default function Footer() {
+  const [hotels, setHotels] = useState<HotelResponse[]>([]);
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const data = await getHotel({ all: true });
+        setHotels(data?.content || []);
+      } catch (err) {
+        console.log("Fail to load error:", err);
+      }
+    };
+    fetchHotels();
+  }, []);
+  const mid = Math.ceil(hotels.length/2);
+  const leftHotels = hotels.slice(0,mid);
+  const rightHotels = hotels.slice(mid);
   return (
     <footer className="bg-[#f9f6f2] text-[#3A3125] border-t border-[#707070]">
       {/* MAIN FOOTER */}
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
-
           {/* LOGO */}
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -17,49 +35,43 @@ export default function Footer() {
                 width={250}
                 height={250}
                 className="object-contain"
-
               />
             </div>
           </div>
 
-          
           <div className="md:col-span-2">
             <p className="font-semibold tracking-widest mb-3 text-sm text-[#866F56]">
               DESTINATION
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-[#2B2B2B]">
-
-              {/* LEFT */}
-              <div className="space-y-1">
-                <p className="font-semibold ">A IN HOTEL GLAMOUR</p>
-                <p>
-                  63/1–63/3 Đường số 19, Phường An Khánh, TP. Thủ Đức
-                </p>
-                <p>028 6281 3678 · 0822 414 383</p>
-
-                <p className="mt-3 font-medium">A IN HOTEL DEL LUNA</p>
-                <p>
-                  126 Đề Thám, Phường Cầu Ông Lãnh, TP. HCM
-                </p>
-                <p>028 3920 8689 · 0333 912 721</p>
+              <div className="space-y-3">
+                {leftHotels.map((hotel)=>(
+                  <div key={hotel.id}>
+                       <p className="font-semibold uppercase">
+                      {hotel.name}
+                    </p>
+                    <p>{hotel.address}</p>
+                    <p className="mt-1">
+                      {hotel.hotlines?.map(h => h.phone).join(" · ")}
+                    </p>
+                  </div>
+                ))}
               </div>
-
-              {/* RIGHT */}
-              <div className="space-y-1">
-                <p className="font-medium">A IN HOTEL ATISTAR</p>
-                <p>
-                  30 Đường số 14, Phường An Nhơn, TP. HCM
-                </p>
-                <p>093 464 05 85</p>
-
-                <p className="mt-3 font-medium">A IN HOTEL RIVERSIDE</p>
-                <p>
-                  188–189 Bến Vân Đồn, Phường Khánh Hội, TP. HCM
-                </p>
-                <p>028 3826 8090</p>
+              <div className="space-y-3">
+                {rightHotels.map((hotel)=>(
+                  <div key={hotel.id}>
+                       <p className="font-semibold uppercase">
+                      {hotel.name}
+                    </p>
+                    <p>{hotel.address}</p>
+                    <p className="mt-1">
+                      {hotel.hotlines?.map(h => h.phone).join(" · ")}
+                    </p>
+                  </div>
+                ))}
               </div>
-
+              
             </div>
           </div>
 
@@ -87,13 +99,12 @@ export default function Footer() {
                  flex items-center justify-center
                  bg-[#f9f6f2]"
             >
-            <img
+              <img
                 src="/image/ArrowUp.png"
                 alt="A In Hotel Logo"
                 width={250}
                 height={250}
                 className="object-contain"
-
               />
             </div>
           </div>

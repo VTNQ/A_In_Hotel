@@ -5,6 +5,8 @@ import lombok.*;
 import org.a_in_hotel.be.Enum.HotelStatus;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -41,6 +43,13 @@ public class Hotel {
     private Instant updatedAt = Instant.now();
     @Transient
     private Image thumbnail;
+
+    @OneToMany(
+            mappedBy = "hotel",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<HotelHotline> hotlines = new ArrayList<>();
 
     @PreUpdate
     void onUpdate() {
