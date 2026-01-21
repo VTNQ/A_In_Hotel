@@ -30,4 +30,7 @@ export const getHotel = async(options:GetAllOptions={})=>{
       });
       return resp.data.data;
 }
+export const getHotelById = async(id:number)=>{
+  return await Http.get<ApiResponse<HotelResponse>>(`/api/hotels/${id}`,{skipAuth:true});
+}
 
