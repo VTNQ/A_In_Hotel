@@ -152,6 +152,7 @@ const CreateChildSuperAdmin = () => {
               <div>
                 <Label className="mb-3">{t("common.gender")}</Label>
                 <SelectField
+                isRequired={true}
                   items={GENDER_OPTIONS}
                   value={formData.gender}
                   onChange={(val) => {
