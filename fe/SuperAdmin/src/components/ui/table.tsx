@@ -1,6 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { ChevronUp, ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import type {
   PaginationConfig,
   SortDir,
@@ -61,9 +66,7 @@ export function Table<SortKey extends string>({
       <div className="relative w-full rounded-2xl border bg-white shadow-sm">
         {/* TABLE */}
         <div className="overflow-x-auto custom-scrollbar">
-          <table className={cn("w-full text-sm", className)}>
-            {children}
-          </table>
+          <table className={cn("w-full text-sm table-fixed", className)}>{children}</table>
         </div>
 
         {/* PAGINATION FOOTER */}
@@ -74,24 +77,19 @@ export function Table<SortKey extends string>({
               <span className="font-medium text-gray-800">
                 {pagination.page}
               </span>{" "}
-              /{" "}
-              <span className="font-medium text-gray-800">
-                {totalPages}
-              </span>
+              / <span className="font-medium text-gray-800">{totalPages}</span>
             </span>
 
             <div className="flex items-center gap-1">
               {/* Prev */}
               <button
                 disabled={pagination.page === 1}
-                onClick={() =>
-                  pagination.onPageChange(pagination.page - 1)
-                }
+                onClick={() => pagination.onPageChange(pagination.page - 1)}
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-full border text-gray-600",
                   pagination.page === 1
                     ? "cursor-not-allowed opacity-40"
-                    : "hover:bg-gray-100"
+                    : "hover:bg-gray-100",
                 )}
               >
                 <ChevronLeft size={18} />
@@ -114,25 +112,23 @@ export function Table<SortKey extends string>({
                       "flex h-9 min-w-[36px] items-center justify-center rounded-full text-sm font-medium",
                       p === pagination.page
                         ? "bg-gray-900 text-white shadow"
-                        : "text-gray-700 hover:bg-gray-100"
+                        : "text-gray-700 hover:bg-gray-100",
                     )}
                   >
                     {p}
                   </button>
-                )
+                ),
               )}
 
               {/* Next */}
               <button
                 disabled={pagination.page === totalPages}
-                onClick={() =>
-                  pagination.onPageChange(pagination.page + 1)
-                }
+                onClick={() => pagination.onPageChange(pagination.page + 1)}
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-full border text-gray-600",
                   pagination.page === totalPages
                     ? "cursor-not-allowed opacity-40"
-                    : "hover:bg-gray-100"
+                    : "hover:bg-gray-100",
                 )}
               >
                 <ChevronRight size={18} />
@@ -171,10 +167,11 @@ export function TableRow(props: React.ComponentProps<"tr">) {
   );
 }
 
-export function TableCell(props: React.ComponentProps<"td">) {
+export function TableCell({ style, ...props }: React.ComponentProps<"td">) {
   return (
     <td
       {...props}
+      style={style}
       className="px-4 py-3 text-center text-sm text-gray-600 whitespace-nowrap"
     />
   );
@@ -184,10 +181,12 @@ export function TableHead<SortKey extends string>({
   children,
   sortable,
   sortKey,
+  width,
 }: {
   children: React.ReactNode;
   sortable?: boolean;
   sortKey?: SortKey;
+  width?: number | string;
 }) {
   const ctx = React.useContext(TableContext);
   const isActive = sortable && sortKey === ctx?.sortKey;
@@ -199,6 +198,7 @@ export function TableHead<SortKey extends string>({
 
   return (
     <th
+      style={width ? { width } : undefined}
       onClick={handleClick}
       className={cn(
         "px-4 py-3 text-center font-semibold select-none",

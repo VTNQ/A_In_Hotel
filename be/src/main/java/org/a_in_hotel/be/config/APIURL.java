@@ -26,20 +26,22 @@ public class APIURL {
     };
     public static final String[] URL_ADMIN_POST={
 
-            "/api/rooms/create",
+
             "/api/room-types/create"
     };
     public static final String[]URL_SUPER_ADMIN_ADMIN_POST={
             "/api/extra-room-service/create",
+            "/api/rooms/create",
     };
     public static final String[] URL_SUPER_ADMIN_ADMIN_PUT={
             "/api/extra-room-service/update/**",
+            "/api/rooms/updateStatus/**",
     };
     public static final String[] URL_ADMIN_PUT={
             "/api/room-types/update/**",
 
             "/api/room-types/updateStatus/**",
-            "/api/rooms/updateStatus/**",
+
             "/api/extra-room-service/updateStatus/**"
     };
 }

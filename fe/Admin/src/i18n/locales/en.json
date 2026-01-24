@@ -237,9 +237,9 @@
       "occupied": "Occupied",
       "available": "Available",
       "maintenance": "Maintenance",
-      "reserved": "Reserved",
       "blocked": "Blocked",
-      "deactivated": "Deactivated"
+      "deactivated": "Deactivated",
+      "reverved": "Reverved"
     },
     "createdAt": "Created At",
     "updatedAt": "Updated At",
