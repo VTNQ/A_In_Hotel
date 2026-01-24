@@ -40,4 +40,6 @@ public class RoomRequest {
 
     List<String> oldImages;
 
+    private Long hotelId;
+
 }

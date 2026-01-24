@@ -85,6 +85,7 @@ const ExtraServicePage = () => {
                 title: t("extraService.status.updateSuccess"),
                 type: "success",
             });
+            fetchExtraService();
     }catch(err:any){
       showAlert({
         title:
@@ -92,6 +93,8 @@ const ExtraServicePage = () => {
           "Failed to change status of service. Please try again.",
         type: "error",
       });
+    }finally{
+      setLoading(false)
     }
   }
   useEffect(() => {

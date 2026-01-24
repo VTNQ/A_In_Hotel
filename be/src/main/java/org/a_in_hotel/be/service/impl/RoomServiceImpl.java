@@ -68,7 +68,9 @@ public class RoomServiceImpl implements RoomService {
             Room room = roomMapper.toEntity(
                     request,
                     securityUtils.getCurrentUserId(),
-                    securityUtils.getHotelId());
+                    securityUtils.getHotelId()!=null ?
+                    securityUtils.getHotelId():
+                    request.getHotelId());
             roomRepository.save(room);
             List<Image> images = new ArrayList<>();
             for (MultipartFile file : image) {

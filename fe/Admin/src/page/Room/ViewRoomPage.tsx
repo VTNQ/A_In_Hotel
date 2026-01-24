@@ -279,6 +279,7 @@ const ViewRoomPage = () => {
             <option value="4">{t("room.roomStatus.maintenance")}</option>
             <option value="5">{t("room.roomStatus.blocked")}</option>
             <option value="6">{t("room.roomStatus.deactivated")}</option>
+            <option value="7">{t("room.roomStatus.reserved")}</option>
           </select>
         </div>
 
