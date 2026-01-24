@@ -202,14 +202,14 @@ const ListAdmin: React.FC = () => {
     [t],
   );
 
-//   const onSort = (key: keyof BasicRow) => {
-//     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-//     else {
-//       setSortKey(key);
-//       setSortDir("asc");
-//     }
-//     setUiPage(1);
-//   };
+  const onSort = (key: keyof BasicRow) => {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+    setUiPage(1);
+  };
   const filteredRows = useMemo(() => {
     if (genderFilter === "ALL") return rows;
     return rows.filter((r) => r.gender === genderFilter);
@@ -286,7 +286,7 @@ const ListAdmin: React.FC = () => {
       {/* Table */}
       <div className="rounded-2xl border bg-card">
         {error && <div className="p-3 text-sm text-red-600">{error}</div>}
-        <Table>
+        <Table sortKey={sortKey} sortDir={sortDir} onSort={onSort}>
           <TableHeader>
             <TableRow>
               {cols.map((c) => (
@@ -296,16 +296,6 @@ const ListAdmin: React.FC = () => {
                   sortKey={c.key as keyof BasicRow}
                 >
                   <span>{c.header}</span>
-                  {c.sortable &&
-                    (sortKey === c.key ? (
-                      sortDir === "asc" ? (
-                        <ChevronUp className="inline h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="inline h-4 w-4" />
-                      )
-                    ) : (
-                      <ChevronUp className="inline h-4 w-4 opacity-30" />
-                    ))}
                 </TableHead>
               ))}
             </TableRow>
