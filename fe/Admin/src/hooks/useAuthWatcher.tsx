@@ -54,9 +54,6 @@ export const useAuthWatcher = (
     initCheck();
   }, [navigate, setAuthChecking]);
 
-  // ===============================
-  // 🔥 CHECK ĐỊNH KỲ + FOCUS CHECK
-  // ===============================
   useEffect(() => {
     const checkToken = async () => {
       const tokens = getTokens();

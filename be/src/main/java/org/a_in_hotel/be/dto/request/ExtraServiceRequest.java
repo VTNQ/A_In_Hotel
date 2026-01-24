@@ -24,4 +24,5 @@ public class ExtraServiceRequest {
     private Integer type;
     private UnitExtraService unit;
     private Boolean isActive;
+    private Long hotelId;
 }

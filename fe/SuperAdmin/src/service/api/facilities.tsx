@@ -16,7 +16,21 @@ export const getAllFicilities = async(options:GetAllOptions={})=>{
       });
       return res.data;
 }
-
+export const getExtraService = async (options: GetAllOptions = {}) => {
+  const {
+        page = 1,
+        size = 5,
+        sort = "id,desc",
+        filter,
+        searchField,
+        searchValue,
+        all = false,
+      } = options;
+      const res = await Http.get("/api/extra-room-service/all/v2", {
+        params: { page, size, sort, filter, searchField,searchValue, all },
+      });
+      return res.data;
+}
 export const addExtraService=async(extraData:any) => {
   const formData = new FormData();
   Object.entries(extraData).forEach(([key, value]) => {

@@ -3,14 +3,22 @@
         "action": "Action",
         "edit": "Edit",
         "save": "Save",
+        "view": "View",
         "cancel": "Cancel",
         "saving": "Saving...",
         "tryAgain": "Please try again later",
         "search": "Search...",
+        "home": "Home",
         "all": "All",
         "loading": "Loading...",
+        "close": "close",
+        "status": "Status",
         "noData": "No data",
         "noImage": "No image",
+        "category": "Category",
+        "notePlaceholder": "Add any notes (e.g. near window, pool view)",
+        "active": "Active",
+        "deActivate": "Deactivate",
         "loadFailed": "Failed to load data",
         "prev": "Previous",
         "next": "Next",
@@ -171,6 +179,42 @@
             "manager": "Manager"
         }
     },
+    "category": {
+        "title": "Category Service",
+        "new": "+ New Category",
+        "searchPlaceholder": "Search by Category ID, Category Name",
+        "type": "Type",
+        "room": "Room",
+        "status": {
+            "updateSuccess": "Status updated successfully",
+            "updateFailed": "Failed to update status"
+        },
+        "service": "Extra Service",
+        "loadError": "Failed to load category information!",
+        "viewCategory": "View",
+        "view": {
+            "title": "Category Information"
+        },
+        "createOrUpdate": {
+            "description": "Description",
+            "enterName": "Enter Category Name",
+            "enterType": "Enter type",
+            "enterDescription": "Enter short description",
+            "titleCreate": "Create Category",
+            "titleEdit": "Edit Category",
+            "selectType": "Select Type",
+            "createSucess": "Category created successfully!",
+            "updateSucess": "Category updated successfully!",
+            "updateError": "Error updated Category",
+            "createError": "Error creating category"
+        },
+        "asset": "Asset",
+        "code": "Category ID",
+        "name": "Category Name",
+        "capacity": "Capacity",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+    },
     "gender": {
         "male": "male",
         "female": "female"
@@ -271,5 +315,107 @@
                 "image": "Featured Image"
             }
         }
+    },
+    "extraService": {
+        "title": "Extra Service",
+        "new": "+ New Extra Service",
+        "searchPlaceholder": "Search by name or ID",
+        "icon": "Icon",
+        "hotel": "Hotel",
+        "name": "Service Name",
+        "status": {
+            "updateSuccess": "Status updated successfully",
+            "updateFailed": "Failed to update status"
+        },
+        "createOrUpdate": {
+            "icon": "Extra Service Icon",
+            "hotelPlaceHolder": "Select Hotel",
+            "namePlaceHolder": "Enter Service Name",
+            "titleCreate": "Create New Extra Service",
+            "titleEdit": "Edit Extra Service",
+            "defaultCategory": "Select Category",
+            "uploadHint": "Click to upload extra service icon",
+            "createSucess": "Extra service created successfully!",
+            "descriptionPlaceHolder": "Enter Description",
+            "createError": "Error creating extra service",
+            "updateSucess": "Extra service updated successfully!",
+            "updateError": "Error updating extra service",
+            "defaultUnit": "Select Unit"
+        },
+        "extraCharge": "Extra Charge (%)",
+        "unit": "Unit",
+        "code": "Service Code",
+        "category": "Category",
+        "description": "Description",
+        "errorLoad": "Error loading data",
+        "errorLoadCategory": "Error loading category",
+        "block": "block",
+        "note": "note",
+        "price": "Price",
+        "activateSuccess": "Service activated successfully",
+        "activateError": "Error activating service"
+    },
+    "asset": {
+        "title": "Amenities & Asset Tracking",
+        "new": "+ New Asset",
+        "code": "Asset ID",
+        "loadError": "Failed to load asset information!",
+        "icon": "Icon",
+        "hotel": "Hotel",
+        "name": "Asset Name",
+        "price": "Price",
+        "quantity": "Quantity",
+        "searchPlaceholder": "Search by Asset ID, Asset Name",
+        "createdAt": "Created At",
+        "room": "Room",
+        "maintenanceSuccess": "Asset Maintenance successfully!",
+        "maintenanceError": "Failed to Maintenance Asset. Please try again.",
+        "activeSuccess": "Asset activated successfully!",
+        "activeError": "Failed to activate Asset. Please try again.",
+        "deActivateSuccess": "Asset deactivated successfully!",
+        "deActivateError": "Failed to deactivate Asset. Please try again.",
+        "errorUpdateStatus": "Failed to update status!",
+        "block": "block",
+        "view": {
+            "title": "Asset Information",
+            "noNote": "No notes available."
+        },
+        "createOrUpdate": {
+            "titleCreate": "Create New Amenities & Asset Tracking",
+            "namePlaceHolder": "Enter Asset Name",
+            "hotelPlaceHolder": "Select Hotel",
+            "roomPlaceHolder": "Enter Room Number",
+            "categoryPlaceHolder": "Select Category",
+            "room": "Room Number",
+            "roomSelect": "Select Room",
+            "selectCategory": "Select Category",
+            "notePlaceholder": "Add any notes (e.g. near window, pool view)",
+            "selectRoom": "Select Room",
+            "uploadHint": "Click to upload asset icon",
+            "icon": "Asset Icon",
+            "titleEdit": "Edit Amenities & Asset Tracking",
+            "pricePlaceHolder": "Enter Asset Price",
+            "quantityPlaceHolder": "Enter Quantity(e.g. 1)",
+            "note": "Note",
+            "quantity": "Quantity",
+            "price": "Asset Price (VNĐ)",
+            "updateSucess": "Asset updated successfully!",
+            "updateError": "Error updated asset",
+            "createSucess": "Asset created successfully!",
+            "createError": "Error creating asset",
+            "defaultCategory": "Select Category"
+        },
+        "status": {
+            "good": "Good",
+            "maintenance": "Maintenance",
+            "broken": "Broken",
+            "deactivated": "Deactivated"
+        },
+        "action": {
+            "maintenance": "Maintenance"
+        },
+        "category": "Category",
+        "updatedAt": "Updated At",
+        "errorLoad": "Error loading data"
     }
 }

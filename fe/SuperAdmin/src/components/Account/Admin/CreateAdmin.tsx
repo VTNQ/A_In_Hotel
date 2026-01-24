@@ -159,6 +159,7 @@ const CreateAdmin = () => {
               <div>
                 <Label className="mb-3">{t("adminCreate.gender")}</Label>
                 <SelectField
+                isRequired={true}
                   items={GENDER_OPTIONS}
                   value={formData.gender}
                   onChange={(val) => {

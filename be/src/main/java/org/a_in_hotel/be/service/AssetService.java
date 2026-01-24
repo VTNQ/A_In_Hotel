@@ -15,4 +15,5 @@ public interface AssetService {
     AssetResponse getById(Long id);
 
     Page<AssetResponse> findAll(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all);
+
 }

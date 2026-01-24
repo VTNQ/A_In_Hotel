@@ -17,6 +17,7 @@ const FacilityFiler = ({
     return (
         <div className="flex items-center gap-2">
             <SelectField
+            isRequired={false}
                 items={[
                     { value: "ALL", label: t("common.all") },
                     { value: "true", label: t("status.active") },
