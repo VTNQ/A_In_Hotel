@@ -12,7 +12,7 @@ import {
 import { getAll } from "@/service/api/Authenticate";
 import { File_URL } from "@/setting/constant/app";
 
-import { ChevronDown, ChevronUp, Search, SearchIcon, X } from "lucide-react";
+import {  Search, SearchIcon, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
