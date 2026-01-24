@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.a_in_hotel.be.Enum.AssetStatus;
 
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AssetResponse {
     private Long id;
     private String assetCode;
@@ -29,6 +31,7 @@ public class AssetResponse {
 
     private Integer status;
     private String note;
+    private String hotelName;
 
     private ImageResponse thumbnail;
 

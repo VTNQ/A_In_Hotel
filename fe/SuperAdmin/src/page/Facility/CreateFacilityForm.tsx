@@ -168,6 +168,7 @@ const CreateFacilityForm: React.FC = () => {
                     onChange={(v) =>
                         setForm((prev) => ({ ...prev, categoryId: v }))
                     }
+                    isRequired={true}
                     placeholder={t("facility.form.categoryPlaceholder")}
                     getValue={(i) => i.id}
                     getLabel={(i) => i.name}

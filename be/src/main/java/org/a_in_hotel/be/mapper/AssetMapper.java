@@ -4,11 +4,9 @@ import org.a_in_hotel.be.dto.request.AssetCreateRequest;
 import org.a_in_hotel.be.dto.request.AssetUpdateRequest;
 import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.entity.Asset;
-import org.a_in_hotel.be.entity.Category;
-import org.a_in_hotel.be.entity.Room;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
 import org.a_in_hotel.be.repository.ImageRepository;
-import org.a_in_hotel.be.util.SecurityUtils;
+import org.a_in_hotel.be.service.HotelService;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -37,7 +35,10 @@ public interface AssetMapper  extends CommonMapper {
     @Mapping(target = "thumbnail", expression = "java(mapImageV2(entity.getId(),"
             + "\"Asset\",imageRepository))")
     @Mapping(target = "note",source = "note")
-    AssetResponse toResponse(Asset entity, @Context ImageRepository imageRepository);
+    @Mapping(target = "hotelName",expression = "java(resolveHotelName(entity.getHotelId(),hotelService))")
+    AssetResponse toResponse(Asset entity, @Context ImageRepository imageRepository,
+                             @Context HotelService hotelService);
+
 
     List<AssetResponse> toResponses(List<Asset> assets);
 }

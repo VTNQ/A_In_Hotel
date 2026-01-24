@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
 import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
+import org.a_in_hotel.be.dto.response.ExtraServiceV2Response;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.service.RoomExtraService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,21 @@ public class ExtraRoomServiceController {
                                                                                      @RequestParam(required = false) boolean all){
         try {
             return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(extraService.getAll(page, size, sort, filter, searchField, searchValue, all))));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(RequestResponse.error( "Get All extra room service: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/all/v2")
+    public ResponseEntity<RequestResponse<PageResponse<ExtraServiceV2Response>>>getAllV2(@RequestParam(defaultValue = "1") int page,
+                                                                                       @RequestParam(defaultValue = "5") int size,
+                                                                                       @RequestParam(defaultValue = "id,desc") String sort,
+                                                                                       @RequestParam(required = false) String filter,
+                                                                                       @RequestParam(required = false) String searchField,
+                                                                                       @RequestParam(required = false) String searchValue,
+                                                                                       @RequestParam(required = false) boolean all){
+        try {
+            return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(extraService.getAllV2(page, size, sort, filter, searchField, searchValue, all))));
         }catch (Exception e){
             return ResponseEntity.badRequest()
                     .body(RequestResponse.error( "Get All extra room service: " + e.getMessage()));

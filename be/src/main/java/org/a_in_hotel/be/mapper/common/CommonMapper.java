@@ -12,6 +12,7 @@ import org.a_in_hotel.be.repository.ExtraServiceRepository;
 import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.repository.RoomRepository;
 import org.a_in_hotel.be.repository.StaffRepository;
+import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.service.StaffService;
 import org.a_in_hotel.be.util.SecurityUtils;
 import org.mapstruct.Context;
@@ -97,6 +98,18 @@ public interface CommonMapper {
         Category category = new Category();
         category.setId(idCategory);
         return category;
+    }
+    default String resolveHotelName(Long hotelId, HotelService hotelService){
+        if(hotelId ==null) return null;
+        try {
+            var hotel = hotelService.getHotelById(hotelId);
+            if(hotel!=null && hotel.getName()!=null){
+                return hotel.getName();
+            }
+        }catch (Exception ignored){
+
+        }
+        return null;
     }
     default String resolveCreatedBy(String createdBy, StaffService accountService) {
         if (createdBy == null) return null;

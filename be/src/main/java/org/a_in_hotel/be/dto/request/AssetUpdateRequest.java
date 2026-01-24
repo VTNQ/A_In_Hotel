@@ -22,6 +22,8 @@ public class AssetUpdateRequest {
     @NotNull(message = "Room Number is required")
     private Long roomId;
 
+    private Long hotelId;
+
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = true,message = "Price must be greater than or equal to 0")
     private BigDecimal price;

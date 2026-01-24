@@ -22,7 +22,6 @@ public class AssetController {
     private final AssetService assetService;
     private final JwtService jwtService;
 
-    // ===================== DANH SÁCH =====================
     @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<AssetResponse>>> list(
             @RequestParam(defaultValue = "1") int page,
@@ -36,6 +35,7 @@ public class AssetController {
         var result = assetService.findAll(page, size, sort, filter, searchField, searchValue, all);
         return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
     }
+
 
     // ===================== TẠO MỚI =====================
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -57,7 +57,7 @@ public class AssetController {
             @RequestParam(value = "image", required = false) MultipartFile image
     ) {
         assetService.update(id, req, image);
-        return ResponseEntity.ok(RequestResponse.success( "Cập nhật asset thành công"));
+        return ResponseEntity.ok(RequestResponse.success("Cập nhật asset thành công"));
     }
 
     // ===================== CẬP NHẬT / TOGGLE TRẠNG THÁI =====================

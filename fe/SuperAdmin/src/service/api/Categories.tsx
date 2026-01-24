@@ -17,3 +17,15 @@ export const getAllCategories = async(options:GetAllOptions={})=>{
       });
       return resp.data;
 }
+export const createCategory = async(data:any)=>{
+  return await Http.post("/api/categories",data);
+}
+export const getCategoryById = async(id:number)=>{
+  return await Http.get(`/api/categories/${id}`);
+}
+export const updateCategoryById = async(id:number,data:any)=>{
+  return await Http.put(`/api/categories/${id}`,data);
+}
+export const updateStatus = async (id: number, status: boolean) => {
+  return await Http.patch(`/api/categories/updateStatus/${id}?status=${status}`)
+}
