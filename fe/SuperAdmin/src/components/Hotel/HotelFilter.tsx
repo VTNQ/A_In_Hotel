@@ -16,6 +16,7 @@ const HotelFilter = ({
   return (
     <div className="flex items-center gap-2">
       <SelectField
+        isRequired={false}
         items={[
           { value: "ALL", label: t("hotel.hotelFilter.all") },
           { value: "1", label: t("hotel.hotelFilter.active") },
@@ -23,9 +24,7 @@ const HotelFilter = ({
         ]}
         value={statusFilter === "ALL" ? "ALL" : String(statusFilter)}
         onChange={(v) =>
-          onStatusFilterChange(
-            v === "ALL" ? "ALL" : (Number(v) as Status)
-          )
+          onStatusFilterChange(v === "ALL" ? "ALL" : (Number(v) as Status))
         }
         size="sm"
         fullWidth={false}
@@ -45,6 +44,6 @@ const HotelFilter = ({
         <a href="/Home/hotel/create">{t("hotel.hotelFilter.create")}</a>
       </Button>
     </div>
-  )
-}
+  );
+};
 export default HotelFilter;

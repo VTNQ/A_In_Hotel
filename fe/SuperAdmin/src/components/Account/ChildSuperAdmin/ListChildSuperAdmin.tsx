@@ -205,14 +205,14 @@ const ListChildSuperAdmin: React.FC = () => {
     [t],
   );
 
-  const onSort = (key: keyof BasicRow) => {
-    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else {
-      setSortKey(key);
-      setSortDir("asc");
-    }
-    setUiPage(1);
-  };
+//   const onSort = (key: keyof BasicRow) => {
+//     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+//     else {
+//       setSortKey(key);
+//       setSortDir("asc");
+//     }
+//     setUiPage(1);
+//   };
   const filteredRows = useMemo(() => {
     if (genderFilter === "ALL") return rows;
     return rows.filter((r) => r.gender === genderFilter);

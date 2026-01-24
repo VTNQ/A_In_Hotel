@@ -1,6 +1,6 @@
 import type { ActionItem } from "@/type/common";
 import type { ExtraServiceActionMenuProps } from "@/type/extraService.types";
-import { Edit, Eye, Power } from "lucide-react";
+import { Edit, Power } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../ui/ActionMenu";
 
