@@ -137,6 +137,7 @@ export default function CreateHotel() {
               <div>
                 <SelectField<UserResponse>
                   items={users}
+                  isRequired={true}
                   value={formData.idUser ? String(formData.idUser) : ""}
                   onChange={(val) =>
                     setFormData((prev) => ({

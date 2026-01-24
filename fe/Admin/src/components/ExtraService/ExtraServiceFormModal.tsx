@@ -86,8 +86,6 @@ const ExtraServiceFormModal = ({
                 type: 2
             }
             const response = await addExtraService(payload);
-
-            // ✅ response có thể là AxiosResponse hoặc đã unwrap data
             const message =
                 response?.data?.message ||
                 t("extraService.createOrUpdate.createSucess");

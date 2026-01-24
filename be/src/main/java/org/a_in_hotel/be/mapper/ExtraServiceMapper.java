@@ -2,8 +2,11 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
 import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
+import org.a_in_hotel.be.dto.response.ExtraServiceV2Response;
 import org.a_in_hotel.be.entity.ExtraService;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
+import org.a_in_hotel.be.service.HotelService;
+import org.a_in_hotel.be.service.RoomExtraService;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
@@ -27,4 +30,9 @@ public interface ExtraServiceMapper extends CommonMapper {
     @Mapping(target = "categoryId",source = "category.id")
     @Mapping(target = "icon", source = "icon")
     ExtraServiceResponse toResponse(ExtraService service);
+    @Mapping(target = "categoryName",source = "category.name")
+    @Mapping(target = "categoryId",source = "category.id")
+    @Mapping(target = "icon", source = "icon")
+    @Mapping(target = "hotelName",expression = "java(resolveHotelName(service.getHotelId(),hotelService))")
+    ExtraServiceV2Response toResponseV2(ExtraService service, @Context HotelService hotelService);
 }

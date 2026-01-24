@@ -33,20 +33,19 @@ function SelectTrigger({
         "hover:bg-accent/30",
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40",
         "disabled:cursor-not-allowed disabled:opacity-50",
-      
+
         size === "sm" && "h-9 px-3 text-sm min-w-[120px]",
         size === "md" && "h-10 px-3.5 text-sm min-w-[160px]",
         size === "lg" && "h-11 px-4 text-base min-w-[200px]",
-    
+
         fullWidth ? "w-full" : "w-auto",
-      
+
         error &&
           "border-destructive/70 focus-visible:ring-destructive/25 focus-visible:border-destructive",
-      
+
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        className,
       )}
-      
       {...props}
     >
       <div className="min-w-0 flex-1">{children}</div>
@@ -76,7 +75,7 @@ function SelectContent({
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
           "w-[var(--radix-select-trigger-width)]",
-          className
+          className,
         )}
         {...props}
       >
@@ -105,7 +104,7 @@ function SelectItem({
         "relative flex w-full select-none items-center gap-2 rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none",
         "cursor-default data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         "focus:bg-accent focus:text-accent-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -127,6 +126,7 @@ type SelectFieldProps<T> = {
   label?: React.ReactNode;
   description?: React.ReactNode;
   error?: string;
+  isRequired: boolean;
   size?: Size;
   fullWidth?: boolean;
   disabled?: boolean;
@@ -150,11 +150,12 @@ function SelectField<T>({
   clearable,
   getValue,
   getLabel,
+  isRequired=true,
   emptyText = "Không có dữ liệu",
 }: SelectFieldProps<T>) {
   const selected = React.useMemo(
     () => items.find((i) => getValue(i) === (value ?? "")),
-    [items, value, getValue]
+    [items, value, getValue],
   );
 
   // nút clear: span chứ không phải button
@@ -183,7 +184,12 @@ function SelectField<T>({
 
   return (
     <div className={cn(fullWidth && "w-full")}>
-      {label && <label className="mb-1.5 block text-sm font-medium">{label}</label>}
+      {label && (
+        <label className="mb-1.5 block text-sm font-medium">
+          {label}
+          {isRequired && <span className="ml-1 text-red-500">*</span>}
+        </label>
+      )}
 
       <Select
         value={value ?? ""}
@@ -227,10 +233,4 @@ function SelectField<T>({
   );
 }
 
-export {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectField,
-};
+export { Select, SelectTrigger, SelectContent, SelectItem, SelectField };

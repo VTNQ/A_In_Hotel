@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.ExtraServiceRequest;
 import org.a_in_hotel.be.dto.response.ExtraServiceResponse;
+import org.a_in_hotel.be.dto.response.ExtraServiceV2Response;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
 import org.a_in_hotel.be.entity.ExtraService;
 import org.a_in_hotel.be.entity.Image;
@@ -15,6 +16,7 @@ import org.a_in_hotel.be.mapper.ExtraServiceMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.ExtraServiceRepository;
 import org.a_in_hotel.be.repository.ImageRepository;
+import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.service.RoomExtraService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
@@ -39,6 +41,7 @@ public class RoomExtraServiceImpl implements RoomExtraService {
     private final ExtraServiceMapper mapper;
     private final SecurityUtils securityUtils;
     private final GeneralService generalService;
+    private final HotelService hotelService;
     private final ImageMapper imageMapper;
     private final ImageRepository imageRepository;
     private static final List<String> SEARCH_FIELDS = List.of("serviceCode", "serviceName");
@@ -51,8 +54,9 @@ public class RoomExtraServiceImpl implements RoomExtraService {
             ExtraService extraService = mapper.toEntity(
                     request,
                     securityUtils.getCurrentUserId(),
-                    securityUtils.getHotelId()
-                                                       );
+                    securityUtils.getHotelId()!=null
+                    ?securityUtils.getHotelId():
+                            request.getHotelId());
             repository.save(extraService);
             if (file != null && !file.isEmpty()) {
                 try {
@@ -97,6 +101,34 @@ public class RoomExtraServiceImpl implements RoomExtraService {
                                                   .ifPresent(asset::setIcon)
                                  );
             return extraServices.map(mapper::toResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Page<ExtraServiceV2Response> getAllV2(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+        try {
+            log.info("start get extra service");
+            Specification<ExtraService> sortable = RSQLJPASupport.toSort(sort);
+            Specification<ExtraService> filterable = RSQLJPASupport.toSpecification(filter);
+            Specification<ExtraService> searchable = SearchHelper.buildSearchSpec(
+                    searchField,
+                    searchValue,
+                    SEARCH_FIELDS
+            );
+            Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+            Page<ExtraService> extraServices = repository.findAll(
+                    sortable
+                            .and(filterable)
+                            .and(searchable.and(filterable)), pageable
+            );
+            extraServices.forEach(asset ->
+                    imageRepository.findFirstByEntityIdAndEntityType(asset.getId(), "service")
+                            .ifPresent(asset::setIcon)
+            );
+            return extraServices.map(service -> mapper.toResponseV2(service,hotelService));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);

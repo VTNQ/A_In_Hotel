@@ -33,4 +33,6 @@ public class AssetCreateRequest {
 
     @Size(max = 2000)
     private String note;
+
+    private Long hotelId;
 }

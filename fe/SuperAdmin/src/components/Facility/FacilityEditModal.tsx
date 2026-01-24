@@ -202,6 +202,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 <label className="text-sm font-medium"> {t("facility.form.category")}</label>
                 <SelectField
                   items={categories}
+                  isRequired={true}
                   value={formData.categoryId}
                   onChange={(v) =>
                     setFormData((prev) => ({ ...prev, categoryId: String(v) }))

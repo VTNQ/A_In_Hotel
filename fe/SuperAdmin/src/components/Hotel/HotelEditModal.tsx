@@ -57,7 +57,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
   };
 
   useEffect(() => {
-    // ✅ chỉ fetch khi modal mở và có hotelId
+ 
     if (!open || !hotelId) return;
 
     const fetchData = async () => {
@@ -177,6 +177,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
               <div className="grid gap-2">
                 <SelectField<UserResponse>
                   items={users}
+                  isRequired={true}
                   value={
                     formData.idUser != null ? String(formData.idUser) : null
                   }

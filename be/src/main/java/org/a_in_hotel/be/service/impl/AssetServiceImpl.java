@@ -3,7 +3,6 @@ package org.a_in_hotel.be.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.a_in_hotel.be.Enum.AssetStatus;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AssetResponse;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
@@ -16,6 +15,7 @@ import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
 import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.repository.ImageRepository;
+import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
@@ -39,6 +39,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     private final ImageRepository imageRepository;
     private final HotelRepository hotelRepository;
     private final GeneralService generalService;
+    private final HotelService hotelService;
     private final ImageMapper imageMapper;
     private final AssetMapper assetMapper;
     private final SecurityUtils securityUtils;
@@ -50,7 +51,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public void save(AssetCreateRequest req, MultipartFile image) {
         try {
             log.info("➡️ Start creating asset: {}", req.getAssetName());
-            Asset asset = assetMapper.toEntity(req,securityUtils.getHotelId());
+            Asset asset = assetMapper.toEntity(req,securityUtils.getHotelId()!=null ? securityUtils.getHotelId():req.getHotelId());
             asset.setCreatedBy(securityUtils.getCurrentUserId().toString());
             asset.setUpdatedBy(securityUtils.getCurrentUserId().toString());
             asset=assetRepository.save(asset);
@@ -138,7 +139,7 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     public AssetResponse getById(Long id) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found"));
-        return assetMapper.toResponse(asset,imageRepository);
+        return assetMapper.toResponse(asset,imageRepository,hotelService);
     }
 
     @Override
@@ -156,10 +157,12 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
                             .and(searchable.and(filterable)),
                     pageable);
 
-            return  assets.map(asset -> assetMapper.toResponse(asset,imageRepository));
+            return  assets.map(asset -> assetMapper.toResponse(asset,imageRepository,hotelService));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
+
+
 }
