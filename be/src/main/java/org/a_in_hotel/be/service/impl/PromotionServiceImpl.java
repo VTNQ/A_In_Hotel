@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BookingPackage;
@@ -10,6 +11,7 @@ import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.PromotionResponse;
 import org.a_in_hotel.be.dto.response.StaffResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.PromotionMapper;
 import org.a_in_hotel.be.repository.CategoryRepository;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,22 +51,19 @@ public class PromotionServiceImpl implements PromotionService {
     public void save(PromotionRequest request) {
         Promotion promotion = mapper.toEntity(request,securityUtils.getCurrentUserId());
         PromotionBookingCondition bookingConditions = createPromotionBookingCondition
-                (request.getBookingConditionRequests(),
+                (request,
                         promotion);
         PromotionCustomerCondition customerConditions = createPromotionCustomerCondition
-                (request.getCustomerConditionRequests(),
+                (request,
                         promotion);
-        PromotionDateCondition dateConditions = createPromotionDateCondition(
-                request.getPromotionDateConditionRequests(),
-                promotion
-        );
+
         List<PromotionRoomType> promotionRoomTypes = createPromotionRoomTypeCondition(
                 request.getPromotionRoomTypeRequests(),
                 promotion
         );
         promotion.setBookingCondition(bookingConditions);
         promotion.setCustomerCondition(customerConditions);
-        promotion.setDateCondition(dateConditions);
+
         promotion.setRoomTypes(promotionRoomTypes);
         repository.save(promotion);
     }
@@ -91,7 +91,79 @@ public class PromotionServiceImpl implements PromotionService {
         }
     }
 
-    private PromotionBookingCondition createPromotionBookingCondition(PromotionBookingConditionRequest request,
+    @Override
+    public PromotionResponse findPromotionById(Long id) {
+        return repository.findById(id)
+                .map(promotion -> mapper.toResponse(promotion,staffService))
+                .orElseThrow(() -> new EntityNotFoundException("Banner not found with id: " + id));
+
+    }
+
+    @Override
+    @Transactional
+    public void update(Long id, PromotionRequest request) {
+        Promotion promotion = repository.findById(id)
+                .orElseThrow(()->new NotFoundException("Promotion not found: "+id));
+
+        mapper.updateEntity(promotion,request,securityUtils.getCurrentUserId());
+
+        PromotionBookingCondition bookingCondition =
+                promotion.getBookingCondition();
+
+        if(bookingCondition==null){
+            bookingCondition = new PromotionBookingCondition();
+            bookingCondition.setPromotion(promotion);
+        }
+
+        bookingCondition.setBookingType(
+                BookingPackage.getBookingPackage(request.getBookingType()).getCode()
+        );
+        bookingCondition.setMinNights(request.getMinNights());
+        promotion.setBookingCondition(bookingCondition);
+        PromotionCustomerCondition customerCondition =
+                promotion.getCustomerCondition();
+
+        if (customerCondition == null) {
+            customerCondition = new PromotionCustomerCondition();
+            customerCondition.setPromotion(promotion);
+        }
+
+        customerCondition.setCustomerType(
+                PromotionCustomerType.fromValue(request.getCustomerType()).getCode()
+        );
+
+        promotion.setCustomerCondition(customerCondition);
+
+        promotion.getRoomTypes().clear();
+
+        List<PromotionRoomType> roomTypes =
+                createPromotionRoomTypeCondition(
+                        request.getPromotionRoomTypeRequests(),
+                        promotion
+                );
+
+        promotion.getRoomTypes().addAll(roomTypes);
+        repository.save(promotion);
+    }
+
+    @Override
+    public void updateStatus(Long id, Boolean status) {
+        try {
+            log.info("start update promotion status");
+            Promotion promotion = repository.getReferenceById(id);
+            promotion.setIsActive(status);
+            promotion.setUpdatedBy(String.valueOf(securityUtils.getCurrentUserId()));
+            repository.save(promotion);
+        }catch (EntityNotFoundException e){
+            log.warn("Promotion with id {} not found: {}",id,e.getMessage());
+            throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy chương trình có ID: " + id);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private PromotionBookingCondition createPromotionBookingCondition(PromotionRequest request,
                                                                       Promotion promotion) {
         if (request == null) {
             return null;
@@ -100,15 +172,14 @@ public class PromotionServiceImpl implements PromotionService {
         PromotionBookingCondition condition = new PromotionBookingCondition();
         condition.setPromotion(promotion);
         condition.setBookingType(BookingPackage.getBookingPackage(request.getBookingType()).getCode());
-        condition.setMaxNights(request.getMaxNights());
-        condition.setMinRooms(request.getMinRooms());
+
         condition.setMinNights(request.getMinNights());
 
 
         return condition;
     }
 
-    private PromotionCustomerCondition createPromotionCustomerCondition(PromotionCustomerConditionRequest request, Promotion promotion) {
+    private PromotionCustomerCondition createPromotionCustomerCondition(PromotionRequest request, Promotion promotion) {
 
         if (request == null) {
             return null;
@@ -117,19 +188,6 @@ public class PromotionServiceImpl implements PromotionService {
         PromotionCustomerCondition condition = new PromotionCustomerCondition();
         condition.setPromotion(promotion);
         condition.setCustomerType(PromotionCustomerType.fromValue(request.getCustomerType()).getCode());
-
-        return condition;
-    }
-
-    private PromotionDateCondition createPromotionDateCondition(PromotionDateConditionRequest request,
-                                                                Promotion promotion) {
-        if (request == null) {
-            return null;
-        }
-
-        PromotionDateCondition condition = new PromotionDateCondition();
-        condition.setPromotion(promotion);
-        condition.setDayType(PromotionDayType.fromValue(request.getDayType()).getCode());
 
         return condition;
     }

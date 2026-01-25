@@ -44,8 +44,33 @@ export default function AdminLayout() {
     {
       title: t("sidebar.dashboards"),
       items: [
-        { label: t("sidebar.home"), icon: Home, path: "/Home" },
-        { label: t("sidebar.hotel"), icon: Hotel, path: "/Home/hotel" },
+        {
+          label: t("sidebar.home"),
+          icon: Home,
+          path: "/Home",
+        },
+      ],
+    },
+
+    {
+      title: t("sidebar.hotelManagement"),
+      items: [
+        {
+          label: t("sidebar.hotel"),
+          icon: Hotel,
+          path: "/Home/hotel",
+        },
+        {
+          label: t("sidebar.facilities"),
+          icon: Building2,
+          path: "/Home/facility",
+        },
+      ],
+    },
+
+    {
+      title: t("sidebar.facilityManagement"),
+      items: [
         {
           label: t("sidebar.facility"),
           icon: Building2,
@@ -56,6 +81,12 @@ export default function AdminLayout() {
             { label: t("sidebar.category"), path: "/Home/category" },
           ],
         },
+      ],
+    },
+
+    {
+      title: t("sidebar.userPermission"),
+      items: [
         {
           label: t("sidebar.account"),
           icon: Users,
@@ -72,9 +103,14 @@ export default function AdminLayout() {
             },
           ],
         },
+      ],
+    },
 
+    {
+      title: t("sidebar.systemManagement"),
+      items: [
         {
-          label: t("sidebar.systemManagement"),
+          label: t("sidebar.systemContent"),
           icon: Settings,
           children: [
             {
@@ -99,14 +135,10 @@ export default function AdminLayout() {
             },
           ],
         },
-        {
-          label: t("sidebar.facilities"),
-          icon: Building2,
-          path: "/Home/facility",
-        },
       ],
     },
   ];
+
   const [showModal, setShowModal] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
 

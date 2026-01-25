@@ -64,8 +64,7 @@ public class Promotion {
     @OneToOne(mappedBy = "promotion", cascade = CascadeType.ALL)
     private PromotionBookingCondition bookingCondition;
 
-    @OneToOne(mappedBy = "promotion", cascade = CascadeType.ALL)
-    private PromotionDateCondition dateCondition;
+
 
     @OneToOne(mappedBy = "promotion", cascade = CascadeType.ALL)
     private PromotionCustomerCondition customerCondition;

@@ -15,7 +15,7 @@
     "active": "Active",
     "deActivate": "Deactivate",
     "action": "action",
-    "none":"None",
+    "none": "None",
     "createdAt": "Created At",
     "inactive": "Inactive",
     "status": "Status",
@@ -27,6 +27,8 @@
     "booking": "Booking Management",
     "facility": "Facility Management",
     "room": "Room Management",
+    "coupon":"Coupon Management",
+    "promotion":"Promotion Management",
     "asset": "Amenities & Asset Tracking",
     "extra": "Extra Services",
     "category": "Category Management",
@@ -681,28 +683,47 @@
     "updateSuccess": "Update guest information successfully",
     "updateError": "Update guest information failed"
   },
-  "promotion":{
-    "title":"Manager Promotion",
-    "new":"+ New Promotion",
-    "code":"Promotion Code",
-    "name":"Promotion Name",
-    "startDate":"Start Date",
-     "createdBy": "Created By",
-    "value":"value",
-    "endDate":"End Date",
-    "type":"Type",
-    "discountValue":"Discount Value",
-    "priority":"Priority",
-    "searchPlaceholder":"Search by Promotion Code, Promotion Name",
-    "errorLoad":"Failed to load data",
-     "typeView": {
+  "promotion": {
+    "title": "Manager Promotion",
+    "new": "+ New Promotion",
+    "code": "Promotion Code",
+    "name": "Promotion Name",
+    "startDate": "Start Date",
+    "createdBy": "Created By",
+    "view":"View",
+    "disable":"Disable",
+    "errorUpdateStatus":"Failed to update status!",
+    "successUpdateStatus":"Update status successfully!",
+    "enable":"Enable",
+    "loadErrorRoomType": "Load error Room type",
+    "value": "value",
+    "endDate": "End Date",
+    "createOrUpdate":{
+      "createSucess": "Promotion created successfully!",
+      "createError": "Error creating Promotion",
+      "updateSucess": "Promotion updated successfully!",
+      "updateError": "Error updated Promotion"
+    },
+      "customerType": {
+      "personal": "Personal Customer",
+      "company": "Company / Corporate",
+      "walkin": "Walk-in Guest",
+      "online": "Online Booking",
+      "vip": "VIP Customer"
+    },
+    "type": "Type",
+    "discountValue": "Discount Value",
+    "priority": "Priority",
+    "searchPlaceholder": "Search by Promotion Code, Promotion Name",
+    "errorLoad": "Failed to load data",
+    "typeView": {
       "percent": "Percentage discount",
       "fixed": "Fixed amount discount",
       "special": "Special price"
     },
-    "status":{
-      "enabled":"Enabled",
-      "disabled":"Disabled"
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
     }
   }
 }

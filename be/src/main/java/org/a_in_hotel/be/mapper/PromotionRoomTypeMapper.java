@@ -8,5 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PromotionRoomTypeMapper {
    @Mapping(target = "roomTypeName",source = "response.roomTypeId.name")
+   @Mapping(target = "roomTypeId",source = "response.roomTypeId.id")
+   @Mapping(target = "excluded",source = "response.excluded")
    PromotionRoomTypeResponse toResponse(PromotionRoomType response);
 }
