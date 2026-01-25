@@ -11,4 +11,9 @@ public interface PromotionService {
     Page<PromotionResponse> getAll(Integer page, Integer size,
                                    String sort, String filter,
                                    String searchField, String searchValue, boolean all);
+    PromotionResponse findPromotionById(Long id);
+
+    void update(Long id,PromotionRequest request);
+
+    void updateStatus(Long id,Boolean status);
 }

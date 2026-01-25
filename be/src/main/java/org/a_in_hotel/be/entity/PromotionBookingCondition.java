@@ -29,8 +29,4 @@ public class PromotionBookingCondition {
 
     private Integer minNights;
 
-    private Integer maxNights;
-
-
-    private Integer minRooms;
 }

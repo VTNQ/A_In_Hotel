@@ -105,7 +105,11 @@ const RoomTable = ({
           </TableHead>
 
           <TableHead sortable sortKey="defaultRate" width={140}>
-            {t("room.defaultRate")}
+            {t("room.priceFullDay")}
+          </TableHead>
+
+          <TableHead sortable sortKey="hotel.name"  width={140}>
+            {t("room.hotel")}
           </TableHead>
 
           <TableHead sortable sortKey="createdAt" width={160}>
@@ -119,9 +123,7 @@ const RoomTable = ({
           <TableHead sortable sortKey="status" width={160}>
             {t("common.status")}
           </TableHead>
-          <TableHead width={160}>
-            {t("common.action")}
-          </TableHead>
+          <TableHead width={160}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -156,6 +158,7 @@ const RoomTable = ({
               <TableCell>{row.roomName}</TableCell>
               <TableCell>{row.roomTypeName}</TableCell>
               <TableCell>{row.defaultRate}</TableCell>
+              <TableCell>{row.hotelName}</TableCell>
               <TableCell>{row.createdAt}</TableCell>
               <TableCell>{row.updatedAt}</TableCell>
               <TableCell>

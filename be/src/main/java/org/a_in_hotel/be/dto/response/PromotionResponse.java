@@ -22,6 +22,8 @@ public class PromotionResponse {
 
     private BigDecimal value;
 
+    private String description;
+
     private String code;
 
     private Integer priority;
@@ -31,7 +33,9 @@ public class PromotionResponse {
     private LocalDate endDate;
 
     private Boolean isActive;
-
+    private Integer bookingType;
+    private Integer minNights;
+    private Integer customerType;
     private List<PromotionRoomTypeResponse> promotionRoomTypeResponses;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // XXX = +07:00

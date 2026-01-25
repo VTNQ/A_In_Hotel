@@ -1,4 +1,4 @@
-import { BedDouble, Building2, FileText, LayoutDashboard, LogOut, NotebookPen, UserCog, Users } from "lucide-react";
+import { BedDouble, Building2, FileText, LayoutDashboard, LogOut, Megaphone, NotebookPen, TicketPercent, UserCog, Users } from "lucide-react";
 
 
 export const SECTIONS = [
@@ -26,6 +26,13 @@ export const SECTIONS = [
                     { label: "sideBar.blog", path: "/Dashboard/post/blog" },
                     { label: "sideBar.banner", path: "/Dashboard/post/banner" },
                 ],
+            },
+            {
+                    label:"sideBar.coupon",
+                      icon: TicketPercent,
+                      children:[
+                        {label:"sideBar.promotion",icon:Megaphone,path:"/Dashboard/coupon/promotion"}
+                      ]
             },
             { label: "sideBar.reportings", icon: FileText },
         ],

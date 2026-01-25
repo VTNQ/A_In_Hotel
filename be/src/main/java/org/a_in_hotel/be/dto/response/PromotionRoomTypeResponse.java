@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PromotionRoomTypeResponse {
+    private Long roomTypeId;
     private String roomTypeName;
+    private boolean excluded;
 }
