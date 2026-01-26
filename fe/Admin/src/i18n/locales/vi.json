@@ -27,8 +27,8 @@
         "booking": "Quản lý đặt chỗ",
         "facility": "Quản lý cơ sở vật chất",
         "room": "Quản lý phòng",
-        "coupon":"Quản lý khuyến mãi",
-        "promotion":"Quản lý chương trình khuyến mãi",
+        "coupon": "Quản lý khuyến mãi",
+        "promotion": "Quản lý chương trình khuyến mãi",
         "asset": "Tiện nghi & Theo dõi tài sản",
         "extra": "Dịch vụ bổ sung",
         "category": "Quản lý danh mục",
@@ -693,23 +693,69 @@
         "code": "Mã chương trình",
         "name": "Tên chương trình",
         "type": "Loại khuyến mãi",
-        "disable":"Vô hiệu hóa",
-        "errorUpdateStatus":"Lỗi cập nhật trạng thái chương trình khuyến mãi",
-        "successUpdateStatus":"Cập nhật trạng thái chương trình khuyến mãi thành công",
-        "enable":"kích hoạt",
-        "view":"Xem chi tiết",
+        "launch":"Khởi tạo khuyến mãi",
+        "disable": "Vô hiệu hóa",
+        "errorUpdateStatus": "Lỗi cập nhật trạng thái chương trình khuyến mãi",
+        "successUpdateStatus": "Cập nhật trạng thái chương trình khuyến mãi thành công",
+        "enable": "kích hoạt",
+        "view": "Xem chi tiết",
         "discountValue": "Giá trị giảm",
         "createdBy": "Người tạo",
         "loadErrorRoomType": "không thể tải loại phòng",
         "startDate": "Ngày bắt đầu",
         "value": "Giá trị",
         "endDate": "Ngày kết thúc",
-        "createOrUpdate":{
+        "createOrUpdate": {
             "createSucess": "Tạo chương trình khuyến mãi thành công!",
             "createError": "Lỗi khi tạo chương trình khuyến mãi",
-            "titleCreate": "Tạo chương trình khuyến mãi mới",
-            "titleEdit": "Sửa chương trình khuyến mãi",
+            "titleCreate": "Tạo chương trình khuyến mãi",
+            "updateSuccess": "Cập nhật chương trình khuyến mãi thành công!",
+            "updateError": "Cập nhật chương trình khuyến mãi thất bại!",
+            "description": "Cấu hình các thông tin cho chương trình khuyến mãi",
+            "saveUpdateButton":"Cập nhật khuyến mãi",
+            "editTitle": "Sửa chương trình khuyến mãi",
             "enterName": "Nhập tên chương trình"
+        },
+        "tabs": {
+            "general": "Thông tin chung",
+            "offer": "Ưu đãi",
+            "targeting": "Áp dụng"
+        },
+        "general": {
+            "title": "Thông tin chung",
+            "name": "Tên chương trình",
+            "namePlaceholder": "VD: Summer Getaway",
+            "priority": "Độ ưu tiên",
+            "priorityPlaceholder": "VD: 1",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Mô tả ngắn cho chương trình khuyến mãi..."
+        },
+        "offer": {
+            "title": "Cấu hình giảm giá",
+            "type": "Loại giảm giá",
+            "value": "Giá trị giảm",
+            "fixed": "Giảm số tiền cố định",
+            "percent": "Giảm theo phần trăm (%)",
+            "valuePercentPlaceholder": "VD: 10 (%)",
+            "valueFixedPlaceholder": "VD: 100.000 (VND)"
+        },
+        "conditions": {
+            "title": "Điều kiện",
+            "minNights": "Số đêm tối thiểu",
+            "minNightsPlaceholder": "VD: 2"
+        },
+        "targeting": {
+            "audience": "Đối tượng & kênh",
+            "application": "Phạm vi áp dụng",
+            "customerAgent":"Phân khúc khách hàng",
+            "roomTypes": "Loại phòng áp dụng",
+            "selectAllRoomTypes": "Chọn tất cả loại phòng",
+            "bookingTypes": "Loại hình đặt phòng"
+        },
+        "schedule": {
+            "title": "Thời gian áp dụng",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc"
         },
         "customerType": {
             "personal": "Khách lẻ",
@@ -729,6 +775,13 @@
         "status": {
             "enabled": "Hoạt động",
             "Disabled": "Không hoạt động"
+        },
+        "next":"Tiếp theo",
+        "back":"Quay lại",
+        "bookingDateTime": {
+            "packageDayUse": "Theo giờ",
+            "packageOvernight": "Qua đêm",
+            "packageFullDay": "Theo tháng"
         }
     }
 }

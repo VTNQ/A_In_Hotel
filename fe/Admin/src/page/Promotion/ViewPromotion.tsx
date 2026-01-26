@@ -11,6 +11,7 @@ import CreatePromotion from "../../components/Promotion/Create/CreatePromotion";
 import PromotionActionMenu from "../../components/Promotion/PromotionActionMenu";
 import UpdatePromotion from "../../components/Promotion/UpdatePromotion";
 import { useAlert } from "../../components/alert-context";
+import ViewPromotionModal from "../../components/Promotion/ViewPromotionModal";
 
 const ViewPromotion = () => {
   const [data, setData] = useState<any[]>([]);
@@ -22,6 +23,7 @@ const ViewPromotion = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showViewModal,setShowViewModal] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedService, setSelectedService] = useState<any | null>(null);
@@ -31,83 +33,82 @@ const ViewPromotion = () => {
     setSearchValue(e.target.value);
   };
 
-const fetchData = async (
-  pageNumber = 1,
-  key = sortKey,
-  order = sortOrder,
-) => {
-  let filters: string[] = [];
+  const fetchData = async (
+    pageNumber = 1,
+    key = sortKey,
+    order = sortOrder,
+  ) => {
+    let filters: string[] = [];
 
-  if (statusFilter) {
-    filters.push(`isActive==${statusFilter}`);
-  }
+    if (statusFilter) {
+      filters.push(`isActive==${statusFilter}`);
+    }
 
-  const filterQuery = filters.join(" and ");
+    const filterQuery = filters.join(" and ");
 
-  const params = {
-    page: pageNumber,
-    sort: `${key},${order}`,
-    size: 10,
-    searchValue: searchValue,
-    ...(filterQuery ? { filter: filterQuery } : {}),
+    const params = {
+      page: pageNumber,
+      sort: `${key},${order}`,
+      size: 10,
+      searchValue: searchValue,
+      ...(filterQuery ? { filter: filterQuery } : {}),
+    };
+
+    const res = await getPromotionAll(params);
+
+    setData(res.data?.content || []);
+    setTotalPages(res?.data?.totalPages || 1);
+    setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
+    setPage(pageNumber);
   };
-
-  const res = await getPromotionAll(params);
-
-  setData(res.data?.content || []);
-  setTotalPages(res?.data?.totalPages || 1);
-  setTotalResults(
-    res?.data?.totalElements || res?.data?.totalItems || 0,
-  );
-  setPage(pageNumber);
-};
+  const handleView = (row:any)=>{
+    setSelectedService(row.id);
+    setShowViewModal(true);
+  }
 
   const handleEdit = (row: any) => {
     setSelectedService(row.id);
     setShowUpdateModal(true);
   };
   const loadPromotions = async (page = 1) => {
-  try {
-    setLoading(true);
-    await fetchData(page);
-  } catch (err) {
-    console.error(err);
-    setError(t("promotion.errorLoad"));
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      await fetchData(page);
+    } catch (err) {
+      console.error(err);
+      setError(t("promotion.errorLoad"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadPromotions();
   }, [sortKey, sortOrder, statusFilter, searchValue]);
- const handleUpdateStatusPromotion = async (
-  promotionId: number,
-  isActive: any,
-) => {
-  try {
-    setLoading(true);
+  const handleUpdateStatusPromotion = async (
+    promotionId: number,
+    isActive: any,
+  ) => {
+    try {
+      setLoading(true);
 
-    const response = await updateStatusPromotion(promotionId, isActive);
+      const response = await updateStatusPromotion(promotionId, isActive);
 
-  
-    await fetchData(page);
+      await fetchData(page);
 
-    const message =
-      response?.data?.message || t("promotion.successUpdateStatus");
+      const message =
+        response?.data?.message || t("promotion.successUpdateStatus");
 
-    showAlert({ title: message, type: "success", autoClose: 3000 });
-  } catch (err: any) {
-    showAlert({
-      title:
-        err?.response?.data?.message ||
-        t("promotion.errorUpdateStatus"),
-      type: "error",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+      showAlert({ title: message, type: "success", autoClose: 3000 });
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("promotion.errorUpdateStatus"),
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const { t } = useTranslation();
   const columns = [
@@ -156,7 +157,7 @@ const fetchData = async (
         <PromotionActionMenu
           promotion={row}
           onDiabled={() => handleUpdateStatusPromotion(row.id, false)}
-          onView={() => {}}
+          onView={() => handleView(row)}
           onEdit={() => handleEdit(row)}
         />
       ),
@@ -231,6 +232,11 @@ const fetchData = async (
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
         onSuccess={() => fetchData()}
+        promotionId={selectedService}
+      />
+      <ViewPromotionModal
+        isOpen={showViewModal}
+        onClose={() => setShowViewModal(false)}
         promotionId={selectedService}
       />
     </div>

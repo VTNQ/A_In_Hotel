@@ -169,13 +169,16 @@ const UpdatePromotion = ({
           <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
             <div className="flex flex-col gap-1">
               <h1 className="text-3xl font-bold text-slate-800">
-                Edit Promotion Setup
+                {t("promotion.createOrUpdate.editTitle")}
               </h1>
               <p className="text-sm italic text-slate-500">
-                Configure your campaign parameters
+                {t("promotion.createOrUpdate.description")}
               </p>
             </div>
-            <button onClick={handleCancel} className="p-2 rounded-full hover:bg-slate-100">
+            <button
+              onClick={handleCancel}
+              className="p-2 rounded-full hover:bg-slate-100"
+            >
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </header>
@@ -183,21 +186,21 @@ const UpdatePromotion = ({
             <div className="flex gap-10">
               <TabButton
                 icon={<Info size={18} />}
-                label="General"
+                label={t("promotion.tabs.general")}
                 disabled={loading}
                 active={activeTab === "general"}
                 onClick={() => setActiveTab("general")}
               />
               <TabButton
                 icon={<Tag size={18} />}
-                label="Offer"
+                label={t("promotion.tabs.offer")}
                 disabled={loading}
                 active={activeTab === "offer"}
                 onClick={() => setActiveTab("offer")}
               />
               <TabButton
                 icon={<Users size={18} />}
-                label="Targeting"
+                label={t("promotion.tabs.targeting")}
                 disabled={loading}
                 active={activeTab === "targeting"}
                 onClick={() => setActiveTab("targeting")}
@@ -248,10 +251,8 @@ const UpdatePromotion = ({
             )}
           </div>
 
-          <footer className="flex items-center justify-between border-t border-gray-200 px-10 py-6">
-            <span className="text-xs italic text-slate-500">
-              Auto-saved 10 seconds ago
-            </span>
+          <footer className="flex items-center justify-end border-t border-gray-200 px-10 py-6">
+            
             <div className="flex gap-4">
               {/* Back */}
               {!isFirstTab && (
@@ -260,7 +261,7 @@ const UpdatePromotion = ({
                   disabled={loading || saving}
                   className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
                 >
-                  Back
+                {t("promotion.back")}
                 </button>
               )}
 
@@ -272,7 +273,7 @@ const UpdatePromotion = ({
                   className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                    {t("promotion.next")}
                 </button>
               ) : (
                 <button
@@ -309,7 +310,7 @@ const UpdatePromotion = ({
                     </>
                   ) : (
                     <>
-                      <span>Launch Promotion</span>
+                      <span>{t("promotion.createOrUpdate.saveUpdateButton")}</span>
                       <Rocket size={18} />
                     </>
                   )}
