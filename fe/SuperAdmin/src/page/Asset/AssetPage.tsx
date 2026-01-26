@@ -21,7 +21,7 @@ const AssetPage = () => {
   const [filterCategory, setFilterCategory] = useState("");
   const [editModal, setEditModal] = useState<Asset | null>(null);
   const [selectedRow, setSelectedRow] = useState<Asset | null>(null);
-    const [showViewModal, setShowViewModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [statusFilter, setStatusFilter] = useState<AssetStatusFilter>("ALL");
@@ -91,6 +91,7 @@ const AssetPage = () => {
         title: t("asset.status.updateSuccess"),
         type: "success",
       });
+      fetchAssets();
     } catch (err: any) {
       showAlert({
         title:
@@ -98,6 +99,8 @@ const AssetPage = () => {
           "Failed to change status of asset. Please try again.",
         type: "error",
       });
+    }finally{
+      setLoading(false);
     }
   };
   return (

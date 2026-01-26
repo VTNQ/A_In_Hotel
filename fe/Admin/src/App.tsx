@@ -30,7 +30,7 @@ function App() {
           <Route path='booking/create' element={<CreateBooking/>}/>
           <Route path='post/banner' element={<ViewBanner/>}/>
           <Route path='post/blog' element={<ViewBlogPage/>}/>
-          <Route path='promotion' element={<ViewPromotion/>}/>
+          <Route path='coupon/promotion' element={<ViewPromotion/>}/>
         </Route>
       </Routes>
     </>

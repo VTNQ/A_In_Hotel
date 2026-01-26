@@ -18,6 +18,8 @@ import ExtraServicePage from './page/ExtraService/ExtraServicePage'
 import CreateExtraServicePage from './page/ExtraService/CreateExtraServicePage'
 import AssetPage from './page/Asset/AssetPage'
 import CreateAssetPage from './page/Asset/CreateAssetPage'
+import RoomPage from './page/Room/RoomPage'
+import CreateRoomPage from './page/Room/CreateRoomPage'
 function App() {
 
   return (
@@ -34,6 +36,8 @@ function App() {
           <Route path='ChildSuperAdmin' element={<ListSuperAdminPage/>}/>
           <Route path='category' element={<ViewCategoryPage/>}/>
           <Route path='category/create' element={<CreateCategoryPage/>}/>
+          <Route path='room' element={<RoomPage/>}/>
+          <Route path='room/create' element={<CreateRoomPage/>}/>
           <Route path='service' element={<ExtraServicePage/>}/>
           <Route path='service/create' element={<CreateExtraServicePage/>}/>
           <Route path='asset' element={<AssetPage/>}/>

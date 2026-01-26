@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.Enum;
 
 public enum PromotionCustomerType {
+    ALL(0),
     PERSONAL(1),
     COMPANY(2),
     WALKIN(3),

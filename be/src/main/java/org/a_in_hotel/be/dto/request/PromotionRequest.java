@@ -26,12 +26,13 @@ public class PromotionRequest {
     private LocalDate startDate;
 
     private LocalDate endDate;
+    private Integer bookingType;
 
-    private PromotionBookingConditionRequest bookingConditionRequests;
+    private Integer minNights;
 
-    private PromotionCustomerConditionRequest customerConditionRequests;
+    private Integer customerType;
 
-    private PromotionDateConditionRequest promotionDateConditionRequests;
+
 
     private List<PromotionRoomTypeRequest> promotionRoomTypeRequests;
 }

@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getPromotionAll } from "../../service/api/Promotion";
+import {
+  getPromotionAll,
+  updateStatusPromotion,
+} from "../../service/api/Promotion";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import { PROMOTION_TYPE_I18N } from "../../type/promotion.types";
+import CreatePromotion from "../../components/Promotion/Create/CreatePromotion";
+import PromotionActionMenu from "../../components/Promotion/PromotionActionMenu";
+import UpdatePromotion from "../../components/Promotion/UpdatePromotion";
+import { useAlert } from "../../components/alert-context";
 
 const ViewPromotion = () => {
   const [data, setData] = useState<any[]>([]);
@@ -11,49 +18,97 @@ const ViewPromotion = () => {
   const [error, setError] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortKey, setSortKey] = useState<string>("id");
+  const { showAlert } = useAlert();
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedService, setSelectedService] = useState<any | null>(null);
   const [searchValue, setSearchValue] = useState("");
+  const [open, setOpen] = useState(false);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
-  const fetchData = async (
-    pageNumber = 1,
-    key = sortKey,
-    order = sortOrder,
-  ) => {
-    setLoading(true);
-    let filters: string[] = [];
-    if (statusFilter) {
-      filters.push(`isActive==${statusFilter}`);
-    }
-    const filterQuery = filters.join(" and ");
-    try {
-      const params = {
-        page: pageNumber,
-        sort: `${key},${order}`,
-        size: 10,
-        searchValue:searchValue,
-        ...(filterQuery ? { filter: filterQuery } : {}),
-      };
-      const res = await getPromotionAll(params);
-      setData(res.data?.content || []);
-      setTotalPages(res?.data?.totalPages || 1);
-      setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
-      setPage(pageNumber);
-    } catch (err: any) {
-      console.error("Fetch error:", err);
-      setError(t("promotion.errorLoad"));
-    } finally {
-      setLoading(false);
-    }
+const fetchData = async (
+  pageNumber = 1,
+  key = sortKey,
+  order = sortOrder,
+) => {
+  let filters: string[] = [];
+
+  if (statusFilter) {
+    filters.push(`isActive==${statusFilter}`);
+  }
+
+  const filterQuery = filters.join(" and ");
+
+  const params = {
+    page: pageNumber,
+    sort: `${key},${order}`,
+    size: 10,
+    searchValue: searchValue,
+    ...(filterQuery ? { filter: filterQuery } : {}),
   };
+
+  const res = await getPromotionAll(params);
+
+  setData(res.data?.content || []);
+  setTotalPages(res?.data?.totalPages || 1);
+  setTotalResults(
+    res?.data?.totalElements || res?.data?.totalItems || 0,
+  );
+  setPage(pageNumber);
+};
+
+  const handleEdit = (row: any) => {
+    setSelectedService(row.id);
+    setShowUpdateModal(true);
+  };
+  const loadPromotions = async (page = 1) => {
+  try {
+    setLoading(true);
+    await fetchData(page);
+  } catch (err) {
+    console.error(err);
+    setError(t("promotion.errorLoad"));
+  } finally {
+    setLoading(false);
+  }
+};
+
   useEffect(() => {
-    fetchData();
-  }, [sortKey, sortOrder, statusFilter,searchValue]);
+    loadPromotions();
+  }, [sortKey, sortOrder, statusFilter, searchValue]);
+ const handleUpdateStatusPromotion = async (
+  promotionId: number,
+  isActive: any,
+) => {
+  try {
+    setLoading(true);
+
+    const response = await updateStatusPromotion(promotionId, isActive);
+
+  
+    await fetchData(page);
+
+    const message =
+      response?.data?.message || t("promotion.successUpdateStatus");
+
+    showAlert({ title: message, type: "success", autoClose: 3000 });
+  } catch (err: any) {
+    showAlert({
+      title:
+        err?.response?.data?.message ||
+        t("promotion.errorUpdateStatus"),
+      type: "error",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
   const { t } = useTranslation();
   const columns = [
     { key: "code", label: t("promotion.code"), sortable: true },
@@ -94,6 +149,18 @@ const ViewPromotion = () => {
       label: t("promotion.createdBy"),
       render: (value: any) => value.createdBy ?? t("common.none"),
     },
+    {
+      key: "action",
+      label: t("common.action"),
+      render: (row: any) => (
+        <PromotionActionMenu
+          promotion={row}
+          onDiabled={() => handleUpdateStatusPromotion(row.id, false)}
+          onView={() => {}}
+          onEdit={() => handleEdit(row)}
+        />
+      ),
+    },
   ];
   return (
     <div className="flex flex-col flex-1 bg-gray-50">
@@ -101,7 +168,10 @@ const ViewPromotion = () => {
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
           {t("promotion.title")}
         </h1>
-        <button className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]">
+        <button
+          onClick={() => setOpen(true)}
+          className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
+        >
           {t("promotion.new")}
         </button>
       </div>
@@ -152,6 +222,17 @@ const ViewPromotion = () => {
           }}
         />
       )}
+      <CreatePromotion
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onSuccess={() => fetchData()}
+      />
+      <UpdatePromotion
+        isOpen={showUpdateModal}
+        onClose={() => setShowUpdateModal(false)}
+        onSuccess={() => fetchData()}
+        promotionId={selectedService}
+      />
     </div>
   );
 };

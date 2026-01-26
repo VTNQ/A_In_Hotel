@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { clearTokens} from "../util/auth";
+import { clearTokens } from "../util/auth";
 import SessionExpiredModal from "./SessionExpiredModal";
 import { AlertProvider } from "./alert-context";
 import UserDropdown from "./UserDropdown";
@@ -37,48 +37,112 @@ import LanguageSwitcher from "./LanguageSwitcher";
  * - Hỗ trợ Dark mode toggle
  */
 export default function AdminLayout() {
-  
-   const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
-   const { t } = useTranslation();
-   const SECTIONS: SectionSpec[] = [
-  {
-    title: t("sidebar.dashboards"),
-    items: [
-      { label: t("sidebar.home"), icon: Home, path: "/Home" },
-      { label: t("sidebar.hotel"), icon: Hotel, path: '/Home/hotel' },
-      {
-        label: t("sidebar.account"),
-        icon: Users,
-        children: [
-          { label: t("sidebar.adminManager"), icon: Briefcase, path: "/Home/Admin" },
-          { label: t("sidebar.childSuperAdminManager"), icon: Lock, path: "/Home/ChildSuperAdmin" }
-        ],
-      },
+  const { t } = useTranslation();
+  const SECTIONS: SectionSpec[] = [
+    {
+      title: t("sidebar.dashboards"),
+      items: [
+        {
+          label: t("sidebar.home"),
+          icon: Home,
+          path: "/Home",
+        },
+      ],
+    },
 
-      {
-        label: t("sidebar.systemManagement"),
-        icon: Settings,
-        children: [
-          { label:t("sidebar.aboutHotel"), icon: Hotel, path: "/Home/system-content/about-hotel" },
-          { label: t("sidebar.homepageContent"), icon: LayoutDashboard, path: "/Home/system-content/home" },
-          { label: t("sidebar.policyTerms"), icon: Lock, path: "/Home/system-content/policy" },
-          { label: t("sidebar.footerContent"), icon: Boxes, path: "/Home/system-content/footer" },
-        ],
-      },
-      {
-        label:  t("sidebar.facilities"),
-        icon: Building2,
-        path: "/Home/facility",
-      },
-    ],
-  }
-];
+    {
+      title: t("sidebar.hotelManagement"),
+      items: [
+        {
+          label: t("sidebar.hotel"),
+          icon: Hotel,
+          path: "/Home/hotel",
+        },
+        {
+          label: t("sidebar.facilities"),
+          icon: Building2,
+          path: "/Home/facility",
+        },
+      ],
+    },
+
+    {
+      title: t("sidebar.facilityManagement"),
+      items: [
+        {
+          label: t("sidebar.facility"),
+          icon: Building2,
+          children: [
+            { label: t("sidebar.room"), path: "/Home/room" },
+            { label: t("sidebar.asset"), path: "/Home/asset" },
+            { label: t("sidebar.extra"), path: "/Home/service" },
+            { label: t("sidebar.category"), path: "/Home/category" },
+          ],
+        },
+      ],
+    },
+
+    {
+      title: t("sidebar.userPermission"),
+      items: [
+        {
+          label: t("sidebar.account"),
+          icon: Users,
+          children: [
+            {
+              label: t("sidebar.adminManager"),
+              icon: Briefcase,
+              path: "/Home/Admin",
+            },
+            {
+              label: t("sidebar.childSuperAdminManager"),
+              icon: Lock,
+              path: "/Home/ChildSuperAdmin",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      title: t("sidebar.systemManagement"),
+      items: [
+        {
+          label: t("sidebar.systemContent"),
+          icon: Settings,
+          children: [
+            {
+              label: t("sidebar.aboutHotel"),
+              icon: Hotel,
+              path: "/Home/system-content/about-hotel",
+            },
+            {
+              label: t("sidebar.homepageContent"),
+              icon: LayoutDashboard,
+              path: "/Home/system-content/home",
+            },
+            {
+              label: t("sidebar.policyTerms"),
+              icon: Lock,
+              path: "/Home/system-content/policy",
+            },
+            {
+              label: t("sidebar.footerContent"),
+              icon: Boxes,
+              path: "/Home/system-content/footer",
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
   const [showModal, setShowModal] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
 
   const navigate = useNavigate();
-
 
   useAuthWatcher(setAuthChecking, setShowModal);
 
@@ -98,7 +162,9 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500" />
-              <span className="hidden text-xl font-semibold sm:block">zynix</span>
+              <span className="hidden text-xl font-semibold sm:block">
+                zynix
+              </span>
             </div>
             <button
               onClick={() => setCollapsed((v) => !v)}
@@ -111,14 +177,26 @@ export default function AdminLayout() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <IconBtn label={t("topbar.search")}><Search className="h-5 w-5" /></IconBtn>
+            <IconBtn label={t("topbar.search")}>
+              <Search className="h-5 w-5" />
+            </IconBtn>
             <LanguageSwitcher />
             <IconBtn label="Theme" onClick={() => setDark((v) => !v)}>
-              {dark ? <SunMedium className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {dark ? (
+                <SunMedium className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </IconBtn>
-            <IconBtn label="Messages" badge="5"><Mail className="h-5 w-5" /></IconBtn>
-            <IconBtn label="Notifications" dot><Bell className="h-5 w-5" /></IconBtn>
-            <IconBtn label="Fullscreen"><Maximize2 className="h-5 w-5" /></IconBtn>
+            <IconBtn label="Messages" badge="5">
+              <Mail className="h-5 w-5" />
+            </IconBtn>
+            <IconBtn label="Notifications" dot>
+              <Bell className="h-5 w-5" />
+            </IconBtn>
+            <IconBtn label="Fullscreen">
+              <Maximize2 className="h-5 w-5" />
+            </IconBtn>
             <UserDropdown
               name="Musharof Chowdhury"
               email="randomuser@pimjo.com"
@@ -131,28 +209,44 @@ export default function AdminLayout() {
               }}
             />
 
-            <IconBtn label="Settings"><Settings className="h-5 w-5" /></IconBtn>
+            <IconBtn label="Settings">
+              <Settings className="h-5 w-5" />
+            </IconBtn>
           </div>
         </div>
       </header>
 
       {/* Main layout */}
       <div className="flex">
-        <Sidebar collapsed={collapsed} sections={SECTIONS} onToggle={() => setCollapsed((v) => !v)} />
+        <Sidebar
+          collapsed={collapsed}
+          sections={SECTIONS}
+          onToggle={() => setCollapsed((v) => !v)}
+        />
         <main className="flex-1 p-6 max-w-[80%]">
           <AlertProvider>
             <Outlet />
           </AlertProvider>
-
         </main>
-
       </div>
       <SessionExpiredModal open={showModal} />
     </div>
   );
 }
 
-function IconBtn({ children, label, onClick, badge, dot }: { children: React.ReactNode; label: string; onClick?: () => void; badge?: string; dot?: boolean }) {
+function IconBtn({
+  children,
+  label,
+  onClick,
+  badge,
+  dot,
+}: {
+  children: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  badge?: string;
+  dot?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
@@ -162,7 +256,9 @@ function IconBtn({ children, label, onClick, badge, dot }: { children: React.Rea
     >
       {children}
       {badge && (
-        <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-indigo-600 px-1.5 text-[10px] font-semibold text-white">{badge}</span>
+        <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-indigo-600 px-1.5 text-[10px] font-semibold text-white">
+          {badge}
+        </span>
       )}
       {dot && (
         <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white dark:ring-neutral-900" />
@@ -179,25 +275,27 @@ function isItemActive(item: ItemSpec, pathname: string): boolean {
     if (pathname === item.path) return true;
 
     // match route con, nhưng KHÔNG phải root "/Home"
-    if (
-      pathname.startsWith(item.path + "/") &&
-      item.path !== "/Home"
-    ) {
+    if (pathname.startsWith(item.path + "/") && item.path !== "/Home") {
       return true;
     }
   }
 
   if (item.children) {
-    return item.children.some(child =>
-      isItemActive(child, pathname)
-    );
+    return item.children.some((child) => isItemActive(child, pathname));
   }
 
   return false;
 }
 
-
-function Sidebar({ collapsed, sections, onToggle }: { collapsed: boolean; sections: SectionSpec[]; onToggle: () => void }) {
+function Sidebar({
+  collapsed,
+  sections,
+  onToggle,
+}: {
+  collapsed: boolean;
+  sections: SectionSpec[];
+  onToggle: () => void;
+}) {
   const widthClass = collapsed ? "w-20" : "w-72";
 
   return (
@@ -212,20 +310,37 @@ function Sidebar({ collapsed, sections, onToggle }: { collapsed: boolean; sectio
           className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </button>
       </div>
 
       <nav className="no-scrollbar h-full overflow-y-auto px-2 pb-6">
         {sections.map((section, idx) => (
-          <SidebarSection key={section.title} section={section} collapsed={collapsed} defaultOpen={idx < 2} />
+          <SidebarSection
+            key={section.title}
+            section={section}
+            collapsed={collapsed}
+            defaultOpen={idx < 2}
+          />
         ))}
       </nav>
     </aside>
   );
 }
 
-function SidebarSection({ section, collapsed, defaultOpen = false }: { section: SectionSpec; collapsed: boolean; defaultOpen?: boolean }) {
+function SidebarSection({
+  section,
+  collapsed,
+  defaultOpen = false,
+}: {
+  section: SectionSpec;
+  collapsed: boolean;
+  defaultOpen?: boolean;
+}) {
   const [open, setOpen] = useState(defaultOpen);
   const { pathname } = useLocation();
 
@@ -241,7 +356,11 @@ function SidebarSection({ section, collapsed, defaultOpen = false }: { section: 
         aria-expanded={open}
       >
         <span className="truncate text-left">{section.title}</span>
-        {!collapsed && <ChevronRight className={`h-3 w-3 transition-transform ${open ? "rotate-90" : ""}`} />}
+        {!collapsed && (
+          <ChevronRight
+            className={`h-3 w-3 transition-transform ${open ? "rotate-90" : ""}`}
+          />
+        )}
       </button>
 
       <AnimatePresence initial={false}>
@@ -255,7 +374,13 @@ function SidebarSection({ section, collapsed, defaultOpen = false }: { section: 
             className="space-y-1 px-1"
           >
             {section.items.map((item) => (
-              <SidebarItem key={item.label} item={item} collapsed={collapsed} depth={0} pathname={pathname} />
+              <SidebarItem
+                key={item.label}
+                item={item}
+                collapsed={collapsed}
+                depth={0}
+                pathname={pathname}
+              />
             ))}
           </motion.ul>
         )}
@@ -290,7 +415,7 @@ function SidebarItem({
   const Icon = item.icon ?? Boxes;
   const paddingLeft = useMemo(
     () => (collapsed ? "pl-0" : `pl-${Math.min(2 + depth * 2, 10)}`),
-    [collapsed, depth]
+    [collapsed, depth],
   );
 
   const baseClasses = [
@@ -302,7 +427,7 @@ function SidebarItem({
 
   const handleClick = () => {
     if (hasChildren) {
-      setOpen(v => !v);
+      setOpen((v) => !v);
       return;
     }
     if (item.path) {
@@ -318,16 +443,14 @@ function SidebarItem({
         aria-expanded={hasChildren ? open : undefined}
       >
         <Icon className="h-5 w-5 shrink-0" />
-        {!collapsed && (
-          <span className="flex-1 truncate">{item.label}</span>
+        {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
+        {!collapsed && hasChildren && (
+          <ChevronRight
+            className={`h-4 w-4 transition-transform ${
+              open ? "rotate-90" : ""
+            }`}
+          />
         )}
-        {!collapsed &&
-          hasChildren && (
-            <ChevronRight
-              className={`h-4 w-4 transition-transform ${open ? "rotate-90" : ""
-                }`}
-            />
-          )}
       </button>
 
       {hasChildren && !collapsed && (
@@ -340,7 +463,7 @@ function SidebarItem({
               transition={{ duration: 0.2 }}
               className="mt-1 space-y-1 border-l border-dashed border-gray-200 pl-4 dark:border-neutral-700"
             >
-              {item.children!.map(child => (
+              {item.children!.map((child) => (
                 <SidebarItem
                   key={child.label}
                   item={child}
@@ -363,11 +486,10 @@ type SectionSpec = { title: string; items: ItemSpec[] };
 
 type ItemSpec = {
   label: string;
-  icon?: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon?: React.ComponentType<React.ComponentProps<"svg">>;
   badge?: string;
   path?: string;
   trailing?: React.ReactNode;
   highlighted?: boolean; // e.g. "Utilities" purple pill in the screenshot
   children?: ItemSpec[];
 };
-
