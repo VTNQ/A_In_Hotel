@@ -80,13 +80,13 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E] rounded-full" />
             <h3 className="text-xl font-bold text-slate-800">
-              Audience & Channels
+              {t("promotion.targeting.audience")}
             </h3>
           </div>
           <div className="space-y-8">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
-                Customer Segment
+                {t("promotion.targeting.customerAgent")}
               </label>
               <select
                 value={formData.customerType}
@@ -113,12 +113,12 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
         <section className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E]  rounded-full" />
-            <h3 className="text-xl font-bold text-slate-800">Application</h3>
+            <h3 className="text-xl font-bold text-slate-800">{t("promotion.targeting.application")}</h3>
           </div>
           <div className="space-y-8">
             <div className="flex flex-col gap-4">
               <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
-                Applicable Room Types
+                {t("promotion.targeting.roomTypes")}
               </label>
               {loading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -155,7 +155,7 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                       className="w-5 h-5 text-[#42578E]"
                     />
                     <span className="text-sm font-bold text-[#253150]">
-                      Select all room types
+                      {t("promotion.targeting.selectAllRoomTypes")}
                     </span>
                   </label>
 
@@ -194,7 +194,7 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
             </div>
             <div className="flex flex-col gap-4">
               <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
-                Applicable Booking Types
+                {t("promotion.targeting.bookingTypes")}
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">

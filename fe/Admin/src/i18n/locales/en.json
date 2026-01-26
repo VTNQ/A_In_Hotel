@@ -27,8 +27,8 @@
     "booking": "Booking Management",
     "facility": "Facility Management",
     "room": "Room Management",
-    "coupon":"Coupon Management",
-    "promotion":"Promotion Management",
+    "coupon": "Coupon Management",
+    "promotion": "Promotion Management",
     "asset": "Amenities & Asset Tracking",
     "extra": "Extra Services",
     "category": "Category Management",
@@ -688,34 +688,87 @@
     "new": "+ New Promotion",
     "code": "Promotion Code",
     "name": "Promotion Name",
+    "launch":"Launch Promotion",
     "startDate": "Start Date",
     "createdBy": "Created By",
-    "view":"View",
-    "disable":"Disable",
-    "errorUpdateStatus":"Failed to update status!",
-    "successUpdateStatus":"Update status successfully!",
-    "enable":"Enable",
+    "view": "View",
+    "disable": "Disable",
+    "errorUpdateStatus": "Failed to update status!",
+    "successUpdateStatus": "Update status successfully!",
+    "enable": "Enable",
     "loadErrorRoomType": "Load error Room type",
     "value": "value",
     "endDate": "End Date",
-    "createOrUpdate":{
+    "createOrUpdate": {
+      "titleCreate": "Promotion Setup",
+      "editTitle": "Edit Promotion Setup",
+      "description": "Configure your campaign parameters",
       "createSucess": "Promotion created successfully!",
+      "saveUpdateButton":"Update Promotion",
       "createError": "Error creating Promotion",
       "updateSucess": "Promotion updated successfully!",
       "updateError": "Error updated Promotion"
     },
-      "customerType": {
+     "tabs": {
+      "general": "General",
+      "offer": "Offer",
+      "targeting": "Targeting"
+    },
+    "general": {
+      "title": "General Details",
+      "name": "Promotion Name",
+      "namePlaceholder": "e.g. Summer Getaway",
+      "priority": "Priority Level",
+      "priorityPlaceholder": "e.g. 1",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of this promotion..."
+    },
+    "schedule": {
+      "title": "Schedule",
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    },
+    "offer": {
+      "title": "Discount Configuration",
+      "type": "Discount Type",
+      "value": "Discount Value",
+      "fixed": "Fixed Amount",
+      "percent": "Percentage (%)",
+      "valuePercentPlaceholder": "e.g. 10 (%)",
+      "valueFixedPlaceholder": "e.g. 100,000 (VND)"
+    },
+    "conditions": {
+      "title": "Conditions",
+      "minNights": "Minimum Stay (Nights)",
+      "minNightsPlaceholder": "e.g. 2"
+    },
+    "targeting": {
+      "audience": "Audience & Channels",
+      "application": "Application",
+      "customerSegment":"Customer Segment",
+      "roomTypes": "Applicable Room Types",
+      "selectAllRoomTypes": "Select all room types",
+      "bookingTypes": "Applicable Booking Types"
+    },
+    "customerType": {
       "personal": "Personal Customer",
       "company": "Company / Corporate",
       "walkin": "Walk-in Guest",
       "online": "Online Booking",
       "vip": "VIP Customer"
     },
+    "bookingDateTime": {
+      "packageDayUse": "Hourly Booking",
+      "packageOvernight": "Daily Booking",
+      "packageFullDay": "Monthly Booking"
+    },
     "type": "Type",
     "discountValue": "Discount Value",
     "priority": "Priority",
     "searchPlaceholder": "Search by Promotion Code, Promotion Name",
     "errorLoad": "Failed to load data",
+    "back":"Back",
+    "next":"Next",
     "typeView": {
       "percent": "Percentage discount",
       "fixed": "Fixed amount discount",

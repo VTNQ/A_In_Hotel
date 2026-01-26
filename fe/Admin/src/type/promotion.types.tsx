@@ -55,12 +55,24 @@ export const BOOKING_TYPE_OPTIONS = [
   { value: BOOKING_TYPE.DAILY, labelKey: "bookingDateTime.packageOvernight" },
   { value: BOOKING_TYPE.MONTHLY, labelKey: "bookingDateTime.packageFullDay" },
 ] as const;
+export interface ViewPromotionProps {
+  isOpen: boolean;
+  onClose: () => void;
+  promotionId: any;
+}
 export const CUSTOMER_TYPE = {
+  ALL:0,
   PERSONAL: 1,
   COMPANY: 2,
   WALKIN: 3,
   ONLINE: 4,
   VIP: 5,
-};
-
-export const CUSTOMER_TYPE_OPTIONS = [];
+}
+export const CUSTOMER_TYPE_OPTIONS =[
+  {value:CUSTOMER_TYPE.ALL,labelKey:"common.all"},
+  {value:CUSTOMER_TYPE.PERSONAL,labelKey:"promotion.customerType.personal"},
+  {value:CUSTOMER_TYPE.COMPANY,labelKey:"promotion.customerType.company"},
+  {value:CUSTOMER_TYPE.WALKIN,labelKey:"promotion.customerType.walkin"},
+  {value:CUSTOMER_TYPE.ONLINE,labelKey:"promotion.customerType.online"},
+  {value:CUSTOMER_TYPE.VIP,labelKey:"promotion.customerType.vip"},
+]
