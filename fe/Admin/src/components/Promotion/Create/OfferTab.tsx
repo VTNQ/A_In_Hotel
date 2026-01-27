@@ -31,6 +31,7 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               >
                 <option value="2">{t("promotion.offer.fixed")}</option>
                 <option value="1">{t("promotion.offer.percent")}</option>
+                <option value="3">{t("promotion.offer.special")}</option>
                 
               </select>
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -44,7 +45,7 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
             </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
-                {formData?.type === "1" ? (
+                {formData?.type === "1" || formData?.type === "3"? (
                   <Percent size={18} />
                 ) : (
                   <Wallet size={18} />
@@ -61,7 +62,7 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                   }))
                 }}
                 placeholder={
-                  formData.type === "1" ? t("promotion.offer.valuePercentPlaceholder") : t("promotion.offer.valueFixedPlaceholder")
+                  formData.type === "1" || formData.type === "3" ? t("promotion.offer.valuePercentPlaceholder") : t("promotion.offer.valueFixedPlaceholder")
                 }
                 className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
               />
