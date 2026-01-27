@@ -12,6 +12,7 @@ import ViewBooking from './page/Booking/ViewBooking'
 import ViewBanner from './page/Banner/ViewBanner'
 import CreateBooking from './page/Booking/CreateBooking'
 import ViewPromotion from './page/Promotion/ViewPromotion'
+import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
 
 function App() {
   return(
@@ -31,6 +32,7 @@ function App() {
           <Route path='post/banner' element={<ViewBanner/>}/>
           <Route path='post/blog' element={<ViewBlogPage/>}/>
           <Route path='coupon/promotion' element={<ViewPromotion/>}/>
+          <Route path='coupon/voucher' element={<ViewVoucherPage/>}/>
         </Route>
       </Routes>
     </>

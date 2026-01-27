@@ -12,7 +12,7 @@ export interface ConfirmLogoutModalProps {
   open: boolean;
   onCancel: () => void;
   onConfirm: () => void;
-};
+}
 
 export interface MenuItem {
   label: string;
@@ -30,12 +30,11 @@ export interface CommonModalProps {
   cancelLabel?: string;
 }
 
-
 export interface CustomDatePickerProps {
   value: Date | null;
   onChange: (value: Date | null) => void;
   placeholder?: string;
-    minDate?: Date;
+  minDate?: Date;
 }
 export interface BookingActionMenuProps {
   booking: {
@@ -70,8 +69,8 @@ export interface CommonModalViewProps {
 export interface SelectOption {
   label: string;
   value: string;
-   disabled?: boolean;        
-  description?: string;   
+  disabled?: boolean;
+  description?: string;
 }
 
 export interface SelectProps {
@@ -86,4 +85,10 @@ export interface SelectProps {
 export interface ImageResponse {
   url: string;
   altText: string;
+}
+export interface ToggleProps {
+ label: string;
+  description?: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
 }

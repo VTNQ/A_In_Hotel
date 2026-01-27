@@ -23,14 +23,11 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
         const data = response.content || [];
         setCategories(data);
 
-        
         setFormData((prev) => {
-       
           if (prev.roomTypes && prev.roomTypes.length > 0) {
             return prev;
           }
 
-    
           return {
             ...prev,
             roomTypes: data.map((room: any) => ({
@@ -113,7 +110,9 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
         <section className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E]  rounded-full" />
-            <h3 className="text-xl font-bold text-slate-800">{t("promotion.targeting.application")}</h3>
+            <h3 className="text-xl font-bold text-slate-800">
+              {t("promotion.targeting.application")}
+            </h3>
           </div>
           <div className="space-y-8">
             <div className="flex flex-col gap-4">
