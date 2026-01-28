@@ -2,8 +2,8 @@ package org.a_in_hotel.be.Enum;
 
 public enum DiscountType {
 
-    PERCENT(1),
-    FIXED(2),
+    FIXED(1),
+    PERCENT(2),
     SPECIAL(3);
     private final int code;
 

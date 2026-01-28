@@ -194,10 +194,10 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
-      title="Create Voucher"
+      title={t("voucher.createOrUpdate.titleCreate")}
        saveLabel={saving ? t("common.saving") : t("common.save")}
       onSave={handleSubmit}
-      cancelLabel="cancel"
+      cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
     >
       {loadingRoom ? (
@@ -211,12 +211,12 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             {/* General Information */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                General Information
+                {t("voucher.createOrUpdate.generalInformation")}
               </h2>
 
               <div>
                 <label className="block mb-1 font-medium text-[#253150]">
-                  Voucher Name
+                  {t("voucher.createOrUpdate.voucherName")}
                 </label>
                 <input
                   value={formData.voucherName}
@@ -227,14 +227,14 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                     }));
                   }}
                   type="text"
-                  placeholder="Enter Voucher Name"
+                  placeholder={t("voucher.createOrUpdate.voucherNamePlaceHolder")}
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
               </div>
 
               <div>
                 <label className="block mb-1 font-medium text-[#253150]">
-                  Voucher Code
+                  {t("voucher.createOrUpdate.voucherCode")}
                 </label>
                 <input
                   type="text"
@@ -245,14 +245,14 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                       voucherCode: e.target.value,
                     }))
                   }
-                  placeholder="Enter Voucher Code"
+                  placeholder={t("voucher.createOrUpdate.voucherCodePlaceHolder")}
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
               </div>
 
               <div>
                 <label className="block mb-1 font-medium text-[#253150]">
-                  Description
+                  {t("voucher.createOrUpdate.description")}
                 </label>
                 <textarea
                   value={formData.description}
@@ -262,7 +262,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                       description: e.target.value,
                     }));
                   }}
-                  placeholder="Enter Description"
+                  placeholder={t("voucher.createOrUpdate.descriptionPlaceholder")}
                   className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                   rows={4}
                 />
@@ -272,13 +272,13 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             {/* Validity Range */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Validity Range
+                {t("voucher.createOrUpdate.validityRange")}
               </h2>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Start Date
+                    {t("voucher.createOrUpdate.startDate")}
                   </label>
                   <div className="relative">
                     <Calendar
@@ -301,7 +301,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
 
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    End Date
+                    {t("voucher.createOrUpdate.endDate")}
                   </label>
                   <div className="relative">
                     <Calendar
@@ -327,13 +327,13 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             {/* Stack & Priority Rules */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900">
-                Stack & Priority Rules
+                {t("voucher.createOrUpdate.stackAndPriority")}
               </h2>
 
               <div className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-5">
                 <Toggle
-                  label="Stack with Promotion"
-                  description="Allow this voucher to be combined with promotions"
+                  label={t("voucher.createOrUpdate.stackWithPromotion")}
+                  description={t("voucher.createOrUpdate.stackWithPromotionDesc")}
                   checked={formData.stackWithPromotion}
                   onChange={(value) =>
                     setFormData((prev) => ({
@@ -343,8 +343,8 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                   }
                 />
                 <Toggle
-                  label="Stack with Other Voucher"
-                  description="Allow combining with other vouchers"
+                  label={t("voucher.createOrUpdate.stackWithOtherVoucher")}
+                  description={t("voucher.createOrUpdate.stackWithOtherVoucherDesc")}
                   checked={formData.stackWithOtherVoucher}
                   onChange={(value) =>
                     setFormData((prev) => ({
@@ -356,9 +356,9 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
 
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Priority{" "}
+                    {t("voucher.createOrUpdate.priority")}{" "}
                     <span className="text-gray-400 font-normal">
-                      (optional)
+                      ({t("voucher.createOrUpdate.priorityOptional")})
                     </span>
                   </label>
                   <input
@@ -379,7 +379,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="block mb-1 font-medium text-[#253150]">
-                  Room Types
+                    {t("voucher.createOrUpdate.roomTypes")}
                 </span>
 
                 <div className="flex gap-3">
@@ -388,7 +388,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                     onClick={selectAllRoomTypes}
                     className="text-xs text-[#253150] font-semibold hover:underline"
                   >
-                    Select All
+                    {t("voucher.createOrUpdate.selectAll")}
                   </button>
 
                   <button
@@ -396,7 +396,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                     onClick={unselectAllRoomTypes}
                     className="text-xs text-gray-500 hover:underline"
                   >
-                    Clear
+                    {t("voucher.createOrUpdate.clear")}
                   </button>
                 </div>
               </div>
@@ -460,12 +460,12 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             {/* Discount Config */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Discount Config
+                {t("voucher.createOrUpdate.discountConfig")}
               </h2>
 
               <div>
                 <label className="block mb-1 font-medium text-[#253150]">
-                  Discount Type
+                  {t("voucher.createOrUpdate.discountType")}
                 </label>
                 <select
                   value={formData.type}
@@ -477,9 +477,9 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                   }}
                   className="h-12 w-full rounded-lg border px-4 border-[#4B62A0] bg-white outline-none appearance-none"
                 >
-                  <option value="1">Fixed</option>
-                  <option value="2">Percent</option>
-                  <option value="3">Special</option>
+                  <option value="1">{t("voucher.createOrUpdate.fixed")}</option>
+                  <option value="2">{t("voucher.createOrUpdate.percent")}</option>
+                  <option value="3">{t("voucher.createOrUpdate.discountTypeSpecial")}</option>
                 </select>
               </div>
 
@@ -488,7 +488,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               >
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Value
+                    {t("voucher.createOrUpdate.value")}
                   </label>
                   <div className="relative">
                     <input
@@ -500,7 +500,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                           value: e.target.value,
                         }));
                       }}
-                      placeholder="Enter Value"
+                      placeholder={t("voucher.createOrUpdate.valuePlaceholder")}
                       className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-10"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563]">
@@ -512,7 +512,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                 {isPercent && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                      Max Discount
+                      {t("voucher.createOrUpdate.maxDiscount")}
                     </label>
                     <div className="relative">
                       <input
@@ -524,7 +524,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                             maxDiscountValue: e.target.value,
                           }))
                         }
-                        placeholder="Enter max discount"
+                        placeholder={t("voucher.createOrUpdate.maxDiscountPlaceholder")}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-12"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] font-medium">
@@ -539,14 +539,14 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
             {/* Usage Rules */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Usage Rules
+                {t("voucher.createOrUpdate.usageRules")}
               </h2>
 
               {/* Booking Type + Minimum Stay */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Booking Type
+                   {t("voucher.createOrUpdate.bookingType")}
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#253150]">
@@ -577,7 +577,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
 
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Minimum Stay (Nights)
+                   {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <input
                     value={formData.minimumStay}
@@ -599,7 +599,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="block mb-1 font-medium text-[#253150]">
-                    Customer Type
+                   {t("voucher.createOrUpdate.customerType")}
                   </span>
                 </div>
 
@@ -647,7 +647,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               {/* Usage Frequency */}
               <div className="space-y-2">
                 <span className="block mb-1 font-medium text-[#253150]">
-                  Usage Frequency
+                 {t("voucher.createOrUpdate.usageFrequency")}
                 </span>
 
                 <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
@@ -694,7 +694,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               <div className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                    Total Usage Limit
+                    {t("voucher.createOrUpdate.totalUsageLimit")}
                   </label>
                   <input
                     type="number"
@@ -711,8 +711,8 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                 </div>
 
                 <Toggle
-                  label="Usage per Customer"
-                  description="Limit usage per individual customer"
+                  label={t("voucher.createOrUpdate.usagePerCustomer")}
+                  description={t("voucher.createOrUpdate.usagePerCustomerDesc")}
                   checked={formData.usagePerCustomer !== ""}
                   onChange={(checked) => {
                     setFormData((prev) => ({
@@ -724,7 +724,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                 {formData.usagePerCustomer !== "" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                      Usage Limit per Customer
+                      {t("voucher.createOrUpdate.usageLimitPerCustomer")}
                     </label>
                     <input
                       type="number"
@@ -736,7 +736,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                           usagePerCustomer: e.target.value,
                         }))
                       }
-                      placeholder="e.g. 1"
+                      placeholder={t("voucher.createOrUppdate.usageLimitPerCustomerPlaceholder")}
                       className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                     />
                   </div>
