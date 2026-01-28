@@ -8,6 +8,7 @@ import { getVouchers, updateVoucherStatus } from "../../service/api/Voucher";
 import CommonTable from "../../components/ui/CommonTable";
 import VoucherActionMenu from "../../components/Voucher/VoucherActionMenu";
 import UpdateVoucher from "../../components/Voucher/UpdateVoucher";
+import ViewVoucher from "../../components/Voucher/ViewVoucher";
 
 const ViewVoucherPage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -19,6 +20,7 @@ const ViewVoucherPage = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortKey, setSortKey] = useState<string>("id");
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showViewModal,setShowViewModal] = useState(false);
   const { showAlert } = useAlert();
   const [page, setPage] = useState(1);
   const [selectedVoucher, setSelectedVoucher] = useState<any | null>(null);
@@ -66,6 +68,10 @@ const ViewVoucherPage = () => {
     setSelectedVoucher(row.id);
     setShowUpdateModal(true);
   };
+  const handleView = (row:any)=>{
+    setSelectedVoucher(row.id);
+    setShowViewModal(true);
+  }
   const handleUpdateStatusVoucher = async (
     voucherId: number,
     isActive: any,
@@ -179,7 +185,7 @@ const ViewVoucherPage = () => {
         <VoucherActionMenu
           voucher={row}
           onEdit={() => handleEdit(row)}
-          onView={() => {}}
+          onView={() => handleView(row)}
           onDiabled={()=>handleUpdateStatusVoucher(row.id,false)}
         />
       ),
@@ -254,6 +260,11 @@ const ViewVoucherPage = () => {
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
         onSuccess={() => fetchData()}
+        voucherId={selectedVoucher}
+      />
+      <ViewVoucher
+        isOpen={showViewModal}
+        onClose={() => setShowViewModal(false)}
         voucherId={selectedVoucher}
       />
     </div>

@@ -29,8 +29,8 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 }}
                 className="h-12 w-full rounded-lg border px-4 pr-10 border-[#4B62A0] bg-white  focus:border-primary outline-none appearance-none"
               >
-                <option value="2">{t("promotion.offer.fixed")}</option>
-                <option value="1">{t("promotion.offer.percent")}</option>
+                <option value="1">{t("promotion.offer.fixed")}</option>
+                <option value="2">{t("promotion.offer.percent")}</option>
                 <option value="3">{t("promotion.offer.special")}</option>
                 
               </select>

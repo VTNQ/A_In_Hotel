@@ -14,7 +14,7 @@ const VoucherActionMenu: React.FC<VoucherActionMenuProps> = ({
   const actions: ActionItem[] = voucher.isActive
     ? [
         {
-          label: t("voucher.view"),
+          label: t("common.view"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(voucher),
         },
@@ -32,7 +32,7 @@ const VoucherActionMenu: React.FC<VoucherActionMenuProps> = ({
       ]
     : [
         {
-          label: t("voucher.view"),
+          label: t("common.view"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(voucher),
         },
