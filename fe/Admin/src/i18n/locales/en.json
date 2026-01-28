@@ -27,8 +27,8 @@
     "booking": "Booking Management",
     "facility": "Facility Management",
     "room": "Room Management",
-    "coupon":"Coupon Management",
-    "promotion":"Promotion Management",
+    "coupon": "Coupon Management",
+    "promotion": "Promotion Management",
     "asset": "Amenities & Asset Tracking",
     "extra": "Extra Services",
     "category": "Category Management",
@@ -130,47 +130,6 @@
     "price": "Price",
     "activateSuccess": "Service activated successfully",
     "activateError": "Error activating service"
-  },
-  "voucher": {
-    "title": "Voucher Management",
-    "new": "+ New Voucher",
-    "errorLoad": "Failed to load data",
-    "expired": "Expired",
-    "changeSuccess": "Voucher change status success",
-    "changeError": "Voucher change status error",
-    "searchPlaceholder": "Search by code or name",
-    "code": "Code",
-    "name": "Name",
-    "discountType": "Discount Type",
-    "discountValue": "Discount Value",
-    "minBookingAmount": "Min Amount",
-    "maxDiscount": "Max Discount",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "usageLimit": "Usage Limit",
-    "loadError": "Failed to load voucher information!",
-    "usageCount": "Used",
-    "status": "Status",
-    "createdAt": "Created At",
-    "updatedAt": "Updated At",
-    "createOrUpdate": {
-      "titleCreate": "Create Voucher",
-      "titleEdit": "Edit Voucher",
-      "percent": "Percent",
-      "fixed": "Fixed",
-      "namePlaceHolder": "Enter voucher name",
-      "discountTypeSelect": "Select discount type",
-      "discountValuePlaceHolder": "Enter discount value",
-      "minBookingAmountPlaceHolder": "Enter min amount",
-      "maxDiscountPlaceHolder": "Enter max discount",
-      "usageLimitPlaceHolder": "Enter usage limit",
-      "selectStartDate": "Select start date",
-      "selectEndDate": "Select end date",
-      "createSucess": "Voucher created successfully",
-      "createError": "Failed to create voucher",
-      "updateSucess": "Voucher updated successfully",
-      "updateError": "Failed to update voucher"
-    }
   },
   "room": {
     "code": "Room Code",
@@ -688,34 +647,88 @@
     "new": "+ New Promotion",
     "code": "Promotion Code",
     "name": "Promotion Name",
+    "launch": "Launch Promotion",
     "startDate": "Start Date",
     "createdBy": "Created By",
-    "view":"View",
-    "disable":"Disable",
-    "errorUpdateStatus":"Failed to update status!",
-    "successUpdateStatus":"Update status successfully!",
-    "enable":"Enable",
+    "view": "View",
+    "disable": "Disable",
+    "errorUpdateStatus": "Failed to update status!",
+    "successUpdateStatus": "Update status successfully!",
+    "enable": "Enable",
     "loadErrorRoomType": "Load error Room type",
     "value": "value",
     "endDate": "End Date",
-    "createOrUpdate":{
+    "createOrUpdate": {
+      "titleCreate": "Promotion Setup",
+      "editTitle": "Edit Promotion Setup",
+      "description": "Configure your campaign parameters",
       "createSucess": "Promotion created successfully!",
+      "saveUpdateButton": "Update Promotion",
       "createError": "Error creating Promotion",
       "updateSucess": "Promotion updated successfully!",
       "updateError": "Error updated Promotion"
     },
-      "customerType": {
+    "tabs": {
+      "general": "General",
+      "offer": "Offer",
+      "targeting": "Targeting"
+    },
+    "general": {
+      "title": "General Details",
+      "name": "Promotion Name",
+      "namePlaceholder": "e.g. Summer Getaway",
+      "priority": "Priority Level",
+      "priorityPlaceholder": "e.g. 1",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of this promotion..."
+    },
+    "schedule": {
+      "title": "Schedule",
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    },
+    "offer": {
+      "title": "Discount Configuration",
+      "type": "Discount Type",
+      "value": "Discount Value",
+      "fixed": "Fixed Amount",
+      "percent": "Percentage (%)",
+      "special": "Special price",
+      "valuePercentPlaceholder": "e.g. 10 (%)",
+      "valueFixedPlaceholder": "e.g. 100,000 (VND)"
+    },
+    "conditions": {
+      "title": "Conditions",
+      "minNights": "Minimum Stay (Nights)",
+      "minNightsPlaceholder": "e.g. 2"
+    },
+    "targeting": {
+      "audience": "Audience & Channels",
+      "application": "Application",
+      "customerSegment": "Customer Segment",
+      "roomTypes": "Applicable Room Types",
+      "selectAllRoomTypes": "Select all room types",
+      "bookingTypes": "Applicable Booking Types"
+    },
+    "customerType": {
       "personal": "Personal Customer",
       "company": "Company / Corporate",
       "walkin": "Walk-in Guest",
       "online": "Online Booking",
       "vip": "VIP Customer"
     },
+    "bookingDateTime": {
+      "packageDayUse": "Hourly Booking",
+      "packageOvernight": "Daily Booking",
+      "packageFullDay": "Monthly Booking"
+    },
     "type": "Type",
     "discountValue": "Discount Value",
     "priority": "Priority",
     "searchPlaceholder": "Search by Promotion Code, Promotion Name",
     "errorLoad": "Failed to load data",
+    "back": "Back",
+    "next": "Next",
     "typeView": {
       "percent": "Percentage discount",
       "fixed": "Fixed amount discount",
@@ -724,6 +737,74 @@
     "status": {
       "enabled": "Enabled",
       "disabled": "Disabled"
+    }
+  },
+  "voucher": {
+    "title": "Voucher Management",
+    "new": "+ New Voucher",
+    "errorLoad": "Failed to load data",
+    "expired": "Expired",
+    "view": "View",
+    "usage": "Usage",
+    "disable": "Disable",
+    "enable": "Enable",
+    "roomType": "Room Type",
+    "changeSuccess": "Voucher change status success",
+    "changeError": "Voucher change status error",
+    "searchPlaceholder": "Search by code or name",
+    "code": "Code",
+    "validPeriod": "Valid Period",
+    "name": "Name",
+    "discountType": "Type",
+    "typeView": {
+      "percent": "Percentage discount",
+      "fixed": "Fixed amount discount",
+      "special": "Special price"
+    },
+    "discountValue": "Discount Value",
+    "minBookingAmount": "Min Amount",
+    "maxDiscount": "Max Discount",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "usageLimit": "Usage Limit",
+    "loadError": "Failed to load voucher information!",
+    "usageCount": "Used",
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "createdAt": "Created At",
+    "errorUpdateStatus": "Failed to update status!",
+    "updatedAt": "Updated At",
+    "createOrUpdate": {
+      "titleCreate": "Create Voucher",
+      "titleEdit": "Edit Voucher",
+      "percent": "Percent",
+      "fixed": "Fixed",
+      "namePlaceHolder": "Enter voucher name",
+      "discountTypeSelect": "Select discount type",
+      "discountValuePlaceHolder": "Enter discount value",
+      "minBookingAmountPlaceHolder": "Enter min amount",
+      "maxDiscountPlaceHolder": "Enter max discount",
+      "usageLimitPlaceHolder": "Enter usage limit",
+      "selectStartDate": "Select start date",
+      "selectEndDate": "Select end date",
+      "createSucess": "Voucher created successfully",
+      "createError": "Failed to create voucher",
+      "updateSucess": "Voucher updated successfully",
+      "updateError": "Failed to update voucher"
+    },
+    "customerType": {
+      "personal": "Personal Customer",
+      "company": "Company / Corporate",
+      "walkin": "Walk-in Guest",
+      "online": "Online Booking",
+      "vip": "VIP Customer"
+    },
+    "successUpdateStatus": "Update status successfully!",
+    "usageType": {
+      "oneTime": "One time",
+      "multiTime": "Multi time"
     }
   }
 }

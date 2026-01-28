@@ -1,7 +1,9 @@
 import { Calendar } from "lucide-react";
 import type { CreateOrUpdateTabProps } from "../../../type/promotion.types";
+import { useTranslation } from "react-i18next";
 
 const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+  const {t} = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-10 py-10">
       <div className="space-y-16  mx-auto">
@@ -9,17 +11,17 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E] rounded-full" />
             <h3 className="text-xl font-bold text-slate-800">
-              General Details
+              {t("promotion.general.title")}
             </h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2  gap-8">
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
-                Promotion Name
+                {t("promotion.general.name")}
               </label>
               <input
                 value={formData.name}
-                placeholder="e.g. Summer Getaway"
+                placeholder={t("promotion.general.namePlaceholder")}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -32,7 +34,7 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
             </div>
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
-                Priority Level
+                {t("promotion.general.priority")}
               </label>
               <input
                 value={formData.priority}
@@ -42,14 +44,14 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     priority: e.target.value,
                   }))
                 }
-                placeholder="e.g. 1"
+                placeholder={t("promotion.general.priorityPlaceholder")}
                 type="number"
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
             </div>
             <div className="flex flex-col sm:col-span-2">
               <label className="block mb-1 font-medium text-[#253150]">
-                Description
+                {t("promotion.general.description")}
               </label>
               <textarea
                 value={formData.description}
@@ -59,7 +61,7 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     description: e.target.value,
                   }))
                 }
-                placeholder="Brief description of this promotion..."
+                placeholder={t("promotion.general.descriptionPlaceholder")}
                className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
               />
             </div>
@@ -68,12 +70,12 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
         <section className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E] rounded-full" />
-            <h3 className="text-xl font-bold text-slate-800">Schedule</h3>
+            <h3 className="text-xl font-bold text-slate-800">{t("promotion.schedule.title")}</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
-                Start Date & Time
+               {t("promotion.schedule.startDate")}
               </label>
               <div className="relative">
                 <Calendar
@@ -96,7 +98,7 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
             </div>
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
-                End Date & Time
+                {t("promotion.schedule.endDate")}
               </label>
               <div className="relative">
                 <Calendar

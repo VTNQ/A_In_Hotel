@@ -1,51 +1,43 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  getPromotionAll,
-  updateStatusPromotion,
-} from "../../service/api/Promotion";
-import { Search } from "lucide-react";
-import CommonTable from "../../components/ui/CommonTable";
-import { PROMOTION_TYPE_I18N } from "../../type/promotion.types";
-import CreatePromotion from "../../components/Promotion/Create/CreatePromotion";
-import PromotionActionMenu from "../../components/Promotion/PromotionActionMenu";
-import UpdatePromotion from "../../components/Promotion/UpdatePromotion";
 import { useAlert } from "../../components/alert-context";
-import ViewPromotionModal from "../../components/Promotion/ViewPromotionModal";
+import { useTranslation } from "react-i18next";
+import { VOUCHER_TYPE } from "../../type/voucher.types";
+import { Search } from "lucide-react";
+import CreateVoucher from "../../components/Voucher/CreateVoucher";
+import { getVouchers, updateVoucherStatus } from "../../service/api/Voucher";
+import CommonTable from "../../components/ui/CommonTable";
+import VoucherActionMenu from "../../components/Voucher/VoucherActionMenu";
+import UpdateVoucher from "../../components/Voucher/UpdateVoucher";
 
-const ViewPromotion = () => {
+const ViewVoucherPage = () => {
   const [data, setData] = useState<any[]>([]);
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortKey, setSortKey] = useState<string>("id");
-  const { showAlert } = useAlert();
-  const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [showViewModal,setShowViewModal] = useState(false);
-  const [totalResults, setTotalResults] = useState(0);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [selectedService, setSelectedService] = useState<any | null>(null);
-  const [searchValue, setSearchValue] = useState("");
+  const { showAlert } = useAlert();
+  const [page, setPage] = useState(1);
+  const [selectedVoucher, setSelectedVoucher] = useState<any | null>(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
   const [open, setOpen] = useState(false);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
-
   const fetchData = async (
     pageNumber = 1,
     key = sortKey,
     order = sortOrder,
   ) => {
     let filters: string[] = [];
-
     if (statusFilter) {
       filters.push(`isActive==${statusFilter}`);
     }
-
     const filterQuery = filters.join(" and ");
-
     const params = {
       page: pageNumber,
       sort: `${key},${order}`,
@@ -53,77 +45,107 @@ const ViewPromotion = () => {
       searchValue: searchValue,
       ...(filterQuery ? { filter: filterQuery } : {}),
     };
-
-    const res = await getPromotionAll(params);
-
-    setData(res.data?.content || []);
-    setTotalPages(res?.data?.totalPages || 1);
-    setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
+    const resp = await getVouchers(params);
+    setData(resp.data?.content || []);
+    setTotalPages(resp?.data?.totalPages || 1);
+    setTotalResults(resp?.data?.totalElements || resp?.data?.totalItems || 0);
     setPage(pageNumber);
   };
-  const handleView = (row:any)=>{
-    setSelectedService(row.id);
-    setShowViewModal(true);
-  }
-
-  const handleEdit = (row: any) => {
-    setSelectedService(row.id);
-    setShowUpdateModal(true);
-  };
-  const loadPromotions = async (page = 1) => {
+  const loadVouchers = async (page = 1) => {
     try {
       setLoading(true);
       await fetchData(page);
     } catch (err) {
       console.error(err);
-      setError(t("promotion.errorLoad"));
+      setError("loading error voucher");
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadPromotions();
-  }, [sortKey, sortOrder, statusFilter, searchValue]);
-  const handleUpdateStatusPromotion = async (
-    promotionId: number,
+  const handleEdit = (row: any) => {
+    setSelectedVoucher(row.id);
+    setShowUpdateModal(true);
+  };
+  const handleUpdateStatusVoucher = async (
+    voucherId: number,
     isActive: any,
   ) => {
     try {
       setLoading(true);
 
-      const response = await updateStatusPromotion(promotionId, isActive);
+      const response = await updateVoucherStatus(voucherId, isActive);
 
       await fetchData(page);
 
       const message =
-        response?.data?.message || t("promotion.successUpdateStatus");
+        response?.data?.message || t("voucher.successUpdateStatus");
 
       showAlert({ title: message, type: "success", autoClose: 3000 });
     } catch (err: any) {
       showAlert({
-        title: err?.response?.data?.message || t("promotion.errorUpdateStatus"),
+        title: err?.response?.data?.message || t("voucher.errorUpdateStatus"),
         type: "error",
       });
-    } finally {
-      setLoading(false);
+    }finally{
+      setLoading(false)
     }
   };
-
-  const { t } = useTranslation();
+  useEffect(() => {
+    loadVouchers();
+  }, [sortKey, sortOrder, statusFilter, searchValue]);
   const columns = [
-    { key: "code", label: t("promotion.code"), sortable: true },
-    { key: "name", label: t("promotion.name"), sortable: true },
+    { key: "voucherCode", label: t("voucher.code"), sortable: true },
+    { key: "voucherName", label: t("voucher.name"), sortable: true },
     {
       key: "type",
-      label: t("promotion.type"),
+      label: t("voucher.discountType"),
       sortable: true,
-      render: (value: any) => t(PROMOTION_TYPE_I18N[Number(value.type)]),
+      render: (row: any) => t(VOUCHER_TYPE[Number(row.type)]),
+    },
+    {
+      key: "value",
+      label: t("voucher.discountValue"),
+      sortable: true,
+      render: (row: any) => {
+        const value = row.value;
+        if (row.type === 1 || row.type == 3) {
+          return `${value.toLocaleString()} VND`;
+        } else {
+          return `${value}%`;
+        }
+      },
     },
 
-    { key: "value", label: t("promotion.value"), sortable: true },
-    { key: "startDate", label: t("promotion.startDate"), sortable: true },
-    { key: "endDate", label: t("promotion.endDate"), sortable: true },
+    {
+      key: "roomTypes[0].roomTypeName",
+      label: t("voucher.roomType"),
+
+      render: (row: any) => {
+        if (!row.roomTypes || row.roomTypes.length === 0) return "-";
+
+        const firstIncluded = row.roomTypes.find(
+          (r: any) => r.excluded === false,
+        );
+
+        return firstIncluded ? firstIncluded.roomTypeName : "-";
+      },
+    },
+    {
+      key: "validPeriod",
+      label: t("voucher.validPeriod"),
+      render: (row: any) => {
+        if (!row.startDate || !row.endDate) return "-";
+        return `${row.startDate} - ${row.endDate}`;
+      },
+    },
+    {
+      key: "priority",
+      label: t("voucher.usage"),
+      sortable: true,
+      render: (row: any) => {
+        return `${row.priority}/10`;
+      },
+    },
     {
       key: "status",
       label: t("common.status"),
@@ -138,8 +160,8 @@ const ViewPromotion = () => {
             }`}
           ></span>
           {row.isActive
-            ? t("promotion.status.enabled")
-            : t("promotion.status.disabled")}
+            ? t("voucher.status.enabled")
+            : t("voucher.status.disabled")}
         </div>
       ),
     },
@@ -154,11 +176,11 @@ const ViewPromotion = () => {
       key: "action",
       label: t("common.action"),
       render: (row: any) => (
-        <PromotionActionMenu
-          promotion={row}
-          onDiabled={() => handleUpdateStatusPromotion(row.id, false)}
-          onView={() => handleView(row)}
+        <VoucherActionMenu
+          voucher={row}
           onEdit={() => handleEdit(row)}
+          onView={() => {}}
+          onDiabled={()=>handleUpdateStatusVoucher(row.id,false)}
         />
       ),
     },
@@ -167,13 +189,13 @@ const ViewPromotion = () => {
     <div className="flex flex-col flex-1 bg-gray-50">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
-          {t("promotion.title")}
+          {t("voucher.title")}
         </h1>
         <button
           onClick={() => setOpen(true)}
           className="px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
         >
-          {t("promotion.new")}
+          {t("voucher.new")}
         </button>
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
@@ -183,7 +205,7 @@ const ViewPromotion = () => {
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
-            placeholder={t("promotion.searchPlaceholder")}
+            placeholder={t("voucher.searchPlaceholder")}
             className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
@@ -197,8 +219,8 @@ const ViewPromotion = () => {
             className="w-full py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none appearance-none"
           >
             <option value="">{t("common.all")}</option>
-            <option value="true">{t("common.active")}</option>
-            <option value="false">{t("common.inactive")}</option>
+            <option value="true">{t("voucher.status.enabled")}</option>
+            <option value="false">{t("voucher.status.disabled")}</option>
           </select>
         </div>
       </div>
@@ -223,23 +245,18 @@ const ViewPromotion = () => {
           }}
         />
       )}
-      <CreatePromotion
+      <CreateVoucher
         isOpen={open}
         onClose={() => setOpen(false)}
         onSuccess={() => fetchData()}
       />
-      <UpdatePromotion
+      <UpdateVoucher
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
         onSuccess={() => fetchData()}
-        promotionId={selectedService}
-      />
-      <ViewPromotionModal
-        isOpen={showViewModal}
-        onClose={() => setShowViewModal(false)}
-        promotionId={selectedService}
+        voucherId={selectedVoucher}
       />
     </div>
   );
 };
-export default ViewPromotion;
+export default ViewVoucherPage;

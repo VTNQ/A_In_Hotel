@@ -131,10 +131,10 @@ const CreatePromotion = ({
           <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
             <div className="flex flex-col gap-1">
               <h1 className="text-3xl font-bold text-slate-800">
-                Promotion Setup
+                {t("promotion.createOrUpdate.titleCreate")}
               </h1>
               <p className="text-sm italic text-slate-500">
-                Configure your campaign parameters
+                {t("promotion.createOrUpdate.description")}
               </p>
             </div>
             <button
@@ -148,19 +148,19 @@ const CreatePromotion = ({
             <div className="flex gap-10">
               <TabButton
                 icon={<Info size={18} />}
-                label="General"
+                label={t("promotion.tabs.general")}
                 active={activeTab === "general"}
                 onClick={() => setActiveTab("general")}
               />
               <TabButton
                 icon={<Tag size={18} />}
-                label="Offer"
+                label={t("promotion.tabs.offer")}
                 active={activeTab === "offer"}
                 onClick={() => setActiveTab("offer")}
               />
               <TabButton
                 icon={<Users size={18} />}
-                label="Targeting"
+                label={t("promotion.tabs.targeting")}
                 active={activeTab === "targeting"}
                 onClick={() => setActiveTab("targeting")}
               />
@@ -178,10 +178,7 @@ const CreatePromotion = ({
             )}
           </div>
 
-          <footer className="flex items-center justify-between border-t border-gray-200 px-10 py-6">
-            <span className="text-xs italic text-slate-500">
-              Auto-saved 10 seconds ago
-            </span>
+          <footer className="flex items-center justify-end border-t border-gray-200 px-10 py-6">
             <div className="flex gap-4">
               {/* Back */}
               {!isFirstTab && (
@@ -190,7 +187,7 @@ const CreatePromotion = ({
                   disabled={loading}
                   className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
                 >
-                  Back
+                  {t("promotion.back")}
                 </button>
               )}
 
@@ -202,7 +199,7 @@ const CreatePromotion = ({
                   className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  {t("promotion.next")}
                 </button>
               ) : (
                 <button
@@ -239,7 +236,7 @@ const CreatePromotion = ({
                     </>
                   ) : (
                     <>
-                      <span>Launch Promotion</span>
+                      <span>{t("promotion.launch")}</span>
                       <Rocket size={18} />
                     </>
                   )}
