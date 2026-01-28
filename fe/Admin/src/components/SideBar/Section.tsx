@@ -31,7 +31,8 @@ export const SECTIONS = [
                     label:"sideBar.coupon",
                       icon: TicketPercent,
                       children:[
-                        {label:"sideBar.promotion",icon:Megaphone,path:"/Dashboard/coupon/promotion"}
+                        {label:"sideBar.promotion",icon:Megaphone,path:"/Dashboard/coupon/promotion"},
+                        {label:"sideBar.voucher",icon:Megaphone,path:"/Dashboard/coupon/voucher"},
                       ]
             },
             { label: "sideBar.reportings", icon: FileText },

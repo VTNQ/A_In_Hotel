@@ -1,8 +1,13 @@
 export const VOUCHER_TYPE: Record<number, string> = {
-  1: "voucher.typeView.percent",
-  2: "voucher.typeView.fixed",
+  1: "voucher.typeView.fixed",
+  2: "voucher.typeView.percent",
   3: "voucher.typeView.special",
 };
+export const BOOKING_TYPE:Record<number,string> ={
+  1:"bookingDateTime.packageDayUse",
+  2:"bookingDateTime.packageOvernight",
+  3:"bookingDateTime.packageFullDay"
+}
 export interface CreateVoucherModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +19,11 @@ export interface UpdateVoucherModalProps extends CreateVoucherModalProps {
 export interface voucherRoomType {
   roomTypeId:string;
   excluded:boolean;
+}
+export interface ViewVoucherProps {
+  isOpen: boolean;
+  onClose: () => void;
+  voucherId: any;
 }
 export interface voucherFormProps {
   voucherCode:string;
