@@ -7,7 +7,7 @@ import { getBlog, updateStatus } from "@/service/api/Blog";
 import { type Blog, type BlogStatusFilter } from "@/type/blog.types";
 import type { SortDir } from "@/type/common";
 
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const ViewBlogPage = () => {
