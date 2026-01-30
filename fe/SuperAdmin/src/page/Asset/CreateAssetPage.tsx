@@ -138,8 +138,8 @@ const CreateAssetPage = () => {
         <Breadcrumb
           items={[
             { label: t("common.home"), href: "/Home" },
-            { label: t("common.category"), href: "/Home/category" },
-            { label: t("category.createOrUpdate.titleCreate") },
+            { label: t("asset.title"), href: "/Home/asset" },
+            { label: t("asset.createOrUpdate.titleCreate") },
           ]}
         />
       </div>

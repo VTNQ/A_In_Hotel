@@ -67,6 +67,7 @@ export default function AdminLayout() {
         },
       ],
     },
+    
 
     {
       title: t("sidebar.facilityManagement"),
@@ -82,6 +83,19 @@ export default function AdminLayout() {
           ],
         },
       ],
+    },
+    {
+      title: t("sidebar.post"),
+      items:[
+          {
+            label:t("sidebar.blog"),
+            path:"/Home/post/blog"
+          },
+          {
+            label:t("sidebar.banner"),
+            path:"/Home/post/banner"
+          }
+      ]
     },
 
     {

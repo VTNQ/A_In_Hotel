@@ -1,0 +1,292 @@
+import { type BannerEditProps, type BannerForm } from "@/type/banner.types";
+import { useAlert } from "../alert-context";
+import { useEffect, useState } from "react";
+import { findById, updateBanner } from "@/service/api/Banner";
+import { File_URL } from "@/setting/constant/app";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import QuillEditor from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+import { useTranslation } from "react-i18next";
+import { Input } from "../ui/input";
+import DateTimePicker from "../ui/DateTimePicker";
+import { isBefore, startOfToday } from "date-fns";
+import UploadField from "../ui/UploadField";
+import { Button } from "../ui/button";
+const BannerEditModal: React.FC<BannerEditProps> = ({
+  open,
+  bannerId,
+  onClose,
+  onSubmit,
+}) => {
+  const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<BannerForm>({
+    title: "",
+    startDate: undefined,
+    endDate: undefined,
+    cta: "",
+    desc: "",
+    bannerImage: null,
+  });
+  const { t } = useTranslation();
+  const [defaultPreview, setDefaultPreview] = useState<string>(
+    "/placeholder-image.png",
+  );
+
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    if (!open || !bannerId) return;
+    const fetchData = async () => {
+      setFetching(true);
+      try {
+        const response = await findById(bannerId);
+        const b = response?.data;
+
+        setFormData({
+          title: b?.name ?? "",
+          startDate: b?.startAt ? new Date(b.startAt) : undefined,
+          endDate: b?.endAt ? new Date(b.endAt) : undefined,
+          cta: b?.ctaLabel ?? "",
+          desc: b?.description ?? "",
+          bannerImage: null, // ban đầu chưa có file mới
+        });
+        setDefaultPreview(File_URL + b?.image?.url);
+      } catch (err: any) {
+        console.error(err);
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchData();
+  }, [open, bannerId]);
+  const toOffsetDateTime = (date?: Date | null) => {
+    if (!date) return null;
+
+    const tzOffset = -date.getTimezoneOffset(); // phút
+    const sign = tzOffset >= 0 ? "+" : "-";
+    const pad = (n: number) => String(Math.abs(n)).padStart(2, "0");
+
+    const hours = pad(Math.floor(Math.abs(tzOffset) / 60));
+    const minutes = pad(Math.abs(tzOffset) % 60);
+
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":00" +
+      sign +
+      hours +
+      ":" +
+      minutes
+    );
+  };
+  const handleSubmit = async () => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      const cleanedData = Object.fromEntries(
+        Object.entries({
+          name: formData.title,
+          startAt: toOffsetDateTime(formData.startDate),
+          endAt: toOffsetDateTime(formData.endDate),
+          ctaLabel: formData.cta,
+          description: formData.desc,
+          image: formData.bannerImage,
+        }).map(([key, value]) => [
+          key,
+          value?.toString().trim() === "" ? null : value,
+        ]),
+      );
+      const response = await updateBanner(cleanedData, bannerId ?? 0);
+      showAlert({
+        title: response?.data?.message,
+        type: "success",
+        autoClose: 4000,
+      });
+      setFormData({
+        title: "",
+        startDate: undefined,
+        endDate: undefined,
+        cta: "",
+        desc: "",
+        bannerImage: null,
+      });
+      onSubmit();
+      onClose();
+    } catch (err: any) {
+      showAlert({
+        title: t("banner.createOrUpdate.updateError"),
+        description: err?.response?.data?.message || t("common.tryAgain"),
+        type: "error",
+        autoClose: 4000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const fullToolbar = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+
+      [{ header: 1 }, { header: 2 }],
+      [{ font: [] }],
+      [{ size: [] }],
+
+      [{ color: [] }, { background: [] }],
+
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+
+      ["link", "image"],
+
+      ["blockquote", "code-block"],
+
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      ["clean"],
+    ],
+  };
+  const handleClose = () => {
+    setFormData({
+      title: "",
+      startDate: undefined,
+      endDate: undefined,
+      cta: "",
+      desc: "",
+      bannerImage: null,
+    });
+    onClose();
+  };
+  const handleBannerImage = (files: File[] | null) =>
+    setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }));
+  if (!open || !bannerId) return <></>;
+  return (
+    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("banner.createOrUpdate.titleEdit")}</DialogTitle>
+        </DialogHeader>
+        {fetching ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
+            <span className="ml-3 text-sm text-gray-500">
+              {t("common.loading")}
+            </span>
+          </div>
+        ) : (
+          <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-1">
+            <div className="space-y-6 py-2">
+              {/* TITLE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.name")} <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  name="title"
+                  placeholder={t("banner.createOrUpdate.enterName")}
+                  onChange={handleChange}
+                  value={formData.title}
+                />
+              </div>
+
+              {/* START DATE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.startAt")} <span className="text-red-500">*</span>
+                </label>
+                <DateTimePicker
+                  value={formData.startDate}
+                  onChange={(d) => setFormData((p) => ({ ...p, startDate: d }))}
+                  disabledDate={(date) => isBefore(date, startOfToday())}
+                  placeholder={t("banner.createOrUpdate.selectStartAt")}
+                />
+              </div>
+
+              {/* END DATE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.endAt")} <span className="text-red-500">*</span>
+                </label>
+                <DateTimePicker
+                  value={formData.endDate}
+                  minDateTime={formData.startDate}
+                  onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
+                  disabledDate={(date) =>
+                    !formData.startDate ? false : date <= formData.startDate
+                  }
+                  placeholder={t("banner.createOrUpdate.selectEndAt")}
+                />
+              </div>
+
+              {/* CTA */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.createOrUpdate.ctaLabel")}
+                </label>
+                <Input
+                  name="cta"
+                  placeholder={t("banner.createOrUpdate.enterCtaLabel")}
+                  onChange={handleChange}
+                  value={formData.cta}
+                />
+              </div>
+
+              {/* DESCRIPTION */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.createOrUpdate.description")}
+                </label>
+                <QuillEditor
+                  theme="snow"
+                  value={formData.desc}
+                  onChange={(v) => setFormData((f) => ({ ...f, desc: v }))}
+                  modules={fullToolbar}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  {t("banner.thumbnail")}
+                </label>
+                <UploadField
+                  className="mt-2 w-full"
+                  defaultPreviewUrl={defaultPreview}
+                  onChange={handleBannerImage}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={handleClose} disabled={loading}>
+            {t("common.cancel")}
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? t("common.saving") : t("common.save")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+export default BannerEditModal;

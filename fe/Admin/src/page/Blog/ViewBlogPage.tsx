@@ -62,11 +62,7 @@ const ViewBlogPage = () => {
         setSelectedBlog(row.id);
         setShowUpdateModal(true);
     };
-    const stripHtml = (html: string) => {
-        const temp = document.createElement("div");
-        temp.innerHTML = html;
-        return temp.textContent || temp.innerText || "";
-    };
+  
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
@@ -148,22 +144,7 @@ const ViewBlogPage = () => {
             ),
         },
         { key: "title", label: t("blog.name"), sortalbe: true },
-        {
-            key: "description",
-            label: t("blog.description"),
-            render: (row: any) => {
-                const fullText = stripHtml(row.description || "");
-                const shortText =
-                    fullText.length > 50 ? fullText.substring(0, 50) + "..." : fullText;
-
-                return (
-                    <span
-                        title={fullText} // Tooltip full content
-                        dangerouslySetInnerHTML={{ __html: shortText }}
-                    />
-                );
-            },
-        },
+        
         { key: "createdAt", label: t("blog.createdAt")},
         { key: "updatedAt", label: t("blog.updatedAt") },
         { key: "createdBy", label: t("blog.createdBy") },

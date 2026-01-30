@@ -126,8 +126,8 @@ const CreateExtraServicePage = () => {
         <Breadcrumb
           items={[
             { label: t("common.home"), href: "/Home" },
-            { label: t("common.category"), href: "/Home/category" },
-            { label: t("category.createOrUpdate.titleCreate") },
+            { label: t("extraService.title"), href: "/Home/service" },
+            { label: t("extraService.createOrUpdate.titleCreate") },
           ]}
         />
       </div>
