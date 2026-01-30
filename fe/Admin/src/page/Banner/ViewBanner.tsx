@@ -72,6 +72,7 @@ const ViewBanner = () => {
     const columns = [
         { key: "bannerCode", label: t("banner.code"), sortable: true },
         { key: "name", label: t("banner.name"), sortable: true },
+        {key:"ctaLabel",label:t("banner.createOrUpdate.ctaLabel"),sortable:true},
         { key: "startAt", label: t("banner.startAt"), sortable: true },
         { key: "endAt", label: t("banner.endAt"), sortable: true },
         {

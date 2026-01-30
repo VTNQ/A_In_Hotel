@@ -182,7 +182,7 @@ const BannerFormModal = ({
 
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.createOrUpdate.ctaLabel")} *</label>
+                    <label className="block mb-1 font-medium text-[#253150]">{t("banner.createOrUpdate.ctaLabel")}</label>
                     <input
                         type="text"
                         name="ctaLabel"
@@ -203,7 +203,7 @@ const BannerFormModal = ({
                 </div>
                 <div className="mb-4">
                     <label className="block mb-1 font-medium text-[#253150]">
-                        {t("banner.thumbnail")} *
+                        {t("banner.thumbnail")} 
                     </label>
 
                     <div
