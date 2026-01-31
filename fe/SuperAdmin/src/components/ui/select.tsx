@@ -134,23 +134,29 @@ type SelectFieldProps<T> = {
   getValue: (item: T) => string;
   getLabel: (item: T) => React.ReactNode;
   emptyText?: string;
+    getDisabled?: (item: T) => boolean;
 };
 
 function SelectField<T>({
   items,
   value,
   onChange,
-  placeholder = "Chọn…",
+
   label,
+  placeholder = "Chọn…",
   description,
   error,
+  isRequired = false,
+
   size = "md",
   fullWidth = true,
   disabled,
   clearable,
+
   getValue,
   getLabel,
-  isRequired=true,
+  getDisabled,
+
   emptyText = "Không có dữ liệu",
 }: SelectFieldProps<T>) {
   const selected = React.useMemo(
@@ -158,7 +164,6 @@ function SelectField<T>({
     [items, value, getValue],
   );
 
-  // nút clear: span chứ không phải button
   const rightAdornment =
     clearable && value ? (
       <span
@@ -170,13 +175,6 @@ function SelectField<T>({
           e.preventDefault();
           onChange?.(null, undefined);
         }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.stopPropagation();
-            e.preventDefault();
-            onChange?.(null, undefined);
-          }
-        }}
       >
         <X className="size-4 opacity-60 group-hover:opacity-100" />
       </span>
@@ -184,8 +182,9 @@ function SelectField<T>({
 
   return (
     <div className={cn(fullWidth && "w-full")}>
+      {/* LABEL */}
       {label && (
-        <label className="mb-1.5 block text-sm font-medium">
+        <label className="mb-1.5 block text-sm font-medium text-gray-700">
           {label}
           {isRequired && <span className="ml-1 text-red-500">*</span>}
         </label>
@@ -193,15 +192,15 @@ function SelectField<T>({
 
       <Select
         value={value ?? ""}
+        disabled={disabled}
         onValueChange={(v) => {
-          const item = items.find((i) => getValue(i) === v) as T | undefined;
+          const item = items.find((i) => getValue(i) === v);
           onChange?.(v || null, item);
         }}
       >
         <SelectTrigger
           size={size}
           fullWidth={fullWidth}
-          disabled={disabled}
           error={!!error}
           rightAdornment={rightAdornment}
         >
@@ -217,7 +216,11 @@ function SelectField<T>({
             </SelectItem>
           ) : (
             items.map((item) => (
-              <SelectItem key={getValue(item)} value={getValue(item)}>
+              <SelectItem
+                key={getValue(item)}
+                value={getValue(item)}
+                disabled={getDisabled?.(item)}
+              >
                 {getLabel(item)}
               </SelectItem>
             ))
@@ -227,7 +230,9 @@ function SelectField<T>({
 
       {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
       {description && !error && (
-        <p className="mt-1.5 text-xs text-muted-foreground">{description}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          {description}
+        </p>
       )}
     </div>
   );

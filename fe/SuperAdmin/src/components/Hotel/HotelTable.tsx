@@ -28,13 +28,13 @@ const HotelTable = ({
 
             <TableHeader>
                 <TableRow>
-                    <TableHead sortable sortKey="code">{t("hotel.hotelTable.code")}</TableHead>
-                    <TableHead>{t("hotel.hotelTable.image")}</TableHead>
-                    <TableHead sortable sortKey="name"> {t("hotel.hotelTable.name")}</TableHead>
-                    <TableHead>{t("hotel.hotelTable.address")}</TableHead>
-                    <TableHead>{t("hotel.hotelTable.manager")}</TableHead>
+                    <TableHead sortable sortKey="code" width={220}>{t("hotel.hotelTable.code")}</TableHead>
+                    <TableHead width={220}>{t("hotel.hotelTable.image")}</TableHead>
+                    <TableHead sortable sortKey="name" width={220}> {t("hotel.hotelTable.name")}</TableHead>
+                    <TableHead width={220}>{t("hotel.hotelTable.address")}</TableHead>
+                    <TableHead width={220}> {t("hotel.hotelTable.manager")}</TableHead>
 
-                    <TableHead>{t("common.action")}</TableHead>
+                    <TableHead width={120}>{t("common.action")}</TableHead>
                 </TableRow>
             </TableHeader>
 
@@ -50,9 +50,8 @@ const HotelTable = ({
                                     : "/default.webp"
                                 }
                                 alt={row.thumbnail?.altText}
-                                width="60"
-                                height="50"
-                                style={{ objectFit: "cover", borderRadius: 8 }}
+                               className="w-32 h-24 object-cover rounded-lg
+                  mx-auto border"
                             />
                         </TableCell>
                         <TableCell>{row.name}</TableCell>

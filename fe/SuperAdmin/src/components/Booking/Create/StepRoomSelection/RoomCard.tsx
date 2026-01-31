@@ -1,35 +1,47 @@
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { File_URL } from "../../../../setting/constant/app";
-import calculateRoomPrice from "./CalculateRoomPrice";
+import { useTranslation } from "react-i18next";
+import { File_URL } from "@/setting/constant/app";
+
+import calculateRoomPrice from "./calculateRoomPrice";
 import RoomAssets from "./RoomAssets";
 import RoomAmenities from "./RoomAmenities";
-import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
 
-const RoomCard = ({ room,bookingDate, service, selected, onSelect, packageType }: any) => {
-  const calculateHours = (
-  checkInDate: string,
-  checkInTime: string,
-  checkOutDate: string,
-  checkOutTime: string
-): number => {
-  const checkIn = dayjs(`${checkInDate} ${checkInTime}`);
-  const checkOut = dayjs(`${checkOutDate} ${checkOutTime}`);
-
-  const hours = checkOut.diff(checkIn, "hour", true); // true = decimal
-  return Math.max(0, Math.round(hours));
-};
-const hours = calculateHours(
-  bookingDate.checkInDate,
-  bookingDate.checkInTime,
-  bookingDate.checkOutDate,
-  bookingDate.checkOutTime
-);
-  const priceInfo = calculateRoomPrice({ packageType, room,hours });
-
-  const [specialRequest, setSpecialRequest] = useState("");
+const RoomCard = ({
+  room,
+  bookingDate,
+  service,
+  selected,
+  onSelect,
+  packageType,
+}: any) => {
   const { t } = useTranslation();
+  const [specialRequest, setSpecialRequest] = useState("");
 
+  /* ===== CALCULATE HOURS ===== */
+  const calculateHours = (
+    checkInDate?: string,
+    checkInTime?: string,
+    checkOutDate?: string,
+    checkOutTime?: string,
+  ): number => {
+    if (!checkInDate || !checkOutDate) return 0;
+
+    const checkIn = dayjs(`${checkInDate} ${checkInTime}`);
+    const checkOut = dayjs(`${checkOutDate} ${checkOutTime}`);
+    return Math.max(0, Math.round(checkOut.diff(checkIn, "hour", true)));
+  };
+
+  const hours = calculateHours(
+    bookingDate?.checkInDate,
+    bookingDate?.checkInTime,
+    bookingDate?.checkOutDate,
+    bookingDate?.checkOutTime,
+  );
+
+  const priceInfo = calculateRoomPrice({ packageType, room, hours });
+
+  /* ===== UPDATE SPECIAL REQUEST ===== */
   useEffect(() => {
     if (!selected) return;
 
@@ -44,8 +56,13 @@ const hours = calculateHours(
 
   return (
     <div
-      className={`rounded-2xl border p-4 shadow-sm transition
-        ${selected ? "border-[#536DB2]" : "border-gray-200"}
+      className={`
+        rounded-2xl border p-4 shadow-sm transition
+        ${
+          selected
+            ? "border-indigo-300 bg-indigo-50/40"
+            : "border-gray-200 bg-white"
+        }
       `}
     >
       <div className="flex gap-4">
@@ -56,12 +73,14 @@ const hours = calculateHours(
               ? File_URL + room.images[0].url
               : "/images/room-placeholder.jpg"
           }
-          className="w-44 h-32 object-cover rounded-xl"
+          alt={room.roomName}
+          className="h-32 w-44 rounded-xl object-cover"
         />
 
+        {/* CONTENT */}
         <div className="flex-1">
           {/* HEADER */}
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
                 {room.roomName}
@@ -74,7 +93,7 @@ const hours = calculateHours(
             </div>
 
             <div className="text-right">
-              <div className="text-xl font-semibold text-[#536DB2]">
+              <div className="text-xl font-semibold text-indigo-500">
                 ${priceInfo.price}
               </div>
               <div className="text-xs text-gray-500">
@@ -98,7 +117,7 @@ const hours = calculateHours(
 
           {/* SPECIAL REQUEST */}
           <div className="mt-4">
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="mb-1 block text-xs font-medium text-gray-600">
               {t("roomSelection.specialRequest")}
             </label>
             <textarea
@@ -112,18 +131,19 @@ const hours = calculateHours(
               }
               disabled={!selected}
               className={`
-      w-full rounded-lg border px-3 py-2 text-sm resize-none
-      transition  ${selected
-                  ? "border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#536DB2]"
-                  : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                w-full resize-none rounded-lg border px-3 py-2 text-sm transition
+                ${
+                  selected
+                    ? "border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                    : "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400"
                 }
-    `}
+              `}
             />
           </div>
 
           {/* ACTION */}
-          <div className="flex justify-between items-center mt-4">
-            {/* <button className="text-[#536DB2] text-sm hover:underline">
+          <div className="mt-4 flex items-center justify-end">
+            {/* <button className="text-sm text-indigo-500 hover:underline">
               {t("roomSelection.viewPhotos")}
             </button> */}
 
@@ -137,16 +157,19 @@ const hours = calculateHours(
                   _action: selected ? "remove" : "add",
                 })
               }
-              className={`px-4 py-2 rounded-lg text-sm transition ${selected
-                ? "bg-[#42578E] text-white"
-                : "border border-[#536DB2] text-[#42578E]"
-                }`}
+              className={`
+                rounded-lg px-4 py-2 text-sm font-medium transition
+                ${
+                  selected
+                    ? "bg-indigo-400 text-white hover:bg-indigo-500"
+                    : "border border-indigo-300 text-indigo-500 hover:bg-indigo-50"
+                }
+              `}
             >
               {selected
                 ? t("roomSelection.removeRoom")
                 : t("roomSelection.selectRoom")}
             </button>
-
           </div>
         </div>
       </div>
