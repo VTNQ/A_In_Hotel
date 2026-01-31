@@ -22,6 +22,12 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
 }
+export interface RoomAsset {
+ id:number;
+  thumbnail: ImageResponse;
+  quantity: number | string;
+  assetName: string;
+}
 export type RoomStatus = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type RoomStatusFilter = "ALL" | RoomStatus;
 export interface RoomFilterProps {
