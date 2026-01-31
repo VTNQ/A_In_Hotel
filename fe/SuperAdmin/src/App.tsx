@@ -20,6 +20,11 @@ import AssetPage from './page/Asset/AssetPage'
 import CreateAssetPage from './page/Asset/CreateAssetPage'
 import RoomPage from './page/Room/RoomPage'
 import CreateRoomPage from './page/Room/CreateRoomPage'
+import CreateBanner from './page/Banner/CreateBanner'
+import BannerPage from './page/Banner/BannerPage'
+import ViewBlogPage from './page/Blog/ViewBlogPage'
+import CreateBlogPage from './page/Blog/CreateBlogPage'
+
 function App() {
 
   return (
@@ -38,6 +43,8 @@ function App() {
           <Route path='category/create' element={<CreateCategoryPage/>}/>
           <Route path='room' element={<RoomPage/>}/>
           <Route path='room/create' element={<CreateRoomPage/>}/>
+          <Route path='post/banner/create' element={<CreateBanner/>}/>
+          <Route path='post/banner' element={<BannerPage/>}/>
           <Route path='service' element={<ExtraServicePage/>}/>
           <Route path='service/create' element={<CreateExtraServicePage/>}/>
           <Route path='asset' element={<AssetPage/>}/>
@@ -45,6 +52,8 @@ function App() {
           <Route path='Admin/create' element={<CreateAdminPage />} />
           <Route path='facility' element={<FacilityPage/>}/>
           <Route path='facility/create' element={<CreateFacilityForm/>}/>
+          <Route path='post/blog' element={<ViewBlogPage/>}/>
+          <Route path='post/blog/create' element={<CreateBlogPage/>}/>
           <Route path='hotel/create' element={<AddHotelPage />} />
           <Route path='Hotel' element={<HotelPage />} />
         </Route>

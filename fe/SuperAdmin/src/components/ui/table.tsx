@@ -172,7 +172,7 @@ export function TableCell({ style, ...props }: React.ComponentProps<"td">) {
     <td
       {...props}
       style={style}
-      className="px-4 py-3 text-center text-sm text-gray-600 whitespace-nowrap"
+      className="px-4 py-3 text-center text-sm text-gray-600 whitespace-nowrap "
     />
   );
 }

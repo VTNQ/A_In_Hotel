@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BannerRequest;
+import org.a_in_hotel.be.dto.request.BannerUpdateDTO;
 import org.a_in_hotel.be.dto.response.BannerResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.entity.Banner;
@@ -54,7 +55,7 @@ public class BannerController {
     }
 
     @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerUpdateDTO bannerRequest, BindingResult bindingResult, @RequestParam(value = "image", required = false) MultipartFile image) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())

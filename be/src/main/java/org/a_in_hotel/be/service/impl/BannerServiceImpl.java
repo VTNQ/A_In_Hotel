@@ -2,6 +2,7 @@ package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
+import org.a_in_hotel.be.dto.request.BannerUpdateDTO;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.dto.request.BannerRequest;
@@ -74,7 +75,7 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     @Transactional
-    public void update(Long id, BannerRequest bannerRequest, MultipartFile image) {
+    public void update(Long id, BannerUpdateDTO bannerRequest, MultipartFile image) {
         try {
             log.info("start to update banner : {}", bannerRequest);
             Banner banner = bannerRepository.getReferenceById(id);

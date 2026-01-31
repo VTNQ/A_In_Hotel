@@ -131,8 +131,8 @@ const CreateRoomPage = () => {
         <Breadcrumb
           items={[
             { label: t("common.home"), href: "/Home" },
-            { label: t("common.category"), href: "/Home/category" },
-            { label: t("category.createOrUpdate.titleCreate") },
+            { label: t("room.title"), href: "/Home/room" },
+            { label: t("room.createOrUpdate.titleCreate") },
           ]}
         />
       </div>

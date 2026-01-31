@@ -12,6 +12,7 @@
         "fullName": "Họ và tên",
         "home": "Trang chủ",
         "category": "Danh mục",
+        "enterStatus": "Chọn trạng thái",
         "status": "Trạng thái",
         "search": "Tìm kiếm...",
         "phone": "Số điện thoại",
@@ -76,6 +77,68 @@
             "notePlaceholder": "Ghi chú nội bộ (không hiển thị cho khách)"
         }
     },
+    "blog": {
+        "title": "Quản lý blog",
+        "new": "+ Thêm bài viết",
+        "viewTitle": "Xem bài viết",
+        "blogCode": "Mã bài viết",
+        "status": "Trạng thái",
+        "loading": "Đang tải...",
+        "statusMap": {
+            "draft": "Bản nháp",
+            "published": "Đã xuất bản",
+            "archived": "Đã lưu trữ"
+        },
+        "code": "Mã bài viết",
+        "thumbnail": "Hình ảnh",
+        "name": "Tiêu đề bài viết",
+        "updateStatusSuccess": "Cập nhật trạng thái thành công!",
+        "updateStatusError": "Cập nhật trạng thái thất bại",
+        "description": "Mô tả",
+        "viewBlog": "Xem chi tiết",
+        "createdAt": "Ngày tạo",
+        "content": "Nội dung",
+        "updatedAt": "Ngày cập nhật",
+        "category": "Danh mục",
+        "draft": "Bản nháp",
+        "published": "Được xuất bản",
+        "archived": "Đã lưu trữ",
+        "archive": "Lưu trữ",
+        "restore": "Khôi phục",
+        "restoreSucess": "Bài viết đã được khôi phục thành công",
+        "restoreError": "Lỗi khôi phục bài viết",
+        "publishSucess": "Bài viết đã được xuất bản thành công",
+        "publishError": "Lỗi xuất bản bài viết",
+        "archiveSucess": "Bài viết đã được lưu trữ thành công",
+        "archiveError": "Lỗi lưu trữ bài viết",
+        "publish": "Xuất bản",
+        "createdBy": "Người tạo",
+        "searchPlaceholder": "Tìm kiếm theo ID, Tiêu đề",
+        "createOrUpdate": {
+            "titleCreate": "Tạo bài viết mới",
+            "enterTitle": "Nhập tiêu đề bài viết",
+            "selectCategory": "Chọn danh mục",
+            "createSucess": "Bài viết đã được tạo thành công!",
+            "createError": "Lỗi khi tạo bài viết",
+            "titleEdit": "Sửa bài viết",
+            "enterContent": "Nhập nội dung bài viết",
+            "selectStatus": "Chọn trạng thái",
+            "clickSelectImages": "Nhấn để chọn hình ảnh",
+            "enterDescription": "Nhập mô tả bài viết"
+        },
+        "blogCategories": {
+            "newsUpdates": "Tin tức & Cập nhật",
+            "offersPromotions": "Ưu đãi & Khuyến mãi",
+            "travelGuides": "Cẩm nang du lịch",
+            "localFood": "Ẩm thực địa phương",
+            "bookingTips": "Mẹo đặt phòng",
+            "hotelServices": "Dịch vụ khách sạn",
+            "eventsActivities": "Sự kiện & Hoạt động",
+            "nearbyAttractions": "Điểm tham quan lân cận",
+            "travelTips": "Mẹo du lịch",
+            "guestExperiences": "Trải nghiệm của khách"
+        }
+    },
     "sidebar": {
         "dashboards": "Tổng quan",
         "home": "Trang chủ",
@@ -86,7 +149,10 @@
         "facility": "Cơ sở vật chất",
         "room": "Phòng",
         "asset": "Tài sản",
+        "post": "Quản lý bài viết",
+        "banner": "Quản lý banner",
         "extra": "Dịch vụ",
+        "blog": "Quản lý tin tức",
         "category": "Danh mục",
         "userPermission": "Tài khoản & phân quyền",
         "account": "Tài khoản",
@@ -501,5 +567,30 @@
             "blocked": "Bị khóa",
             "deactivated": "Ngừng hoạt động"
         }
+    },
+    "banner": {
+        "title": "Quản lý Banner",
+        "name": "Tiêu đề Banner",
+        "startAt": "Bắt đầu từ",
+        "new": "+ Thêm banner",
+        "thumbnail": "Hình ảnh",
+        "code": "Mã Banner",
+        "endAt": "Kết thúc vào",
+        "searchPlaceholder": "Tìm theo id,tên",
+        "createOrUpdate": {
+            "titleCreate": "Tạo Banner mới",
+            "titleEdit": "Sửa Banner",
+            "selectStartAt": "Chọn ngày bắt đầu",
+            "selectEndAt": "Chọn ngày kết thúc",
+            "enterName": "Nhập tên Banner",
+            "createSucess": "Banner đã được tạo thành công!",
+            "createError": "Lỗi khi tạo Banner",
+            "ctaLabel": "Nhãn CTA",
+            "enterCtaLabel": "Nhập nhãn CTA",
+            "updateSucess": "Banner đã được cập nhật thành công!",
+            "updateError": "Banner đã được cập nhật thất bại!"
+        },
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật"
     }
 }

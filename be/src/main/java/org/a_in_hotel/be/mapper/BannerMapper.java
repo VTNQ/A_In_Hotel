@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.dto.request.BannerRequest;
+import org.a_in_hotel.be.dto.request.BannerUpdateDTO;
 import org.a_in_hotel.be.dto.response.BannerResponse;
 import org.a_in_hotel.be.entity.Banner;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
@@ -31,7 +32,7 @@ public interface BannerMapper extends CommonMapper {
     @Mapping(target = "endAt",source = "bannerRequest.endAt")
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", source = "userId")
-    void updateEntityFromDto(BannerRequest bannerRequest, @MappingTarget Banner banner,Long userId);
+    void updateEntityFromDto(BannerUpdateDTO bannerRequest, @MappingTarget Banner banner, Long userId);
 
     @Mapping(target = "image", expression = "java(mapImageV2(banner.getId(),"
                                             + "\"banner\",imageRepository))")
