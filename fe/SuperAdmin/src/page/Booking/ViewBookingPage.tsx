@@ -17,7 +17,7 @@ const ViewBookingPage = () => {
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<keyof BookingResponse | null>("id");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  const [editModal, setEditModal] = useState<BookingResponse | null>(null);
+  // const [editModal, setEditModal] = useState<BookingResponse | null>(null);
   const [bookingDate, setBookingDate] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [total, setTotal] = useState(0);
