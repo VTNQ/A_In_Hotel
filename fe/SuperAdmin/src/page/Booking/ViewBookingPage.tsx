@@ -1,7 +1,16 @@
+import { useAlert } from "@/components/alert-context";
 import BookingFilter from "@/components/Booking/BookingFilter";
 import BookingTable from "@/components/Booking/BookingTable";
+import ConfirmCheckIn from "@/components/Booking/CheckIn/ConfirmCheckIn";
+import ConfirmCheckOut from "@/components/Booking/CheckOut/ConfirmCheckOut";
+import SwitchRoomModal from "@/components/Booking/SwitchRoom/SwitchRoomModal";
+import ViewBookingModal from "@/components/Booking/View/ViewBookingModal";
 
-import { GetAllBookings } from "@/service/api/Booking";
+import {
+  cancelBooking,
+  GetAllBookings,
+  handleCheckIn,
+} from "@/service/api/Booking";
 import type {
   BookingResponse,
   BookingStatusFilter,
@@ -17,12 +26,62 @@ const ViewBookingPage = () => {
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<keyof BookingResponse | null>("id");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  // const [editModal, setEditModal] = useState<BookingResponse | null>(null);
+  const [checkInModal, setCheckInModal] = useState<BookingResponse | null>(
+    null,
+  );
   const [bookingDate, setBookingDate] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [total, setTotal] = useState(0);
+  const [checkOutModal, setCheckOutModal] = useState<BookingResponse | null>(
+    null,
+  );
   const [statusFilter, setStatusFilter] = useState<BookingStatusFilter>("ALL");
+  const [viewModal, setViewModal] = useState<BookingResponse | null>(null);
+  const [switchRoomModal,setSwithRoomModal] = useState<BookingResponse | null>(null);
+  const { showAlert } = useAlert();
   const [hotelFilter, setHotelFilter] = useState("");
+  const handleCheckInConfirm = async (id: number) => {
+    try {
+      const response = await handleCheckIn(id);
+
+      showAlert({
+        title:
+          response?.data?.message || t("confirmCheckIn.confirmCheckInSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+
+      fetchData();
+
+      return true;
+    } catch (err: any) {
+      showAlert({
+        title:
+          err?.response?.data?.message ||
+          t("confirmCheckIn.confirmCheckInError"),
+        type: "error",
+      });
+
+      throw err;
+    }
+  };
+  const handleCancelBooking = async (booking: any) => {
+    try {
+      const response = await cancelBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.cancelSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -33,7 +92,7 @@ const ViewBookingPage = () => {
       if (bookingDate) {
         filters.push(
           `createdAt=ge=${bookingDate}T00:00:00+07:00`,
-          `createdAt=le=${bookingDate}T23:59:59+07:00`
+          `createdAt=le=${bookingDate}T23:59:59+07:00`,
         );
       }
       if (hotelFilter) {
@@ -55,7 +114,15 @@ const ViewBookingPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, sortKey, sortDir, searchValue, statusFilter, hotelFilter, bookingDate]);
+  }, [
+    page,
+    sortKey,
+    sortDir,
+    searchValue,
+    statusFilter,
+    hotelFilter,
+    bookingDate,
+  ]);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -96,8 +163,36 @@ const ViewBookingPage = () => {
           total={total}
           onPageChange={setPage}
           sortKey={sortKey}
+          onCheckIn={(row) => setCheckInModal(row)}
+          onCancel={(row) => handleCancelBooking(row)}
+          onCheckOut={(row) => setCheckOutModal(row)}
+          onSwitchRoom={(row)=>setSwithRoomModal(row)}
+          onView={(row) => setViewModal(row)}
           sortDir={sortDir}
           onSortChange={handleSort}
+        />
+        <ConfirmCheckIn
+          open={!!checkInModal}
+          id={checkInModal?.id ?? 0}
+          onCancel={() => setCheckInModal(null)}
+          onConfirm={() => handleCheckInConfirm(checkInModal?.id ?? 0)}
+        />
+        <ViewBookingModal
+          open={!!viewModal}
+          id={viewModal?.id ?? 0}
+          onClose={() => setViewModal(null)}
+        />
+        <ConfirmCheckOut
+          open={!!checkOutModal}
+          id={checkOutModal?.id ?? 0}
+          onCancel={() => setCheckOutModal(null)}
+          onConfirm={() => fetchData()}
+        />
+        <SwitchRoomModal
+          open={!!switchRoomModal}
+          id={switchRoomModal?.id ?? 0}
+          onClose={() => setSwithRoomModal(null)}
+          onConfirm={() => fetchData()}
         />
       </div>
     </>

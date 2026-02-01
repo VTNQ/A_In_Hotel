@@ -1,4 +1,11 @@
-import { BedDouble, Calendar, CheckCircle2, CreditCard, User, X } from "lucide-react";
+import {
+  BedDouble,
+  Calendar,
+  CheckCircle2,
+  CreditCard,
+  User,
+  X,
+} from "lucide-react";
 import type { CheckInBookingResponse } from "../../../type/booking.types";
 import { useEffect, useState } from "react";
 import { findByIdAndDetailsActiveTrue } from "../../../service/api/Booking";
@@ -11,7 +18,7 @@ const ConfirmCheckIn = ({
   onConfirm,
 }: CheckInBookingResponse) => {
   const [data, setData] = useState<any>(null);
-   const { t } = useTranslation();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const [confirming, setConfirming] = useState(false);
@@ -32,7 +39,6 @@ const ConfirmCheckIn = ({
     }
   };
 
-
   useEffect(() => {
     if (!open) return;
 
@@ -43,7 +49,6 @@ const ConfirmCheckIn = ({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onCancel]);
-
 
   useEffect(() => {
     if (!open || !id) return;
@@ -64,7 +69,31 @@ const ConfirmCheckIn = ({
   }, [open, id]);
 
   if (!open) return null;
+  const calculateNights = (
+    checkInDate: string,
+    checkInTime: string,
+    checkOutDate: string,
+    checkOutTime: string,
+  ): number => {
+    const checkIn = new Date(`${checkInDate}T${checkInTime}`);
+    const checkOut = new Date(`${checkOutDate}T${checkOutTime}`);
 
+    const diffMs = checkOut.getTime() - checkIn.getTime();
+
+    if (diffMs <= 0) return 0;
+
+    const ONE_NIGHT = 1000 * 60 * 60 * 24;
+
+    return Math.ceil(diffMs / ONE_NIGHT);
+  };
+  if (!data) return;
+
+  const nights = calculateNights(
+    data.checkInDate,
+    data.checkInTime,
+    data.checkOutDate,
+    data.checkOutTime,
+  );
   const outstanding =
     data?.totalPrice && data?.payment[0]?.paidAmount
       ? data.totalPrice - data?.payment[0]?.paidAmount
@@ -75,9 +104,9 @@ const ConfirmCheckIn = ({
       case 1:
         return t("confirmCheckIn.twoHours");
       case 2:
-        return data?.nights === 1
-        ? t("confirmCheckIn.night", { count: 1 })
-        : t("confirmCheckIn.nights", { count: data?.nights });
+        return nights === 1
+          ? t("confirmCheckIn.night", { count: 1 })
+          : t("confirmCheckIn.nights", { count: nights});
       case 3:
         return t("confirmCheckIn.fullDay");
       default:
@@ -87,7 +116,6 @@ const ConfirmCheckIn = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onCancel}
@@ -101,14 +129,13 @@ const ConfirmCheckIn = ({
           ${loading ? "scale-95 opacity-70" : "scale-100 opacity-100"}
         `}
       >
-
         <div className="flex items-start justify-between px-6 py-5 border-b border-gray-200">
           <div>
             <h1 className="text-xl font-semibold text-[#253150]">
-             {t("confirmCheckIn.title")}
+              {t("confirmCheckIn.title")}
             </h1>
             <p className="text-sm text-[#5f6b85] mt-1">
-             {t("confirmCheckIn.subtitle")}
+              {t("confirmCheckIn.subtitle")}
             </p>
           </div>
 
@@ -120,7 +147,6 @@ const ConfirmCheckIn = ({
           </button>
         </div>
 
-
         {loading && (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
@@ -130,11 +156,9 @@ const ConfirmCheckIn = ({
           </div>
         )}
 
-
         {!loading && data && (
           <>
             <div className="flex-1 overflow-y-auto custom-scroll bg-[#f6f8fb] px-6 py-5 space-y-6 text-sm">
-
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <User className="w-4 h-4 text-[#253150]" />
@@ -145,13 +169,17 @@ const ConfirmCheckIn = ({
 
                 <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.guestName")}</p>
+                    <p className="text-xs text-[#5f6b85]">
+                      {t("confirmCheckIn.guestName")}
+                    </p>
                     <p className="font-medium text-[#253150]">
                       {data.guestName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.numberOfGuests")}</p>
+                    <p className="text-xs text-[#5f6b85]">
+                      {t("confirmCheckIn.numberOfGuests")}
+                    </p>
                     <p className="font-medium text-[#253150]">
                       {data.numberOfGuests} {t("confirmCheckIn.adults")}
                     </p>
@@ -159,7 +187,9 @@ const ConfirmCheckIn = ({
 
                   {data.note && (
                     <div className="col-span-2">
-                      <p className="text-xs text-[#5f6b85] mb-1">{t("confirmCheckIn.notes")}</p>
+                      <p className="text-xs text-[#5f6b85] mb-1">
+                        {t("confirmCheckIn.notes")}
+                      </p>
                       <div className="bg-[#f6f8fb] border border-dashed border-[#d6dbea] rounded-lg px-3 py-2">
                         {data.note}
                       </div>
@@ -167,7 +197,6 @@ const ConfirmCheckIn = ({
                   )}
                 </div>
               </section>
-
 
               <section>
                 <div className="flex items-center gap-2 mb-3">
@@ -212,7 +241,6 @@ const ConfirmCheckIn = ({
                 </div>
               </section>
 
-
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <CreditCard className="w-4 h-4 text-[#253150]" />
@@ -223,19 +251,25 @@ const ConfirmCheckIn = ({
 
                 <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.total")}</p>
+                    <p className="text-xs text-[#5f6b85]">
+                      {t("confirmCheckIn.total")}
+                    </p>
                     <p className="font-semibold text-[#253150]">
                       {data.totalPrice?.toLocaleString()} VND
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.paid")}</p>
+                    <p className="text-xs text-[#5f6b85]">
+                      {t("confirmCheckIn.paid")}
+                    </p>
                     <p className="font-semibold text-green-600">
                       {data.payment[0]?.paidAmount?.toLocaleString()} VND
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#5f6b85]">{t("confirmCheckIn.outstanding")}</p>
+                    <p className="text-xs text-[#5f6b85]">
+                      {t("confirmCheckIn.outstanding")}
+                    </p>
                     <p className="font-semibold text-red-600">
                       {outstanding.toLocaleString()} VND
                     </p>
@@ -255,10 +289,11 @@ const ConfirmCheckIn = ({
               <button
                 onClick={handleConfirm}
                 disabled={confirming}
-                className={`px-6 py-2 rounded-xl flex items-center gap-2 font-medium transition ${confirming
+                className={`px-6 py-2 rounded-xl flex items-center gap-2 font-medium transition ${
+                  confirming
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-[#42578E] text-white hover:bg-[#364a7d]"
-                  }`}
+                }`}
               >
                 {confirming ? (
                   <>
@@ -268,11 +303,10 @@ const ConfirmCheckIn = ({
                 ) : (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                   {t("confirmCheckIn.confirm")}
+                    {t("confirmCheckIn.confirm")}
                   </>
                 )}
               </button>
-
             </div>
           </>
         )}

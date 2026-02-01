@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BookingResponse {
 
     private Long id;
@@ -26,7 +28,7 @@ public class BookingResponse {
     private String code;
     private String idNumber;
     private String email;
-
+    private Long hotelId;
     private String phoneNumber;
 
     private Integer guestType;

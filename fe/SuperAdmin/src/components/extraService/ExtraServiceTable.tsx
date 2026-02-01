@@ -48,34 +48,34 @@ const ExtraServiceTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="serviceCode">
+          <TableHead sortable sortKey="serviceCode" width={220}>
             {t("extraService.code")}
           </TableHead>
-          <TableHead>{t("extraService.icon")}</TableHead>
-          <TableHead sortable sortKey="serviceName">
+          <TableHead width={220}>{t("extraService.icon")}</TableHead>
+          <TableHead sortable sortKey="serviceName" width={220}>
             {t("extraService.name")}
           </TableHead>
-          <TableHead>{t("extraService.hotel")}</TableHead>
-          <TableHead sortable sortKey="category">
+          <TableHead width={220}>{t("extraService.hotel")}</TableHead>
+          <TableHead sortable sortKey="category" width={220}>
             {t("extraService.category")}
           </TableHead>
-          <TableHead sortable sortKey="price">
+          <TableHead sortable sortKey="price" width={220}>
             {t("extraService.price")}
           </TableHead>
-          <TableHead sortable sortKey="unit">
+          <TableHead sortable sortKey="unit" width={220}>
             {t("extraService.unit")}
           </TableHead>
 
-          <TableHead sortable sortKey="createdAt">
+          <TableHead sortable sortKey="createdAt" width={220}>
             {t("extraService.createdAt")}
           </TableHead>
-          <TableHead sortable sortKey="updatedAt">
+          <TableHead sortable sortKey="updatedAt" width={220}>
             {t("extraService.updatedAt")}
           </TableHead>
-          <TableHead sortable sortKey="isActive">
+          <TableHead sortable sortKey="isActive" width={220}>
             {t("common.status")}
           </TableHead>
-          <TableHead>{t("common.action")}</TableHead>
+          <TableHead width={220}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -101,9 +101,8 @@ const ExtraServiceTable = ({
                   }
                   // hiển thị ảnh đầu tiên
                   alt={row.serviceName}
-                  width="80"
-                  height="60"
-                  style={{ objectFit: "cover", borderRadius: 8 }}
+                   className="w-32 h-24 object-cover rounded-lg
+                  mx-auto border"
                 />
               </TableCell>
               <TableCell>{row.serviceName}</TableCell>
