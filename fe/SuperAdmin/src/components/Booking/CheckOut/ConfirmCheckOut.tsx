@@ -1,12 +1,5 @@
 import { useAlert } from "@/components/alert-context";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { SelectField } from "@/components/ui/select";
 import SelectV2 from "@/components/ui/SelectV2";
 import { GetBookingById, handleCheckOut } from "@/service/api/Booking";
 import { getAllFicilities } from "@/service/api/facilities";
