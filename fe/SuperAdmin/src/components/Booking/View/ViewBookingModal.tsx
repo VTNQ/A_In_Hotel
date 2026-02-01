@@ -1,9 +1,3 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { GetBookingById } from "@/service/api/Booking";
 import {
   type BookingResponse,
@@ -136,16 +130,20 @@ const ViewBookingModal = ({ open, id, onClose }: ViewBookingModalProps) => {
         {/* ================= CONTENT ================= */}
         <div className="flex-1 overflow-y-auto px-6 py-4 bg-slate-50">
           {activeTab === "guest" && (
-            <div className="text-slate-700 text-sm"><GuestDatesTab data={data} /></div>
+            <div className="text-slate-700 text-sm">
+              <GuestDatesTab data={data} />
+            </div>
           )}
 
           {activeTab === "room" && (
-            <div className="text-slate-700 text-sm"><RoomsSwitchTab data={data} /></div>
+            <div className="text-slate-700 text-sm">
+              <RoomsSwitchTab data={data} />
+            </div>
           )}
 
           {activeTab === "services" && (
             <div className="text-slate-700 text-sm">
-              <ServicePaymentTab data={data}/>
+              <ServicePaymentTab data={data} />
             </div>
           )}
         </div>

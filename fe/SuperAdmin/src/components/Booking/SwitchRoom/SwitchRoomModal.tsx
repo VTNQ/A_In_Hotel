@@ -41,17 +41,6 @@ const SwitchRoomModal = ({
     setBooking(bookingData);
     return bookingData;
   };
-  const fetchRoom = async () => {
-    const filterParts = ["status==3", `hotelId==${booking?.hotelId}`];
-    if (usedRoomIds.length > 0) {
-      filterParts.push(`id=out=(${usedRoomIds.join(",")})`);
-    }
-    const res = await getRoom({
-      all: true,
-      filter: filterParts.join(";"),
-    });
-    setAvailableRooms(res.data?.content || []);
-  };
   useEffect(() => {
     if (!open || !id) return;
 
