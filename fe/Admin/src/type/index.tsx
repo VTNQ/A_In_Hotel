@@ -42,7 +42,6 @@ export interface BookingActionMenuProps {
     [key: string]: any; // Cho phép các field khác (roomCode, name, ...)
   };
   onView?: (booking: any) => void;
-  onEdit?: (booking: any) => void;
   onCancel?: (booking: any) => void;
   onCheckIn?: (booking: any) => void;
   onCheckOut?: (booking: any) => void;

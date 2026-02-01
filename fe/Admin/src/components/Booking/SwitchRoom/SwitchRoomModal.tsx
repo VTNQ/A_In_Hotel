@@ -249,7 +249,7 @@ const SwitchRoomModal = ({
                                                     {d.price.toLocaleString()} ₫
                                                 </div>
 
-                                                {/* ✅ New Room Selection (4 cols) */}
+                                               
                                                 <div className="col-span-3">
                                                     <div className="max-w-[170px]">  {/* 👈 thu lại */}
                                                         <SelectV2

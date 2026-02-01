@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import BookingActionMenu from "./BookingActionMenu";
 
 const BookingTable = ({
   rows,
@@ -23,6 +24,11 @@ const BookingTable = ({
   pageSize,
   total,
   onPageChange,
+  onView,
+  onCancel,
+  onCheckIn,
+  onCheckOut,
+  onSwitchRoom,
 }: BookingTableProps) => {
   const { t } = useTranslation();
   if (loading) {
@@ -107,7 +113,7 @@ const BookingTable = ({
             {t("booking.totalPrice")}
           </TableHead>
           <TableHead sortable sortKey="createdAt" width={220}>
-            {t("common.createdAt")}
+            {t("booking.createdAt")}
           </TableHead>
           <TableHead sortKey="checkedInAt" sortable width={220}>
             {t("booking.actualCheckIn")}
@@ -118,6 +124,7 @@ const BookingTable = ({
           <TableHead sortable sortKey="status" width={220}>
             {t("common.status")}
           </TableHead>
+          <TableHead width={220}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -173,6 +180,16 @@ const BookingTable = ({
                     </div>
                   );
                 })()}
+              </TableCell>
+              <TableCell>
+                <BookingActionMenu
+                  booking={row}
+                  onView={onView}
+                  onCancel={onCancel}
+                  onCheckIn={onCheckIn}
+                  onCheckOut={onCheckOut}
+                  onSwitchRoom={onSwitchRoom}
+                />
               </TableCell>
             </TableRow>
           ))

@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = mapper.toEntity
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
-                        securityUtils.getHotelId());
+                        securityUtils.getHotelId()!=null ? securityUtils.getHotelId() : request.getHotelId());
         repository.save(booking);
         if(request.getPayment()!=null){
             Payment payment = paymentMapper.toEntity(request.getPayment());

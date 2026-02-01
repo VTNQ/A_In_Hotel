@@ -114,7 +114,7 @@ const ViewBooking = () => {
       const response = await handleCheckIn(id);
 
       showAlert({
-        title: response?.data?.message || "Check-in successful!",
+        title: response?.data?.message || t("confirmCheckIn.confirmCheckInSuccess"),
         type: "success",
         autoClose: 3000,
       });
@@ -126,7 +126,7 @@ const ViewBooking = () => {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to confirm check-in. Please try again.",
+          t("confirmCheckIn.confirmCheckInError"),
         type: "error",
       });
 

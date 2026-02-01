@@ -35,7 +35,7 @@ export const GuestType = {
   VIP: "3",
 } as const;
 
-export type GuestType = typeof GuestType[keyof typeof GuestType];
+export type GuestType = (typeof GuestType)[keyof typeof GuestType];
 
 export const GUEST_TYPE_OPTIONS = [
   { label: "Cá nhân", value: GuestType.INDIVIDUAL },
@@ -55,7 +55,10 @@ export interface BookingDateTime {
   package?: string;
   adults: number;
 }
-export const PACKAGE_TIME_MAP: Record<string, { checkIn: string; checkOut: string }> = {
+export const PACKAGE_TIME_MAP: Record<
+  string,
+  { checkIn: string; checkOut: string }
+> = {
   "2": {
     checkIn: "22:00",
     checkOut: "12:00",
@@ -70,7 +73,7 @@ export interface bookingResponse {
     name: string;
     adults: number;
     notes?: string;
-  }
+  };
   rooms: {
     id: string | number;
     name: string;
@@ -100,10 +103,10 @@ export interface ViewBookingModalProps {
   id: number;
 }
 export interface UpdateBookingModalProps {
-  open:boolean;
-  onClose:()=>void;
-  id:number;
-  onSuccess:()=>void;
+  open: boolean;
+  onClose: () => void;
+  id: number;
+  onSuccess: () => void;
 }
 export interface ExtraCharge {
   id?: number | undefined;
@@ -123,10 +126,8 @@ export interface BookingDetail {
   room: Room;
 }
 export interface SwitchRoomModalProps {
- open: boolean;
- id:number;
-    onClose: () => void;
-    onConfirm:()=>void;
-
-   
+  open: boolean;
+  id: number;
+  onClose: () => void;
+  onConfirm: () => void;
 }
