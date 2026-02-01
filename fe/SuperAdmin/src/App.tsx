@@ -24,6 +24,8 @@ import CreateBanner from './page/Banner/CreateBanner'
 import BannerPage from './page/Banner/BannerPage'
 import ViewBlogPage from './page/Blog/ViewBlogPage'
 import CreateBlogPage from './page/Blog/CreateBlogPage'
+import CreateBookingPage from './page/Booking/CreateBookingPage'
+import ViewBookingPage from './page/Booking/ViewBookingPage'
 
 function App() {
 
@@ -49,6 +51,8 @@ function App() {
           <Route path='service/create' element={<CreateExtraServicePage/>}/>
           <Route path='asset' element={<AssetPage/>}/>
           <Route path='asset/create' element={<CreateAssetPage/>}/>
+          <Route path='booking/create' element={<CreateBookingPage/>}/>
+          <Route path='booking' element={<ViewBookingPage/>}/>
           <Route path='Admin/create' element={<CreateAdminPage />} />
           <Route path='facility' element={<FacilityPage/>}/>
           <Route path='facility/create' element={<CreateFacilityForm/>}/>

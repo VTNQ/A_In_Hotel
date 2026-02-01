@@ -1,47 +1,42 @@
+import { getAllCategories } from "@/service/api/Categories";
+import { getAllFicilities } from "@/service/api/facilities";
 import { useEffect, useState } from "react";
-import ServiceTabs from "./ServiceTabs";
-import ServiceCard from "./ServiceCard";
-import BookingSummary from "./BookingSumary";
-
-import { getAll } from "../../../../service/api/ExtraService";
-import { getAllCategory } from "../../../../service/api/Category";
-import { getTokens } from "../../../../util/auth";
-import { estimateServicePrice } from "../../../../util/estimateServicePrice";
 import { useTranslation } from "react-i18next";
+import ServiceFilter from "./ServiceFilter";
+import ServiceCard from "./ServiceCard";
+import BookingSummary from "./BookingSummary";
+import { estimateServicePrice } from "@/util/estimateServicePrice";
 
-const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
+const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
   const [services, setServices] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const { t } = useTranslation();
-
-  const hotelId = getTokens()?.hotelId;
+  console.log(booking)
   useEffect(() => {
-    if (!hotelId) return;
-
+    
+    if (!booking?.hotelId) return;
     const fetchData = async () => {
       setLoading(true);
       try {
         let filters = [
-          `hotelId==${hotelId}`,
+          `hotelId==${booking?.hotelId}`,
           `price>0`,
           `isActive==true`,
           `type==2`,
         ];
-
         if (category) {
           filters.push(`category.id==${category}`);
         }
-
         const [categoryResp, serviceResp] = await Promise.all([
-          getAllCategory({
+          getAllCategories({
             all: true,
             filter: "isActive==true and type==2",
           }),
-          getAll({
+          getAllFicilities({
             all: true,
             filter: filters.join(" and "),
             searchValue: search,
@@ -56,11 +51,8 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [hotelId, category, search]);
-
-  /* ===================== SELECT SERVICE ===================== */
+  }, [booking?.hotelId, search, category]);
   const toggleService = (service: any) => {
     setSelectedServices((prev) =>
       prev.some((s) => s.id === service.id)
@@ -68,7 +60,6 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         : [...prev, service],
     );
   };
-
   const ServiceSkeleton = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
@@ -76,10 +67,8 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
       ))}
     </div>
   );
-
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
-      {/* HEADER */}
+    <div className=" min-h-screen p-6">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">
           {" "}
@@ -89,9 +78,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           {t("serviceSelection.subtitle")}
         </p>
       </div>
-
-      {/* TABS */}
-      <ServiceTabs
+      <ServiceFilter
         value={category}
         categories={categories}
         disabled={loading}
@@ -99,18 +86,16 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         search={search}
         onSearch={setSearch}
       />
-
       <div className="grid grid-cols-3 gap-6 mt-6">
-        {/* LEFT */}
         <div className="col-span-2 space-y-4">
           {loading ? (
-            <ServiceSkeleton />
-          ) : services.length === 0 ? (
-            <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
-          ) : (
-            services.map((service) => (
+             <ServiceSkeleton />
+          ): services.length === 0 ? (
+             <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
+          ):(
+            services.map((service)=>(
               <ServiceCard
-                key={service.id}
+              key={service.id}
                 service={service}
                 booking={booking}
                 selected={selectedServices.some((s) => s.id === service.id)}
@@ -119,9 +104,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
             ))
           )}
         </div>
-
-        {/* RIGHT */}
-        <BookingSummary
+          <BookingSummary
           booking={booking}
           services={selectedServices}
           onNext={() =>
@@ -136,30 +119,30 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           }
         />
       </div>
-      <div className="flex justify-between items-center mt-8">
+       <div className="flex justify-between items-center pt-5">
         <button
-          onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-sm font-medium
-            text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
-            hover:border-red-300 transition"
+         onClick={onCancel}
+          className="
+            px-4 py-2 rounded-lg text-sm font-medium
+            text-gray-600 border border-gray-300 bg-white
+            hover:bg-gray-50 transition
+          "
         >
-          {t("serviceSelection.cancel")}
+          {t("bookingDateTime.cancel")}
         </button>
+          <button
+            onClick={onBack}
+            className="
+              px-4 py-2 rounded-lg text-sm
+              bg-gray-100 text-gray-700
+              hover:bg-gray-200 transition
+            "
+          >
+            {t("bookingDateTime.back")}
+          </button>
 
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2
-    px-4 py-2
-    rounded-xl
-    bg-gray-100
-    text-sm font-medium text-gray-700
-    hover:bg-gray-200 transition"
-        >
-          {t("serviceSelection.back")}
-        </button>
       </div>
     </div>
   );
 };
-
 export default StepServiceSelection;
