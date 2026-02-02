@@ -36,4 +36,5 @@ public class StaffRequest {
     @Min(value = 1,message = "Role is required")
     private Long idRole;
     private Boolean isActive;
+    private Long hotelId;
 }

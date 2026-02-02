@@ -19,6 +19,7 @@ import {
   Hotel,
   LayoutDashboard,
   BedDouble,
+  UserCog,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -54,6 +55,11 @@ export default function AdminLayout() {
           label: t("sidebar.booking"),
           icon: BedDouble,
           path: "/Home/booking",
+        },
+        {
+          label:t("sidebar.staff"),
+          icon:UserCog,
+          path:"/Home/staff"
         }
       ],
     },

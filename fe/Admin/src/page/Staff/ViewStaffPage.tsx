@@ -6,6 +6,7 @@ import CommonTable from "../../components/ui/CommonTable";
 import StaffFormModal from "../../components/Staff/StaffFormModal";
 import { useAlert } from "../../components/alert-context";
 import { useTranslation } from "react-i18next";
+import { getTokens } from "../../util/auth";
 
 const ViewStaffPage = () => {
   const [data, setData] = useState<any[]>([]);
@@ -24,6 +25,7 @@ const ViewStaffPage = () => {
   const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
     setLoading(true);
     let filters: string[] = [];
+    filters.push(`hotelId==${getTokens()?.hotelId}`)
     filters.push("(account.role.id==3 or account.role.id==4)");
     if (statusFilter) {
       filters.push(`account.isActive==${statusFilter}`);

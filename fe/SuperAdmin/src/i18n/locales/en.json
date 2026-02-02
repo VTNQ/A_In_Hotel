@@ -34,6 +34,49 @@
         "uploadHint": "SVG, PNG, JPG (max. 800×400px)",
         "saveChanges": "Save Changes"
     },
+    "staff": {
+        "title": "Staff Management",
+        "new": "+ New Staff",
+        "selectHotel": "Select Hotel",
+        "selectStatus": "Select Status",
+        "active": "Active",
+        "hotel": "Hotel",
+        "inactive": "Inactive",
+        "view": {
+            "inactive": "Inactive"
+        },
+        "status": {
+            "updateSuccess": "Status updated successfully",
+            "updateFailed": "Failed to update status"
+        },
+        "searchPlaceholder": "Search by StaffID, Full Name",
+        "code": "StaffID",
+        "create": {
+            "createSucess": "Staff created successfully!",
+            "createError": "Error creating staff",
+            "titleCreate": "Create New Staff",
+            "male": "Male",
+            "female": "Female",
+            "enterEmail": "Enter Email",
+            "enterphone": "Enter Phone",
+            "selectDate": "Select date of birth",
+            "receiption": "Receptionist",
+            "enterFullName": "Enter Full Name"
+        },
+        "fullName": "Full Name",
+        "gender": "Gender",
+        "dob": "Date of Birth",
+        "phone": "Phone",
+        "role": "Role",
+        "birthdayPlaceholder": "dd/mm/yyyy",
+        "createdAt": "Created At",
+        "activeSuccess": "Staff activated successfully!",
+        "activeError": "Error activating staff",
+        "deActivateSuccess": "Staff deactivated successfully!",
+        "deActivateError": "Error deactivating staff",
+        "loadError": "Failed to load staff information!",
+        "updatedAt": "Updated At"
+    },
     "status": {
         "active": "Active",
         "inactive": "Inactive"
@@ -115,6 +158,7 @@
         "facilities": "Hotel Facilities",
         "facilityManagement": "Facility Management",
         "facility": "Facilities",
+        "staff": "Staff Management",
         "room": "Rooms",
         "blog": "Blog post",
         "asset": "Assets",
@@ -707,7 +751,7 @@
         "currentBooking": "Current Booking",
         "room": "Room",
         "roomType": "Type",
-           "history": {
+        "history": {
             "title": "Switch Room History",
             "subtitle": "Record of all room changes during the stay",
             "empty": "No room switch history available"

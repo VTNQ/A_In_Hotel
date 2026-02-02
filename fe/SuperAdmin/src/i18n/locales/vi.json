@@ -146,6 +146,7 @@
         "booking": "Quản lý đặt chỗ",
         "hotel": "Khách sạn",
         "facilities": "Cơ sở khách sạn",
+         "staff": "Quản lý nhân viên",
         "facilityManagement": "Quản lý cơ sở vật chất",
         "facility": "Cơ sở vật chất",
         "room": "Phòng",
@@ -703,6 +704,49 @@
             "subtitle": "Ghi nhận tất cả các lần đổi phòng trong thời gian lưu trú",
             "empty": "Chưa có lịch sử đổi phòng"
         }
+    },
+    "staff": {
+        "title": "Quản lý nhân viên",
+        "new": "+ Thêm nhân viên",
+        "selectHotel": "Chọn chi nhánh khách sạn",
+        "active": "Hoạt động",
+        "inactive": "Hủy kích hoạt",
+        "hotel": "Chi nhánh",
+        "birthdayPlaceholder": "dd/mm/yyyy",
+        "view": {
+            "inActive": "Ngừng hoạt động"
+        },
+        "status": {
+            "updateSuccess": "Cập nhật trạng thái thành công",
+            "updateFailed": "Cập nhật trạng thái thất bại"
+        },
+        "selectStatus": "Chọn trạng thái",
+        "create": {
+            "titleCreate": "Tạo nhân viên mới",
+            "createSucess": "Tạo nhân viên thành công!",
+            "createError": "Lỗi khi tạo nhân viên",
+            "male": "Nam",
+            "enterphone": "Nhập số điện thoại",
+            "enterEmail": "Nhập Email",
+            "selectDate": "Chọn ngày sinh",
+            "receiption": "Nhân viên lễ tân",
+            "female": "Nữ",
+            "enterFullName": "Nhập họ và tên"
+        },
+        "searchPlaceholder": "Tìm theo mã hoặc tên nhân viên",
+        "code": "Mã nhân viên",
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "activeSuccess": "Kích hoạt nhân viên thành công!",
+        "activeError": "Lỗi kích hoạt nhân viên",
+        "deActivateSuccess": "Hủy kích hoạt nhân viên thành công!",
+        "deActivateError": "Lỗi hủy kích hoạt nhân viên",
+        "loadError": "Không thể tải thông tin nhân viên!",
+        "dob": "Ngày sinh",
+        "phone": "Số điện thoại",
+        "role": "Vai trò",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật"
     },
     "confirmCheckOut": {
         "title": "Xác nhận trả phòng",
