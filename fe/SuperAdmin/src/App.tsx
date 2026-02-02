@@ -26,6 +26,8 @@ import ViewBlogPage from './page/Blog/ViewBlogPage'
 import CreateBlogPage from './page/Blog/CreateBlogPage'
 import CreateBookingPage from './page/Booking/CreateBookingPage'
 import ViewBookingPage from './page/Booking/ViewBookingPage'
+import ViewStaffPage from './page/Staff/ViewStaffPage'
+import  CreateStaffPage from './page/Staff/CreateStaffPage'
 
 function App() {
 
@@ -45,6 +47,8 @@ function App() {
           <Route path='category/create' element={<CreateCategoryPage/>}/>
           <Route path='room' element={<RoomPage/>}/>
           <Route path='room/create' element={<CreateRoomPage/>}/>
+          <Route path='staff' element={<ViewStaffPage/>}/>
+          <Route path='staff/create' element={<CreateStaffPage/>}/>
           <Route path='post/banner/create' element={<CreateBanner/>}/>
           <Route path='post/banner' element={<BannerPage/>}/>
           <Route path='service' element={<ExtraServicePage/>}/>
