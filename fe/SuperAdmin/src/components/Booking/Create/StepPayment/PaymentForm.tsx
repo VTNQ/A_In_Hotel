@@ -60,6 +60,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       guestName: booking.guest?.firstName,
       surname: booking.guest?.lastName,
       email: booking.guest?.email,
+      hotelId: booking?.hotelId,
       phoneNumber: booking.guest?.phone,
 
       guestType: booking.guest?.guestType ?? 1,
@@ -107,7 +108,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       });
 
       onSubmit();
-      navigate("/Dashboard/booking");
+      navigate("/Home/booking");
     } catch (err: any) {
       showAlert({
         title:

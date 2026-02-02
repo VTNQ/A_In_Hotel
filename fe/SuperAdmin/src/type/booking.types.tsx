@@ -55,15 +55,15 @@ export const PACKAGE_TIME_MAP: Record<
 export type GuestType = (typeof GuestType)[keyof typeof GuestType];
 export const getGuestTypeOptions = (t: TFunction) => [
   {
-    value: "INDIVIDUAL",
+    value: "1",
     label: t("booking.guestTypeOptions.individual"),
   },
   {
-    value: "COMPANY",
+    value: "2",
     label: t("booking.guestTypeOptions.company"),
   },
   {
-    value: "VIP",
+    value: "3",
     label: t("booking.guestTypeOptions.vip"),
   },
 ];
@@ -76,18 +76,24 @@ export interface CalendarRangeProps {
 }
 export type BookingStatus = 1 | 2 | 3 | 4;
 export type BookingStatusFilter = "ALL" | BookingStatus;
-export interface BookingDetailResponse{
-  id:number;
-  bookingId:number;
-  roomId:number;
-  roomCode:string;
-  roomName:string;
-  roomNumber:string;
-  roomType:string;
-  extraServiceName:string;
-  specialRequests:string;
-  extraServiceId:number;
-  price:number;
+export interface BookingDetailResponse {
+  id: number;
+  bookingId: number;
+  roomId: number;
+  roomCode: string;
+  roomName: string;
+  roomNumber: string;
+  roomType: string;
+  extraServiceName: string;
+  specialRequests: string;
+  extraServiceId: number;
+  price: number;
+}
+export interface PaymentResponse {
+  paidAmount: number;
+  paymentMethod: string;
+  paymentType: number;
+  notes: string;
 }
 export interface BookingResponse {
   id: number;
@@ -99,15 +105,18 @@ export interface BookingResponse {
   email: string;
   phoneNumber: string;
   totalPrice: number;
-  createdAt:string;
+  hotelId: number;
+  createdAt: string;
+
   guestType: number;
   numberOfGuests: number;
   checkInDate: string;
   checkInTime: string;
   checkOutDate: string;
   checkOutTime: string;
-  BookingPackage: number;
-  details:BookingDetailResponse[],
+  bookingPackage: number;
+  details: BookingDetailResponse[];
+  payment: PaymentResponse[];
   status: number;
   checkedInAt: string;
   checkedOutAt: string;
@@ -117,6 +126,29 @@ export const GUEST_TYPE_MAP: Record<number, string> = {
   2: "Member",
   3: "VIP",
 };
+export interface CheckInBookingResponse {
+  open: boolean;
+  id: number;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+export interface ConfirmCheckOutProps {
+  open: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+  id: number;
+}
+export interface ViewBookingModalProps {
+  open: boolean;
+  onClose: () => void;
+  id: number;
+}
+export interface SwitchRoomModalProps {
+  open: boolean;
+  id: number;
+  onClose: () => void;
+  onConfirm: () => void;
+}
 export interface BookingTableProps {
   rows: BookingResponse[];
   loading: boolean;
@@ -124,7 +156,20 @@ export interface BookingTableProps {
   sortDir: "asc" | "desc";
   onSortChange: (key: keyof BookingResponse) => void;
   page: number;
+  onView?: (row: BookingResponse) => void;
+  onCancel?: (row: BookingResponse) => void;
+  onCheckIn?: (row: BookingResponse) => void;
+  onCheckOut?: (row: BookingResponse) => void;
+  onSwitchRoom?: (row: BookingResponse) => void;
   pageSize: number;
   total: number;
   onPageChange: (page: number) => void;
+}
+export interface BookingActionMenuProps {
+  booking: BookingResponse;
+  onView?: (booking: any) => void;
+  onCancel?: (booking: any) => void;
+  onCheckIn?: (booking: any) => void;
+  onCheckOut?: (booking: any) => void;
+  onSwitchRoom?: (booking: any) => void;
 }

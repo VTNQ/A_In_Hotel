@@ -71,38 +71,38 @@ const AssetTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="assetCode">
+          <TableHead sortable sortKey="assetCode" width={220}>
             {t("asset.code")}
           </TableHead>
-          <TableHead>{t("asset.icon")}</TableHead>
-          <TableHead sortable sortKey="assetName">
+          <TableHead width={220}>{t("asset.icon")}</TableHead>
+          <TableHead sortable sortKey="assetName" width={220}>
             {t("asset.name")}
           </TableHead>
-          <TableHead sortable sortKey="roomNumber">
+          <TableHead sortable sortKey="roomNumber" width={220}>
             {t("asset.room")}
           </TableHead>
-          <TableHead sortable sortKey="category.id">
+          <TableHead sortable sortKey="category.id" width={220}>
             {t("asset.category")}
           </TableHead>
-          <TableHead sortable sortKey="price">
+          <TableHead sortable sortKey="price" width={220}>
             {t("asset.price")}
           </TableHead>
-          <TableHead sortable sortKey="quantity">
+          <TableHead sortable sortKey="quantity" width={220}>
             {t("asset.quantity")}
           </TableHead>
-          <TableHead >
+          <TableHead width={220}>
             {t("asset.hotel")}
           </TableHead>
-          <TableHead sortable sortKey="createdAt">
+          <TableHead sortable sortKey="createdAt" width={220}>
             {t("asset.createdAt")}
           </TableHead>
-          <TableHead sortable sortKey="updatedAt">
+          <TableHead sortable sortKey="updatedAt" width={220}>
             {t("asset.updatedAt")}
           </TableHead>
-          <TableHead sortable sortKey="status">
+          <TableHead sortable sortKey="status" width={220}>
             {t("common.status")}
           </TableHead>
-          <TableHead>{t("common.action")}</TableHead>
+          <TableHead width={220}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -128,9 +128,8 @@ const AssetTable = ({
                   }
                   // hiển thị ảnh đầu tiên
                   alt={row.thumbnail?.altText}
-                  width="80"
-                  height="60"
-                  style={{ objectFit: "cover", borderRadius: 8 }}
+                    className="w-32 h-24 object-cover rounded-lg
+                  mx-auto border"
                 />
               </TableCell>
               <TableCell>{row.assetName}</TableCell>
