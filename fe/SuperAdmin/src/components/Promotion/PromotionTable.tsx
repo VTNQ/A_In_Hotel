@@ -106,7 +106,7 @@ const PromotionTable = ({
                   ></span>
                   {row.isActive
                     ? t("promotion.status.enabled")
-                    : t("promotion.status.disabled")}
+                    : t("promotion.status.Disabled")}
                 </div>
               </TableCell>
               <TableCell>{row.createdAt}</TableCell>
