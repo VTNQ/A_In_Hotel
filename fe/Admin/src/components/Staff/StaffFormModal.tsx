@@ -100,7 +100,7 @@ const StaffFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
 
-            title={t("staff.titleCreate")}
+            title={t("staff.create.titleCreate")}
             onSave={handleSave}
             saveLabel={loading ? t("common.saving") : t("common.save")}
              cancelLabel={t("common.cancelButton")}

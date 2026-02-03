@@ -34,7 +34,7 @@ public class StaffController {
     public ResponseEntity<RequestResponse<PageResponse<StaffResponse>>> getAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id,desc") String sort,
+            @RequestParam(defaultValue = "account.id,desc") String sort,
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String searchField,
             @RequestParam(required = false) String searchValue,

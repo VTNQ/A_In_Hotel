@@ -240,35 +240,7 @@
     "createdAt": "Created At",
     "updatedAt": "Updated At"
   },
-  "staff": {
-    "title": "Staff Management",
-    "new": "+ New Staff",
-    "searchPlaceholder": "Search by StaffID, Full Name",
-    "code": "StaffID",
-    "create": {
-      "createSucess": "Staff created successfully!",
-      "createError": "Error creating staff",
-      "titleCreate": "Create New Staff",
-      "male": "Male",
-      "female": "Female",
-      "enterphone": "Enter Phone",
-      "selectDate": "Select date of birth",
-      "receiption": "Receptionist",
-      "enterFullName": "Enter Full Name"
-    },
-    "fullName": "Full Name",
-    "gender": "Gender",
-    "dob": "Date of Birth",
-    "phone": "Phone",
-    "role": "Role",
-    "createdAt": "Created At",
-    "activeSuccess": "Staff activated successfully!",
-    "activeError": "Error activating staff",
-    "deActivateSuccess": "Staff deactivated successfully!",
-    "deActivateError": "Error deactivating staff",
-    "loadError": "Failed to load staff information!",
-    "updatedAt": "Updated At"
-  },
+ 
   "blog": {
     "title": "Blog Post",
     "new": "+ New Blog Post",
