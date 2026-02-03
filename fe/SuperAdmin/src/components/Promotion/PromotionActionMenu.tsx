@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import type { PromotionActionMenuProps } from "../../type/promotion.types";
-import type { ActionItem } from "../ui/ActionMenu";
+import type { ActionItem } from "@/type/common";
+import type { PromotionActionMenuProps } from "@/type/Promotion.types";
 import { Edit, Eye, Power } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ActionMenu from "../ui/ActionMenu";
 
 const PromotionActionMenu: React.FC<PromotionActionMenuProps> = ({
@@ -14,7 +14,7 @@ const PromotionActionMenu: React.FC<PromotionActionMenuProps> = ({
   const actions: ActionItem[] = promotion.isActive
     ? [
         {
-          label: t("promotion.view"),
+          label: t("common.view"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(promotion),
         },
@@ -32,7 +32,7 @@ const PromotionActionMenu: React.FC<PromotionActionMenuProps> = ({
       ]
     : [
         {
-          label: t("promotion.view"),
+          label: t("common.view"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(promotion),
         },

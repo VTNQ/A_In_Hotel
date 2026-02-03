@@ -1,4 +1,4 @@
-import type { GetAllOptions } from "../../type";
+import type { GetAllOptions } from "@/type/GetAllOptions";
 import Http from "../http/http";
 
 export const getPromotionAll = async (options: GetAllOptions = {}) => {
@@ -11,10 +11,11 @@ export const getPromotionAll = async (options: GetAllOptions = {}) => {
     searchValue,
     all = false,
   } = options;
-  const res = await Http.get("/api/promotions", {
+  const resp = await Http.get("/api/promotions",{
     params: { page, size, sort, filter, searchField, searchValue, all },
+    skipAuth:true
   });
-  return res.data;
+  return resp.data;
 };
 export const createPromotion = async (promotionData: any) => {
   return await Http.post("/api/promotions/create", promotionData);
@@ -28,7 +29,6 @@ export const updatePromotion = async (
 ) => {
   return await Http.put(`/api/promotions/${promotionId}`, promotionData);
 };
-
 export const updateStatusPromotion = async (
   promotionId: number,
   isActive: any,
