@@ -40,7 +40,7 @@ const PromotionActionMenu: React.FC<PromotionActionMenuProps> = ({
   return (
     <ActionMenu
       title={
-        promotion.isActive ? t("promotion.enable") : t("promotion.disable")
+        promotion.isActive ? t("promotion.status.enabled") : t("promotion.status.Disabled")
       }
       actions={actions}
     />
