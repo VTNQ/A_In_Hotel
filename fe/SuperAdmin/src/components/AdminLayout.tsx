@@ -20,6 +20,8 @@ import {
   LayoutDashboard,
   BedDouble,
   UserCog,
+  TicketPercent,
+  Megaphone,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -57,10 +59,26 @@ export default function AdminLayout() {
           path: "/Home/booking",
         },
         {
-          label:t("sidebar.staff"),
-          icon:UserCog,
-          path:"/Home/staff"
-        }
+          label: t("sidebar.staff"),
+          icon: UserCog,
+          path: "/Home/staff",
+        },
+        {
+          label: t("sidebar.coupon"),
+          icon: TicketPercent,
+          children: [
+            {
+              label: t("sidebar.promotion"),
+              icon: Megaphone,
+              path: "/Home/coupon/promotion",
+            },
+            {
+              label: t("sidebar.voucher"),
+              icon: Megaphone,
+              path: "/Home/coupon/voucher",
+            },
+          ],
+        },
       ],
     },
 
@@ -79,7 +97,6 @@ export default function AdminLayout() {
         },
       ],
     },
-    
 
     {
       title: t("sidebar.facilityManagement"),
@@ -98,16 +115,16 @@ export default function AdminLayout() {
     },
     {
       title: t("sidebar.post"),
-      items:[
-          {
-            label:t("sidebar.blog"),
-            path:"/Home/post/blog"
-          },
-          {
-            label:t("sidebar.banner"),
-            path:"/Home/post/banner"
-          }
-      ]
+      items: [
+        {
+          label: t("sidebar.blog"),
+          path: "/Home/post/blog",
+        },
+        {
+          label: t("sidebar.banner"),
+          path: "/Home/post/banner",
+        },
+      ],
     },
 
     {

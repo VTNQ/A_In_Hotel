@@ -1,3 +1,5 @@
+import { BOOKING_TYPE_OPTIONS, CUSTOMER_TYPE_OPTIONS } from "@/type/Promotion.types";
+
 function appendFormData(fd: FormData, value: any, key: string) {
   if (value === undefined || value === null) return;
 
@@ -31,4 +33,11 @@ export function toFormData(data: any) {
   const fd = new FormData();
   Object.entries(data).forEach(([k, v]) => appendFormData(fd, v, k));
   return fd;
+}
+export const getBookingTypeLabelKey = (value?: number) => {
+  return BOOKING_TYPE_OPTIONS.find((opt) => opt.value === value)?.labelKey;
+};
+export const getCustomerTypeLabelKey = (value?: number)=>{
+  return CUSTOMER_TYPE_OPTIONS.find((opt)=>opt.value===value)?.labelKey;
+
 }

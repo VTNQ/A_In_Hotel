@@ -28,6 +28,10 @@ import CreateBookingPage from './page/Booking/CreateBookingPage'
 import ViewBookingPage from './page/Booking/ViewBookingPage'
 import ViewStaffPage from './page/Staff/ViewStaffPage'
 import  CreateStaffPage from './page/Staff/CreateStaffPage'
+import PromotionPage from './page/Promotion/PromotionPage'
+import CreatePromotionPage from './page/Promotion/CreatePromotionPage'
+import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
+import CreateVoucherPage from './page/Voucher/CreateVoucherPage'
 
 function App() {
 
@@ -50,6 +54,10 @@ function App() {
           <Route path='staff' element={<ViewStaffPage/>}/>
           <Route path='staff/create' element={<CreateStaffPage/>}/>
           <Route path='post/banner/create' element={<CreateBanner/>}/>
+          <Route path='coupon/promotion' element={<PromotionPage/>}/>
+          <Route path='coupon/voucher' element={<ViewVoucherPage/>}/>
+          <Route path='coupon/voucher/create' element={<CreateVoucherPage/>}/>
+          <Route path='coupon/promotion/create' element={<CreatePromotionPage/>}/>
           <Route path='post/banner' element={<BannerPage/>}/>
           <Route path='service' element={<ExtraServicePage/>}/>
           <Route path='service/create' element={<CreateExtraServicePage/>}/>
