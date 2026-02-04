@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Month from "./Month";
 import type { CalendarRangeProps } from "../../type/booking.types";
+import { isBefore, startOfToday } from 'date-fns';
 
 const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
      BASE MONTH
   ======================= */
   const [baseMonth, setBaseMonth] = useState(
-    new Date(today.getFullYear(), today.getMonth())
+    new Date(today.getFullYear(), today.getMonth()),
   );
 
   /* =======================
@@ -25,7 +26,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   ======================= */
   const toDateString = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-      d.getDate()
+      d.getDate(),
     ).padStart(2, "0")}`;
 
   const isBeforeToday = (d: Date) => {
@@ -47,24 +48,21 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
      SELECT DATE
   ======================= */
   const handleSelect = (d: Date) => {
-    if (isBeforeToday(d)) return;
+     if (isBefore(d, startOfToday())) return;
 
     const selected = toDateString(d);
 
-    // start mới
-    if (!value.start || value.end) {
-      onChange({ start: selected, end: undefined });
-      return;
-    }
+  if (!value.start || value.end) {
+    onChange({ start: selected, end: undefined });
+    return;
+  }
 
-    // chọn nhỏ hơn start → reset start
-    if (selected < value.start) {
-      onChange({ start: selected, end: undefined });
-      return;
-    }
+  if (selected < value.start) {
+    onChange({ start: selected, end: undefined });
+    return;
+  }
 
-    // chọn end
-    onChange({ start: value.start, end: selected });
+  onChange({ start: value.start, end: selected });
   };
 
   /* =======================
@@ -80,9 +78,8 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   const nights =
     value.start && value.end
       ? Math.ceil(
-          (new Date(value.end).getTime() -
-            new Date(value.start).getTime()) /
-            (1000 * 60 * 60 * 24)
+          (new Date(value.end).getTime() - new Date(value.start).getTime()) /
+            (1000 * 60 * 60 * 24),
         )
       : 0;
 
@@ -93,9 +90,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
     <div className="bg-white rounded-xl p-4">
       {/* Header */}
       <div className="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-        <h3 className="font-semibold">
-          {t("bookingDateTime.selectDates")}
-        </h3>
+        <h3 className="font-semibold">{t("bookingDateTime.selectDates")}</h3>
 
         <div className="flex items-center gap-3">
           {nights > 0 && (
@@ -124,7 +119,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
           }
           onClick={() =>
             setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1)
+              new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
             )
           }
           className="disabled:opacity-30"
@@ -142,7 +137,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
           <span>
             {new Date(
               baseMonth.getFullYear(),
-              baseMonth.getMonth() + 1
+              baseMonth.getMonth() + 1,
             ).toLocaleString("default", {
               month: "long",
               year: "numeric",
@@ -153,7 +148,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         <button
           onClick={() =>
             setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)
+              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
             )
           }
         >
@@ -173,10 +168,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         />
 
         <Month
-          month={new Date(
-            baseMonth.getFullYear(),
-            baseMonth.getMonth() + 1
-          )}
+          month={new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)}
           value={value}
           onSelect={handleSelect}
           isSame={isSame}
