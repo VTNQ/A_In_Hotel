@@ -26,7 +26,7 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
     );
   }, [form.checkInDate, form.checkOutDate]);
 
-  const isValid = Boolean(form.checkInDate && form.checkOutDate && nights > 0);
+  const isValid = Boolean(form.checkInDate && form.checkOutDate );
   return (
     <div className="space-y-6">
       <div>
