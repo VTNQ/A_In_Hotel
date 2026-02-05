@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import CalendarRange from "../../ui/CalenderRange";
 import BookingDetailsPanel from "./BookingDetailsPanel";
 import { useTranslation } from "react-i18next";
-import { isAfter } from "date-fns";
 
 const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
   const [form, setForm] = useState({
