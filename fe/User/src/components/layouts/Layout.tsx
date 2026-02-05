@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "../Home/Footer";
 import Navbar from "../Navbar";
 import { AlertProvider } from "../alert-context";
+import ContactSticky from "./ContactSticky";
 
 const Layout = () => {
   return (
@@ -17,6 +18,7 @@ const Layout = () => {
 
         {/* Footer */}
         <Footer />
+        <ContactSticky/>
       </div>
     </AlertProvider>
   );
