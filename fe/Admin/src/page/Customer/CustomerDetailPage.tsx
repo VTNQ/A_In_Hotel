@@ -108,7 +108,7 @@ const CustomerDetailPage = () => {
     try {
       const [detailRes, bookingSummary] = await Promise.all([
         getCustomerDetail(Number(id)),
-        BookingSummary(Number(id), getTokens()?.hotelId ?? 0),
+        BookingSummary(Number(id)),
       ]);
       setSummary(bookingSummary);
       setCustomer(detailRes);
