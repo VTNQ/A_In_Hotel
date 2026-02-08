@@ -25,7 +25,7 @@ export const getCustomerDetail = async(id:number)=>{
     return resp.data;
 
 }
-export const BookingSummary = async(customerId:number,hotelId:number)=>{
-    const resp = await Http.get(`/api/customers/summary?customerId=${customerId}&hotelId=${hotelId}`);
+export const BookingSummary = async(customerId:number)=>{
+    const resp = await Http.get(`/api/customers/summary?customerId=${customerId}`);
     return resp.data;
 }
