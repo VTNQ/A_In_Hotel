@@ -9,7 +9,11 @@
         "createdAt": "Ngày tạo",
         "updatedAt": "Ngày cập nhật",
         "included": "Áp dụng",
+        "tip": "Gợi ý",
         "excluded": "Không áp dụng",
+        "filter": "Lọc",
+        "filtering": "Đang lọc...",
+        "back": "Quay lại",
         "tryAgain": "Vui lòng thử lại sau",
         "email": "Email",
         "close": "Đóng",
@@ -148,6 +152,7 @@
     "sidebar": {
         "dashboards": "Tổng quan",
         "home": "Trang chủ",
+        "user": "Quản lý người dùng",
         "coupon": "Quản lý khuyến mãi",
         "promotion": "Quản lý chương trình khuyến mãi",
         "voucher": "Quản lý voucher",
@@ -287,6 +292,71 @@
             "packageDayUse": "Theo giờ",
             "packageOvernight": "Qua đêm",
             "packageFullDay": "Theo tháng"
+        }
+    },
+    "customer": {
+        "errorLoad": "Không thể tải dữ liệu",
+        "management": {
+            "title": "Quản lý khách hàng"
+        },
+        "search": {
+            "placeholder": "Tìm theo mã khách hàng, tên, số điện thoại, email"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "blocked": "Bị khóa"
+        },
+        "tabs": {
+            "basic": "Thông tin cơ bản",
+            "points": "Điểm & Thẻ thành viên"
+        },
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "nationality": "Quốc tịch",
+        "customerId": "Mã khách hàng",
+        "points": {
+            "total": "Tổng điểm",
+            "available": "Điểm khả dụng",
+            "used": "Điểm đã sử dụng",
+            "tip": "Khách hàng có thể dùng tối đa {{percent}}% giá trị booking bằng điểm"
+        },
+        "bookingHistory": {
+            "title": "Lịch sử đặt phòng"
+        },
+        "bookingSummary": {
+            "totalBookings": "Tổng số booking",
+            "nightsStayed": "Số đêm đã ở",
+            "totalRevenue": "Tổng doanh thu"
+        },
+        "table": {
+            "customerId": "Mã khách hàng",
+            "fullName": "Họ và tên",
+            "email": "Email",
+            "phone": "Số điện thoại",
+            "totalBookings": "Tổng booking",
+            "rewardBalance": "Số dư điểm thưởng",
+            "lastBooking": "Lần đặt phòng gần nhất",
+            "block": "Khóa / Mở"
+        }
+    },
+    "reward": {
+        "title": "Lịch sử điểm thưởng",
+        "type": {
+            "all": "Tất cả loại",
+            "earn": "Cộng điểm",
+            "redeem": "Đổi điểm",
+            "expire": "Hết hạn"
+        },
+        "table": {
+            "date": "Ngày",
+            "transactionId": "Mã giao dịch",
+            "bookingId": "Mã booking",
+            "type": "Loại",
+            "points": "Điểm",
+            "balanceBefore": "Số dư trước",
+            "balanceAfter": "Số dư sau",
+            "description": "Mô tả"
         }
     },
     "adminCreate": {

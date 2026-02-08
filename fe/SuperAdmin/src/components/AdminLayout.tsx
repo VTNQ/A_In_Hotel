@@ -58,6 +58,7 @@ export default function AdminLayout() {
           icon: BedDouble,
           path: "/Home/booking",
         },
+        { label: t("sidebar.user"), icon: Users,path:"/Home/customer" },
         {
           label: t("sidebar.staff"),
           icon: UserCog,
