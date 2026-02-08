@@ -1,5 +1,6 @@
 package org.a_in_hotel.be.repository;
 
+import org.a_in_hotel.be.dto.response.BookingSummaryResponse;
 import org.a_in_hotel.be.entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -43,5 +44,32 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
       and d.active = true
 """)
     Optional<Booking> findByIdFetchActiveDetail(Long id);
+
+    @Query("""
+    select
+        count(b.id),
+        coalesce(
+            sum(function('DATEDIFF', b.checkOutDate, b.checkInDate)),
+            0
+        ),
+        coalesce(
+            sum(
+                case 
+                    when b.status = :completedStatus 
+                    then b.totalPrice 
+                    else 0.0 
+                end
+            ),
+            0.0
+        )
+    from Booking b
+    where b.customer.id = :customerId
+""")
+    List<Object[]> getBookingSummaryRaw(
+            @Param("customerId") Long customerId,
+            @Param("completedStatus") Integer completedStatus
+    );
+
+
 
 }

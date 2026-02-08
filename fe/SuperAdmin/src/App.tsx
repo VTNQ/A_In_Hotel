@@ -32,6 +32,8 @@ import PromotionPage from './page/Promotion/PromotionPage'
 import CreatePromotionPage from './page/Promotion/CreatePromotionPage'
 import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
 import CreateVoucherPage from './page/Voucher/CreateVoucherPage'
+import ViewCustomerPage from './page/Customer/ViewCustomerPage'
+import CustomerDetailPage from './page/Customer/CustomerDetailPage'
 
 function App() {
 
@@ -59,6 +61,8 @@ function App() {
           <Route path='coupon/voucher/create' element={<CreateVoucherPage/>}/>
           <Route path='coupon/promotion/create' element={<CreatePromotionPage/>}/>
           <Route path='post/banner' element={<BannerPage/>}/>
+          <Route path='customer' element={<ViewCustomerPage/>}/>
+          <Route path='customer/:id' element={<CustomerDetailPage/>}/>
           <Route path='service' element={<ExtraServicePage/>}/>
           <Route path='service/create' element={<CreateExtraServicePage/>}/>
           <Route path='asset' element={<AssetPage/>}/>

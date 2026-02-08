@@ -17,7 +17,7 @@ export const SECTIONS = [
                     { label: "sideBar.category", path: "/Dashboard/facility/category" },
                 ],
             },
-            { label: 'sideBar.user', icon: Users },
+            { label: 'sideBar.user', icon: Users,path:"/Dashboard/customer" },
             { label: 'sideBar.staff', icon: UserCog, path: "/Dashboard/staff" },
             {
                 label: "sideBar.post",

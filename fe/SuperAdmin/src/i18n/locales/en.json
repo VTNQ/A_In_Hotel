@@ -5,6 +5,7 @@
         "save": "Save",
         "view": "View",
         "cancel": "Cancel",
+        "tip": "Tip",
         "included": "Included",
         "excluded": "Excluded",
         "createdAt": "Created At",
@@ -13,6 +14,9 @@
         "tryAgain": "Please try again later",
         "none": "None",
         "search": "Search...",
+        "filter": "Filter",
+        "filtering": "Filtering...",
+        "back": "Back",
         "home": "Home",
         "all": "All",
         "loading": "Loading...",
@@ -153,10 +157,82 @@
         "success": "Admin account created successfully",
         "error": "Failed to create admin account"
     },
+    "customer": {
+        "errorLoad": "Failed to load data",
+        "management": {
+            "title": "Customer Management"
+        },
+        "search": {
+            "placeholder": "Search by customer ID, name, phone, email"
+        },
+        "status": {
+            "active": "Active",
+            "blocked": "Blocked"
+        },
+        "tabs": {
+            "basic": "Basic Info",
+            "points": "Points & Loyalty"
+        },
+        "fullName": "Full Name",
+        "phone": "Phone Number",
+        "email": "Email",
+        "nationality": "Nationality",
+        "customerId": "Customer ID",
+        "table": {
+            "customerId": "Customer ID",
+            "fullName": "Full Name",
+            "email": "Email",
+            "phone": "Phone",
+            "totalBookings": "Total Bookings",
+            "rewardBalance": "Reward Balance",
+            "lastBooking": "Last Booking",
+            "block": "Block / Unblock"
+        },
+        "points": {
+            "total": "Total Points",
+            "available": "Available Points",
+            "used": "Used Points",
+            "tip": "Customer can redeem up to {{percent}}% of the booking value using points"
+        },
+        "bookingHistory": {
+            "title": "Booking History"
+        },
+        "bookingSummary": {
+            "totalBookings": "Total Bookings",
+            "nightsStayed": "Nights Stayed",
+            "totalRevenue": "Total Revenue"
+        }
+    },
+    "reward": {
+        "title": "Reward / Points History",
+        "type": {
+            "all": "All",
+            "earn": "Earn",
+            "redeem": "Redeem",
+            "expire": "Expire"
+        },
+        "filter": {
+            "allTypes": "All Types",
+            "earn": "Earn",
+            "redeem": "Redeem",
+            "expire": "Expire"
+        },
+        "table": {
+            "date": "Date",
+            "transactionId": "Transaction ID",
+            "bookingId": "Booking ID",
+            "type": "Type",
+            "points": "Points",
+            "balanceBefore": "Balance Before",
+            "balanceAfter": "Balance After",
+            "description": "Description"
+        }
+    },
     "sidebar": {
         "dashboards": "Dashboard",
         "home": "Home",
         "coupon": "Coupon Management",
+         "user": "User Management",
         "voucher": "Voucher Management",
         "promotion": "Promotion Management",
         "hotelManagement": "Hotel Management",
