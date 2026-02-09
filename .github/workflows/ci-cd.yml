@@ -79,10 +79,6 @@ jobs:
         run: |
           git fetch --all
           git reset --hard origin/deploy_web
-      - name: Build backend
-        run: |
-          cd be
-          mvn clean package -DskipTests
 
       - name:  Build frontend SuperAdmin
         run: |
@@ -115,11 +111,6 @@ jobs:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
-      - name:  Build & Push Backend
-        run: |
-          cd be
-          docker build -t ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest .
-          docker push ${{ env.DOCKER_USERNAME }}/ainhotel-be:latest
 
       - name:  Build & Push Frontend SuperAdmin
         run: |
