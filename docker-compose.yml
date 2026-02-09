@@ -6,8 +6,6 @@ services:
     container_name: ainhotel-fe-superadmin
     ports:
       - "5173:80"
-    depends_on:
-      - backend
     restart: always
 
   frontend-user:
@@ -15,8 +13,6 @@ services:
     container_name: ainhotel-fe-user
     ports:
       - "5174:80"
-    depends_on:
-      - backend
     restart: always
 
   frontend-admin:
@@ -24,6 +20,4 @@ services:
     container_name: ainhotel-fe-admin
     ports:
       - "5175:80"
-    depends_on:
-      - backend
     restart: always
