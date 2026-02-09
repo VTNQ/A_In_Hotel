@@ -7,7 +7,6 @@ public class APIURL {
             "/api/account/refresh",
     };
     public static final String[] URL_SUPERADMIN_GET={
-            "/api/account/is-Superadmin",
 
     };
     public static final String[] URL_ANONYMOUS_GET = {
