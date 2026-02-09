@@ -162,4 +162,4 @@ jobs:
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-user:latest
             docker pull ${{ env.DOCKER_USERNAME }}/ainhotel-fe-admin:latest
             docker-compose down
-            docker-compose up -d 
+            docker-compose up -d --build 
