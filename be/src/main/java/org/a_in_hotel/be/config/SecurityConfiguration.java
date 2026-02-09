@@ -29,7 +29,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfiguration {
     private final AccountService accountService;
-
     private final JwtFilter jwtFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -43,7 +42,6 @@ public class SecurityConfiguration {
         this.jwtFilter = jwtFilter;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.customOAuth2UserService = customOAuth2UserService;
-
     }
     @Bean
     public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
@@ -91,7 +89,6 @@ public class SecurityConfiguration {
                 )
                 .authenticationProvider(authenticationProvider())
                 // đặt JWT filter trước OAuth2LoginAuthenticationFilter
-
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -101,13 +98,12 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:8585",
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:5175",
                 "https://superadmin.ainhotelvn.com",
                 "https://admin.ainhotelvn.com",
-                "https://www.ainhotelvn.com"
+                "https://www.ainhotelvn.com",
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:5175"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
