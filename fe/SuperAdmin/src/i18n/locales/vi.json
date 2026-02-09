@@ -6,13 +6,23 @@
         "view": "Xem chi tiết",
         "cancel": "Hủy",
         "saving": "Đang lưu...",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "included": "Áp dụng",
+        "tip": "Gợi ý",
+        "excluded": "Không áp dụng",
+        "filter": "Lọc",
+        "filtering": "Đang lọc...",
+        "back": "Quay lại",
         "tryAgain": "Vui lòng thử lại sau",
         "email": "Email",
         "close": "Đóng",
         "fullName": "Họ và tên",
         "home": "Trang chủ",
+        "none": "Không có",
         "category": "Danh mục",
         "enterStatus": "Chọn trạng thái",
+        "all": "Tất cả",
         "status": "Trạng thái",
         "search": "Tìm kiếm...",
         "phone": "Số điện thoại",
@@ -142,11 +152,15 @@
     "sidebar": {
         "dashboards": "Tổng quan",
         "home": "Trang chủ",
+        "user": "Quản lý người dùng",
+        "coupon": "Quản lý khuyến mãi",
+        "promotion": "Quản lý chương trình khuyến mãi",
+        "voucher": "Quản lý voucher",
         "hotelManagement": "Quản lý khách sạn",
         "booking": "Quản lý đặt chỗ",
         "hotel": "Khách sạn",
         "facilities": "Cơ sở khách sạn",
-         "staff": "Quản lý nhân viên",
+        "staff": "Quản lý nhân viên",
         "facilityManagement": "Quản lý cơ sở vật chất",
         "facility": "Cơ sở vật chất",
         "room": "Phòng",
@@ -166,6 +180,184 @@
         "homepageContent": "Nội dung trang chủ",
         "policyTerms": "Chính sách & điều khoản",
         "footerContent": "Nội dung chân trang"
+    },
+    "promotion": {
+        "title": "Quản lý chương trình khuyến mãi",
+        "new": "+ Thêm chương trình",
+        "code": "Mã chương trình",
+        "name": "Tên chương trình",
+        "roomType": "Loại phòng",
+        "bookingType": "Loại hình đặt phòng",
+        "type": "Loại khuyến mãi",
+        "priorityLevel": "Mức {{level}}",
+        "description": "Mô tả",
+        "minNights": "Số đêm tối thiểu",
+        "nights": "đêm",
+        "customerSegment": "Phân khúc khách hàng",
+        "promotionDetail": "Chi tiết khuyến mãi",
+        "view": {
+            "general": "Thông tin chung",
+            "offer": "Chi tiết ưu đãi",
+            "date": "Thời gian áp dụng",
+            "status": "Trạng thái",
+            "conditions": "Điều kiện đặt phòng & khách hàng",
+            "roomTypes": "Loại phòng áp dụng"
+        },
+        "launch": "Khởi tạo khuyến mãi",
+        "disable": "Vô hiệu hóa",
+        "errorUpdateStatus": "Lỗi cập nhật trạng thái chương trình khuyến mãi",
+        "successUpdateStatus": "Cập nhật trạng thái chương trình khuyến mãi thành công",
+        "enable": "kích hoạt",
+        "discountValue": "Giá trị giảm",
+        "createdBy": "Người tạo",
+        "loadErrorRoomType": "không thể tải loại phòng",
+        "startDate": "Ngày bắt đầu",
+        "value": "Giá trị",
+        "endDate": "Ngày kết thúc",
+        "createOrUpdate": {
+            "createSucess": "Tạo chương trình khuyến mãi thành công!",
+            "createError": "Lỗi khi tạo chương trình khuyến mãi",
+            "titleCreate": "Tạo chương trình khuyến mãi",
+            "updateSuccess": "Cập nhật chương trình khuyến mãi thành công!",
+            "updateError": "Cập nhật chương trình khuyến mãi thất bại!",
+            "description": "Cấu hình các thông tin cho chương trình khuyến mãi",
+            "saveUpdateButton": "Cập nhật khuyến mãi",
+            "editTitle": "Sửa chương trình khuyến mãi",
+            "enterName": "Nhập tên chương trình"
+        },
+        "tabs": {
+            "general": "Thông tin chung",
+            "offer": "Ưu đãi",
+            "targeting": "Áp dụng"
+        },
+        "general": {
+            "title": "Thông tin chung",
+            "name": "Tên chương trình",
+            "namePlaceholder": "VD: Summer Getaway",
+            "priority": "Độ ưu tiên",
+            "priorityPlaceholder": "VD: 1",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Mô tả ngắn cho chương trình khuyến mãi..."
+        },
+        "offer": {
+            "title": "Cấu hình giảm giá",
+            "type": "Loại giảm giá",
+            "value": "Giá trị giảm",
+            "fixed": "Giảm số tiền cố định",
+            "special": "Giảm Giá đặc biệt",
+            "percent": "Giảm theo phần trăm (%)",
+            "valuePercentPlaceholder": "VD: 10 (%)",
+            "valueFixedPlaceholder": "VD: 100.000 (VND)"
+        },
+        "conditions": {
+            "title": "Điều kiện",
+            "minNights": "Số đêm tối thiểu",
+            "minNightsPlaceholder": "VD: 2"
+        },
+        "targeting": {
+            "audience": "Đối tượng & kênh",
+            "application": "Phạm vi áp dụng",
+            "customerAgent": "Phân khúc khách hàng",
+            "roomTypes": "Loại phòng áp dụng",
+            "selectAllRoomTypes": "Chọn tất cả loại phòng",
+            "bookingTypes": "Loại hình đặt phòng"
+        },
+        "schedule": {
+            "title": "Thời gian áp dụng",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc"
+        },
+        "customerType": {
+            "personal": "Khách lẻ",
+            "company": "Khách doanh nghiệp",
+            "walkin": "Khách vãng lai",
+            "online": "Khách đặt online",
+            "vip": "Khách VIP"
+        },
+        "typeView": {
+            "percent": "Giảm theo %",
+            "fixed": "Giảm số tiền cố định",
+            "special": "Giá đặc biệt"
+        },
+        "priority": "Độ ưu tiên",
+        "searchPlaceholder": "Tìm kiếm theo ID,tên",
+        "errorLoad": "Không thể tải dữ liệu",
+        "status": {
+            "enabled": "Hoạt động",
+            "Disabled": "Không hoạt động"
+        },
+        "next": "Tiếp theo",
+        "back": "Quay lại",
+        "bookingDateTime": {
+            "packageDayUse": "Theo giờ",
+            "packageOvernight": "Qua đêm",
+            "packageFullDay": "Theo tháng"
+        }
+    },
+    "customer": {
+        "errorLoad": "Không thể tải dữ liệu",
+        "management": {
+            "title": "Quản lý khách hàng"
+        },
+        "search": {
+            "placeholder": "Tìm theo mã khách hàng, tên, số điện thoại, email"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "blocked": "Bị khóa"
+        },
+        "tabs": {
+            "basic": "Thông tin cơ bản",
+            "points": "Điểm & Thẻ thành viên"
+        },
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "nationality": "Quốc tịch",
+        "customerId": "Mã khách hàng",
+        "points": {
+            "total": "Tổng điểm",
+            "available": "Điểm khả dụng",
+            "used": "Điểm đã sử dụng",
+            "tip": "Khách hàng có thể dùng tối đa {{percent}}% giá trị booking bằng điểm"
+        },
+        "bookingHistory": {
+            "title": "Lịch sử đặt phòng"
+        },
+        "bookingSummary": {
+            "totalBookings": "Tổng số booking",
+            "nightsStayed": "Số đêm đã ở",
+            "totalRevenue": "Tổng doanh thu"
+        },
+        "table": {
+            "customerId": "Mã khách hàng",
+            "fullName": "Họ và tên",
+            "email": "Email",
+            "phone": "Số điện thoại",
+            "totalBookings": "Tổng booking",
+            "rewardBalance": "Số dư điểm thưởng",
+            "lastBooking": "Lần đặt phòng gần nhất",
+            "block": "Khóa / Mở"
+        }
+    },
+    "reward": {
+        "title": "Lịch sử điểm thưởng",
+        "type": {
+            "all": "Tất cả loại",
+            "earn": "Cộng điểm",
+            "redeem": "Đổi điểm",
+            "expire": "Hết hạn"
+        },
+        "table": {
+            "date": "Ngày",
+            "transactionId": "Mã giao dịch",
+            "bookingId": "Mã booking",
+            "type": "Loại",
+            "points": "Điểm",
+            "balanceBefore": "Số dư trước",
+            "balanceAfter": "Số dư sau",
+            "description": "Mô tả"
+        }
     },
     "adminCreate": {
         "title": "Admin",
@@ -929,5 +1121,138 @@
         "notePlaceholder": "Nhập dị ứng, yêu cầu phòng hoặc ghi chú đặc biệt...",
         "cancel": "Hủy đặt phòng",
         "next": "Tiếp theo: Ngày & Giờ đặt phòng →"
+    },
+    "voucher": {
+        "title": "Quản lý Voucher",
+        "new": "+ Thêm Voucher",
+        "loadError": "Không thể tải thông tin voucher!",
+        "expired": "Hết hạn",
+        "enable": "kích hoạt",
+        "usage": "Độ ưu tiên",
+        "errorLoad": "Không thể tải dữ liệu",
+        "searchPlaceholder": "Tìm theo mã hoặc tên",
+        "roomType": "Loại phòng",
+        "changeSuccess": "Cập nhật voucher thành công",
+        "changeError": "Cập nhật voucher thất bại",
+        "code": "Mã",
+        "disable": "Vô hiệu hóa",
+        "name": "Tên",
+        "validPeriod": "Thời gian hợp lệ",
+        "typeView": {
+            "percent": "Giảm theo %",
+            "fixed": "Giảm số tiền cố định",
+            "special": "Giá đặc biệt"
+        },
+        "discountType": "Loại giảm",
+        "discountValue": "Giá trị giảm",
+        "minBookingAmount": "Giá tối thiểu",
+        "maxDiscount": "Giảm tối đa",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "usageLimit": "Giới hạn",
+        "usageCount": "Đã dùng",
+        "status": {
+            "enabled": "Hoạt động",
+            "disabled": "Không hoạt động"
+        },
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "view": {
+            "status": "Trạng thái",
+            "statusActive": "Đang hoạt động",
+            "generalInformation": "Thông tin chung",
+            "title": "Chi tiết voucher",
+            "statusInactive": "Ngừng hoạt động",
+            "statusExpired": "Hết hạn",
+            "statusUpcoming": "Sắp hiệu lực",
+            "voucherName": "Tên voucher",
+            "voucherCode": "Mã voucher",
+            "description": "Mô tả",
+            "validityRange": "Thời gian hiệu lực",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc",
+            "discountInformation": "Thông tin giảm giá",
+            "discountType": "Loại giảm giá",
+            "discountValue": "Giá trị giảm",
+            "maxDiscount": "Giảm tối đa",
+            "usageRules": "Quy tắc sử dụng",
+            "bookingType": "Loại đặt phòng",
+            "minimumStay": "Số đêm tối thiểu",
+            "customerType": "Loại khách hàng",
+            "usageFrequency": "Tần suất sử dụng",
+            "totalUsageLimit": "Tổng số lượt sử dụng",
+            "usagePerCustomer": "Giới hạn theo khách hàng",
+            "usageLimitPerCustomer": "Số lượt mỗi khách hàng",
+            "stackRules": "Quy tắc kết hợp",
+            "stackWithPromotion": "Kết hợp với khuyến mãi",
+            "stackWithOtherVoucher": "Kết hợp với voucher khác",
+            "priority": "Độ ưu tiên",
+            "roomTypes": "Loại phòng áp dụng",
+            "yes": "Có",
+            "no": "Không",
+            "unlimited": "Không giới hạn"
+        },
+        "createOrUpdate": {
+            "titleCreate": "Thêm Voucher",
+            "titleEdit": "Sửa Voucher",
+            "percent": "Phần trăm",
+            "fixed": "Cố định",
+            "generalInformation": "Thông tin chung",
+            "voucherName": "Tên voucher",
+            "voucherNamePlaceHolder": "Nhập tên voucher",
+            "voucherCode": "Mã voucher",
+            "voucherCodePlaceHolder": "Nhập mã voucher",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả",
+            "validityRange": "Thời gian hiệu lực",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc",
+            "stackAndPriority": "Quy tắc kết hợp & độ ưu tiên",
+            "stackWithPromotion": "Kết hợp với khuyến mãi",
+            "stackWithPromotionDesc": "Cho phép voucher này dùng chung với chương trình khuyến mãi",
+            "stackWithOtherVoucher": "Kết hợp với voucher khác",
+            "stackWithOtherVoucherDesc": "Cho phép dùng chung với các voucher khác",
+            "priority": "Độ ưu tiên",
+            "priorityOptional": "Không bắt buộc",
+            "roomTypes": "Loại phòng",
+            "selectAll": "Chọn tất cả",
+            "clear": "Bỏ chọn",
+            "discountConfig": "Cấu hình giảm giá",
+            "discountType": "Loại giảm giá",
+            "discountTypeFixed": "Giảm cố định",
+            "discountTypePercent": "Giảm theo phần trăm",
+            "discountTypeSpecial": "Ưu đãi đặc biệt",
+            "value": "Giá trị giảm",
+            "valuePlaceholder": "Nhập giá trị",
+            "maxDiscount": "Giảm tối đa",
+            "maxDiscountPlaceholder": "Nhập mức giảm tối đa",
+            "usageRules": "Quy tắc sử dụng",
+            "bookingType": "Loại đặt phòng",
+            "minimumStay": "Số đêm tối thiểu",
+            "customerType": "Loại khách hàng",
+            "usageFrequency": "Tần suất sử dụng",
+            "totalUsageLimit": "Tổng số lượt sử dụng",
+            "usagePerCustomer": "Giới hạn theo khách hàng",
+            "usagePerCustomerDesc": "Giới hạn số lần sử dụng cho mỗi khách hàng",
+            "usageLimitPerCustomer": "Số lượt sử dụng mỗi khách hàng",
+            "usageLimitPerCustomerPlaceholder": "Ví dụ: 1",
+            "createSucess": "Tạo voucher thành công",
+            "createError": "Tạo voucher thất bại",
+            "updateSucess": "Cập nhật voucher thành công",
+            "updateError": "Cập nhật voucher thất bại"
+        },
+        "errorUpdateStatus": "Lỗi cập nhật trạng thái voucher",
+        "successUpdateStatus": "Cập nhật trạng thái voucher thành công",
+        "customerType": {
+            "personal": "Khách lẻ",
+            "company": "Khách doanh nghiệp",
+            "walkin": "Khách vãng lai",
+            "online": "Khách đặt online",
+            "vip": "Khách VIP"
+        },
+        "usageType": {
+            "oneTime": "Một lần",
+            "multiTime": "Nhiều lần"
+        }
     }
 }

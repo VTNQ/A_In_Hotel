@@ -36,7 +36,7 @@ const ViewPromotionModal = ({
     <CommonModalView
       isOpen={isOpen}
       onClose={onClose}
-      title="Promotion Details"
+      title={t("promotion.promotionDetail")}
       width="w-[50%] max-w-[100px]"
       widthClose="w-full sm:w-[200px]"
       isBorderBottom={true}
@@ -73,18 +73,18 @@ const ViewPromotionModal = ({
         <div className="flex-1 overflow-y-auto px-8 py-6 space-y-10">
           <section>
             <h3 className="text-primary text-lg font-bold mb-4">
-              General Information
+              {t("promotion.view.general")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Promotion Name
+                   {t("promotion.name")}
                 </p>
                 <p className="text-base">{promotion?.name}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Campaign Code
+                  {t("promotion.code")}
                 </p>
                 <p className="font-mono tracking-widest font-bold">
                   {promotion?.code}
@@ -92,33 +92,35 @@ const ViewPromotionModal = ({
               </div>
               <div className="md:col-span-2">
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Description
+                   {t("promotion.description")}
                 </p>
                 <p>{promotion?.description}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Priority Level
+                 {t("promotion.priority")}
                 </p>
-                <p>Level {promotion?.priority}</p>
+                <p> {t("promotion.priorityLevel", {
+                      level: promotion?.priority,
+                    })} {promotion?.priority}</p>
               </div>
             </div>
             <div className="mt-4 border-b border-dotted border-gray-400"></div>
           </section>
           <section>
             <h3 className="text-primary text-lg font-bold mb-4">
-              Offer Details
+              {t("promotion.view.offer")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Promotion Type
+                {t("promotion.offer.type")}
                 </p>
                 <p>{t(PROMOTION_TYPE_I18N[Number(promotion?.type)])}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Discount Value
+                   {t("promotion.offer.value")}
                 </p>
                 <p className="flex items-center gap-2 text-lg font-semibold text-[#253150]">
                   {promotion?.type === "1" ? (
@@ -140,18 +142,18 @@ const ViewPromotionModal = ({
           </section>
           <section>
             <h3 className="text-[#1F2945] text-lg font-bold mb-4">
-              Applicable Dates
+              {t("promotion.view.date")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Start Date
+                    {t("promotion.startDate")}
                 </p>
                 <p>{promotion?.startDate}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  End Date
+                  {t("promotion.endDate")}
                 </p>
                 <p>{promotion?.endDate}</p>
               </div>
@@ -161,12 +163,12 @@ const ViewPromotionModal = ({
           </section>
           <section>
             <h3 className="text-[#1F2945] text-lg font-bold mb-4">
-              Booking & Customer Conditions
+               {t("promotion.view.conditions")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Booking Type
+                  {t("promotion.bookingType")}  
                 </p>
                 <p className="text-base font-medium text-[#253150] mt-1">
                   {t(
@@ -177,13 +179,14 @@ const ViewPromotionModal = ({
               </div>
               <div>
                 <p className="text-xs uppercase text-gray-500 font-semibold">
-                  Minimum Nights
+               {t("promotion.minNights")}
                 </p>
-                <p>{promotion?.minNights ?? 0} Nights</p>
+               <p> {promotion?.minNights ?? 0}{" "}
+                    {t("promotion.nights")}</p>
               </div>
               <div className="md:col-span-2">
                 <p className="text-xs uppercase text-[#253150] font-semibold">
-                  Customer Segment
+                  {t("promotion.customerSegment")}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <span
@@ -202,17 +205,17 @@ const ViewPromotionModal = ({
           </section>
           <section>
             <h3 className="text-primary text-lg font-bold mb-4">
-              Room Type Inclusion
+             {t("promotion.view.roomTypes")}
             </h3>
             <div className="rounded-lg border overflow-hidden border-gray-200">
               <table className="w-full text-sm">
                 <thead>
                   <tr>
                     <th className="px-4 py-3 text-left text-xs uppercase">
-                      Room Type
+                      {t("promotion.roomType")}
                     </th>
                     <th className="px-4 py-3 text-left text-xs uppercase">
-                      Status
+                       {t("promotion.view.status")}
                     </th>
                   </tr>
                 </thead>
@@ -233,12 +236,12 @@ const ViewPromotionModal = ({
                           {isIncluded ? (
                             <span className="flex items-center gap-1 text-green-600 font-semibold">
                               <CheckCircle size={16} />
-                              Included
+                               {t("common.included")}
                             </span>
                           ) : (
                             <span className="flex items-center gap-1 text-red-500 font-semibold">
                               <XCircle size={16} />
-                              Excluded
+                            {t("common.excluded")}
                             </span>
                           )}
                         </td>

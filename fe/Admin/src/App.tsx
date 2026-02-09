@@ -13,6 +13,8 @@ import ViewBanner from './page/Banner/ViewBanner'
 import CreateBooking from './page/Booking/CreateBooking'
 import ViewPromotion from './page/Promotion/ViewPromotion'
 import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
+import ViewCustomerPage from './page/Customer/ViewCustomerPage'
+import CustomerDetailPage from './page/Customer/CustomerDetailPage'
 
 function App() {
   return(
@@ -27,6 +29,8 @@ function App() {
           <Route path='facility/asset' element={<ViewAssetPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
           <Route path='staff' element={<ViewStaffPage/>}/>
+          <Route path='customer' element={<ViewCustomerPage/>}/>
+          <Route path='customer/:id' element={<CustomerDetailPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
           <Route path='booking/create' element={<CreateBooking/>}/>
           <Route path='post/banner' element={<ViewBanner/>}/>

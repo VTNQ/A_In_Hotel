@@ -8,14 +8,20 @@
     "loading": "Loading...",
     "noImage": "No Image",
     "noChange": "No changes detected",
+    "tip": "Tip",
     "edit": "Edit",
     "all": "All",
     "noData": "No data available",
+    "filter": "Filter",
+    "filtering": "Filtering...",
     "unKnown": "Unknown",
+     "back": "Back",
     "active": "Active",
     "deActivate": "Deactivate",
     "action": "action",
     "none": "None",
+    "included": "Included",
+    "excluded": "Excluded",
     "createdAt": "Created At",
     "inactive": "Inactive",
     "status": "Status",
@@ -42,6 +48,78 @@
     "HelpSupport": "Help & Support",
     "setting": "Setting",
     "logout": "Logout"
+  },
+  "customer": {
+      "errorLoad": "Failed to load data",
+     "management": {
+      "title": "Customer Management"
+    },
+
+    "search": {
+      "placeholder": "Search by customer ID, name, phone, email"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "tabs": {
+      "basic": "Basic Info",
+      "points": "Points & Loyalty"
+    },
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "nationality": "Nationality",
+    "customerId": "Customer ID",
+     "table": {
+      "customerId": "Customer ID",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "totalBookings": "Total Bookings",
+      "rewardBalance": "Reward Balance",
+      "lastBooking": "Last Booking",
+      "block": "Block / Unblock"
+    },
+    "points": {
+      "total": "Total Points",
+      "available": "Available Points",
+      "used": "Used Points",
+      "tip": "Customer can redeem up to {{percent}}% of the booking value using points"
+    },
+    "bookingHistory": {
+      "title": "Booking History"
+    },
+    "bookingSummary": {
+      "totalBookings": "Total Bookings",
+      "nightsStayed": "Nights Stayed",
+      "totalRevenue": "Total Revenue"
+    }
+  },
+  "reward": {
+    "title": "Reward / Points History",
+    "type": {
+      "all": "All",
+      "earn": "Earn",
+      "redeem": "Redeem",
+      "expire": "Expire"
+    },
+    "filter": {
+      "allTypes": "All Types",
+      "earn": "Earn",
+      "redeem": "Redeem",
+      "expire": "Expire"
+    },
+    "table": {
+      "date": "Date",
+      "transactionId": "Transaction ID",
+      "bookingId": "Booking ID",
+      "type": "Type",
+      "points": "Points",
+      "balanceBefore": "Balance Before",
+      "balanceAfter": "Balance After",
+      "description": "Description"
+    }
   },
   "asset": {
     "title": "Amenities & Asset Tracking",
@@ -240,7 +318,6 @@
     "createdAt": "Created At",
     "updatedAt": "Updated At"
   },
- 
   "blog": {
     "title": "Blog Post",
     "new": "+ New Blog Post",
@@ -514,8 +591,8 @@
     "fullDay": "Full day",
     "numberOfGuests": "No. of Guests",
     "adults": "Adults",
-    "confirmCheckInSuccess":"Confirm CheckIn success",
-    "confirmCheckInError":"Confirm CheckIn error",
+    "confirmCheckInSuccess": "Confirm CheckIn success",
+    "confirmCheckInError": "Confirm CheckIn error",
     "notes": "Notes",
     "roomInfo": "Room Information",
     "paymentSummary": "Payment Summary",
@@ -580,7 +657,7 @@
     "servicesPayments": "Services & Payments",
     "actual": "Actual",
     "pending": "Pending",
-      "switchRoomHistory": "Switch Room History",
+    "switchRoomHistory": "Switch Room History",
     "switchRoomHistoryDesc": "Record of all room changes during stay",
     "noSwitchRoomHistory": "No room switch history",
     "awaitCheckIn": "Awaiting check-in",
@@ -626,9 +703,24 @@
     "code": "Promotion Code",
     "name": "Promotion Name",
     "launch": "Launch Promotion",
+    "promotionDetail": "Promotion Detail",
     "startDate": "Start Date",
     "createdBy": "Created By",
-    "view": "View",
+    "roomType": "Room Type",
+    "bookingType": "Booking Type",
+    "priorityLevel": "Level {{level}}",
+    "minNights": "Minimum Stay (Nights)",
+    "description": "Description",
+    "nights": "nights",
+    "customerSegment": "Customer Segment",
+    "view": {
+      "general": "General Information",
+      "offer": "Offer Details",
+      "status": "Status",
+      "date": "Applicable Dates",
+      "conditions": "Booking & Customer Conditions",
+      "roomTypes": "Room Type Inclusion"
+    },
     "disable": "Disable",
     "errorUpdateStatus": "Failed to update status!",
     "successUpdateStatus": "Update status successfully!",

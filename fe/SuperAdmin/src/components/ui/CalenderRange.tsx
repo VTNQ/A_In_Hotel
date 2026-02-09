@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Month from "./Month";
+import { isBefore, startOfToday } from "date-fns";
 
 const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   const { t } = useTranslation();
@@ -36,25 +37,22 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   /* =======================
      SELECT DATE
   ======================= */
-  const handleSelect = (d: Date) => {
-    if (isBeforeToday(d)) return;
+   const handleSelect = (d: Date) => {
+     if (isBefore(d, startOfToday())) return;
 
     const selected = toDateString(d);
 
-    // start mới
-    if (!value.start || value.end) {
-      onChange({ start: selected, end: undefined });
-      return;
-    }
+  if (!value.start || value.end) {
+    onChange({ start: selected, end: undefined });
+    return;
+  }
 
-    // chọn nhỏ hơn start → reset start
-    if (selected < value.start) {
-      onChange({ start: selected, end: undefined });
-      return;
-    }
+  if (selected < value.start) {
+    onChange({ start: selected, end: undefined });
+    return;
+  }
 
-    // chọn end
-    onChange({ start: value.start, end: selected });
+  onChange({ start: value.start, end: selected });
   };
 
   /* =======================

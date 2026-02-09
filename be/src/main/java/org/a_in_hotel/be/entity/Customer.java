@@ -22,13 +22,19 @@ public class Customer {
 
     private String firstName;
 
+    private String customerCode;
+
     private String lastName;
 
     private String phoneNumber;
+    private String nationality;
+    @Column(name = "points", nullable = false)
+    private Integer points = 0;
 
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
+
 
     @Column(name = "hotel_id")
     private Long hotelId;
@@ -44,4 +50,13 @@ public class Customer {
 
     @Column(name = "updated_by")
     private String updatedBy;
+    @Column(name = "is_blocked")
+    private Boolean blocked = false;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.customerCode == null || this.customerCode.isEmpty()) {
+            this.customerCode = "CUS" + String.format("%04d", (int) (Math.random() * 9999));
+        }
+    }
 }
