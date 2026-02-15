@@ -24,3 +24,12 @@ body{
   font-family: 'Montserrat', sans-serif;
 }
 /* Style cho input bên trong react-datepicker giống input thường */
+.recharts-wrapper,
+.recharts-surface {
+  outline: none !important;
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}

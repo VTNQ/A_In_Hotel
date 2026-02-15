@@ -2,6 +2,7 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.dto.request.BookingDetailRequest;
 import org.a_in_hotel.be.dto.response.BookingDetailResponse;
+import org.a_in_hotel.be.dto.response.BookingListTopResponse;
 import org.a_in_hotel.be.entity.BookingDetail;
 import org.a_in_hotel.be.entity.ExtraService;
 import org.a_in_hotel.be.entity.Room;
@@ -64,4 +65,14 @@ public interface BookingDetailMapper {
     @Mapping(target = "roomCode",source = "room.roomCode")
     @Mapping(target = "extraServiceId",source = "extraService.id")
     BookingDetailResponse toResponse(BookingDetail bookingDetail);
+    @Mapping(target = "bookingCode",source = "booking.code")
+    @Mapping(target = "guestName",source = "booking.guestName")
+    @Mapping(target = "roomType",source = "roomType")
+    @Mapping(target = "checkInDate",source = "booking.checkInDate")
+    @Mapping(target = "checkInTime",source = "booking.checkInTime")
+    @Mapping(target = "checkOutDate",source = "booking.checkOutDate")
+    @Mapping(target = "checkOutTime",source = "booking.checkOutTime")
+    @Mapping(target = "roomNumber",source = "roomNumber")
+    @Mapping(target = "status",source = "booking.status")
+    BookingListTopResponse toResponseTop(BookingDetail bookingDetail);
 }
