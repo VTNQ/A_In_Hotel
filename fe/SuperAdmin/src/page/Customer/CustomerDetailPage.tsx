@@ -18,6 +18,7 @@ import BookingHistoryTable from "@/components/Customer/BookingHistoryTable";
 import type { BookingResponse } from "@/type/booking.types";
 import { DatePickerField } from "@/components/ui/DatePickerField";
 import RewardTransactionTable from "@/components/Customer/RewardTransactionTable";
+import { SelectField } from "@/components/ui/select";
 
 const CustomerDetailPage = () => {
   const { id } = useParams();
@@ -28,7 +29,7 @@ const CustomerDetailPage = () => {
   const [loading, setLoading] = useState(false);
   const [bookingPage, setBookingPage] = useState(1);
   const [rewardTransaction, setRewardTransaction] = useState<any[]>([]);
-  const [filterType, setFilterType] = useState<number | "">("");
+  const [filterType, setFilterType] = useState<string>("");
   const [rewardTransactionPage, setRewardTransactionPage] = useState(1);
 
   const [rewardTransactionLoading, setRewardTransactionLoading] =
@@ -374,20 +375,21 @@ const CustomerDetailPage = () => {
           {/* FILTER BAR */}
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <div className="relative w-full lg:w-[320px]">
-              <select
+              <SelectField
+                isRequired={false}
+                items={[
+                  { value: "", label: t("reward.type.all") },
+                  { value: "1", label: t("reward.type.earn") },
+                  { value: "2", label: t("reward.type.redeem") },
+                  { value: "3", label: t("reward.type.expire") },
+                ]}
                 value={filterType}
-                onChange={(e) =>
-                  setFilterType(
-                    e.target.value === "" ? "" : Number(e.target.value),
-                  )
-                }
-                className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              >
-                <option value="">{t("reward.type.all")}</option>
-                <option value={1}>{t("reward.type.earn")}</option>
-                <option value={2}>{t("reward.type.redeem")}</option>
-                <option value={3}>{t("reward.type.expire")}</option>
-              </select>
+                onChange={(e: any) => setFilterType(e)}
+                size="sm"
+                fullWidth={false}
+                getValue={(i) => i.value}
+                getLabel={(i) => i.label}
+              />
             </div>
             <div className="w-full lg:w-[260px]">
               <DatePickerField

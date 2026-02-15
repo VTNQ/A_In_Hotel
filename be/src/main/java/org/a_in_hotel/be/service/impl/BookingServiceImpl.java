@@ -10,6 +10,7 @@ import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.Enum.PaymentType;
 import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.*;
+import org.a_in_hotel.be.dto.response.BookingListTopResponse;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.*;
@@ -318,6 +319,20 @@ public class BookingServiceImpl implements BookingService {
         return repository.findByIdFetchActiveDetail(id)
                 .map(mapper::toResponse)
                 .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
+    }
+
+    @Override
+    public Page<BookingListTopResponse> getBookingTop(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+
+        Specification<BookingDetail> sortable = RSQLJPASupport.toSort(sort);
+        Specification<BookingDetail> filterable = RSQLJPASupport.toSpecification(filter);
+        Specification<BookingDetail> searchable = SearchHelper.buildSearchSpec(searchField, searchValue,SEARCH_FIELDS );
+        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+        return bookingDetailRepository.findAll(
+                sortable
+                        .and(filterable)
+                        .and(searchable),
+                pageable).map(detailMapper::toResponseTop);
     }
 
     private void validateSwitchRoomItems(

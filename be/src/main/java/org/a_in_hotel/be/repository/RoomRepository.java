@@ -25,4 +25,10 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
            + " from Room  r2 "
            + "where r.hotel.id = r2.hotel.id)")
     List<Room> findFirstRoomOfEachHotel();
+
+    @Query("SELECT  count(r) from Room r where (:hotelId IS NULL OR r.hotel.id = :hotelId)")
+    Long countTotalRooms(Long hotelId);
+
+    @Query("SELECT count(r) from Room r where r.status = :status and (:hotelId IS NULL OR r.hotel.id = :hotelId)")
+    Long countByStatus(Long hotelId,Integer status);
 }
