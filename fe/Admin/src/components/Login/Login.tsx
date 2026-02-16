@@ -85,7 +85,7 @@ export default function Login() {
       <SideSlats />
       <Clock />
       {/* Logo cố định trên giữa, không chặn click */}
-      <header className="fixed left-[45%] bottom-[72%] md:bottom-[84%] md:left-[48%] -translate-x-1/2 z-40 pointer-events-none">
+      <header className="fixed left-[45%] bottom-[80%] md:bottom-[84%] md:left-[48%] -translate-x-1/2 z-40 pointer-events-none">
         <img
           src="/logo.png"
           alt="A-IN HOTEL"
@@ -158,7 +158,7 @@ export default function Login() {
           </div>
 
           {/* Form nằm trên bàn */}
-          <div className="hidden md:block absolute -top-56 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
+          <div className="hidden md:block absolute -top-56 md:-top-73 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
             <div
               className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
       p-5 transition-colors focus-within:border-black mt-[2vh] "
