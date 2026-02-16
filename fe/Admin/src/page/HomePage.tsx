@@ -113,7 +113,41 @@ const HomePage = () => {
       isMoney: true,
     },
   ];
-
+  const statsMobile = [
+    {
+      title: "Total Revenue",
+      value: bookingData?.totalRevenue,
+      percent: bookingData?.revenueGrowth,
+      icon: DollarSign,
+      iconBg: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+      isMoney: true,
+    },
+    {
+      title: "New Bookings",
+      value: bookingData?.totalNewBookings,
+      percent: bookingData?.newBookingGrowth,
+      icon: CalendarCheck,
+      iconBg: "bg-green-100",
+      iconColor: "text-green-600",
+    },
+    {
+      title: "Check in",
+      value: bookingData?.totalCheckIn,
+      percent: bookingData?.checkInGrowth,
+      icon: LogIn,
+      iconBg: "bg-blue-100",
+      iconColor: "text-blue-600",
+    },
+    {
+      title: "Check out",
+      value: bookingData?.totalCheckOut,
+      percent: bookingData?.checkOutGrowth,
+      icon: LogOut,
+      iconBg: "bg-orange-100",
+      iconColor: "text-orange-600",
+    },
+  ];
   const percentColor = (percent: any) =>
     percent >= 0 ? "text-green-500" : "text-red-500";
 
@@ -125,7 +159,7 @@ const HomePage = () => {
         </h1>
         <p className="text-gray-500 font-normal mt-2">{formattedDate}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-6">
+        <div className="hidden  lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
           {stats.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -203,6 +237,164 @@ const HomePage = () => {
               <p className="text-gray-500 font-medium">
                 {roomData?.notReady} Not ready
               </p>
+            </div>
+          </div>
+        </div>
+        <div className="lg:hidden grid grid-cols-3 lg:grid-cols-4 gap-3 mt-6">
+          {statsMobile.map((item, index) => {
+            const Icon = item.icon;
+            const isRevenue = item.isMoney;
+
+            return (
+              <div
+                key={index}
+                className={`
+        rounded-2xl transition-all
+        ${
+          isRevenue
+            ? "col-span-3  lg:col-span-1 p-6 bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg"
+            : "col-span-1 pt-4 pb-4 pl-2 bg-white border border-gray-100 shadow-sm min-h-[120px]"
+        }
+      `}
+              >
+                {/* Top */}
+                {/* Top */}
+                <div className="flex items-start gap-2 min-w-0">
+                  <div
+                    className={`
+      w-8 h-8 shrink-0 rounded-lg flex items-center justify-center
+      ${item.iconBg}
+    `}
+                  >
+                    <Icon className={item.iconColor} size={14} />
+                  </div>
+
+                  <p
+                    className={`text-xs mt-1 ${isRevenue ? "text-white" : "text-gray-800"} leading-tight break-words whitespace-normal`}
+                  >
+                    {item.title}
+                  </p>
+                </div>
+
+                {/* Value */}
+                <h2
+                  className={`
+          mt-2 font-semibold
+          ${isRevenue ? "text-3xl" : "text-lg text-gray-800 text-right mr-2"}
+        `}
+                >
+                  {loading
+                    ? "..."
+                    : isRevenue
+                      ? item.value?.toLocaleString() + " ₫"
+                      : item.value?.toLocaleString()}
+                </h2>
+
+                {/* Percent */}
+                {!loading && (
+                  <div className="mt-2 text-right">
+                    {isRevenue ? (
+                      // ===== Revenue layout =====
+                      <div className="flex items-center gap-2 text-sm text-white">
+                        <div
+                          className={`
+          inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium
+          bg-[#FFFFFF] text-[#47B881]
+        `}
+                        >
+                          {item.percent && item.percent < 0 ? (
+                            <ArrowDownRight size={12} />
+                          ) : (
+                            <ArrowUpRight size={12} />
+                          )}
+                          {item.percent?.toFixed(1)}%
+                        </div>
+
+                        <span className="text-white/70 text-xs">
+                          from last week
+                        </span>
+                      </div>
+                    ) : (
+                      // ===== Card nhỏ layout =====
+                      <div
+                        className={`
+          inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium
+          ${
+            item.percent && item.percent < 0
+              ? "bg-orange-100 text-orange-600"
+              : "bg-blue-100 text-blue-600"
+          }
+        `}
+                      >
+                        {item.percent && item.percent < 0 ? (
+                          <ArrowDownRight size={12} />
+                        ) : (
+                          <ArrowUpRight size={12} />
+                        )}
+                        {item.percent?.toFixed(1)}%
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          <div className="bg-white col-span-3 p-6 rounded-2xl shadow-sm border border-gray-100">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-[#4B62A0]">
+                Room availability
+              </h3>
+              <MoreHorizontal
+                className="text-gray-400 cursor-pointer hover:text-gray-600 transition"
+                size={18}
+              />
+            </div>
+
+            {/* Total rooms row */}
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-[#707070] text-sm">Total rooms</p>
+              <p className="text-lg font-semibold text-gray-800">
+                {roomData?.totalRooms}
+                <span className="text-gray-400 text-sm ml-1">Rooms</span>
+              </p>
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-y-3 text-sm">
+              {/* Left column */}
+              <div className="space-y-2">
+                <p className="font-medium">
+                  <span className="text-green-600 mr-2 font-semibold">
+                    {roomData?.available}
+                  </span>
+                  <span className="text-[#2B2B2B] font-medium">Available</span>
+                </p>
+
+                <p className="font-medium">
+                  <span className="text-blue-600 mr-2 font-semibold">
+                    {roomData?.occupied}
+                  </span>
+                  <span className="text-[#2B2B2B]">Occupied</span>
+                </p>
+              </div>
+
+              {/* Right column */}
+              <div className="space-y-2 text-right">
+                <p className="font-medium">
+                  <span className="text-orange-500 mr-2 font-semibold">
+                    {roomData?.reserved}
+                  </span>
+                  <span className="text-[#2B2B2B]">Reserved</span>
+                </p>
+
+                <p className="font-medium">
+                  <span className="text-gray-500 mr-2 font-semibold">
+                    {roomData?.notReady}
+                  </span>
+                  <span className="text-[#2B2B2B]">Not ready</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
