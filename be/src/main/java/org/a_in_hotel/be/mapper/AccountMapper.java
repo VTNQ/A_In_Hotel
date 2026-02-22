@@ -2,18 +2,27 @@ package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.Enum.Gender;
 import org.a_in_hotel.be.dto.request.AccountDTO;
+import org.a_in_hotel.be.dto.request.ProfileSystemRequest;
 import org.a_in_hotel.be.dto.request.StaffRequest;
 import org.a_in_hotel.be.dto.request.UserDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
+import org.a_in_hotel.be.dto.response.ProfileSystemResponse;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.mapper.common.CommonMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.a_in_hotel.be.repository.ImageRepository;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",imports = {Gender.class})
 public interface AccountMapper extends CommonMapper {
     @Mapping(target = "role", source = "idRole", qualifiedByName = "mapRoleFromId")
     Account toEntity(AccountDTO dto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "staff.fullName",source = "dto.fullName")
+    @Mapping(target = "staff.phone",source = "dto.phone")
+    @Mapping(target = "staff.birthday",source = "dto.birthday")
+    @Mapping(target = "staff.gender",source = "dto.gender")
+    @Mapping(target = "updatedBy", source = "userId")
+    void toProfileEntity(@MappingTarget Account account,ProfileSystemRequest dto,Long userId);
 
     Account toEntityUser(UserDTO dto);
     @Mapping(target = "role",source = "dto.idRole",qualifiedByName = "mapRoleFromId")
@@ -35,4 +44,11 @@ public interface AccountMapper extends CommonMapper {
     @Mapping(target = "phone",source = "staff.phone")
     @Mapping(target = "birthday",source = "staff.birthday")
     AccountResponse toResponse(Account account);
+    @Mapping(target = "staffCode",source = "account.staff.staffCode")
+    @Mapping(target = "fullName",source = "account.staff.fullName")
+    @Mapping(target = "birthday",source = "account.staff.birthday")
+    @Mapping(target = "gender",source = "account.staff.gender")
+    @Mapping(target = "hotelName",source = "account.hotel.name")
+    @Mapping(target = "phone",source = "account.staff.phone")
+    ProfileSystemResponse toProfile(Account account);
 }

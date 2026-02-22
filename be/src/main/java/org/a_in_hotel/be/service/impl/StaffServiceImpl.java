@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import java.util.List;
 public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
     private final AccountMapper accountMapper;
     private final GeneralService generalService;
     private final StaffMapper staffMapper;
@@ -49,7 +51,7 @@ public class StaffServiceImpl implements StaffService {
 
             Account account = accountMapper.toEntityStaff(request, currentUserId);
             String randomPassword = generalService.generateRandomPassword(8);
-            account.setPassword(randomPassword);
+            account.setPassword(passwordEncoder.encode(randomPassword));
 
             accountRepository.save(account);
 

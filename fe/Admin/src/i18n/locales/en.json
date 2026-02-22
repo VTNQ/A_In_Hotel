@@ -6,16 +6,18 @@
     "close": "Close",
     "save": "save",
     "loading": "Loading...",
+    "discard": "Discard",
     "noImage": "No Image",
     "noChange": "No changes detected",
     "tip": "Tip",
+    "profile": "Profile",
     "edit": "Edit",
     "all": "All",
     "noData": "No data available",
     "filter": "Filter",
     "filtering": "Filtering...",
     "unKnown": "Unknown",
-     "back": "Back",
+    "back": "Back",
     "active": "Active",
     "deActivate": "Deactivate",
     "action": "action",
@@ -27,6 +29,38 @@
     "status": "Status",
     "updatedAt": "Updated At",
     "notePlaceholder": "Enter any additional notes"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "personalInfo": "Personal Information",
+    "active": "ACTIVE",
+    "inactive": "INACTIVE",
+    "avatarNote1": "JPG, GIF or PNG",
+    "avatarNote2": "Max size 2MB",
+    "staffCode": "Staff Code",
+    "email": "Email Address",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "birthday": "Birthday",
+    "gender": "Gender",
+    "update": "Update Profile",
+    "updating": "Updating...",
+    "security": "Security Settings",
+    "changePassword": "Change Password",
+    "loading": "Loading profile...",
+    "selectGender": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "securityDesc": "Ensure your account is using a long, random password to stay secure.",
+    "accountDetails": "Account Details",
+    "role": "Role",
+    "assignedHotel": "Assigned Hotel",
+    "createdDate": "Created Date",
+    "roleNote": "Role and Hotel assignments are managed by the Head Administrator and cannot be changed here.",
+    "twoFactor": "Two-Factor Authentication",
+    "notEnabled": "Not Enabled",
+    "twoFactorDesc": "Add an extra layer of security to your account.",
+    "enable2fa": "Enable 2FA"
   },
   "sideBar": {
     "DashBoard": "DashBoard",
@@ -50,11 +84,10 @@
     "logout": "Logout"
   },
   "customer": {
-      "errorLoad": "Failed to load data",
-     "management": {
+    "errorLoad": "Failed to load data",
+    "management": {
       "title": "Customer Management"
     },
-
     "search": {
       "placeholder": "Search by customer ID, name, phone, email"
     },
@@ -71,7 +104,7 @@
     "email": "Email",
     "nationality": "Nationality",
     "customerId": "Customer ID",
-     "table": {
+    "table": {
       "customerId": "Customer ID",
       "fullName": "Full Name",
       "email": "Email",
@@ -947,6 +980,20 @@
     "usageType": {
       "oneTime": "One time",
       "multiTime": "Multi time"
+    }
+  },
+  "auth": {
+    "changePassword": {
+      "title": "Change Password",
+      "description": "To ensure your account’s safety, please provide your current password before setting a new one.",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "minLength": "Minimum 8 characters",
+      "ruleLength": "At least 8 characters long",
+      "ruleNumber": "Includes numbers or symbols",
+      "update": "Update Password",
+      "success": "Password changed successfully"
     }
   }
 }

@@ -89,6 +89,10 @@ public class HotelServiceImpl implements HotelService {
             Hotel hotelEntity = hotelMapper.toEntity(hotel, securityUtils.getCurrentUserId());
 
             hotelRepository.save(hotelEntity);
+            Account account = accountRepository.findById(hotel.getIdUser())
+                    .orElseThrow(() -> new EntityNotFoundException("Account not found with id: " + hotel.getIdUser()));
+            account.setHotel(hotelEntity);
+            accountRepository.save(account);
             createHotelHotline(hotelEntity,hotel.getHotlines());
             if (file != null && !file.isEmpty()) {
                 try {

@@ -1,15 +1,20 @@
 package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.request.AccountDTO;
+import org.a_in_hotel.be.dto.request.ChangePasswordRequest;
+import org.a_in_hotel.be.dto.request.ProfileSystemRequest;
 import org.a_in_hotel.be.dto.request.UserDTO;
 import org.a_in_hotel.be.dto.response.AccountResponse;
 import org.a_in_hotel.be.dto.response.CustomerProfileResponse;
 import org.a_in_hotel.be.dto.response.FileUploadMeta;
+import org.a_in_hotel.be.dto.response.ProfileSystemResponse;
 import org.a_in_hotel.be.entity.*;
+import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.mapper.CustomerMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
@@ -25,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +41,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +59,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private GeneralService generalService;
     @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
     private RoleRepository  roleRepository;
     @Autowired
     private CustomerRepository customerRepository;
@@ -61,8 +70,6 @@ public class AccountServiceImpl implements AccountService {
     private StaffMapper staffMapper;
     @Autowired
     private StaffRepository staffRepository;
-    @Autowired
-    private ImageRepository imageRepository;
     @Autowired
     private SecurityUtils securityUtils;
     @Autowired
@@ -176,6 +183,80 @@ public class AccountServiceImpl implements AccountService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public ProfileSystemResponse getProfile() {
+        Account account = accountRepository.findById(securityUtils.getCurrentUserId())
+                .orElseThrow(()->new EntityNotFoundException("Profile not account with id:"+securityUtils.getCurrentUserId()));
+        imageRepository.findFirstByEntityIdAndEntityType(account.getId(), "avatar")
+                .ifPresent(account::setImage);
+        return accountMapper.toProfile(account);
+    }
+
+    @Override
+    public void updateProfileSystem(ProfileSystemRequest request, MultipartFile image) {
+        Account account = accountRepository.findById(securityUtils.getCurrentUserId())
+                .orElseThrow(()->new IllegalArgumentException("account not found"));
+        Image oldImage = imageRepository.findFirstByEntityIdAndEntityType(account.getId(),
+                "avatar").orElse(null);
+        if (account.getStaff() == null) {
+            Staff staff = new Staff();
+            staff.setAccount(account);
+            account.setStaff(staff);
+        }
+        accountMapper.toProfileEntity(account,request,securityUtils.getCurrentUserId());
+        if(image!=null && !image.isEmpty()){
+            if(oldImage!=null){
+                try {
+                    generalService.deleFile(oldImage.getUrl());
+                }catch (Exception e) {
+                    log.warn("⚠️ Không thể xóa ảnh cũ {}: {}", oldImage.getUrl(), e.getMessage());
+                }
+                imageRepository.delete(oldImage);
+            }
+            FileUploadMeta meta;
+            try {
+                meta = generalService.saveFile(image, "avatar");
+            }catch (IOException e) {
+                throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,"Lỗi upload file: " + e.getMessage());
+            }
+            Image newImage = imageMapper.toBannerImage(meta);
+            newImage.setEntityType("avatar");
+            newImage.setEntityId(account.getId());
+            imageRepository.save(newImage);
+        }
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest request) {
+        Account account = accountRepository
+                .findById(securityUtils.getCurrentUserId())
+                .orElseThrow(()->new IllegalArgumentException("Account not found"));
+        if(!passwordEncoder.matches(request.getCurrentPassword(),account.getPassword())){
+            throw new IllegalArgumentException("Current Password is incorrect");
+        }
+        if (request.getNewPassword().length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters");
+        }
+        if (!request.getNewPassword().matches(".*[0-9!@#$%^&*].*")) {
+            throw new IllegalArgumentException("Password must include a number or symbol");
+        }
+
+        // 4️⃣ Confirm password
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("Confirm password does not match");
+        }
+
+        // 5️⃣ Không cho trùng password cũ
+        if (passwordEncoder.matches(request.getNewPassword(), account.getPassword())) {
+            throw new IllegalArgumentException("New password must be different from current password");
+        }
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        account.setUpdatedBy(securityUtils.getCurrentUserEmail());
+
+        accountRepository.save(account);
     }
 
     @Override
