@@ -7,6 +7,7 @@
         "edit": "Chỉnh sửa",
         "tip": "Gợi ý",
         "close": "Đóng",
+        "profile": "Trang cá nhân",
         "filter": "Lọc",
         "filtering": "Đang lọc...",
         "noData": "Không có dữ liệu",
@@ -27,6 +28,53 @@
         "inactive": "Ngừng hoạt động",
         "loading": "Đang tải...",
         "notePlaceholder": "Nhập bất kỳ ghi chú bổ sung"
+    },
+    "profile": {
+        "title": "Cài đặt hồ sơ",
+        "personalInfo": "Thông tin cá nhân",
+        "active": "ĐANG HOẠT ĐỘNG",
+        "inactive": "KHÔNG HOẠT ĐỘNG",
+        "avatarNote1": "JPG, GIF hoặc PNG",
+        "avatarNote2": "Tối đa 2MB",
+        "staffCode": "Mã nhân viên",
+        "email": "Địa chỉ Email",
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "birthday": "Ngày sinh",
+        "gender": "Giới tính",
+        "update": "Cập nhật hồ sơ",
+        "loading": "Đang tải hồ sơ...",
+        "selectGender": "Chọn giới tính",
+        "male": "Nam",
+        "female": "Nữ",
+        "updating": "Đang cập nhật...",
+        "security": "Cài đặt bảo mật",
+        "discard": "Hủy",
+        "changePassword": "Đổi mật khẩu",
+        "securityDesc": "Đảm bảo tài khoản của bạn sử dụng mật khẩu dài và an toàn.",
+        "accountDetails": "Thông tin tài khoản",
+        "role": "Vai trò",
+        "assignedHotel": "Khách sạn được phân công",
+        "createdDate": "Ngày tạo",
+        "roleNote": "Vai trò và phân công khách sạn được quản lý bởi Quản trị viên và không thể thay đổi tại đây.",
+        "twoFactor": "Xác thực hai lớp",
+        "notEnabled": "Chưa kích hoạt",
+        "twoFactorDesc": "Thêm một lớp bảo mật bổ sung cho tài khoản của bạn.",
+        "enable2fa": "Bật 2FA"
+    },
+    "auth": {
+        "changePassword": {
+            "title": "Đổi mật khẩu",
+            "description": "Để đảm bảo an toàn cho tài khoản, vui lòng nhập mật khẩu hiện tại trước khi đặt mật khẩu mới.",
+            "currentPassword": "Mật khẩu hiện tại",
+            "newPassword": "Mật khẩu mới",
+            "confirmPassword": "Xác nhận mật khẩu mới",
+            "minLength": "Tối thiểu 8 ký tự",
+            "ruleLength": "Ít nhất 8 ký tự",
+            "ruleNumber": "Bao gồm số hoặc ký tự đặc biệt",
+            "update": "Cập nhật mật khẩu",
+            "success": "Đổi mật khẩu thành công"
+        }
     },
     "sideBar": {
         "DashBoard": "Bảng Điều khiển",
@@ -50,7 +98,7 @@
         "logout": "Đăng xuất"
     },
     "customer": {
-         "errorLoad": "Không thể tải dữ liệu",
+        "errorLoad": "Không thể tải dữ liệu",
         "management": {
             "title": "Quản lý khách hàng"
         },

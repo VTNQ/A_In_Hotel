@@ -15,6 +15,7 @@ import ViewPromotion from './page/Promotion/ViewPromotion'
 import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
 import ViewCustomerPage from './page/Customer/ViewCustomerPage'
 import CustomerDetailPage from './page/Customer/CustomerDetailPage'
+import ProfilePage from './page/ProfilePage'
 
 function App() {
   return(
@@ -29,6 +30,7 @@ function App() {
           <Route path='facility/asset' element={<ViewAssetPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>
           <Route path='staff' element={<ViewStaffPage/>}/>
+          <Route path='user/profile' element={<ProfilePage/>}/>
           <Route path='customer' element={<ViewCustomerPage/>}/>
           <Route path='customer/:id' element={<CustomerDetailPage/>}/>
           <Route path='booking' element={<ViewBooking/>}/>

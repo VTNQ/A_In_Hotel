@@ -6,13 +6,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.PageResponse;
-import org.a_in_hotel.be.dto.request.AccountDTO;
-import org.a_in_hotel.be.dto.request.LoginDTO;
-import org.a_in_hotel.be.dto.request.UserDTO;
-import org.a_in_hotel.be.dto.response.AccountResponse;
-import org.a_in_hotel.be.dto.response.CustomerProfileResponse;
-import org.a_in_hotel.be.dto.response.RequestResponse;
-import org.a_in_hotel.be.dto.response.TokenResponse;
+import org.a_in_hotel.be.dto.request.*;
+import org.a_in_hotel.be.dto.response.*;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.AccountMapper;
@@ -48,8 +43,9 @@ public class AccountController {
     private HotelService hotelService;
     @Autowired
     private JwtService jwtService;
-    @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute AccountDTO accountDTO, BindingResult result,@RequestParam(value = "image", required = false) MultipartFile image) {
+
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute AccountDTO accountDTO, BindingResult result, @RequestParam(value = "image", required = false) MultipartFile image) {
         if (result.hasErrors()) {
             String errorMessage = result.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -58,24 +54,26 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            accountService.save(accountDTO,image);
+            accountService.save(accountDTO, image);
             return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
 
     }
+
     @PostMapping(value = "/register/user")
-    public ResponseEntity<RequestResponse<Void>>registerUser(@Valid @RequestBody UserDTO userDTO){
+    public ResponseEntity<RequestResponse<Void>> registerUser(@Valid @RequestBody UserDTO userDTO) {
         try {
             accountService.saveUser(userDTO);
             return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
     }
+
     @GetMapping("/role")
     public ResponseEntity<RequestResponse<String>> getUserRole(@RequestParam("email") String email) {
         try {
@@ -90,73 +88,117 @@ public class AccountController {
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
-    @GetMapping("/me")
-    public ResponseEntity<?>getMyInfo(@RequestHeader("Authorization")String authHeader) {
-        try {
-            Account account=accountService.getAccountFromToken(authHeader);
-            AccountResponse accountDTO= accountMapper.toResponse(account);
-            return ResponseEntity.ok(RequestResponse.success(accountDTO,"lấy account Theo token thành công"));
 
-        }catch (Exception e) {
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyInfo(@RequestHeader("Authorization") String authHeader) {
+        try {
+            Account account = accountService.getAccountFromToken(authHeader);
+            AccountResponse accountDTO = accountMapper.toResponse(account);
+            return ResponseEntity.ok(RequestResponse.success(accountDTO, "lấy account Theo token thành công"));
+
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
+
     @GetMapping("/user/profile")
-    public ResponseEntity<RequestResponse<CustomerProfileResponse>>profileUser(){
+    public ResponseEntity<RequestResponse<CustomerProfileResponse>> profileUser() {
         try {
             return ResponseEntity.ok(RequestResponse.success(accountService.getAccountUserProfile()));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
+
     @GetMapping("/getAll")
-    public ResponseEntity<RequestResponse<PageResponse<AccountResponse>>>getAll(@RequestParam(defaultValue = "1") int page,
-                                                                           @RequestParam(defaultValue = "5") int size,
-                                                                           @RequestParam(defaultValue = "id,desc") String sort,
-                                                                           @RequestParam(required = false) String filter,
-                                                                           @RequestParam(required = false)  String searchField,
-                                                                           @RequestParam(required = false)  String searchValue,
-                                                                           @RequestParam(required = false) boolean all){
+    public ResponseEntity<RequestResponse<PageResponse<AccountResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
+                                                                                 @RequestParam(defaultValue = "5") int size,
+                                                                                 @RequestParam(defaultValue = "id,desc") String sort,
+                                                                                 @RequestParam(required = false) String filter,
+                                                                                 @RequestParam(required = false) String searchField,
+                                                                                 @RequestParam(required = false) String searchValue,
+                                                                                 @RequestParam(required = false) boolean all) {
         try {
             return ResponseEntity.ok(
                     RequestResponse.success(
-                            new PageResponse<>(accountService.findAll(page,size,sort,filter,searchField,searchValue,all))
+                            new PageResponse<>(accountService.findAll(page, size, sort, filter, searchField, searchValue, all))
                     )
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RequestResponse<Map<String,Object>>>refreshToken(@RequestBody Map<String, String> map) {
-        String refreshToken=map.get("refreshToken");
-        if(refreshToken==null){
+    public ResponseEntity<RequestResponse<Map<String, Object>>> refreshToken(@RequestBody Map<String, String> map) {
+        String refreshToken = map.get("refreshToken");
+        if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("Refresh Token is required"));
         }
         try {
-            if(jwtService.isTokenExpired(refreshToken)){
+            if (jwtService.isTokenExpired(refreshToken)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(RequestResponse.error("Refresh Token is expired"));
             }
-            String email= jwtService.extractEmail(refreshToken);
-            Long userId= jwtService.extractUserId(refreshToken);
-            String role= jwtService.extractRole(refreshToken);
-            Long hotelId=jwtService.extractHotelId(refreshToken);
-            String newAccessToken= jwtService.generateAccessToken(email,userId,role,hotelId==null?null:hotelId);
-            long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
+            String email = jwtService.extractEmail(refreshToken);
+            Long userId = jwtService.extractUserId(refreshToken);
+            String role = jwtService.extractRole(refreshToken);
+            Long hotelId = jwtService.extractHotelId(refreshToken);
+            String newAccessToken = jwtService.generateAccessToken(email, userId, role, hotelId == null ? null : hotelId);
+            long accessTokenExpiryAt = jwtService.getAccessTokenExpiryAt();
 
-            Map<String,Object>response=new HashMap<>();
-            response.put("accessToken",newAccessToken);
-            response.put("accessTokenExpiryAt",accessTokenExpiryAt);
+            Map<String, Object> response = new HashMap<>();
+            response.put("accessToken", newAccessToken);
+            response.put("accessTokenExpiryAt", accessTokenExpiryAt);
             return ResponseEntity.ok(RequestResponse.success(response));
-        }catch (JwtException e){
+        } catch (JwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(RequestResponse.error("Invalid refresh token: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/me/profile")
+    public ResponseEntity<RequestResponse<ProfileSystemResponse>> getMyProfile() {
+        try {
+            return ResponseEntity.ok(
+                    RequestResponse.success(accountService.getProfile())
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
+
+    @PatchMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> updateProfile(
+            @ModelAttribute ProfileSystemRequest request,
+            @RequestParam(value = "image", required = false) MultipartFile file
+    ) {
+        try {
+            accountService.updateProfileSystem(request,file);
+            return ResponseEntity.ok(RequestResponse.success("Cập nhật profile thành công"));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
+        }
+    }
+
+    @PutMapping(value = "/me/password")
+    public ResponseEntity<RequestResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+        try {
+            accountService.changePassword(request);
+            return ResponseEntity.ok(
+                    RequestResponse.success("Password updated successfully")
+            );
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(RequestResponse.error(e.getMessage()));
         }
     }
 

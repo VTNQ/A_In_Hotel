@@ -29,7 +29,7 @@ const ViewStaffPage = () => {
         filters.push(`status==${statusFilter}`);
       }
       if (hotelFilter) {
-        filters.push(`hotel.id==${hotelFilter}`);
+        filters.push(`hotelId==${hotelFilter}`);
       }
       const response = await getAllStaff({
         page: page,
