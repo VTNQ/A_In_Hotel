@@ -1,6 +1,6 @@
 // components/ui/CalendarUI.tsx
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CalendarUIProps } from "../../type/common";
 
@@ -37,12 +37,17 @@ export default function CalendarUI({
   });
 
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  });
 
   const changeMonth = (dir: 1 | -1) => {
     setDirection(dir);
-    setCurrent(
-      new Date(current.getFullYear(), current.getMonth() + dir, 1)
-    );
+    setCurrent(new Date(current.getFullYear(), current.getMonth() + dir, 1));
   };
 
   const nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, 1);
@@ -54,11 +59,11 @@ export default function CalendarUI({
 
     return (
       <div className="flex-1">
-        <h3 className="text-center font-medium mb-3">
+        <h3 className="text-center font-medium mb-3 text-sm sm:text-base">
           Tháng {month + 1} {year}
         </h3>
 
-        <div className="grid grid-cols-7 text-xs text-gray-500 mb-2">
+        <div className="grid grid-cols-7 text-[11px] sm:text-xs text-gray-500 mb-2">
           {WEEK_DAYS.map((d) => (
             <div key={d} className="text-center">
               {d}
@@ -66,7 +71,7 @@ export default function CalendarUI({
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {days.map((d, i) => {
             if (!d) return <div key={i} />;
 
@@ -80,7 +85,8 @@ export default function CalendarUI({
                 disabled={disabled}
                 onClick={() => onSelect(value)}
                 className={`
-                  h-9 w-9 mx-auto rounded-full text-sm transition
+                  h-8 w-8 sm:h-9 sm:w-9 
+                  mx-auto rounded-full text-xs sm:text-sm transition
                   ${
                     selected
                       ? "border border-blue-500 text-blue-600"
@@ -99,7 +105,7 @@ export default function CalendarUI({
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 overflow-hidden">
+    <div className="bg-white rounded-xl p-4 sm:p-5 w-full overflow-hidden">
       {/* NAV */}
       <div className="flex items-center justify-between mb-4">
         <button
@@ -121,14 +127,17 @@ export default function CalendarUI({
       <AnimatePresence mode="wait">
         <motion.div
           key={current.toISOString()}
-          initial={{ x: direction === 1 ? 80 : -80, opacity: 0 }}
+          initial={{ x: direction === 1 ? 60 : -60, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: direction === 1 ? -80 : 80, opacity: 0 }}
+          exit={{ x: direction === 1 ? -60 : 60, opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="flex gap-6"
+          className={`
+            flex gap-6
+            ${isMobile ? "flex-col" : "flex-row"}
+            `}
         >
           {renderMonth(current)}
-          {renderMonth(nextMonth)}
+          {!isMobile && renderMonth(nextMonth)}
         </motion.div>
       </AnimatePresence>
     </div>

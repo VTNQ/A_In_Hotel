@@ -10,20 +10,20 @@ import { formatISO } from "date-fns";
 import { File_URL } from "../setting/constant/app";
 const HeroSlider = () => {
   const [current, setCurrent] = useState(0);
-  const [banners,setBanners] =useState<BannerResponse[]>([]);
-  const fetchData = async()=>{
-    try{
-      const now = formatISO(new Date()); 
+  const [banners, setBanners] = useState<BannerResponse[]>([]);
+  const fetchData = async () => {
+    try {
+      const now = formatISO(new Date());
       const response = await getBanner({
-        page:1,
-        size:10,
+        page: 1,
+        size: 10,
         filter: `startAt<=${now} and endAt>=${now}`,
       });
-      setBanners(response.data?.content || [])
-    }catch(err){
-      console.log(err)
+      setBanners(response.data?.content || []);
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -41,14 +41,23 @@ const HeroSlider = () => {
   if (banners.length === 0) return null;
 
   return (
-<section className="relative h-screen w-full">
-
+    <section
+      className="relative w-full
+    h-[65vh]
+    sm:h-[75vh]
+    md:h-[85vh]
+    lg:h-screen
+    overflow-hidden
+    "
+    >
       {/* Slider Background */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.div
           key={current}
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${File_URL+banners[current].image.url})` }}
+          style={{
+            backgroundImage: `url(${File_URL + banners[current].image.url})`,
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -60,23 +69,48 @@ const HeroSlider = () => {
       <div className="absolute inset-0 bg-black/40"></div>
 
       {/* SEARCH BAR (GỌI RIÊNG) */}
-      <div className="absolute bottom-9 left-0 w-full z-20">
+      <div
+        className="
+      absolute 
+      bottom-6
+      sm:bottom-8
+      md:bottom-12
+      left-1/2
+     -translate-x-1/2 
+        w-full 
+        px-4 
+        sm:px-6 
+        md:px-10 
+        z-30"
+      >
         <SearchBar />
       </div>
 
       {/* Navigation */}
-      <button
+       <button
         onClick={() =>
           setCurrent((p) => (p - 1 + banners.length) % banners.length)
         }
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-3 rounded-full z-20"
+        className="
+          hidden sm:flex
+          absolute left-4 md:left-8 
+          top-1/2 -translate-y-1/2
+          text-white bg-black/40 hover:bg-black/60
+          p-3 rounded-full z-30 transition
+        "
       >
         <FaChevronLeft />
       </button>
 
       <button
         onClick={() => setCurrent((p) => (p + 1) % banners.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-3 rounded-full z-20"
+        className="
+          hidden sm:flex
+          absolute right-4 md:right-8 
+          top-1/2 -translate-y-1/2
+          text-white bg-black/40 hover:bg-black/60
+          p-3 rounded-full z-30 transition
+        "
       >
         <FaChevronRight />
       </button>
