@@ -122,7 +122,27 @@ export default function SearchBar() {
           <div className="flex-1">
             <RoomGuestsSelect value={guests} onChange={(v) => setGuests(v)} />
           </div>
-   
+          <div className="w-full lg:w-auto">
+            <button
+              onClick={handleSearch}
+              className="
+      w-full
+      lg:w-[140px]
+      h-[52px]
+      bg-[#866F56]
+      text-white
+      rounded-xl
+      font-semibold
+      text-sm
+      tracking-wide
+      hover:bg-[#6f5a45]
+      transition-all duration-300
+      shadow-md
+    "
+            >
+              Search
+            </button>
+          </div>
         </div>
       </div>
     </div>
