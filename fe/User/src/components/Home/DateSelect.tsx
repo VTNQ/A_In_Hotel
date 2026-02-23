@@ -1,31 +1,48 @@
+"use client";
+
 import { Calendar } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { DateRangeProps } from "../../type/booking.types";
 import CalendarUI from "../ui/CalenderUI";
-import { useClickOutside } from "../../hook/useClickOutside";
 
 export default function DateSelect({ value, onChange }: DateRangeProps) {
   const [open, setOpen] = useState(false);
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
- 
-  useClickOutside(wrapperRef, () => {
-    setOpen(false);
-  });
-   useEffect(() => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+
+      if (
+        wrapperRef.current?.contains(target) ||
+        dropdownRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  useEffect(() => {
     setCheckIn(value?.checkIn ?? null);
     setCheckOut(value?.checkOut ?? null);
   }, [value?.checkIn, value?.checkOut]);
+
   const onSelectDate = (date: string) => {
-    // chọn lại từ đầu
     if (!checkIn || (checkIn && checkOut)) {
       setCheckIn(date);
       setCheckOut(null);
       return;
     }
 
-    // chọn checkout
     if (date >= checkIn) {
       setCheckOut(date);
     }
@@ -40,13 +57,24 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
     setOpen(false);
   };
 
+  /* Position dropdown */
+  const getDropdownStyle = () => {
+    if (!wrapperRef.current) return {};
+
+    const rect = wrapperRef.current.getBoundingClientRect();
+
+    return {
+      position: "absolute" as const,
+      top: rect.bottom + window.scrollY + 8,
+      left: rect.left + window.scrollX,
+      width: rect.width,
+    };
+  };
+
   return (
     <div ref={wrapperRef} className="relative flex-1">
-      <label className="text-xs text-gray-500 mb-1 block">
-        Select date
-      </label>
+      <label className="text-xs text-gray-500 mb-1 block">Select date</label>
 
-      {/* BUTTON */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -60,50 +88,52 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
         </span>
       </button>
 
-      {/* DROPDOWN */}
-      {open && (
-        <div className="absolute left-0 mt-2 bg-white border rounded-xl shadow-lg z-[9999] p-4 w-[720px]">
-          
-          {/* HEADER CHECK-IN / CHECK-OUT */}
-          <div className="flex justify-between mb-4 text-sm font-medium">
-            <div className={checkOut ? "text-gray-400" : "text-[#b38a58]"}>
-              Check-in
-              <div className="text-xs text-gray-500">
-                {checkIn ?? "Select date"}
+      {open &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            style={getDropdownStyle()}
+            className="z-[999999] bg-white border rounded-xl shadow-xl p-4"
+          >
+            {/* HEADER */}
+            <div className="flex justify-between mb-4 text-sm font-medium">
+              <div className={checkOut ? "text-gray-400" : "text-[#b38a58]"}>
+                Check-in
+                <div className="text-xs text-gray-500">
+                  {checkIn ?? "Select date"}
+                </div>
+              </div>
+
+              <div className={!checkIn ? "text-gray-400" : "text-[#b38a58]"}>
+                Check-out
+                <div className="text-xs text-gray-500">
+                  {checkOut ?? "Select date"}
+                </div>
               </div>
             </div>
 
-            <div className={!checkIn ? "text-gray-400" : "text-[#b38a58]"}>
-              Check-out
-              <div className="text-xs text-gray-500">
-                {checkOut ?? "Select date"}
-              </div>
+            <CalendarUI
+              selectedDates={[checkIn, checkOut].filter(Boolean) as string[]}
+              onSelect={onSelectDate}
+            />
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setOpen(false)}
+                className="text-sm text-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={apply}
+                className="px-4 py-2 bg-[#b38a58] text-white rounded-lg text-sm font-medium hover:bg-[#9a7748]"
+              >
+                Apply
+              </button>
             </div>
-          </div>
-
-          {/* CALENDAR */}
-          <CalendarUI
-            selectedDates={[checkIn, checkOut].filter(Boolean) as string[]}
-            onSelect={onSelectDate}
-          />
-
-          {/* ACTION */}
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              onClick={() => setOpen(false)}
-              className="text-sm text-gray-500"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={apply}
-              className="px-4 py-2 bg-[#b38a58] text-white rounded-lg text-sm font-medium hover:bg-[#9a7748]"
-            >
-              Apply
-            </button>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
