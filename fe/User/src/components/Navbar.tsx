@@ -31,9 +31,9 @@ export default function Navbar() {
   };
 
   const leftItems = [
+    { label: "A-IN-HOTEL", path: "/" },
     { label: "ROOM & SUITE", path: "/rooms" },
     { label: "PROMOTION", path: "/promotion" },
-    { label: "BLOG", path: "/blog" },
   ];
 
   const rightItems = [
@@ -61,8 +61,7 @@ export default function Navbar() {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
   }, [isMenuOpen]);
 
-  const navColor =
-    isHome && !isScrolled ? "text-white" : "text-[#3A3125]";
+  const navColor = isHome && !isScrolled ? "text-white" : "text-[#3A3125]";
 
   return (
     <>
@@ -75,7 +74,6 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-[1300px] mx-auto px-5 flex items-center justify-between">
-
           {/* LEFT DESKTOP */}
           <div className="hidden md:flex gap-6 text-sm font-medium">
             {leftItems.map((item) => (
@@ -102,9 +100,7 @@ export default function Navbar() {
             />
             <span
               className={`font-bold tracking-wide ${
-                isHome && !isScrolled
-                  ? "text-white"
-                  : "text-[#3A3125]"
+                isHome && !isScrolled ? "text-white" : "text-[#3A3125]"
               }`}
             >
               A-IN HOTEL
@@ -113,7 +109,6 @@ export default function Navbar() {
 
           {/* RIGHT DESKTOP */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-
             {rightItems.map((item) => (
               <button
                 key={item.label}
@@ -271,10 +266,16 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <button onClick={() => navigate("/profile")} className="block py-2">
+                <button
+                  onClick={() => navigate("/profile")}
+                  className="block py-2"
+                >
                   My profile
                 </button>
-                <button onClick={() => navigate("/booking")} className="block py-2">
+                <button
+                  onClick={() => navigate("/booking")}
+                  className="block py-2"
+                >
                   My booking
                 </button>
                 <button

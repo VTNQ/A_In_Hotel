@@ -47,7 +47,6 @@ const HeroSlider = () => {
     sm:h-[75vh]
     md:h-[85vh]
     lg:h-screen
-    overflow-hidden
     "
     >
       {/* Slider Background */}
