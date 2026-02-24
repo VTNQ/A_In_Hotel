@@ -41,6 +41,12 @@ public class BookingRequest {
 
     private Integer BookingPackage;
 
+    private BigDecimal originalAmount;
+
+    private BigDecimal discountAmount;
+
+    private String voucherCode;
+
     private String note;
 
     private List<BookingDetailRequest> bookingDetail;

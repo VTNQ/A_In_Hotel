@@ -68,6 +68,7 @@ public interface BookingMapper extends CommonMapper {
                 CommonMapper.super.mapDetails(
                         request.getBookingDetail(),
                         booking,
+                        request.getDiscountAmount(),
                         detailMapper,
                         roomRepository,
                         extraServiceRepository,

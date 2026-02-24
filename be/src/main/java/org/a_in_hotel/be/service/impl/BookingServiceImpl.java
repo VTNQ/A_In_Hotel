@@ -43,6 +43,10 @@ public class BookingServiceImpl implements BookingService {
 
     private final GeneralService generalService;
 
+    private final VoucherRepository voucherRepository;
+
+    private final BookingVoucherRepository bookingVoucherRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
@@ -92,6 +96,7 @@ public class BookingServiceImpl implements BookingService {
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId()!=null ? securityUtils.getHotelId() : request.getHotelId());
         repository.save(booking);
+        createBookingUsingVoucher(booking, request);
         if(request.getPayment()!=null){
             Payment payment = paymentMapper.toEntity(request.getPayment());
             payment.setBooking(booking);
@@ -103,6 +108,21 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
+    }
+    private void createBookingUsingVoucher(Booking booking,BookingRequest request) {
+        Voucher voucher = voucherRepository.findByVoucherCodeAndIsActiveTrue(request.getVoucherCode())
+                .orElse(null);
+        if(voucher==null){
+            return;
+        }
+        BookingVoucher bookingVoucher = new BookingVoucher();
+        bookingVoucher.setBooking(booking);
+        bookingVoucher.setVoucher(voucher);
+        bookingVoucher.setOriginalAmount(request.getOriginalAmount());
+        bookingVoucher.setDiscountAmount(request.getDiscountAmount());
+        bookingVoucher.setFinalAmount(booking.getTotalPrice());
+        bookingVoucherRepository.save(bookingVoucher);
+
     }
     private Customer getOrCreateCustomer(BookingRequest request) {
 
