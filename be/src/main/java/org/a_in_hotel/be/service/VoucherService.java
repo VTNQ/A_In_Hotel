@@ -1,7 +1,9 @@
 package org.a_in_hotel.be.service;
 
 import org.a_in_hotel.be.dto.request.PromotionRequest;
+import org.a_in_hotel.be.dto.request.ValidateVoucherRequest;
 import org.a_in_hotel.be.dto.request.VoucherRequest;
+import org.a_in_hotel.be.dto.response.ValidateVoucherResponse;
 import org.a_in_hotel.be.dto.response.VoucherResponse;
 import org.springframework.data.domain.Page;
 
@@ -16,4 +18,6 @@ public interface VoucherService {
     void update(VoucherRequest request,Long id);
     VoucherResponse getPromotionById(Long id);
     void updateStatus(Long id,Boolean status);
+
+    ValidateVoucherResponse validateVoucher(ValidateVoucherRequest request);
 }

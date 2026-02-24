@@ -155,6 +155,7 @@ public interface CommonMapper {
     default List<BookingDetail> mapDetails(
             List<BookingDetailRequest> requests,
             Booking booking,
+            BigDecimal discountPrice,
             @Context BookingDetailMapper detailMapper,
             @Context RoomRepository roomRepository,
             @Context ExtraServiceRepository extraServiceRepository,
@@ -174,7 +175,7 @@ public interface CommonMapper {
                 .collect(Collectors.toList());
         BigDecimal systemTotal = calculateTotalPrice(details);
 
-        validateTotalPrice(booking.getTotalPrice(), systemTotal);
+        validateTotalPrice(booking.getTotalPrice(), systemTotal,discountPrice);
 
         return details;
     }
@@ -258,13 +259,32 @@ public interface CommonMapper {
         }
         throw new IllegalStateException("BookingDetail must have room or extraService.");
     }
-    default void validateTotalPrice(BigDecimal feTotal, BigDecimal systemTotal) {
+    default void validateTotalPrice(BigDecimal feTotal, BigDecimal systemTotal,BigDecimal discountPrice) {
 
         if (feTotal == null) {
             throw new IllegalArgumentException("totalPrice is required");
         }
 
-        if (feTotal.compareTo(systemTotal) != 0) {
+        if (systemTotal == null) {
+            throw new IllegalArgumentException("System total is invalid");
+        }
+        BigDecimal discount = discountPrice != null ? discountPrice : BigDecimal.ZERO;
+
+        // Không cho discount âm
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Invalid discount value");
+        }
+
+        // Tính total sau giảm
+        BigDecimal expectedTotal = systemTotal.subtract(discount);
+
+        // Không cho âm
+        if (expectedTotal.compareTo(BigDecimal.ZERO) < 0) {
+            expectedTotal = BigDecimal.ZERO;
+        }
+
+
+        if (feTotal.compareTo(expectedTotal) != 0) {
             throw new IllegalArgumentException(
                     "Invalid total price. Expected: " + systemTotal + ", received: " + feTotal
             );

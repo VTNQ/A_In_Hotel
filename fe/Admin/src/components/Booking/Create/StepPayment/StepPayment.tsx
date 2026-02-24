@@ -1,9 +1,31 @@
 import { useTranslation } from "react-i18next";
 import PaymentForm from "./PaymentForm";
 import PaymentSummary from "./PaymentSummary";
+import { useMemo, useState } from "react";
 
 const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
   const { t } = useTranslation();
+  const [discount,setDiscount]= useState(0);
+  const [voucherCode,setVoucherCode] = useState("");
+
+  const rooms = booking.rooms || [];
+  const services = booking.services || [];
+  const nights = booking.selectDate?.nights || 0;
+   const total = useMemo(() => {
+    const roomTotal = rooms.reduce(
+      (sum: number, r: any) => sum + Number(r.price || 0) * nights,
+      0
+    );
+
+    const serviceTotal = services.reduce(
+      (sum: number, s: any) => sum + Number(s.price || 0),
+      0
+    );
+
+    return roomTotal + serviceTotal;
+  }, [rooms, services, nights]);
+  const finalTotal = Math.max(0,total-discount);
+ 
   return (
     <div>
       <div className="grid grid-cols-3 gap-6 items-start">
@@ -11,13 +33,18 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
         <div className="col-span-2">
           <PaymentForm
             booking={booking}
-            onBack={onBack}
+            total={total}
+            finalTotal={finalTotal}
+            discount={discount}
+            setDiscount={setDiscount}
+            voucherCode={voucherCode}
+            setVoucherCode={setVoucherCode}
             onSubmit={onNext}
           />
         </div>
 
         {/* RIGHT */}
-        <PaymentSummary booking={booking} />
+        <PaymentSummary booking={booking} discount={discount} />
       </div>
 
       {/* ACTIONS */}

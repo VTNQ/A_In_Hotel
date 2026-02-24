@@ -3,8 +3,10 @@ package org.a_in_hotel.be.controller;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.PromotionRequest;
+import org.a_in_hotel.be.dto.request.ValidateVoucherRequest;
 import org.a_in_hotel.be.dto.request.VoucherRequest;
 import org.a_in_hotel.be.dto.response.RequestResponse;
+import org.a_in_hotel.be.dto.response.ValidateVoucherResponse;
 import org.a_in_hotel.be.dto.response.VoucherResponse;
 import org.a_in_hotel.be.service.VoucherService;
 import org.springframework.http.HttpStatus;
@@ -67,6 +69,12 @@ public class VoucherController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error(e.getMessage()));
         }
+    }
+    @PostMapping("/validate")
+    public ResponseEntity<RequestResponse<ValidateVoucherResponse>> validateVoucher(@RequestBody ValidateVoucherRequest request){
+        return ResponseEntity.ok(
+            RequestResponse.success(voucherService.validateVoucher(request))
+        );
     }
     @PostMapping
     public ResponseEntity<RequestResponse<Void>> create(@RequestBody VoucherRequest request){
