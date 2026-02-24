@@ -10,20 +10,14 @@ const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- th
 const BG_URL =
   "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg"; // ảnh nền bạn gửi
 
-function SocialButton({
-  provider,
-}: {
-  provider: "google" | "facebook";
-}) {
+function SocialButton({ provider }: { provider: "google" | "facebook" }) {
   const isGoogle = provider === "google";
-   const handleClick = () => {
+  const handleClick = () => {
     if (provider === "google") {
-      window.location.href =
-        `${BASE_API}/oauth2/authorization/google`;
+      window.location.href = `${BASE_API}/oauth2/authorization/google`;
     }
     if (provider === "facebook") {
-      window.location.href =
-        `${BASE_API}/oauth2/authorization/facebook`;
+      window.location.href = `${BASE_API}/oauth2/authorization/facebook`;
     }
   };
 
@@ -108,7 +102,7 @@ export default function LoginPage() {
           type: "success",
           autoClose: 3000,
         });
-        navigate("/")
+        navigate("/");
       } else {
         showAlert({
           title: "Bạn không có quyền truy cập hệ thống.",
@@ -118,7 +112,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       showAlert({
-        title:"Đăng nhập thất bại. Vui lòng thử lại.",
+        title: "Đăng nhập thất bại. Vui lòng thử lại.",
         type: "error",
         autoClose: 3000,
       });
@@ -128,38 +122,45 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen w-full">
+    <main className="relative min-h-screen w-full overflow-hidden">
       {/* Background */}
       <img
         src={BG_URL}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-black/35" />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
       {/* Card */}
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4">
+      <div className="relative z-10 mx-auto flex min-h-screen items-center justify-center px-4 py-8">
         <div
           className="
-            w-full rounded-[24px] bg-white p-6 shadow-2xl
-            md:p-10 lg:grid lg:grid-cols-12 lg:gap-10
+             w-full max-w-md 
+          sm:max-w-lg 
+          lg:max-w-4xl
+          rounded-3xl bg-white
+          p-6 sm:p-8 lg:p-12
+          shadow-2xl
+          lg:grid lg:grid-cols-12 lg:gap-12
           "
           style={{ boxShadow: "0 12px 48px rgba(0,0,0,.28)" }}
         >
           {/* Logo left */}
-          <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:items-center lg:justify-center">
+          <div className="hidden lg:col-span-5 lg:flex  lg:items-center lg:justify-center">
             <img
               src={LOGO_URL}
               alt="A‑IN HOTEL"
-              className="h-40 w-auto object-contain"
+              className="max-h-48 w-auto object-contain"
             />
           </div>
 
           {/* Form right */}
-          <div className="lg:col-span-7">
-            <h1 className="mb-6 text-2xl font-semibold text-gray-900">Login</h1>
+          <div className="lg:col-span-7 w-full">
+            <h1 className="mb-6 text-2xl sm:text-3xl font-semibold text-gray-900 text-center lg:text-left">
+              Login
+            </h1>
 
-            <form className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4">
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
                   Email address
@@ -169,10 +170,11 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
-                    outline-none placeholder:text-gray-400
-                    focus:border-[#b08a66]
-                  "
+                  w-full rounded-xl border border-gray-300
+                  px-4 py-3
+                  focus:border-[#b08a66]
+                  outline-none transition
+                "
                   placeholder="you@example.com"
                 />
               </label>
@@ -186,10 +188,11 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="
-                    w-full rounded-[14px] border border-gray-300 bg-white px-4 py-3
-                    outline-none placeholder:text-gray-400
-                    focus:border-[#b08a66]
-                  "
+                  w-full rounded-xl border border-gray-300
+                  px-4 py-3
+                  focus:border-[#b08a66]
+                  outline-none transition
+                "
                   placeholder="••••••••"
                 />
               </label>
@@ -197,9 +200,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={!isFilled || loading}
-                onClick={handleLogin}
-                className={`
-    w-full rounded-[14px] px-4 py-3 font-medium text-white
+                className={`w-full rounded-[14px] px-4 py-3 font-medium text-white
     shadow transition
     ${
       loading

@@ -6,8 +6,17 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl shadow-sm overflow-hidden flex
-        cursor-pointer transition
+      className={`
+        bg-white 
+        rounded-2xl 
+        shadow-sm 
+        overflow-hidden 
+        cursor-pointer
+        transition-all
+        duration-300
+        flex
+        flex-col
+        md:flex-row
         ${
           isSelected
             ? "ring-2 ring-[#b38a58]"
@@ -15,7 +24,7 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
         }`}
     >
       {/* Image */}
-      <div className="w-[260px] h-[200px] shrink-0">
+      <div className="w-full md:w-[260px] h-[220px] md:h-[200px] shrink-0">
         <img
           src={File_URL + room?.images[0]?.url}
           alt={room?.images[0]?.altText}
@@ -24,15 +33,16 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col justify-between p-4 flex-1">
+      <div className="flex flex-col justify-between p-4 sm:p-5 flex-1">
         {/* Top */}
         <div>
-          <h3 className="font-semibold text-lg mb-2 uppercase">
+          <h3 className="font-semibold text-base sm:text-lg mb-2 uppercase">
             {room.roomName}
           </h3>
 
           {/* Room info */}
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+          <div className="flex flex-wrap items-center gap-3 text-xs 
+          sm:text-sm text-gray-600 mb-3">
             <div className="flex items-center gap-1">
               <Maximize size={16} />
               <span>{room.area || 20} m²</span>
@@ -50,7 +60,7 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
           </div>
 
           {/* Description */}
-          <p className="text-sm text-gray-500 line-clamp-3">
+          <p className="text-xs sm:text-sm text-gray-500 line-clamp-3">
             A In Hotel Riverside cung cấp phòng nghỉ tại trung tâm Hồ Chí Minh,
             cách Bảo tàng Mỹ thuật 1.2 km. Khách sạn cung cấp WiFi miễn phí.
           </p>
@@ -62,7 +72,7 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
 
           <div className="text-right">
             <div className="text-xs text-gray-400">Price</div>
-            <div className="text-lg font-semibold text-[#b38a58]">
+            <div className="text-base sm:text-lg font-semibold text-[#b38a58]">
               {room.defaultRate.toLocaleString()} ₫
             </div>
           </div>

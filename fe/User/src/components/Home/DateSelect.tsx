@@ -58,18 +58,37 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
   };
 
   /* Position dropdown */
-  const getDropdownStyle = () => {
-    if (!wrapperRef.current) return {};
+ const getDropdownStyle = () => {
+  if (!wrapperRef.current) return {};
 
-    const rect = wrapperRef.current.getBoundingClientRect();
+  const rect = wrapperRef.current.getBoundingClientRect();
+  const isDesktop = window.innerWidth >= 1024;
 
-    return {
-      position: "absolute" as const,
-      top: rect.bottom + window.scrollY + 8,
-      left: rect.left + window.scrollX,
-      width: rect.width,
-    };
+  const DESKTOP_WIDTH = 660; // chỉnh theo ý bạn (700–800 đẹp nhất)
+
+  const width = isDesktop ? DESKTOP_WIDTH : rect.width;
+
+  let left = rect.left + window.scrollX;
+
+  // Nếu desktop → căn giữa theo input
+  if (isDesktop) {
+    left = rect.left + window.scrollX - (DESKTOP_WIDTH - rect.width) / 2;
+  }
+
+  const maxLeft =
+    window.innerWidth - width - 16; // 16px padding an toàn
+
+  left = Math.min(left, maxLeft);
+  left = Math.max(left, 16); // chống tràn trái
+
+  return {
+    position: "absolute" as const,
+    top: rect.bottom + window.scrollY + 8,
+    left,
+    width,
+    zIndex: 999999,
   };
+};
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
