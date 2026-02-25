@@ -78,10 +78,10 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
+    <div className="bg-gray-50 min-h-screen px-3 sm:px-6 py-4 sm:py-6">
       {/* HEADER */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-semibold">
           {" "}
           {t("serviceSelection.title")}
         </h2>
@@ -100,9 +100,9 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         onSearch={setSearch}
       />
 
-      <div className="grid grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         {/* LEFT */}
-        <div className="col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-4">
           {loading ? (
             <ServiceSkeleton />
           ) : services.length === 0 ? (
@@ -121,25 +121,27 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         </div>
 
         {/* RIGHT */}
-        <BookingSummary
-          booking={booking}
-          services={selectedServices}
-          onNext={() =>
-            onNext({
-              services: selectedServices.map((s) => ({
-                extraServiceId: s.id,
-                unit: s.unit,
-                price: estimateServicePrice(s, booking),
-                serviceName: s.serviceName ?? s.name,
-              })),
-            })
-          }
-        />
+        <div className="lg:sticky lg:top-6 h-fit">
+          <BookingSummary
+            booking={booking}
+            services={selectedServices}
+            onNext={() =>
+              onNext({
+                services: selectedServices.map((s) => ({
+                  extraServiceId: s.id,
+                  unit: s.unit,
+                  price: estimateServicePrice(s, booking),
+                  serviceName: s.serviceName ?? s.name,
+                })),
+              })
+            }
+          />
+        </div>
       </div>
-      <div className="flex justify-between items-center mt-8">
+      <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4 ">
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-sm font-medium
+          className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
             text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
             hover:border-red-300 transition"
         >
@@ -148,12 +150,11 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-2
-    px-4 py-2
-    rounded-xl
-    bg-gray-100
-    text-sm font-medium text-gray-700
-    hover:bg-gray-200 transition"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2
+          px-5 py-3 rounded-xl
+          bg-gray-100
+          text-sm font-medium text-gray-700
+          hover:bg-gray-200 transition"
         >
           {t("serviceSelection.back")}
         </button>

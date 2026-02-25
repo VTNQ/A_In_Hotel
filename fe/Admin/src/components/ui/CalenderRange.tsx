@@ -87,10 +87,10 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
      RENDER
   ======================= */
   return (
-    <div className="bg-white rounded-xl p-4">
+    <div className="w-full bg-white rounded-xl p-4 sm:p-6">
       {/* Header */}
-      <div className="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-        <h3 className="font-semibold">{t("bookingDateTime.selectDates")}</h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-gray-200 pb-4 mb-5">
+        <h3 className="font-semibold text-gray-800">{t("bookingDateTime.selectDates")}</h3>
 
         <div className="flex items-center gap-3">
           {nights > 0 && (
@@ -111,7 +111,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
       </div>
 
       {/* Month navigation */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-6">
         <button
           disabled={
             baseMonth.getFullYear() === today.getFullYear() &&
@@ -122,22 +122,22 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
               new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
             )
           }
-          className="disabled:opacity-30"
+           className="disabled:opacity-30 p-2"
         >
           <ChevronLeft />
         </button>
 
-        <div className="flex gap-24 font-medium text-sm">
+        <div className="flex flex-col sm:flex-row sm:gap-20 text-sm font-medium text-center">
           <span>
             {baseMonth.toLocaleString("default", {
               month: "long",
               year: "numeric",
             })}
           </span>
-          <span>
+           <span className="hidden sm:block">
             {new Date(
               baseMonth.getFullYear(),
-              baseMonth.getMonth() + 1,
+              baseMonth.getMonth() + 1
             ).toLocaleString("default", {
               month: "long",
               year: "numeric",
@@ -148,16 +148,17 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         <button
           onClick={() =>
             setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
+              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)
             )
           }
+          className="p-2"
         >
-          <ChevronRight />
+          <ChevronRight size={20} />
         </button>
       </div>
 
       {/* Calendars */}
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
         <Month
           month={baseMonth}
           value={value}
@@ -167,14 +168,19 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
           isDisabled={isBeforeToday}
         />
 
-        <Month
-          month={new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)}
-          value={value}
-          onSelect={handleSelect}
-          isSame={isSame}
-          isInRange={isInRange}
-          isDisabled={isBeforeToday}
-        />
+        <div className="hidden sm:block">
+          <Month
+            month={new Date(
+              baseMonth.getFullYear(),
+              baseMonth.getMonth() + 1
+            )}
+            value={value}
+            onSelect={handleSelect}
+            isSame={isSame}
+            isInRange={isInRange}
+            isDisabled={isBeforeToday}
+          />
+        </div>
       </div>
     </div>
   );

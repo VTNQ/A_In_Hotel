@@ -126,8 +126,10 @@ const CreatePromotion = ({
   if (!isOpen) return null;
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-        <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
+      <div className="fixed inset-0 z-50 
+      flex items-center justify-center 
+      bg-black/40 backdrop-blur-sm p-4">
+        <div className="w-full max-w-4xl h-[95vh] sm:h-auto sm:max-h-[90vh] overflow-hidden rounded-xl  bg-white shadow-2xl flex flex-col">
           <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
             <div className="flex flex-col gap-1">
               <h1 className="text-3xl font-bold text-slate-800">
@@ -144,8 +146,8 @@ const CreatePromotion = ({
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </header>
-          <div className="border-b px-10 py-4 border-gray-200 bg-white sticky top-0 z-10 ">
-            <div className="flex gap-10">
+          <div className="border-b border-gray-200 bg-white px-4 sm:px-8">
+            <div className="flex gap-6 sm:gap-10 overflow-x-auto whitespace-nowrap">
               <TabButton
                 icon={<Info size={18} />}
                 label={t("promotion.tabs.general")}
@@ -178,7 +180,7 @@ const CreatePromotion = ({
             )}
           </div>
 
-          <footer className="flex items-center justify-end border-t border-gray-200 px-10 py-6">
+          <footer className="border-t border-gray-200 items-end px-4 sm:px-8 py-4 sm:py-6 bg-white flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end">
             <div className="flex gap-4">
               {/* Back */}
               {!isFirstTab && (
