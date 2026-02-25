@@ -441,28 +441,61 @@ const CustomerDetailPage = () => {
           </div>
 
           {/* BOOKING TABLE */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
-            <h2 className="text-lg font-semibold mb-4">
-              {t("customer.bookingHistory.title")}
-            </h2>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+            {/* ================= TABLE ================= */}
+            <div className="xl:col-span-3 bg-white rounded-xl shadow p-4 sm:p-6">
+              <h2 className="text-lg font-semibold mb-4">
+                {t("customer.bookingHistory.title")}
+              </h2>
 
-            <div className="w-full overflow-x-auto">
-              <div className="min-w-[900px]">
-                <CommonTable
-                  columns={bookingColumns}
-                  data={bookings}
-                  page={bookingPage}
-                  totalPages={bookingTotalPages}
-                  totalResults={bookingTotalResults}
-                  sortKey={bookingSortKey}
-                  sortOrder={bookingSortOrder}
-                  onPageChange={(p) => fetchBookings(p)}
-                  onSortChange={(k, o) => {
-                    setBookingSortKey(k);
-                    setBookingSortOrder(o);
-                    fetchBookings(bookingPage, k, o);
-                  }}
-                />
+              <div className="w-full overflow-x-auto">
+                <div className="min-w-[700px] lg:min-w-0">
+                  <CommonTable
+                    columns={bookingColumns}
+                    data={bookings}
+                    page={bookingPage}
+                    totalPages={bookingTotalPages}
+                    totalResults={bookingTotalResults}
+                    sortKey={bookingSortKey}
+                    sortOrder={bookingSortOrder}
+                    onPageChange={(p) => fetchBookings(p)}
+                    onSortChange={(k, o) => {
+                      setBookingSortKey(k);
+                      setBookingSortOrder(o);
+                      fetchBookings(bookingPage, k, o);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ================= SUMMARY ================= */}
+            <div className="bg-white rounded-xl shadow p-4 sm:p-6 flex flex-col gap-6">
+              <div>
+                <p className="text-sm text-gray-500">
+                  {t("customer.bookingSummary.totalBookings")}
+                </p>
+                <p className="text-2xl font-semibold">
+                  {summary?.totalBookings ?? 0}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">
+                  {t("customer.bookingSummary.nightsStayed")}
+                </p>
+                <p className="text-2xl font-semibold">
+                  {summary?.nightsStayed ?? 0}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">
+                  {t("customer.bookingSummary.totalRevenue")}
+                </p>
+                <p className="text-xl font-semibold break-words">
+                  {summary?.totalRevenue?.toLocaleString() ?? 0} VND
+                </p>
               </div>
             </div>
           </div>
@@ -498,9 +531,15 @@ const CustomerDetailPage = () => {
 
             <button
               onClick={() => fetchRewardTransaction(1)}
-              className="w-full lg:w-auto px-4 py-2 rounded-lg bg-[#2E3A8C] text-white"
+              className={`w-full lg:w-auto px-4 py-2 rounded-lg  ${
+                rewardTransactionLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#2E3A8C] hover:opacity-90"
+              } text-white`}
             >
-              {t("common.filter")}
+              {rewardTransactionLoading
+                ? t("common.filtering")
+                : t("common.filter")}
             </button>
           </div>
 
