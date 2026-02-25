@@ -123,14 +123,16 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
   return (
     <div className="bg-gray-50">
-      <h2 className="text-2xl font-semibold mb-1">
-        {t("roomSelection.title")}
-      </h2>
-      <p className="text-sm text-gray-500">
-        {t("roomSelection.subtitle", {
-          count: booking.selectDate?.adults || 2,
-        })}
-      </p>
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-semibold ">
+          {t("roomSelection.title")}
+        </h2>
+        <p className="text-sm text-gray-500">
+          {t("roomSelection.subtitle", {
+            count: booking.selectDate?.adults || 2,
+          })}
+        </p>
+      </div>
 
       <RoomSearchFilter
         filter={{ search, roomType }}
@@ -142,8 +144,8 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         }}
       />
 
-      <div className="grid grid-cols-3 gap-6 mt-6">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2 space-y-4">
           {loading ? (
             <RoomSkeleton />
           ) : rooms.length === 0 ? (
@@ -162,44 +164,46 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
             ))
           )}
         </div>
-
-        <BookingSummary
-          rooms={selectedRooms}
-          bookingDate={booking.selectDate}
-          packageType={booking.selectDate?.package}
-          guests={{
-            adults: booking.selectDate?.adults,
-            children: booking.selectDate?.children,
-          }}
-          onEditGuests={onBack}
-          onNext={() => onNext({ rooms: selectedRooms })}
-        />
+        <div className="lg:sticky lg:top-6 h-fit">
+          <BookingSummary
+            rooms={selectedRooms}
+            bookingDate={booking.selectDate}
+            packageType={booking.selectDate?.package}
+            guests={{
+              adults: booking.selectDate?.adults,
+              children: booking.selectDate?.children,
+            }}
+            onEditGuests={onBack}
+            onNext={() => onNext({ rooms: selectedRooms })}
+          />
+        </div>
       </div>
 
-      <div className="flex justify-between items-center mt-8">
+      <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4 ">
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-sm font-medium
-            text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
-            hover:border-red-300 transition"
+          className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
+        text-red-600 border border-red-200 bg-red-50
+        hover:bg-red-100 hover:border-red-300 transition"
         >
           {t("roomSelection.cancel")}
         </button>
 
         {/* BACK */}
         <button
-          type="button"
-          onClick={onBack}
-          className="
-    inline-flex items-center gap-2
-    px-4 py-2
-    rounded-xl
-    bg-gray-100
-    text-sm font-medium text-gray-700
-    hover:bg-gray-200 transition"
-        >
-          {t("roomSelection.back")}
-        </button>
+        type="button"
+        onClick={onBack}
+        className="
+          w-full sm:w-auto
+          inline-flex items-center justify-center gap-2
+          px-5 py-3
+          rounded-xl
+          bg-gray-100
+          text-sm font-medium text-gray-700
+          hover:bg-gray-200 transition"
+      >
+        {t("roomSelection.back")}
+      </button>
       </div>
     </div>
   );

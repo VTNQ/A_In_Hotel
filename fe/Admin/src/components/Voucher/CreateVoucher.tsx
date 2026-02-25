@@ -205,7 +205,8 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 
+        grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           {/* ================= LEFT ================= */}
           <div className="space-y-10">
             {/* General Information */}
@@ -275,7 +276,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                 {t("voucher.createOrUpdate.validityRange")}
               </h2>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
                     {t("voucher.createOrUpdate.startDate")}
@@ -400,7 +401,8 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+              <div className="grid grid-cols-1  sm:grid-cols-2 gap-3 p-3 sm:p-4 rounded-xl border 
+              border-[#E3E7F2] bg-white">
                 {roomTypes.map((room) => {
                   const roomState = formData.roomTypes.find(
                     (r) => r.roomTypeId === room.id,
@@ -484,7 +486,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               </div>
 
               <div
-                className={`grid ${isPercent ? "grid-cols-2" : "grid-cols-1"} gap-4`}
+                className={`grid ${isPercent ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4`}
               >
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
@@ -543,7 +545,7 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
               </h2>
 
               {/* Booking Type + Minimum Stay */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
                    {t("voucher.createOrUpdate.bookingType")}
@@ -603,7 +605,8 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4 
+                rounded-xl border border-[#E3E7F2] bg-white">
                   {CUSTOMER_TYPE_OPTIONS.map((type) => {
                     const checked = formData.customerType === type.value;
                     return (
@@ -650,7 +653,9 @@ const CreateVoucher = ({ isOpen, onClose,onSuccess }: CreateVoucherModalProps) =
                  {t("voucher.createOrUpdate.usageFrequency")}
                 </span>
 
-                <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                <div className="grid grid-cols-1 
+                sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 
+                rounded-xl border border-[#E3E7F2] bg-white">
                   {USAGE_TYPE_OPTIONS.map((opt) => {
                     const checked = formData.usageType === opt.value;
                     return (

@@ -617,6 +617,9 @@
     },
     "payment": {
         "title": "Ghi nhận thanh toán",
+        "voucherCode": "Mã giảm giá",
+        "voucherPlaceholder": "Nhập mã giảm giá",
+        "apply": "Áp dụng",
         "subtitle": "Nhập số tiền khách đã thanh toán.",
         "paidAmount": "Số tiền đã trả",
         "paidAmountPlaceholder": "Nhập số tiền đã thanh toán",

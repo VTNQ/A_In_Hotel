@@ -585,6 +585,9 @@
   },
   "payment": {
     "title": "Record Payment",
+    "voucherCode":"Voucher Code",
+    "voucherPlaceholder":"Enter voucher code",
+    "apply":"Apply",
     "subtitle": "Enter the amount received from the guest.",
     "paidAmount": "Paid Amount",
     "paidAmountPlaceholder": "Enter amount paid",

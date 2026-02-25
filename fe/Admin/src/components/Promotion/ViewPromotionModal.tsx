@@ -37,12 +37,12 @@ const ViewPromotionModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title={t("promotion.promotionDetail")}
-      width="w-[50%] max-w-[100px]"
+      width="w-full sm:w-[90%] lg:w-[800px]"
       widthClose="w-full sm:w-[200px]"
       isBorderBottom={true}
     >
       {loading ? (
-        <div className="flex items-center justify-center h-[300px]">
+        <div className="flex items-center justify-center h-64">
           <div className="flex items-center gap-3 text-[#42578E]">
             <svg
               className="animate-spin h-5 w-5"
@@ -70,7 +70,7 @@ const ViewPromotionModal = ({
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-10">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
           <section>
             <h3 className="text-primary text-lg font-bold mb-4">
               {t("promotion.view.general")}

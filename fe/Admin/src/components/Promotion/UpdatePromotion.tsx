@@ -164,11 +164,27 @@ const UpdatePromotion = ({
   if (!isOpen || !promotionId) return <></>;
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-        <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
-          <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
+        <div
+          className="w-full
+  sm:w-[95%]
+  lg:w-[850px]
+  max-h-[90vh]
+  overflow-hidden
+  rounded-xl
+  bg-white
+  shadow-2xl
+  flex flex-col"
+        >
+          <header
+            className="flex items-start sm:items-center justify-between
+  border-b border-gray-100
+  px-4 sm:px-6 lg:px-8
+  py-5 sm:py-6
+  gap-4"
+          >
             <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-bold text-slate-800">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800">
                 {t("promotion.createOrUpdate.editTitle")}
               </h1>
               <p className="text-sm italic text-slate-500">
@@ -182,8 +198,8 @@ const UpdatePromotion = ({
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </header>
-          <div className="border-b px-10 py-4 border-gray-200 bg-white sticky top-0 z-10 ">
-            <div className="flex gap-10">
+          <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
+            <div className="flex gap-6 px-4 sm:px-6 lg:px-8 py-3 overflow-y-auto whitespace-nowrap">
               <TabButton
                 icon={<Info size={18} />}
                 label={t("promotion.tabs.general")}
@@ -207,9 +223,9 @@ const UpdatePromotion = ({
               />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto  py-8 custom-scroll">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8  py-6 custom-scroll">
             {loading ? (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-60 sm:h-80">
                 <div className="flex flex-col items-center gap-4">
                   <svg
                     className="animate-spin h-8 w-8 text-[#42578E]"
@@ -251,9 +267,12 @@ const UpdatePromotion = ({
             )}
           </div>
 
-          <footer className="flex items-center justify-end border-t border-gray-200 px-10 py-6">
-            
-            <div className="flex gap-4">
+          <footer
+            className="flex flex-col sm:flex-row items-stretch sm:items-center 
+          justify-between sm:justify-end gap-4 
+          border-t border-gray-200 px-4 sm:px-6 lg:px-8 py-5"
+          >
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               {/* Back */}
               {!isFirstTab && (
                 <button
@@ -261,7 +280,7 @@ const UpdatePromotion = ({
                   disabled={loading || saving}
                   className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
                 >
-                {t("promotion.back")}
+                  {t("promotion.back")}
                 </button>
               )}
 
@@ -273,7 +292,7 @@ const UpdatePromotion = ({
                   className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {t("promotion.next")}
+                  {t("promotion.next")}
                 </button>
               ) : (
                 <button
@@ -310,7 +329,9 @@ const UpdatePromotion = ({
                     </>
                   ) : (
                     <>
-                      <span>{t("promotion.createOrUpdate.saveUpdateButton")}</span>
+                      <span>
+                        {t("promotion.createOrUpdate.saveUpdateButton")}
+                      </span>
                       <Rocket size={18} />
                     </>
                   )}

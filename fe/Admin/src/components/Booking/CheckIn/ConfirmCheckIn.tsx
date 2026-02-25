@@ -123,13 +123,21 @@ const ConfirmCheckIn = ({
 
       <div
         className={`
-          relative z-10 w-full max-w-2xl max-h-[90vh]
-          flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl
+          relative z-10 
+          w-full 
+          sm:max-w-2xl 
+          max-h-[95vh]
+          flex flex-col 
+          overflow-hidden 
+          rounded-xl sm:rounded-2xl 
+          bg-white 
+          shadow-2xl
+          mx-auto
           transform transition-all duration-200
           ${loading ? "scale-95 opacity-70" : "scale-100 opacity-100"}
         `}
       >
-        <div className="flex items-start justify-between px-6 py-5 border-b border-gray-200">
+        <div className="flex items-start justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
           <div>
             <h1 className="text-xl font-semibold text-[#253150]">
               {t("confirmCheckIn.title")}
@@ -158,7 +166,7 @@ const ConfirmCheckIn = ({
 
         {!loading && data && (
           <>
-            <div className="flex-1 overflow-y-auto custom-scroll bg-[#f6f8fb] px-6 py-5 space-y-6 text-sm">
+            <div className="flex-1 overflow-y-auto custom-scroll bg-[#f6f8fb] px-4 sm:px-6 py-4 sm:py-5 space-y-6 text-sm">
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <User className="w-4 h-4 text-[#253150]" />
@@ -167,7 +175,7 @@ const ConfirmCheckIn = ({
                   </h2>
                 </div>
 
-                <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-2 gap-4">
+                <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-[#5f6b85]">
                       {t("confirmCheckIn.guestName")}
@@ -249,7 +257,7 @@ const ConfirmCheckIn = ({
                   </h2>
                 </div>
 
-                <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-3 gap-4">
+                <div className="bg-white border border-[#d6dbea] rounded-xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <p className="text-xs text-[#5f6b85]">
                       {t("confirmCheckIn.total")}

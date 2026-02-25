@@ -240,7 +240,10 @@ const UpdateVoucher = ({
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div
+          className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 
+        grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12"
+        >
           {/* ================= LEFT ================= */}
           <div className="space-y-10">
             {/* General Information */}
@@ -316,7 +319,7 @@ const UpdateVoucher = ({
                 {t("voucher.createOrUpdate.validityRange")}
               </h2>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
                     {t("voucher.createOrUpdate.startDate")}
@@ -422,7 +425,7 @@ const UpdateVoucher = ({
               </div>
             </section>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <span className="block mb-1 font-medium text-[#253150]">
                   {t("voucher.createOrUpdate.roomTypes")}
                 </span>
@@ -445,7 +448,10 @@ const UpdateVoucher = ({
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 
+              gap-3 p-3 sm:p-4 rounded-xl border border-[#E3E7F2] bg-white"
+              >
                 {roomTypes.map((room) => {
                   const roomState = formData.roomTypes.find(
                     (r) => r.roomTypeId === room.id,
@@ -533,7 +539,7 @@ const UpdateVoucher = ({
               </div>
 
               <div
-                className={`grid ${isPercent ? "grid-cols-2" : "grid-cols-1"} gap-4`}
+                className={`grid ${isPercent ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4`}
               >
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
@@ -561,7 +567,7 @@ const UpdateVoucher = ({
                 {isPercent && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                       {t("voucher.createOrUpdate.maxDiscount")}
+                      {t("voucher.createOrUpdate.maxDiscount")}
                     </label>
                     <div className="relative">
                       <input
@@ -573,7 +579,9 @@ const UpdateVoucher = ({
                             maxDiscountValue: e.target.value,
                           }))
                         }
-                           placeholder={t("voucher.createOrUpdate.maxDiscountPlaceholder")}
+                        placeholder={t(
+                          "voucher.createOrUpdate.maxDiscountPlaceholder",
+                        )}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-12"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] font-medium">
@@ -588,14 +596,14 @@ const UpdateVoucher = ({
             {/* Usage Rules */}
             <section className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-               {t("voucher.createOrUpdate.usageRules")}
+                {t("voucher.createOrUpdate.usageRules")}
               </h2>
 
               {/* Booking Type + Minimum Stay */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                     {t("voucher.createOrUpdate.bookingType")}
+                    {t("voucher.createOrUpdate.bookingType")}
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#253150]">
@@ -626,7 +634,7 @@ const UpdateVoucher = ({
 
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                      {t("voucher.createOrUpdate.minimumStay")}
+                    {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <input
                     value={formData.minimumStay}
@@ -648,11 +656,11 @@ const UpdateVoucher = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="block mb-1 font-medium text-[#253150]">
-                      {t("voucher.createOrUpdate.customerType")}
+                    {t("voucher.createOrUpdate.customerType")}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#E3E7F2] bg-white">
                   {CUSTOMER_TYPE_OPTIONS.map((type) => {
                     const checked = formData.customerType === type.value;
                     return (
@@ -696,7 +704,7 @@ const UpdateVoucher = ({
               {/* Usage Frequency */}
               <div className="space-y-2">
                 <span className="block mb-1 font-medium text-[#253150]">
-                   {t("voucher.createOrUpdate.usageFrequency")}
+                  {t("voucher.createOrUpdate.usageFrequency")}
                 </span>
 
                 <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
@@ -743,7 +751,7 @@ const UpdateVoucher = ({
               <div className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-4">
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
-                     {t("voucher.createOrUpdate.totalUsageLimit")}
+                    {t("voucher.createOrUpdate.totalUsageLimit")}
                   </label>
                   <input
                     type="number"
@@ -760,7 +768,7 @@ const UpdateVoucher = ({
                 </div>
 
                 <Toggle
-                   label={t("voucher.createOrUpdate.usagePerCustomer")}
+                  label={t("voucher.createOrUpdate.usagePerCustomer")}
                   description={t("voucher.createOrUpdate.usagePerCustomerDesc")}
                   checked={formData.usagePerCustomer !== ""}
                   onChange={(checked) => {
@@ -773,7 +781,7 @@ const UpdateVoucher = ({
                 {formData.usagePerCustomer !== "" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
-                       {t("voucher.createOrUpdate.usageLimitPerCustomer")}
+                      {t("voucher.createOrUpdate.usageLimitPerCustomer")}
                     </label>
                     <input
                       type="number"
