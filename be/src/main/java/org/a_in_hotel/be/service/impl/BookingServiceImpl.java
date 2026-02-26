@@ -228,18 +228,33 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Page<BookingResponse> findAll(
             Integer page, Integer size, String sort, String filter, String searchField,
-            String searchValue, boolean all
+            String searchValue,boolean mine, boolean all
     ) {
         log.info("start get bookings");
-        Specification<Booking> sortable = RSQLJPASupport.toSort(sort);
-        Specification<Booking> filterable = RSQLJPASupport.toSpecification(filter);
-        Specification<Booking> searchable = SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
-        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-        return repository.findAll(
-                sortable
-                        .and(filterable)
-                        .and(searchable),
-                pageable).map(mapper::toResponse);
+        Specification<Booking> spec = Specification.where(null);
+
+        if(sort !=null && !sort.isBlank()){
+            spec = spec.and(RSQLJPASupport.toSort(sort));
+        }
+
+        if(filter !=null && !filter.isBlank()){
+            spec = spec.and(
+                    SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS)
+            );
+        }
+        if(mine){
+            Long currentAccountId = securityUtils.getCurrentUserId();
+
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("customer").get("account").get("id"), currentAccountId)
+            );
+        }
+        Pageable pageable = all
+                ? Pageable.unpaged()
+                :PageRequest.of(page-1, size);
+
+        return repository.findAll(spec, pageable)
+                .map(mapper::toResponse);
 
     }
 

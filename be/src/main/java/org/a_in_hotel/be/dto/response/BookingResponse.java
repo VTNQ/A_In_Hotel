@@ -20,7 +20,7 @@ import java.util.List;
 public class BookingResponse {
 
     private Long id;
-    private String guestName;
+        private String guestName;
     private String note;
 
     private String surname;

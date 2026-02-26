@@ -70,10 +70,11 @@ public class BookingController {
                     @RequestParam(required = false) String filter,
                     @RequestParam(required = false) String searchField,
                     @RequestParam(required = false) String searchValue,
+                    @RequestParam(defaultValue = "false") boolean mine,
                     @RequestParam(required = false) boolean all
             ){
         PageResponse<BookingResponse> pageResponse =
-                new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,all));
+                new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,mine,all));
         return ResponseEntity.ok(RequestResponse.success(pageResponse));
     }
     @GetMapping("/{id}/active-details")

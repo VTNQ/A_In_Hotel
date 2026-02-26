@@ -7,6 +7,7 @@ export interface GetAllOptions {
   filter?: string;
   searchField?: string;
   searchValue?: string;
+  mine?: boolean;
   all?: boolean;
 }
 export interface Tokens {
