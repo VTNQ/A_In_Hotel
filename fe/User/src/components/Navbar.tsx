@@ -149,7 +149,7 @@ export default function Navbar() {
                       My profile
                     </button>
                     <button
-                      onClick={() => navigate("/booking")}
+                      onClick={() => navigate("/my-booking")}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       My booking

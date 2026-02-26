@@ -19,6 +19,7 @@ public interface BookingService {
             String filter,
             String searchField,
             String searchValue,
+            boolean mine,
             boolean all);
 
     BookingResponse findById(Long id);
