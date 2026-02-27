@@ -162,7 +162,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           if (key === "roomType") setRoomType(value || "");
         }}
       />
-      <div className="grid grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <div className="col-span-2 space-y-4">
           {loading ? (
             <RoomSkeleton />

@@ -32,9 +32,9 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
     form.email.trim() &&
     form.phone.trim();
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
           {t("bookingGuest.title")}
         </h2>
         <p className="text-sm text-gray-500 mt-1">{t("bookingGuest.step")}</p>
@@ -44,7 +44,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         icon={<User className="w-5 h-5 text-indigo-500" />}
       />
 
-      <div className="grid grid-cols-2 gap-4 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
         <div>
           <label className="text-sm font-medium ">
             {t("bookingGuest.firstName")}
@@ -96,7 +96,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         title={t("bookingGuest.contact")}
         icon={<Mail className="w-5 h-5 text-indigo-500" />}
       />
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid  grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="text-sm font-medium">
             {t("bookingGuest.email")}
@@ -131,7 +131,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           onChange={(e) => update("note", e.target.value)}
         />
       </div>
-      <div className="flex justify-end gap-3 border-t pt-5">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t pt-5">
         <Button
           onClick={onCancel}
           className="

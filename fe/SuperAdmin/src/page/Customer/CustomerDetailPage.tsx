@@ -135,7 +135,15 @@ const CustomerDetailPage = () => {
 
     setBookingSortKey(key);
   };
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  });
   if (loading || !customer) return <p>Loading...</p>;
+
   return (
     <div className="flex flex-col gap-6 bg-gray-50 p-6">
       {/* BACK BUTTON */}
@@ -368,17 +376,17 @@ const CustomerDetailPage = () => {
         </>
       )}
       {activeTab === "points" && (
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
           <h2 className="text-lg font-semibold mb-4 text-[#2E3A8C]">
             {t("reward.title")}
           </h2>
           {/* FILTER BAR */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <div className="relative w-full lg:w-[320px]">
+          <div className="flex flex-col lg:flex-row lg:items-end gap-3 mb-4">
+            <div className="w-full lg:w-[320px]">
               <SelectField
                 isRequired={false}
                 items={[
-                  { value: "", label: t("reward.type.all") },
+                  { value: "All", label: t("reward.type.all") },
                   { value: "1", label: t("reward.type.earn") },
                   { value: "2", label: t("reward.type.redeem") },
                   { value: "3", label: t("reward.type.expire") },
@@ -386,7 +394,7 @@ const CustomerDetailPage = () => {
                 value={filterType}
                 onChange={(e: any) => setFilterType(e)}
                 size="sm"
-                fullWidth={false}
+                fullWidth={isMobile}
                 getValue={(i) => i.value}
                 getLabel={(i) => i.label}
               />
@@ -401,22 +409,26 @@ const CustomerDetailPage = () => {
             {/* TYPE FILTER */}
 
             {/* FILTER BUTTON */}
-            <button
-              onClick={() => fetchRewardTransaction(1)}
-              disabled={rewardTransactionLoading}
-              className={`ml-auto px-4 py-2 rounded-lg text-sm font-medium text-white
-    ${
-      rewardTransactionLoading
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-indigo-600 hover:bg-indigo-700"
-    }
-  
-  `}
-            >
-              {rewardTransactionLoading
-                ? t("common.filtering")
-                : t("common.filter")}
-            </button>
+            <div className="w-full lg:w-auto lg:ml-auto">
+<button
+          onClick={() => fetchRewardTransaction(1)}
+          disabled={rewardTransactionLoading}
+          className={`
+            w-full lg:w-auto
+            px-4 py-2 rounded-lg text-sm font-medium text-white transition
+            ${
+              rewardTransactionLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }
+          `}
+        >
+          {rewardTransactionLoading
+            ? t("common.filtering")
+            : t("common.filter")}
+        </button>
+            </div>
+        
           </div>
           {rewardTransactionLoading && (
             <div className="space-y-3">

@@ -46,7 +46,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     onChange("checkOutTime", time.checkOut);
   }, [form.package]);
   return (
-    <div className="border rounded-xl p-4 bg-white space-y-4">
+    <div className="border rounded-xl p-3 sm:p-4 bg-white space-y-4">
       <h3 className="font-semibold text-gray-900">
         {t("bookingDateTime.bookingDetails")}
       </h3>
@@ -100,7 +100,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
           getDisabled={(i) => !!i.disabled}
         />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="text-sm font-medium">
             {t("bookingDateTime.adults")}

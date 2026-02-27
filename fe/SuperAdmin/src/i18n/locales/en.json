@@ -133,6 +133,8 @@
             "categoryPlaceholder": "Select category",
             "coverImage": "Cover Image",
             "note": "Note",
+            "upload":"Click to upload or drag and drop",
+            "imageHint":"PNG, JPG, GIF up to 10MB",
             "notePlaceholder": "Internal note (not shown to customer)"
         }
     },
@@ -232,7 +234,7 @@
         "dashboards": "Dashboard",
         "home": "Home",
         "coupon": "Coupon Management",
-         "user": "User Management",
+        "user": "User Management",
         "voucher": "Voucher Management",
         "promotion": "Promotion Management",
         "hotelManagement": "Hotel Management",
@@ -1056,6 +1058,10 @@
     },
     "payment": {
         "title": "Record Payment",
+        "apply": "Apply voucher",
+        "check": "Check voucher",
+        "voucherCode": "Voucher Code",
+        "voucherPlaceholder": "Enter voucher code",
         "subtitle": "Enter the amount received from the guest.",
         "paidAmount": "Paid Amount",
         "paidAmountPlaceholder": "Enter amount paid",

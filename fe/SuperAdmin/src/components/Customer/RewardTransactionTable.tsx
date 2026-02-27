@@ -54,17 +54,19 @@ const RewardTransactionTable = ({
         onPageChange,
       }}
     >
-      <TableRow>
-        <TableHeader>
-          <TableHead>({t("reward.table.date")})</TableHead>
-          <TableHead>{t("reward.table.transactionId")}</TableHead>
-          <TableHead>{t("reward.table.bookingId")}</TableHead>
-          <TableHead>{t("reward.table.type")}</TableHead>
-          <TableHead>{t("reward.table.points")}</TableHead>
-          <TableHead>{t("reward.table.balanceBefore")}</TableHead>
-          <TableHead>{t("reward.table.description")}</TableHead>
-        </TableHeader>
+     <TableHeader>
+       <TableRow>
+    
+          <TableHead width={120}>({t("reward.table.date")})</TableHead>
+          <TableHead width={120}>{t("reward.table.transactionId")}</TableHead>
+          <TableHead width={120}>{t("reward.table.bookingId")}</TableHead>
+          <TableHead width={120}>{t("reward.table.type")}</TableHead>
+          <TableHead width={120}>{t("reward.table.points")}</TableHead>
+          <TableHead width={120}>{t("reward.table.balanceBefore")}</TableHead>
+          <TableHead width={120}>{t("reward.table.description")}</TableHead>
+       
       </TableRow>
+     </TableHeader>
 
       <TableBody>
         {rows.length === 0 ? (

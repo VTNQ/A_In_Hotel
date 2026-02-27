@@ -86,8 +86,8 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
         search={search}
         onSearch={setSearch}
       />
-      <div className="grid grid-cols-3 gap-6 mt-6">
-        <div className="col-span-2 space-y-4">
+      <div className="grid grid-cols-1  sm:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2 space-y-4">
           {loading ? (
              <ServiceSkeleton />
           ): services.length === 0 ? (
