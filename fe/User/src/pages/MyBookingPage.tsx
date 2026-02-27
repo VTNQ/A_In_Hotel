@@ -6,28 +6,31 @@ import {
   statusStyle,
   type BookingStatusTab,
 } from "../type/booking.types";
-import { getBookings } from "../service/api/bookings";
+import { cancelBook, getBookings } from "../service/api/bookings";
 import InfoBooking from "../components/booking/InfoBooking";
 import { useNavigate } from "react-router-dom";
 import BookingCardSkeleton from "../components/booking/BookingCardSkeleton";
+import { useAlert } from "../components/alert-context";
 const MyBookingsPage = () => {
   const [activeTab, setActiveTab] = useState<BookingStatusTab>("BOOKED");
   const [bookings, setBookings] = useState<any[]>([]);
+  const [cancelLoadingId, setCancelLoadingId] = useState<number | null>(null);
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const fetchData = async () => {
+    try {
+      const resp = await getBookings({
+        all: true,
+      });
+      setBookings(resp.data.content || []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await getBookings({
-          all: true,
-        });
-        setBookings(resp.data.content || []);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -37,6 +40,27 @@ const MyBookingsPage = () => {
     "CHECKOUT",
     "CANCELLED",
   ];
+  const cancelBooking = async (id: number) => {
+    try {
+      setCancelLoadingId(id);
+      await cancelBook(id);
+      showAlert({
+        title: "Cancel booking success",
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err) {
+      console.log(err);
+      showAlert({
+        title: "Cancel booking failed",
+        type: "error",
+        autoClose: 3000,
+      });
+    } finally {
+      setCancelLoadingId(null);
+    }
+  };
   const filteredBookings = useMemo(() => {
     switch (activeTab) {
       case "BOOKED":
@@ -183,8 +207,24 @@ const MyBookingsPage = () => {
                 </div>
                 <div className="px-6 py-4 border-t flex justify-end gap-3">
                   {b.status === BookingStatus.BOOKED && (
-                    <button className="px-6 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50">
-                      Cancel Booking
+                    <button
+                      onClick={() => cancelBooking(b.id)}
+                      disabled={cancelLoadingId === b.id}
+                      className={`px-6 h-10 rounded-lg border text-sm font-bold transition flex items-center justify-center gap-2
+      ${
+        cancelLoadingId === b.id
+          ? "border-red-200 text-red-400 bg-red-50 cursor-not-allowed"
+          : "border-red-200 text-red-600 hover:bg-red-50"
+      }`}
+                    >
+                      {cancelLoadingId === b.id ? (
+                        <>
+                          <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></span>
+                          Cancelling...
+                        </>
+                      ) : (
+                        "Cancel Booking"
+                      )}
                     </button>
                   )}
 
