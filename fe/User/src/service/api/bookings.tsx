@@ -42,3 +42,7 @@ export const getBookingById = async (id: number) => {
     withCredentials: true,
   });
 };
+export const cancelBook = async (id: number) => {
+  return await Http.patch(`/api/bookings/${id}/cancel`, {
+  });
+};

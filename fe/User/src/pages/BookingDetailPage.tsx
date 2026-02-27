@@ -58,13 +58,7 @@ export default function BookingDetailPage() {
 
     if (id) fetchBooking();
   }, [id]);
-  const cancelBooking = async (id:number)=>{
-    try {
-
-    }catch(err){
-      console.log(err)
-    }
-  }
+  
 
   if (loading) {
     return <BookingDetailSkeleton/>;
