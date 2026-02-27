@@ -9,6 +9,7 @@ import {
 import { getBookings } from "../service/api/bookings";
 import InfoBooking from "../components/booking/InfoBooking";
 import { useNavigate } from "react-router-dom";
+import BookingCardSkeleton from "../components/booking/BookingCardSkeleton";
 const MyBookingsPage = () => {
   const [activeTab, setActiveTab] = useState<BookingStatusTab>("BOOKED");
   const [bookings, setBookings] = useState<any[]>([]);
@@ -87,16 +88,17 @@ const MyBookingsPage = () => {
             {loading && (
               <>
                 {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse rounded-xl border bg-white p-6 shadow-sm"
-                  >
-                    <div className="h-4 bg-gray-200 rounded w-1/3 mb-4" />
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2" />
-                    <div className="h-4 bg-gray-200 rounded w-1/4" />
-                  </div>
+                  <BookingCardSkeleton key={i} />
                 ))}
               </>
+            )}
+            {!loading && filteredBookings.length === 0 && (
+              <div className="rounded-xl border bg-white dark:bg-slate-800/40 p-10 text-center shadow-sm">
+                <p className="text-lg font-bold">No reservations found</p>
+                <p className="text-slate-500 mt-1">
+                  Try switching tabs or create a new booking.
+                </p>
+              </div>
             )}
             {filteredBookings.map((b) => (
               <div
