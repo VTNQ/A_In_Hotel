@@ -200,11 +200,26 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   if (!open || !roomId) return null;
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto custom-scrollbar">
-        <DialogHeader>
-          <DialogTitle>{t("room.createOrUpdate.titleEdit")}</DialogTitle>
-        </DialogHeader>
-        {fetching ? (
+      <DialogContent
+        className="
+          p-0
+          w-[calc(100vw-20px)] sm:w-full
+          max-w-[96vw] sm:max-w-xl lg:max-w-3xl
+          max-h-[90vh]
+          overflow-y-auto
+    custom-scrollbar
+
+        "
+      >
+      <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              {t("room.createOrUpdate.titleEdit")}
+            </DialogTitle>
+          </DialogHeader>
+        </div>
+        <div className="overflow-y-auto custom-scrollbar px-6 py-5">
+  {fetching ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
             <span className="ml-3 text-sm text-gray-500">
@@ -485,6 +500,8 @@ const RoomEdit: React.FC<RoomEditProps> = ({
             </DialogFooter>
           </div>
         )}
+        </div>
+      
       </DialogContent>
     </Dialog>
   );

@@ -73,7 +73,7 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               {t("promotion.schedule.title")}
             </h3>
           </div>
-          <div className="grid grid-cols-3 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label className="font-medium text-[#253150">
                 {t("promotion.schedule.startDate")}

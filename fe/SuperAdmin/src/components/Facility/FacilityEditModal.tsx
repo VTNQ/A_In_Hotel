@@ -16,6 +16,7 @@ import {
   DialogHeader,
 } from "../ui/dialog";
 import { useTranslation } from "react-i18next";
+import { Upload, X } from "lucide-react";
 
 const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   open,
@@ -24,9 +25,10 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   onSubmit,
 }) => {
   const { showAlert } = useAlert();
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const { t } = useTranslation();
 
   const [formData, setFormData] = useState<FacilityForm>({
     serviceName: "",
@@ -39,7 +41,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   const [preview, setPreview] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
 
-  // ===== Fetch categories =====
+  // ================= Fetch Categories =================
   const fetchCategories = async () => {
     try {
       const res = await getAllCategories({
@@ -52,7 +54,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     }
   };
 
-  // ===== Fetch facility =====
+  // ================= Fetch Facility =================
   useEffect(() => {
     if (!open || !facilityId) return;
 
@@ -70,27 +72,26 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       } catch (err) {
         console.error(err);
       } finally {
-        setFetching(false)
+        setFetching(false);
       }
     };
 
-    fetchData();
     fetchCategories();
+    fetchData();
 
     return () => {
-      // cleanup preview url
       if (preview?.startsWith("blob:")) {
         URL.revokeObjectURL(preview);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [open, facilityId]);
 
   if (!open || !facilityId) return null;
 
-  // ===== Handlers =====
+  // ================= Handlers =================
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -99,13 +100,23 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+
+    if (preview?.startsWith("blob:")) {
+      URL.revokeObjectURL(preview);
+    }
+
     setCoverImage(file);
     setPreview(URL.createObjectURL(file));
   };
 
+  const handleRemoveImage = () => {
+    setCoverImage(null);
+    setPreview(null);
+  };
+
   const handleSubmit = async () => {
     if (loading) return;
+
     try {
       setLoading(true);
 
@@ -114,7 +125,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
         description: formData.description,
         note: formData.note,
         categoryId: Number(formData.categoryId),
-        image: coverImage, // giữ đúng tên field API
+        image: coverImage,
         extraCharge: 0,
         price: 0,
       };
@@ -124,32 +135,22 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       showAlert({
         title: response?.data?.message || t("facility.edit.success"),
         type: "success",
-        autoClose: 4000,
+        autoClose: 3000,
       });
 
-      // reset
-      setFormData({
-        serviceName: "",
-        description: "",
-        note: "",
-        categoryId: "",
-      });
-      setCoverImage(null);
-      setPreview(null);
-      onClose();
+      handleClose();
       onSubmit();
     } catch (err: any) {
       showAlert({
         title: t("facility.edit.failed"),
-        description:
-          err?.response?.data?.message || t("common.tryAgain"),
+        description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
-        autoClose: 4000,
       });
     } finally {
       setLoading(false);
     }
   };
+
   const handleClose = () => {
     setFormData({
       serviceName: "",
@@ -160,35 +161,42 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     setCoverImage(null);
     setPreview(null);
     onClose();
-  }
+  };
+
   return (
-    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
+    <Dialog open={!!open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent
         className="
-    w-full
-    max-w-2xl
-    max-h-[90vh]
-    overflow-y-auto
+          p-0
+          w-[calc(100vw-20px)] sm:w-full
+          max-w-[96vw] sm:max-w-lg lg:max-w-2xl
+          max-h-[90vh]
+          overflow-y-auto
     custom-scrollbar
-  "
+        "
       >
-
-        <DialogHeader>
-          <DialogTitle>{t("facility.edit.title")}</DialogTitle>
-        </DialogHeader>
-        {fetching ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
+        {/* HEADER */}
+        <div className="sticky top-0 z-10 border-b bg-white">
+          <DialogHeader className="px-6 py-4">
+            <DialogTitle className="text-lg font-semibold">
               {t("facility.edit.title")}
-            </span>
-          </div>
-        ) : (
-          <>
-            <div className="space-y-4 py-2">
-              {/* Name */}
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{t("facility.form.name")}</label>
+            </DialogTitle>
+          </DialogHeader>
+        </div>
+
+        {/* BODY */}
+        <div className="custom-scrollbar overflow-y-auto px-6 py-5">
+          {fetching ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-gray-700" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              {/* Service Name */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("facility.form.name")}
+                </label>
                 <Input
                   name="serviceName"
                   value={formData.serviceName}
@@ -198,14 +206,19 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
               </div>
 
               {/* Category */}
-              <div className="grid gap-2">
-                <label className="text-sm font-medium"> {t("facility.form.category")}</label>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("facility.form.category")}
+                </label>
                 <SelectField
                   items={categories}
-                  isRequired={true}
+                  isRequired
                   value={formData.categoryId}
                   onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, categoryId: String(v) }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryId: String(v),
+                    }))
                   }
                   placeholder={t("facility.form.categoryPlaceholder")}
                   getValue={(i) => String(i.id)}
@@ -213,25 +226,72 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 />
               </div>
 
+              {/* Description */}
+              <div className="space-y-2 lg:col-span-2">
+                <label className="text-sm font-medium">
+                  {t("facility.form.description")}
+                </label>
+                <Textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder={t("facility.form.descriptionHint")}
+                />
+              </div>
+
+              {/* Note */}
+              <div className="space-y-2 lg:col-span-2">
+                <label className="text-sm font-medium">
+                  {t("facility.form.note")}
+                </label>
+                <Textarea
+                  name="note"
+                  value={formData.note}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder={t("facility.form.noteHint")}
+                />
+              </div>
+
               {/* Cover Image */}
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{t("facility.form.coverImage")}</label>
+              <div className="space-y-2 lg:col-span-2">
+                <label className="text-sm font-medium">
+                  {t("facility.form.coverImage")}
+                </label>
 
                 <label
                   htmlFor="cover-upload"
-                  className="flex aspect-video cursor-pointer items-center justify-center
-                         rounded-lg border-2 border-dashed border-gray-300
-                         bg-gray-50 hover:border-primary"
+                  className="
+                    relative flex aspect-video cursor-pointer
+                    items-center justify-center
+                    rounded-xl border-2 border-dashed
+                    border-gray-300 bg-gray-50
+                    hover:border-gray-400 transition
+                  "
                 >
                   {preview ? (
-                    <img
-                      src={preview}
-                      alt={t("facility.form.preview")}
-                      className="h-full w-full rounded-lg object-cover"
-                    />
+                    <>
+                      <img
+                        src={preview}
+                        alt="Preview"
+                        className="h-full w-full rounded-xl object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveImage();
+                        }}
+                        className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </>
                   ) : (
                     <div className="text-center text-sm text-gray-500">
-                      <p className="font-medium">{t("facility.form.upload")}</p>
+                      <Upload className="mx-auto mb-2 h-5 w-5" />
+                      <p>{t("facility.form.upload")}</p>
                       <p className="text-xs">{t("facility.form.imageHint")}</p>
                     </div>
                   )}
@@ -245,43 +305,30 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                   onChange={onFileInputChange}
                 />
               </div>
-
-              {/* Description */}
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{t("facility.form.description")}</label>
-                <Textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows={3}
-                  placeholder={t("facility.form.descriptionHint")}
-                />
-              </div>
-
-              {/* Note */}
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{t("facility.form.note")}</label>
-                <Textarea
-                  name="note"
-                  value={formData.note}
-                  onChange={handleChange}
-                  rows={2}
-                  placeholder={t("facility.form.noteHint")}
-                />
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={handleClose} disabled={loading}>
-                  {t("common.cancel")}
-                </Button>
-                <Button onClick={handleSubmit} disabled={loading}>
-                  {loading ? t("common.saving") : t("common.save")}
-                </Button>
-              </DialogFooter>
             </div>
-          </>
-        )}
+          )}
+        </div>
 
+        {/* FOOTER */}
+        <div className="border-t bg-white px-6 py-4">
+          <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
+              {loading ? t("common.saving") : t("common.save")}
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

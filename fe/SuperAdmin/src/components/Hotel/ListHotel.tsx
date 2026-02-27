@@ -101,8 +101,9 @@ const ListHotel: React.FC = () => {
   // ================= RENDER =================
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold"> {t("hotel.listTitle")}</h2>
+       <h2 className="text-xl font-semibold"> {t("hotel.listTitle")}</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-start">
+       
 
         <HotelFilter
           search={search}
