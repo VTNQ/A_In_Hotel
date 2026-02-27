@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBookingById } from "../service/api/bookings";
+import BookingDetailSkeleton from "../components/booking/BookingDetailSkeleton";
 
 /* ================= TYPES ================= */
 
@@ -57,9 +58,16 @@ export default function BookingDetailPage() {
 
     if (id) fetchBooking();
   }, [id]);
+  const cancelBooking = async (id:number)=>{
+    try {
+
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   if (loading) {
-    return <div className="p-10 text-center">Loading...</div>;
+    return <BookingDetailSkeleton/>;
   }
 
   if (!booking) {
