@@ -132,7 +132,7 @@ const CreateExtraServicePage = () => {
         />
       </div>
       <div className="rounded-xl border bg-white p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-medium">
               {t("extraService.name")} <span className="text-red-500">*</span>
@@ -254,7 +254,7 @@ const CreateExtraServicePage = () => {
         <div className="space-y-2">
           <Label>{t("extraService.icon")}</Label>
 
-          <div className="relative w-48">
+          <div className="relative lg:w-48">
             <input
               ref={fileInputRef}
               type="file"

@@ -6,14 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.a_in_hotel.be.Enum.UnitExtraService;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "extra_services")
@@ -41,17 +36,17 @@ public class ExtraService {
     private Category category;
     @Column(name = "extra_charge", nullable = false)
     private Integer extraCharge;
-    @Column(name = "price", precision = 15, scale = 2, nullable = false)
-    private BigDecimal price;
+//    @Column(name = "price", precision = 15, scale = 2, nullable = false)
+//    private BigDecimal price;
 
     private Integer type;
 
     @Transient
     private Image icon;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "unit", length = 50, nullable = false)
-    private UnitExtraService unit;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "unit", length = 50, nullable = false)
+//    private UnitExtraService unit;
     @Column(name = "hotel_id")
     private Long hotelId;
     @Column(name = "is_active")

@@ -29,10 +29,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const { t } = useTranslation();
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [hotels, setHotels] = useState<any[]>([]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<ExtraServiceForm>({
     name: "",
     description: "",
@@ -45,109 +49,100 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
     icon: null,
     note: "",
   });
-  const fetchCategories = async () => {
-    try {
+
+  /* ================= FETCH ================= */
+
+  useEffect(() => {
+    if (!open || !extraServiceId) return;
+
+    const loadData = async () => {
+      setFetching(true);
+      try {
+        const res = await getFacilityById(extraServiceId);
+
+        setFormData({
+          name: res.serviceName ?? "",
+          description: res.description ?? "",
+          categoryId: res.categoryId ?? null,
+          unit: res.unit ?? null,
+          price: res.price ?? "",
+          type: "",
+          hotelId: res.hotelId ?? null,
+          extraCharge: res.extraCharge ?? "",
+          icon: null,
+          note: res.note ?? "",
+        });
+
+        setImagePreview(
+          res?.icon?.url ? File_URL + res.icon.url : null
+        );
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    const loadCategories = async () => {
       const res = await getAllCategories({
         all: true,
         filter: "isActive==1 and type==2",
       });
       setCategories(res.content || []);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const fetchHotels = async () => {
-    try {
+    };
+
+    const loadHotels = async () => {
       const res = await getAllHotel({
         all: true,
         filter: "status==1",
       });
-      console.log(res);
       setHotels(res?.data?.content || []);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    if (!open || !extraServiceId) return;
-    const fetchData = async () => {
-      setFetching(true);
-      try {
-        const response = await getFacilityById(extraServiceId);
-        setFormData({
-          name: response.serviceName ?? "",
-          description: response.description ?? "",
-          categoryId: response.categoryId ?? null,
-          unit: response.unit ?? null,
-          price: response.price ?? "",
-          type: "",
-          hotelId: response.hotelId ?? null,
-          extraCharge: response.extraCharge ?? "",
-          icon: null,
-          note: response.note ?? "",
-        });
-        setImagePreview(
-          response?.icon?.url ? File_URL + response.icon.url : null,
-        );
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setFetching(false);
-      }
     };
-    fetchData();
-    fetchCategories();
-    fetchHotels();
+
+    loadData();
+    loadCategories();
+    loadHotels();
   }, [open, extraServiceId]);
+
+
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = async () => {
     if (loading) return;
+
     try {
       setLoading(true);
+
       const payload = {
         serviceName: formData.name.trim(),
         price: Number(formData.price),
         categoryId: Number(formData.categoryId),
-        unit: formData.unit?.trim() ?? "",
+        unit: formData.unit,
         description: formData.description.trim(),
-        isActive: true,
         note: formData.note.trim(),
         extraCharge: formData.extraCharge,
         image: formData.icon,
-        type: 2,
         hotelId: formData.hotelId,
+        type: 2,
+        isActive: true,
       };
-      const response = await updateExtraServcie(
+
+      const res = await updateExtraServcie(
         Number(extraServiceId),
-        payload,
+        payload
       );
+
       showAlert({
         title:
-          response?.data?.message ||
+          res?.data?.message ||
           t("extraService.createOrUpdate.updateSucess"),
         type: "success",
-        autoClose: 4000,
       });
-      setFormData({
-        name: "",
-        description: "",
-        categoryId: null,
-        unit: null,
-        price: "",
-        type: "",
-        hotelId: null,
-        extraCharge: "",
-        icon: null,
-        note: "",
-      });
+
       onSubmit();
       onClose();
     } catch (err: any) {
@@ -155,79 +150,64 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         title: t("extraService.createOrUpdate.updateError"),
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
-        autoClose: 4000,
       });
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
-  const handleClose = () => {
-    setFormData({
-      name: "",
-      description: "",
-      categoryId: null,
-      unit: null,
-      price: "",
-      type: "",
-      hotelId: null,
-      extraCharge: "",
-      icon: null,
-      note: "",
-    });
-    setImagePreview(null);
-    onClose();
-  };
-  if (!open || !extraServiceId) return <></>;
+
+  if (!open || !extraServiceId) return null;
+
+  /* ================= UI ================= */
+
   return (
-    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto custom-scrollbar">
-        <DialogHeader>
-          <DialogTitle>
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl p-0">
+        
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+          <DialogTitle className="text-lg font-semibold">
             {t("extraService.createOrUpdate.titleEdit")}
           </DialogTitle>
         </DialogHeader>
 
         {fetching ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
-              {t("common.loading")}
-            </span>
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="space-y-5 py-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
+          <>
+            {/* FORM */}
+            <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              {/* NAME */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  {t("extraService.name")}
-                  <span className="text-red-500 ml-1">*</span>
+                  {t("extraService.name")} *
                 </label>
                 <Input
                   name="name"
                   value={formData.name}
-                  placeholder={t("extraService.createOrUpdate.namePlaceHolder")}
                   onChange={handleChange}
-                  className="mt-1"
+                  className="h-11"
                 />
               </div>
 
-              <div>
+              {/* DESCRIPTION */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
                   {t("extraService.description")}
                 </label>
                 <Input
                   name="description"
                   value={formData.description}
-                  placeholder={t(
-                    "extraService.createOrUpdate.descriptionPlaceHolder",
-                  )}
                   onChange={handleChange}
-                  className="mt-1"
+                  className="h-11"
                 />
               </div>
 
-              {/* ===== Category ===== */}
-              <div className="sm:col-span-2">
+              {/* CATEGORY */}
+              <div className="md:col-span-2">
                 <SelectField
                   label={t("extraService.category")}
                   items={categories}
@@ -236,88 +216,70 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                     setFormData((prev) => ({ ...prev, categoryId: v }))
                   }
                   isRequired
-                  placeholder={t("facility.form.categoryPlaceholder")}
                   getValue={(i) => i.id}
                   getLabel={(i) => i.name}
                 />
               </div>
-              <div>
-                <SelectField
-                  label={t("extraService.unit")}
-                  items={[
-                    {
-                      label: "Per Night",
-                      value: "PERNIGHT",
-                    },
-                    {
-                      label: "Per Day",
-                      value: "PERDAY",
-                    },
-                    {
-                      label: "Per Use",
-                      value: "PERUSE",
-                    },
-                    {
-                      label: "Per Hour",
-                      value: "PERHOUR",
-                    },
-                  ]}
-                  value={formData.unit}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, unit: v }))
-                  }
-                  isRequired={true}
-                  placeholder={t("extraService.createOrUpdate.defaultUnit")}
-                  getValue={(i) => i.value}
-                  getLabel={(i) => i.label}
-                />
-              </div>
-              <div>
+
+              {/* UNIT */}
+              <SelectField
+                label={t("extraService.unit")}
+                items={[
+                  { label: "Per Night", value: "PERNIGHT" },
+                  { label: "Per Day", value: "PERDAY" },
+                  { label: "Per Use", value: "PERUSE" },
+                  { label: "Per Hour", value: "PERHOUR" },
+                ]}
+                value={formData.unit}
+                onChange={(v) =>
+                  setFormData((prev) => ({ ...prev, unit: v }))
+                }
+                isRequired
+                getValue={(i) => i.value}
+                getLabel={(i) => i.label}
+              />
+
+              {/* PRICE */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  {t("extraService.price")}{" "}
-                  <span className="text-red-500">*</span>
+                  {t("extraService.price")} *
                 </label>
                 <Input
                   name="price"
-                  placeholder="Enter service price"
-                  onChange={handleChange}
                   value={formData.price}
-                  className="mt-1"
+                  onChange={handleChange}
+                  className="h-11"
                 />
               </div>
-              <div>
+
+              {/* EXTRA CHARGE */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  {t("extraService.extraCharge")}{" "}
-                  <span className="text-red-500">*</span>
+                  {t("extraService.extraCharge")} *
                 </label>
                 <Input
                   name="extraCharge"
-                  placeholder="Enter extra charge"
-                  onChange={handleChange}
                   value={formData.extraCharge}
-                  className="mt-1"
+                  onChange={handleChange}
+                  className="h-11"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">
-                  {t("extraService.hotel")}{" "}
-                  <span className="text-red-500">*</span>
-                </label>
-                <SelectField
-                  items={hotels}
-                  value={formData.hotelId}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, hotelId: v }))
-                  }
-                  isRequired={true}
-                  placeholder={t(
-                    "extraService.createOrUpdate.hotelPlaceHolder",
-                  )}
-                  getValue={(i) => i.id}
-                  getLabel={(i) => i.name}
-                />
-              </div>
-              <div className="sm:col-span-2">
+
+              {/* HOTEL */}
+              <SelectField
+                label={t("extraService.hotel")}
+                items={hotels}
+                value={formData.hotelId}
+                onChange={(v) =>
+                  setFormData((prev) => ({ ...prev, hotelId: v }))
+                }
+                isRequired
+                getValue={(i) => i.id}
+                getLabel={(i) => i.name}
+              />
+
+              {/* NOTE */}
+              <div className="md:col-span-2 space-y-2">
                 <label className="text-sm font-medium">
                   {t("extraService.note")}
                 </label>
@@ -325,87 +287,60 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   name="note"
                   value={formData.note}
                   onChange={handleChange}
-                  placeholder={t("common.notePlaceholder")}
                   rows={3}
-                  className="mt-1"
                 />
               </div>
-              <div className="sm:col-span-2">
-                <label className="text-sm">{t("extraService.icon")}</label>
 
-                <div className="relative mt-2 w-[26%]">
+              {/* IMAGE */}
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-sm font-medium">
+                  {t("extraService.icon")}
+                </label>
+
+                <div className="relative w-full max-w-sm">
                   <input
-                    ref={fileInputRef}
+                    ref={fileRef}
                     type="file"
                     accept="image/*"
-                    className={`absolute inset-0 cursor-pointer opacity-0 ${
-                      imagePreview ? "pointer-events-none" : "z-10"
-                    }`}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-
                       setFormData((prev) => ({ ...prev, icon: file }));
                       setImagePreview(URL.createObjectURL(file));
                     }}
                   />
 
-                  <div className="flex min-h-[150px] w-[132%] items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#42578E]">
+                  <div className="flex min-h-[160px] items-center justify-center border-2 border-dashed rounded-xl bg-gray-50">
                     {!imagePreview ? (
-                      <p className="text-sm font-medium text-slate-600">
-                        {t("extraService.createOrUpdate.uploadHint")}
-                      </p>
+                      <span className="text-sm text-gray-500">
+                        Upload image
+                      </span>
                     ) : (
-                      <div className="relative w-full overflow-hidden rounded-lg">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="h-40 w-full object-cover"
-                        />
-
-                        {/* Close button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImagePreview(null);
-                            setFormData((prev) => ({ ...prev, image: null }));
-                            if (fileInputRef.current) {
-                              fileInputRef.current.value = "";
-                            }
-                          }}
-                          className="
-              absolute right-2 top-2
-              flex h-7 w-7 items-center justify-center
-              rounded-full bg-black/60
-              text-sm text-white
-              hover:bg-black/80
-            "
-                          aria-label="Remove image"
-                        >
-                          ✕
-                        </button>
-                      </div>
+                      <img
+                        src={imagePreview}
+                        className="h-40 w-full object-cover rounded-lg"
+                      />
                     )}
                   </div>
                 </div>
               </div>
             </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                disabled={loading}
-              >
+
+            {/* FOOTER */}
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+              <Button variant="outline" onClick={onClose}>
                 {t("common.cancel")}
               </Button>
               <Button onClick={handleSubmit} disabled={loading}>
                 {loading ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
-          </div>
+          </>
         )}
       </DialogContent>
     </Dialog>
   );
 };
+
 export default ExtraServiceEditModal;

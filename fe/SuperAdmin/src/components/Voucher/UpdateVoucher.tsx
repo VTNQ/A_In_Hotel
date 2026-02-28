@@ -10,7 +10,12 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAlert } from "../alert-context";
 import { Dialog } from "@radix-ui/react-dialog";
-import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import Toggle from "../ui/Toogle";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -235,7 +240,8 @@ const UpdateVoucher = ({
     <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
         size="xl"
-        className=" p-6 max-h-[85vh] custom-scrollbar overflow-y-auto"
+        className="w-[calc(100vw-24px)] sm:w-[calc(100vw-48px)] lg:w-[1100px]
+        max-w-none p-4 sm:p-6 lg:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar"
       >
         <DialogHeader>
           <DialogTitle>{t("voucher.createOrUpdate.titleEdit")}</DialogTitle>
@@ -249,7 +255,7 @@ const UpdateVoucher = ({
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-12 ">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 ">
               {/* ================= LEFT ================= */}
               <div className="space-y-10">
                 {/* General Information */}
@@ -322,7 +328,7 @@ const UpdateVoucher = ({
                     {t("voucher.createOrUpdate.validityRange")}
                   </h2>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block mb-1 font-medium text-[#253150]">
                         {t("voucher.createOrUpdate.startDate")}
@@ -436,7 +442,7 @@ const UpdateVoucher = ({
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
                     {roomTypes.map((room) => {
                       const roomState = formData.roomTypes.find(
                         (r) => r.roomTypeId === room.id,
@@ -520,7 +526,7 @@ const UpdateVoucher = ({
                   </div>
 
                   <div
-                    className={`grid ${isPercent ? "grid-cols-2" : "grid-cols-1"} gap-4`}
+                    className={`grid gap-4 ${isPercent ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4`}
                   >
                     <div>
                       <label className="block mb-1 font-medium text-[#253150]">
@@ -583,7 +589,7 @@ const UpdateVoucher = ({
                   </h2>
 
                   {/* Booking Type + Minimum Stay */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block mb-1 font-medium text-[#253150]">
                         {t("voucher.createOrUpdate.bookingType")}
@@ -647,7 +653,7 @@ const UpdateVoucher = ({
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
                       {CUSTOMER_TYPE_OPTIONS.map((type) => {
                         const checked = formData.customerType === type.value;
                         return (
@@ -694,7 +700,7 @@ const UpdateVoucher = ({
                       {t("voucher.createOrUpdate.usageFrequency")}
                     </span>
 
-                    <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
                       {USAGE_TYPE_OPTIONS.map((opt) => {
                         const checked = formData.usageType === opt.value;
                         return (
@@ -793,15 +799,18 @@ const UpdateVoucher = ({
                 </section>
               </div>
             </div>
-             <DialogFooter>
+            <DialogFooter>
               <Button
                 variant="outline"
                 onClick={handleCancel}
                 disabled={loading}
+                className="w-full sm:w-auto"
               >
                 {t("common.cancel")}
               </Button>
-              <Button onClick={handleSubmit} disabled={loading}>
+              <Button onClick={handleSubmit} disabled={loading}
+              className="w-full sm:w-auto min-w-[140px]"
+              >
                 {loading ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>

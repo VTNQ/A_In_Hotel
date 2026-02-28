@@ -65,22 +65,22 @@ const BookingHistoryTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="bookingCode">
+          <TableHead width={120} sortable sortKey="bookingCode">
             {t("reward.table.bookingId")}
           </TableHead>
-          <TableHead sortable sortKey="checkedInAt">
+          <TableHead width={220} sortable sortKey="checkedInAt">
             {t("booking.actualCheckIn")}
           </TableHead>
-          <TableHead sortable sortKey="checkedOutAt">
+          <TableHead width={220} sortable sortKey="checkedOutAt">
             {t("booking.actualCheckOut")}
           </TableHead>
-          <TableHead sortable sortKey="details.roomName">
+          <TableHead width={120} sortable sortKey="details.roomName">
             {t("booking.room")}
           </TableHead>
-          <TableHead sortable sortKey="totalPrice">
+          <TableHead width={120} sortable sortKey="totalPrice">
             {t("booking.totalPrice")}
           </TableHead>
-          <TableHead sortable sortKey="status">
+          <TableHead width={120} sortable sortKey="status">
             {t("common.status")}
           </TableHead>
         </TableRow>
@@ -107,6 +107,19 @@ const BookingHistoryTable = ({
                   ? row.checkedOutAt
                   : t("booking.notCheckedOutIn")}
               </TableCell>
+                <TableCell>
+                {(() => {
+                  if (!row.details || row.details.length === 0) return "-";
+
+                  const detail = row.details.find(
+                    (d: any) => d.roomId !== null,
+                  );
+
+                  return detail
+                    ? `${detail.roomName}`
+                    : `${row.details[0]?.roomName || ""}`;
+                })()}
+              </TableCell>
               <TableCell>{row.totalPrice}</TableCell>
               <TableCell>
                 {(() => {
@@ -126,6 +139,7 @@ const BookingHistoryTable = ({
                   );
                 })()}
               </TableCell>
+            
             </TableRow>
           ))
         )}

@@ -13,9 +13,7 @@ const ExtraServiceFormModal = ({
 }: ExtraServiceFormModalProps) => {
     const [formData, setFormData] = useState({
         serviceName: "",
-        price: "",
         categoryId: "",
-        unit: "",
         description: "",
         note: "",
         priceType: "1",
@@ -59,9 +57,7 @@ const ExtraServiceFormModal = ({
     const handleCancel = () => {
         setFormData({
             serviceName: "",
-            price: "",
             categoryId: "",
-            unit: "",
             description: "",
             note: "",
             priceType: "1",
@@ -75,9 +71,7 @@ const ExtraServiceFormModal = ({
         try {
             const payload = {
                 serviceName: formData.serviceName.trim(),
-                price: Number(formData.price),
                 categoryId: Number(formData.categoryId),
-                unit: formData.unit.trim(),
                 description: formData.description.trim(),
                 isActive: true,
                 note: formData.note.trim(),
@@ -99,9 +93,7 @@ const ExtraServiceFormModal = ({
             // Reset form và callback
             setFormData({
                 serviceName: "",
-                price: "",
                 categoryId: "",
-                unit: "",
                 description: "",
                 note: "",
                 priceType: "1",
@@ -228,40 +220,7 @@ const ExtraServiceFormModal = ({
                         )}
                     </select>
                 </div>
-                {/* Unit */}
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("extraService.unit")} *
-                    </label>
-                    <select
-                        name="unit"
-                        value={formData.unit}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    >
-                        <option value="">{t("extraService.createOrUpdate.defaultUnit")}</option>
-                        <option value="PERNIGHT">Per Night</option>
-                        <option value="PERDAY">Per Day</option>
-                        <option value="PERUSE">Per Use</option>
-                        <option value="PERTRIP">Per Trip</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("extraService.price")} (VNĐ) *
-                    </label>
-                    <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        placeholder="Enter service price"
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        min={0}
-                        required
-                    />
-                </div>
+
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                         {t("extraService.extraCharge")}*

@@ -149,7 +149,15 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
                 key={s.extraServiceId || s.id}
                 className="flex justify-between"
               >
-                <span className="text-gray-600">{s.serviceName}</span>
+                <span className="text-gray-600">
+                  {s.serviceName}
+                  {s.extraCharge && (
+                    <span className="text-gray-400 ml-1">
+                      ({s.extraCharge}%)
+                    </span>
+                  )}
+                </span>
+
                 <span className="font-medium">
                   ${Number(s.price).toFixed(2)}
                 </span>

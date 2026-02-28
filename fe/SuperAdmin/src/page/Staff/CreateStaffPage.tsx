@@ -107,7 +107,7 @@ const CreateStaffPage = () => {
         />
       </div>
       <div className="rounded-xl border bg-white p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-medium">
               {t("staff.fullName")}

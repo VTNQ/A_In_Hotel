@@ -53,7 +53,7 @@ const ConfirmCheckOut = ({
     const filterParts = [
       "isActive==true",
       "type==2",
-      "price=gt=0",
+      "extraCharge=gt=0",
       `hotelId==${getTokens()?.hotelId}`,
     ];
 
@@ -372,10 +372,13 @@ const ConfirmCheckOut = ({
                           if (!service) return;
 
                           const next = [...extraCharges];
+                          const percent = service.extraCharge || 0;
+                          const baseAmount = data?.totalPrice ?? 0;
+                          const calculatedPrice = (baseAmount * percent) / 100;
                           next[idx] = {
                             id: service.id,
                             name: service.serviceName,
-                            price: service.price,
+                            price: calculatedPrice,
                             icon: service.icon,
                           };
                           setExtraCharges(next);
@@ -417,7 +420,8 @@ const ConfirmCheckOut = ({
                       text-gray-400
                       hover:text-red-500 
                       hover:bg-red-50 
-                      transition">
+                      transition"
+                    >
                       🗑️
                     </button>
                   </div>

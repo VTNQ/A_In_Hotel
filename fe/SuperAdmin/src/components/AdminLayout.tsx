@@ -43,6 +43,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
   const SECTIONS: SectionSpec[] = [
     {
@@ -58,7 +59,7 @@ export default function AdminLayout() {
           icon: BedDouble,
           path: "/Home/booking",
         },
-        { label: t("sidebar.user"), icon: Users,path:"/Home/customer" },
+        { label: t("sidebar.user"), icon: Users, path: "/Home/customer" },
         {
           label: t("sidebar.staff"),
           icon: UserCog,
@@ -197,85 +198,77 @@ export default function AdminLayout() {
 
   if (authChecking) return null;
 
-  return (
-    <div className="min-h-screen w-full bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-100">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-neutral-800 dark:bg-neutral-950/60">
-        <div className="mx-auto flex h-16  items-center justify-between gap-3 px-4">
-          {/* Left: logo + menu button */}
+   return (
+    <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-100">
+      {/* ================= HEADER ================= */}
+      <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur dark:bg-neutral-950/70">
+        <div className="flex h-16 items-center justify-between px-4">
+          {/* LEFT */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500" />
-              <span className="hidden text-xl font-semibold sm:block">
+              <span className="hidden sm:block text-xl font-semibold">
                 zynix
               </span>
             </div>
+
             <button
-              onClick={() => setCollapsed((v) => !v)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-neutral-800 dark:text-neutral-300"
-              aria-label="Toggle sidebar"
+              onClick={() => {
+                if (window.innerWidth < 1024) {
+                  setMobileOpen(true);
+                } else {
+                  setCollapsed((v) => !v);
+                }
+              }}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border hover:bg-gray-100 dark:hover:bg-neutral-800"
             >
-              <Menu className="h-5 w-5" />
+              <Menu size={20} />
             </button>
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2">
-            <IconBtn label={t("topbar.search")}>
-              <Search className="h-5 w-5" />
-            </IconBtn>
-            <LanguageSwitcher />
+          {/* RIGHT */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             <IconBtn label="Theme" onClick={() => setDark((v) => !v)}>
-              {dark ? (
-                <SunMedium className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
+              {dark ? <SunMedium size={18} /> : <Moon size={18} />}
             </IconBtn>
-            <IconBtn label="Messages" badge="5">
-              <Mail className="h-5 w-5" />
-            </IconBtn>
-            <IconBtn label="Notifications" dot>
-              <Bell className="h-5 w-5" />
-            </IconBtn>
-            <IconBtn label="Fullscreen">
-              <Maximize2 className="h-5 w-5" />
-            </IconBtn>
+
+            <LanguageSwitcher />
+
             <UserDropdown
-              name="Musharof Chowdhury"
-              email="randomuser@pimjo.com"
+              name="Admin"
+              email="admin@email.com"
               avatarUrl="https://i.pravatar.cc/40?img=5"
-              onProfile={() => navigate("/home/profile")}
-              onSettings={() => navigate("/home/account-settings")}
               onLogout={() => {
                 clearTokens();
                 navigate("/", { replace: true });
               }}
             />
-
-            <IconBtn label="Settings">
-              <Settings className="h-5 w-5" />
-            </IconBtn>
           </div>
         </div>
       </header>
 
-      {/* Main layout */}
+      {/* ================= LAYOUT ================= */}
       <div className="flex">
         <Sidebar
           collapsed={collapsed}
           sections={SECTIONS}
+          mobileOpen={mobileOpen}
+          onCloseMobile={() => setMobileOpen(false)}
           onToggle={() => setCollapsed((v) => !v)}
         />
-        <main className="flex-1 p-6 max-w-[80%]">
+
+        <main className="flex-1 min-w-0 p-4 sm:p-6">
           <AlertProvider>
             <Outlet />
           </AlertProvider>
         </main>
       </div>
+
       <SessionExpiredModal open={showModal} />
     </div>
   );
+
+
 }
 
 function IconBtn({
@@ -335,44 +328,88 @@ function Sidebar({
   collapsed,
   sections,
   onToggle,
+  mobileOpen,
+  onCloseMobile,
 }: {
   collapsed: boolean;
   sections: SectionSpec[];
   onToggle: () => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }) {
   const widthClass = collapsed ? "w-20" : "w-72";
 
   return (
-    <aside
-      className={`${widthClass} sticky top-16 h-[calc(100vh-4rem)] shrink-0 border-r border-gray-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-neutral-800 dark:bg-neutral-950/70 transition-[width] duration-300`}
-      aria-label="Sidebar"
-    >
-      {/* Mini header for collapsed control on small viewports */}
-      <div className="hidden h-12 items-center justify-end px-2 lg:flex">
-        <button
-          onClick={onToggle}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
-      </div>
+    <>
+      {/* 🔹 Overlay mobile */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={onCloseMobile}
+        />
+      )}
 
-      <nav className="no-scrollbar h-full overflow-y-auto px-2 pb-6">
-        {sections.map((section, idx) => (
-          <SidebarSection
-            key={section.title}
-            section={section}
-            collapsed={collapsed}
-            defaultOpen={idx < 2}
-          />
-        ))}
-      </nav>
-    </aside>
+      <aside
+        aria-label="Sidebar"
+        className={`
+        ${widthClass}
+        fixed lg:sticky
+        top-0 lg:top-16
+        left-0
+        h-full lg:h-[calc(100vh-4rem)]
+        z-50 lg:z-0
+        border-r border-gray-200 dark:border-neutral-800
+        bg-white dark:bg-neutral-950
+        transform transition-transform duration-300 ease-in-out
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+        flex flex-col
+      `}
+      >
+        {/* 🔹 Mobile header */}
+        <div className="flex items-center justify-between p-3 lg:hidden border-b dark:border-neutral-800">
+          <span className="font-semibold">Menu</span>
+          <button
+            onClick={onCloseMobile}
+            className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* 🔹 Desktop collapse button */}
+        <div className="hidden lg:flex h-12 items-center justify-end px-2">
+          <button
+            onClick={onToggle}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg
+          border border-gray-200 dark:border-neutral-800
+          bg-white dark:bg-neutral-900
+          text-gray-700 dark:text-neutral-200
+          shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-800
+          focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </button>
+        </div>
+
+        {/* 🔹 Scrollable menu */}
+        <nav className="flex-1 overflow-y-auto px-2 pb-6 no-scrollbar">
+          {sections.map((section, idx) => (
+            <SidebarSection
+              key={section.title}
+              section={section}
+              collapsed={collapsed}
+              defaultOpen={idx < 2}
+            />
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 }
 

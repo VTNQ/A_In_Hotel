@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import type { HotelFormData } from "@/type/hotel.types";
 import Breadcrumb from "../Breadcrumb";
 import { useTranslation } from "react-i18next";
+import { Upload, X } from "lucide-react";
 
 /**
  * FormLayouts
@@ -78,21 +79,27 @@ export default function CreateHotel() {
       });
     }
   };
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setFormData((prev) => ({ ...prev, image: null }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-
-      <div>
-        <h1 className="text-2xl font-semibold">
-          {t("hotel.hotelCreate.title")}
-        </h1>
-        <Breadcrumb
-          items={[
-            { label: t("hotel.breadcrumb.home"), href: "/Home" },
-            { label: t("hotel.breadcrumb.hotel"), href: "/Home/hotel" },
-          ]}
-        />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            {t("hotel.hotelCreate.title")}
+          </h1>
+          <Breadcrumb
+            items={[
+              { label: t("hotel.breadcrumb.home"), href: "/Home" },
+              { label: t("hotel.breadcrumb.hotel"), href: "/Home/hotel" },
+            ]}
+          />
+        </div>
       </div>
 
       {/* Grid */}
@@ -204,82 +211,69 @@ export default function CreateHotel() {
                 </Button>
               </div>
               <div className="space-y-2">
-                <Label>{t("hotel.hotelCreate.image")}</Label>
+                <Label className="text-sm font-medium text-slate-700">
+                  {t("hotel.hotelCreate.image")}
+                </Label>
 
-                <div className="relative mt-2 w-[13%]">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className={`absolute inset-0 cursor-pointer opacity-0 ${
-                      imagePreview ? "pointer-events-none" : "z-10"
-                    }`}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      setFormData((prev) => ({
-                        ...prev,
-                        image: file,
-                      }));
-                      setImagePreview(URL.createObjectURL(file));
-                    }}
-                  />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setFormData((prev) => ({ ...prev, image: file }));
+                    setImagePreview(URL.createObjectURL(file));
+                  }}
+                />
 
-                  <div className="flex min-h-[130px] w-[126%] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50  text-center hover:border-[#42578E]">
-                    {!imagePreview ? (
-                      <>
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200">
-                          <svg
-                            className="h-6 w-6 text-slate-500"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 16.5V7.5A2.25 2.25 0 015.25 5.25h13.5A2.25 2.25 0 0121 7.5v9a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 16.5z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 13.5l4.5-4.5a2.25 2.25 0 013.182 0L15 13.5"
-                            />
-                          </svg>
-                        </div>
-                        <p className="text-sm font-medium text-slate-600">
-                          {t("hotel.hotelCreate.uploadHint")}
-                        </p>
-                        <p className="text-xs text-slate-400">JPG, PNG</p>
-                      </>
-                    ) : (
-                      <div className="relative w-full">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="h-48 w-full rounded-lg object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImagePreview(null);
-                            setFormData((prev) => ({
-                              ...prev,
-                              image: null,
-                            }));
-                            if (fileInputRef.current) {
-                              fileInputRef.current.value = "";
-                            }
-                          }}
-                          className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
-                        >
-                          ✕
-                        </button>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => !imagePreview && fileInputRef.current?.click()}
+                  className="
+                    relative overflow-hidden rounded-2xl border-2 border-dashed
+                    border-slate-200 bg-slate-50
+                    hover:border-slate-300 transition
+                    cursor-pointer
+                  "
+                >
+                  {!imagePreview ? (
+                    <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12">
+                      <div className="rounded-full bg-white p-3 shadow-sm">
+                        <Upload className="h-5 w-5 text-slate-600" />
                       </div>
-                    )}
-                  </div>
+                      <p className="text-sm font-medium text-slate-700">
+                        {t("hotel.hotelCreate.uploadHint")}
+                      </p>
+                      <p className="text-xs text-slate-500">JPG, PNG</p>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-[220px] w-full object-cover sm:h-[280px]"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveImage();
+                        }}
+                        className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white hover:bg-black/70"
+                        aria-label="Remove image"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                <p className="text-xs text-slate-500">
+                  {t("hotel.hotelCreate.uploadHint")}
+                </p>
               </div>
               <Button type="submit"> {t("common.save")}</Button>
             </form>

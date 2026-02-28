@@ -7,8 +7,8 @@ const CustomerFilter = ({ search, onSearchChange }: CustomerFilterProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex justify-end">
-      <div className="relative w-full sm:w-100">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-end gap-4 w-full">
+      <div className="relative w-full sm:max-w-sm md:max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
           value={search}

@@ -12,7 +12,7 @@ import {
 import { getAll } from "@/service/api/Authenticate";
 import { File_URL } from "@/setting/constant/app";
 
-import {  Search, SearchIcon, X } from "lucide-react";
+import { Search, SearchIcon, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -27,7 +27,7 @@ interface BasicRow {
   birthday: string | number;
   gender: string;
   phone: string;
-  createdOn: string | number;
+  createdAt: string | number;
   url?: string;
 }
 interface Column<T> {
@@ -189,12 +189,12 @@ const ListAdmin: React.FC = () => {
           ),
       },
       {
-        key: "createdOn",
+        key: "createdAt",
         header: t("admin.table.createdAt"),
         sortable: true,
         cell: (row) => (
           <span className="text-muted-foreground">
-            {formatDate(row.createdOn)}
+            {formatDate(row.birthday)}
           </span>
         ),
       },
@@ -215,60 +215,74 @@ const ListAdmin: React.FC = () => {
     return rows.filter((r) => r.gender === genderFilter);
   }, [rows, genderFilter]);
 
-  return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{t("admin.title")}</h2>
+return (
+  <div className="space-y-6">
+    {/* TITLE */}
+    <h2 className="text-xl font-semibold">
+      {t("admin.title")}
+    </h2>
 
-        <div className="flex items-center gap-2">
-          <SelectField<{ value: SearchField; label: string }>
-            isRequired={false}
-            items={[
-              { value: "default", label: t("admin.searchField.default") },
-              { value: "fullName", label: t("admin.searchField.fullName") },
-              { value: "email", label: t("admin.searchField.email") },
-              { value: "phone", label: t("admin.searchField.phone") },
-            ]}
-            value={searchField}
-            onChange={(val) => {
-              setSearchField((val as SearchField) ?? "default");
-              setUiPage(1);
-            }}
-            placeholder={t("admin.searchField.placeHolder")}
-            size="sm"
-            fullWidth={false}
-            getValue={(i) => i.value}
-            getLabel={(i) => i.label}
-          />
-          <SelectField<{ value: "ALL" | Gender; label: string }>
-            isRequired={false}
-            items={[
-              { value: "ALL", label: t("common.all") },
-              { value: "MALE", label: t("gender.male") },
-              { value: "FEMALE", label: t("gender.female") },
-            ]}
-            value={genderFilter}
-            onChange={(val) => {
-              setGenderFilter((val as "ALL" | Gender) ?? "ALL");
-              setUiPage(1);
-            }}
-            placeholder={t("admin.filterStatus")}
-            size="sm"
-            fullWidth={false}
-            getValue={(i) => i.value}
-            getLabel={(i) => i.label}
-            clearable={false}
-          />
+    {/* ================= HEADER FILTER ================= */}
+    <div className="w-full">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
-          <div className="relative w-72">
-            <Search
-              className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
+        {/* LEFT FILTERS */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-nowrap">
+
+          {/* SEARCH FIELD */}
+          <div className="w-full sm:w-[180px]">
+            <SelectField
+              isRequired={false}
+              items={[
+                { value: "default", label: t("admin.searchField.default") },
+                { value: "fullName", label: t("admin.searchField.fullName") },
+                { value: "email", label: t("admin.searchField.email") },
+                { value: "phone", label: t("admin.searchField.phone") },
+              ]}
+              value={searchField}
+              onChange={(val) => {
+                setSearchField((val as SearchField) ?? "default");
+                setUiPage(1);
+              }}
+              placeholder={t("admin.searchField.placeHolder")}
+              size="sm"
+              fullWidth
+              getValue={(i) => i.value}
+              getLabel={(i) => i.label}
             />
+          </div>
+
+          {/* GENDER FILTER */}
+          <div className="w-full sm:w-[160px]">
+            <SelectField
+              isRequired={false}
+              items={[
+                { value: "ALL", label: t("common.all") },
+                { value: "MALE", label: t("gender.male") },
+                { value: "FEMALE", label: t("gender.female") },
+              ]}
+              value={genderFilter}
+              onChange={(val) => {
+                setGenderFilter((val as "ALL" | Gender) ?? "ALL");
+                setUiPage(1);
+              }}
+              size="sm"
+              fullWidth
+              getValue={(i) => i.value}
+              getLabel={(i) => i.label}
+            />
+          </div>
+        </div>
+
+        {/* RIGHT: SEARCH + BUTTON */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center w-full lg:w-auto">
+
+          {/* SEARCH INPUT */}
+          <div className="relative w-full sm:w-[280px] lg:w-[320px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder={SEARCH_PLACEHOLDER[searchField]}
-              className="pl-9"
+              className="pl-9 w-full"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -277,29 +291,42 @@ const ListAdmin: React.FC = () => {
             />
           </div>
 
-          <Button asChild>
-            <a href="/Home/Admin/create">+ {t("admin.add")}</a>
+          {/* ADD BUTTON */}
+          <Button asChild className="w-full sm:w-auto whitespace-nowrap">
+            <a href="/Home/Admin/create">
+              + {t("admin.add")}
+            </a>
           </Button>
         </div>
       </div>
+    </div>
 
-      {/* Table */}
-      <div className="rounded-2xl border bg-card">
-        {error && <div className="p-3 text-sm text-red-600">{error}</div>}
+    {/* ================= TABLE ================= */}
+    <div className="rounded-2xl border bg-card overflow-hidden">
+      {error && (
+        <div className="p-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      {/* scroll ngang khi thiếu width */}
+      <div className="w-full overflow-x-auto">
         <Table sortKey={sortKey} sortDir={sortDir} onSort={onSort}>
           <TableHeader>
             <TableRow>
               {cols.map((c) => (
                 <TableHead
+                width={220}
                   key={String(c.key)}
                   sortable={c.sortable}
                   sortKey={c.key as keyof BasicRow}
                 >
-                  <span>{c.header}</span>
+                  {c.header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {loading ? (
               <TableRow>
@@ -311,7 +338,7 @@ const ListAdmin: React.FC = () => {
               filteredRows.map((row, idx) => (
                 <TableRow key={row.id}>
                   {cols.map((c) => (
-                    <TableCell key={String(c.key)}>
+                    <TableCell key={String(c.key)} className="whitespace-nowrap">
                       {c.key === "index"
                         ? (uiPage - 1) * pageSize + idx + 1
                         : c.cell
@@ -334,10 +361,17 @@ const ListAdmin: React.FC = () => {
           </TableBody>
         </Table>
       </div>
+    </div>
 
-      {/* (Tuỳ chọn) Pagination đơn giản */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-end gap-2">
+    {/* ================= PAGINATION ================= */}
+    {totalPages > 1 && (
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+
+        <span className="text-sm text-muted-foreground">
+          {t("common.page")} {uiPage} / {totalPages}
+        </span>
+
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -346,9 +380,7 @@ const ListAdmin: React.FC = () => {
           >
             {t("common.prev")}
           </Button>
-          <span className="text-sm">
-            {t("common.page")} {uiPage}/{totalPages}
-          </span>
+
           <Button
             variant="outline"
             size="sm"
@@ -358,8 +390,9 @@ const ListAdmin: React.FC = () => {
             {t("common.next")}
           </Button>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 };
 export default ListAdmin;

@@ -163,119 +163,148 @@ const EditBlog: React.FC<BlogEditProps> = ({
     onClose();
   };
   if (!open || !blogId) return <></>;
-  return (
-    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("blog.createOrUpdate.titleEdit")}</DialogTitle>
-        </DialogHeader>
-        {fetching ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
-              {t("common.loading")}
-            </span>
-          </div>
-        ) : (
-          <>
-            <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-1">
-              <div className="space-y-4 py-2">
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("blog.name")} <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    name="title"
-                    placeholder={t("blog.createOrUpdate.enterTitle")}
-                    onChange={handleTextChange}
-                    value={formData.title}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("blog.category")} <span className="text-red-500">*</span>
-                  </label>
-                  <SelectField
-                    items={categories}
-                    value={formData.category}
-                    onChange={(v) =>
-                      setFormData((prev) => ({ ...prev, category: v }))
-                    }
-                    isRequired={true}
-                    placeholder={t("blog.createOrUpdate.selectCategory")}
-                    getValue={(i) => String(i.id)}
-                    getLabel={(i) => i.name}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("common.status")}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <SelectField
-                    items={[
-                      { value: "1", label: t("blog.draft") },
-                      { value: "2", label: t("blog.published") },
-                    ]}
-                    value={formData.status}
-                    placeholder={t("blog.createOrUpdate.selectStatus")}
-                    onChange={(v) =>
-                      setFormData((prev) => ({ ...prev, status: v }))
-                    }
-                    isRequired={true}
-                    getValue={(i) => String(i.value)}
-                    getLabel={(i) => i.label}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("blog.description")}
-                  </label>
-                  <QuillEditor
-                    theme="snow"
-                    value={formData.description}
-                    onChange={(v) =>
-                      setFormData((f) => ({ ...f, description: v }))
-                    }
-                    modules={fullToolbar}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("blog.content")}
-                  </label>
-                  <QuillEditor
-                    theme="snow"
-                    value={formData.content}
-                    onChange={(v) => setFormData((f) => ({ ...f, content: v }))}
-                    modules={fullToolbar}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("banner.thumbnail")}
-                  </label>
-                  <UploadField
-                    className="mt-2 w-full"
-                    defaultPreviewUrl={defaultPreview}
-                    onChange={handleBannerImage}
-                  />
-                </div>
+ return (
+  <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+    <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 rounded-2xl overflow-hidden">
+
+      {/* HEADER */}
+      <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+        <DialogTitle className="text-lg font-semibold">
+          {t("blog.createOrUpdate.titleEdit")}
+        </DialogTitle>
+      </DialogHeader>
+
+      {fetching ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
+          {/* BODY SCROLL */}
+          <div className="px-6 py-6 overflow-y-auto max-h-[70vh] space-y-6">
+
+            {/* TOP GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              {/* TITLE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("blog.name")} *
+                </label>
+                <Input
+                  name="title"
+                  value={formData.title}
+                  onChange={handleTextChange}
+                  className="h-11"
+                />
+              </div>
+
+              {/* STATUS */}
+              <div className="space-y-2">
+                <SelectField
+                  label={t("common.status")}
+                  items={[
+                    { value: "1", label: t("blog.draft") },
+                    { value: "2", label: t("blog.published") },
+                  ]}
+                  value={formData.status}
+                  onChange={(v) =>
+                    setFormData((prev) => ({ ...prev, status: v }))
+                  }
+                  isRequired
+                  getValue={(i) => String(i.value)}
+                  getLabel={(i) => i.label}
+                />
+              </div>
+
+              {/* CATEGORY FULL */}
+              <div className="md:col-span-2 space-y-2">
+                <SelectField
+                  label={t("blog.category")}
+                  items={categories}
+                  value={formData.category}
+                  onChange={(v) =>
+                    setFormData((prev) => ({ ...prev, category: v }))
+                  }
+                  isRequired
+                  getValue={(i) => String(i.id)}
+                  getLabel={(i) => i.name}
+                />
+              </div>
+
+            </div>
+
+            {/* DESCRIPTION */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("blog.description")}
+              </label>
+              <div className="border rounded-lg overflow-hidden">
+                <QuillEditor
+                  theme="snow"
+                  value={formData.description}
+                  onChange={(v) =>
+                    setFormData((f) => ({ ...f, description: v }))
+                  }
+                  modules={fullToolbar}
+                  className="min-h-[180px]"
+                />
               </div>
             </div>
-          </>
-        )}
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={loading}>
-            {t("common.cancel")}
-          </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? t("common.saving") : t("common.save")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+
+            {/* CONTENT */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("blog.content")}
+              </label>
+              <div className="border rounded-lg overflow-hidden">
+                <QuillEditor
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(v) =>
+                    setFormData((f) => ({ ...f, content: v }))
+                  }
+                  modules={fullToolbar}
+                  className="min-h-[250px]"
+                />
+              </div>
+            </div>
+
+            {/* IMAGE */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("banner.thumbnail")}
+              </label>
+              <UploadField
+                className="w-full"
+                defaultPreviewUrl={defaultPreview}
+                onChange={handleBannerImage}
+              />
+            </div>
+
+          </div>
+
+          {/* FOOTER */}
+          <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              disabled={loading}
+            >
+              {t("common.cancel")}
+            </Button>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? t("common.saving") : t("common.save")}
+            </Button>
+          </DialogFooter>
+        </>
+      )}
+    </DialogContent>
+  </Dialog>
+);
 };
 export default EditBlog;

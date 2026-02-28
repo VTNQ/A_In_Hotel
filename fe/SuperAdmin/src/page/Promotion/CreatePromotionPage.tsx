@@ -119,7 +119,7 @@ const CreatePromotionPage = () => {
 
       <div className="rounded-xl border bg-white">
         {/* Tabs */}
-        <div className="flex gap-10 px-10 pt-6">
+        <div className="flex overflow-x-auto px-4 sm:px-6 lg:px-10 pt-6 gap-6 sm:gap-8">
           <TabButton
             icon={<Info size={18} />}
             label={t("promotion.tabs.general")}
@@ -142,7 +142,7 @@ const CreatePromotionPage = () => {
         <div className="mt-2 border-b" />
 
         {/* Content */}
-        <div className="px-10 py-8">
+        <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
           {activeTab === "general" && (
             <GeneralTab formData={formData} setFormData={setFormData} />
           )}
@@ -153,20 +153,32 @@ const CreatePromotionPage = () => {
             <TargetingTab formData={formData} setFormData={setFormData} />
           )}
         </div>
-        <div className="flex items-center justify-between border-t px-10 py-4">
+        <div
+          className="flex flex-col gap-4
+          sm:flex-row sm:items-center sm:justify-between
+          border-t px-4 sm:px-6 lg:px-10
+          py-4"
+        >
           {/* LEFT ACTIONS */}
-          <div className="flex gap-3">
-            {/* Cancel */}
-            <Button variant="outline" onClick={()=>navigate("/Home/coupon/promotion")} className="text-slate-600">
+          <div
+            className="flex flex-col gap-3
+            sm:flex-row sm:gap-3
+            w-full sm:w-auto"
+          >
+            <Button
+              variant="outline"
+              onClick={() => navigate("/Home/coupon/promotion")}
+              className="w-full sm:w-auto text-slate-600"
+            >
               {t("common.cancel")}
             </Button>
 
-            {/* Back */}
             {!isFirstTab && (
               <Button
                 variant="secondary"
                 onClick={handleBack}
                 disabled={loading}
+                className="w-full sm:w-auto"
               >
                 {t("promotion.back")}
               </Button>
@@ -174,15 +186,23 @@ const CreatePromotionPage = () => {
           </div>
 
           {/* RIGHT ACTION */}
-          <div>
+          <div className="w-full sm:w-auto">
             {!isLastTab ? (
-              <Button onClick={handleNext} disabled={loading}>
+              <Button
+                onClick={handleNext}
+                disabled={loading}
+                className="w-full sm:w-auto"
+              >
                 {t("promotion.next")}
               </Button>
             ) : (
-              <Button onClick={handleSubmit} disabled={loading}>
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full sm:w-auto min-w-[120px]"
+              >
                 {loading ? (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center justify-center gap-2">
                     <svg
                       className="h-4 w-4 animate-spin"
                       viewBox="0 0 24 24"
@@ -205,7 +225,7 @@ const CreatePromotionPage = () => {
                     {t("common.saving")}
                   </span>
                 ) : (
-                t("promotion.launch")
+                  t("promotion.launch")
                 )}
               </Button>
             )}

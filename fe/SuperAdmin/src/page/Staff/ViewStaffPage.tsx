@@ -17,7 +17,7 @@ const ViewStaffPage = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
-  const {showAlert} = useAlert();
+  const { showAlert } = useAlert();
   const [sortKey, setSortKey] = useState<keyof Staff | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
@@ -46,46 +46,49 @@ const ViewStaffPage = () => {
       setLoading(false);
     }
   }, [page, sortKey, sortDir, search, statusFilter]);
-  useEffect(()=>{
+  useEffect(() => {
     fetchStaff();
-  },[fetchStaff]);
-   const handleSort = (key: keyof Staff) => {
-      setPage(1);
-  
-      setSortDir((prev) => {
-        if (sortKey === key) {
-          return prev === "asc" ? "desc" : "asc";
-        }
-        return "desc";
-      });
-  
-      setSortKey(key);
-    };
-    const handleChangeStatus = async (id:number,next:any)=>{
-      try {
-        setLoading(true);
-        await updateStatus(id,next);
-        fetchStaff();
-        showAlert({
-          title: t("staff.status.updateSuccess"),
-          type: "success",
-        });
+  }, [fetchStaff]);
+  const handleSort = (key: keyof Staff) => {
+    setPage(1);
 
-      }catch(err: any){
-        showAlert({
-          title:
-            err?.response?.data?.message ||
-            t("staff.status.updateFailed"),
-          type: "error",
-        })
-      }finally{
-        setLoading(false)
+    setSortDir((prev) => {
+      if (sortKey === key) {
+        return prev === "asc" ? "desc" : "asc";
       }
+      return "desc";
+    });
+
+    setSortKey(key);
+  };
+  const handleChangeStatus = async (id: number, next: any) => {
+    try {
+      setLoading(true);
+      await updateStatus(id, next);
+      fetchStaff();
+      showAlert({
+        title: t("staff.status.updateSuccess"),
+        type: "success",
+      });
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("staff.status.updateFailed"),
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
+  };
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">{t("staff.title")}</h2>
+        <div>
+          <h2 className="text-xl font-semibold">{t("staff.title")}</h2>
+        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-start">
+        {/* TITLE */}
+      
+
+        {/* FILTER */}
         <StaffFilter
           search={search}
           onSearchChange={setSearch}
@@ -106,8 +109,8 @@ const ViewStaffPage = () => {
         pageSize={10}
         total={totalPages}
         onPageChange={setPage}
-        onActive={(row:Staff)=>handleChangeStatus(row.id,true)}
-        onInActive={(row:Staff)=>handleChangeStatus(row.id,false)}
+        onActive={(row: Staff) => handleChangeStatus(row.id, true)}
+        onInActive={(row: Staff) => handleChangeStatus(row.id, false)}
       />
     </div>
   );

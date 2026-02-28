@@ -182,74 +182,77 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
     setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }));
   if (!open || !bannerId) return <></>;
   return (
-    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("banner.createOrUpdate.titleEdit")}</DialogTitle>
+    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+      <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[96vh] p-0 rounded-2xl overflow-y-auto">
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+          <DialogTitle className="text-lg font-semibold">
+            {t("banner.createOrUpdate.titleEdit")}
+          </DialogTitle>
         </DialogHeader>
+
         {fetching ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
-              {t("common.loading")}
-            </span>
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-1">
-            <div className="space-y-6 py-2">
-              {/* TITLE */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.name")} <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  name="title"
-                  placeholder={t("banner.createOrUpdate.enterName")}
-                  onChange={handleChange}
-                  value={formData.title}
-                />
-              </div>
+          <>
+            {/* BODY SCROLL */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+              {/* TOP GRID */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* TITLE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("banner.name")} *
+                  </label>
+                  <Input
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="h-11"
+                  />
+                </div>
 
-              {/* START DATE */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.startAt")} <span className="text-red-500">*</span>
-                </label>
-                <DateTimePicker
-                  value={formData.startDate}
-                  onChange={(d) => setFormData((p) => ({ ...p, startDate: d }))}
-                  disabledDate={(date) => isBefore(date, startOfToday())}
-                  placeholder={t("banner.createOrUpdate.selectStartAt")}
-                />
-              </div>
+                {/* CTA */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("banner.createOrUpdate.ctaLabel")}
+                  </label>
+                  <Input
+                    name="cta"
+                    value={formData.cta}
+                    onChange={handleChange}
+                    className="h-11"
+                  />
+                </div>
 
-              {/* END DATE */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.endAt")} <span className="text-red-500">*</span>
-                </label>
-                <DateTimePicker
-                  value={formData.endDate}
-                  minDateTime={formData.startDate}
-                  onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
-                  disabledDate={(date) =>
-                    !formData.startDate ? false : date <= formData.startDate
-                  }
-                  placeholder={t("banner.createOrUpdate.selectEndAt")}
-                />
-              </div>
+                {/* START DATE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("banner.startAt")} *
+                  </label>
+                  <DateTimePicker
+                    value={formData.startDate}
+                    onChange={(d) =>
+                      setFormData((p) => ({ ...p, startDate: d }))
+                    }
+                    placeholder={t("banner.createOrUpdate.selectStartAt")}
+                  />
+                </div>
 
-              {/* CTA */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.createOrUpdate.ctaLabel")}
-                </label>
-                <Input
-                  name="cta"
-                  placeholder={t("banner.createOrUpdate.enterCtaLabel")}
-                  onChange={handleChange}
-                  value={formData.cta}
-                />
+                {/* END DATE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("banner.endAt")} *
+                  </label>
+                  <DateTimePicker
+                    value={formData.endDate}
+                    minDateTime={formData.startDate}
+                    onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
+                    placeholder={t("banner.createOrUpdate.selectEndAt")}
+                  />
+                </div>
               </div>
 
               {/* DESCRIPTION */}
@@ -257,34 +260,46 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                 <label className="text-sm font-medium">
                   {t("banner.createOrUpdate.description")}
                 </label>
-                <QuillEditor
-                  theme="snow"
-                  value={formData.desc}
-                  onChange={(v) => setFormData((f) => ({ ...f, desc: v }))}
-                  modules={fullToolbar}
-                />
+                <div className="border rounded-lg overflow-hidden">
+                  <QuillEditor
+                    theme="snow"
+                    value={formData.desc}
+                    onChange={(v) => setFormData((f) => ({ ...f, desc: v }))}
+                    modules={fullToolbar}
+                    className="min-h-[200px]"
+                  />
+                </div>
               </div>
-              <div>
+
+              {/* IMAGE */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
                   {t("banner.thumbnail")}
                 </label>
                 <UploadField
-                  className="mt-2 w-full"
+                  className="w-full"
                   defaultPreviewUrl={defaultPreview}
                   onChange={handleBannerImage}
                 />
               </div>
             </div>
-          </div>
+
+            {/* FOOTER */}
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                disabled={loading}
+              >
+                {t("common.cancel")}
+              </Button>
+
+              <Button onClick={handleSubmit} disabled={loading}>
+                {loading ? t("common.saving") : t("common.save")}
+              </Button>
+            </DialogFooter>
+          </>
         )}
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={loading}>
-            {t("common.cancel")}
-          </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? t("common.saving") : t("common.save")}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

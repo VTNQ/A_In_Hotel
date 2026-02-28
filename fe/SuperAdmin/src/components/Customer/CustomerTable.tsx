@@ -42,16 +42,16 @@ const CustomerTable = ({
     >
       <TableHeader>
        <TableRow>
-         <TableHead>{t("customer.table.customerId")}</TableHead>
-        <TableHead>{t("customer.table.fullName")}</TableHead>
-        <TableHead>{t("customer.table.email")}</TableHead>
-        <TableHead>{t("customer.table.phone")}</TableHead>
-        <TableHead>{t("customer.table.totalBookings")}</TableHead>
-        <TableHead>{t("customer.table.rewardBalance")}</TableHead>
-        <TableHead>{t("customer.table.block")}</TableHead>
-        <TableHead>{t("common.status")}</TableHead>
-        <TableHead>{t("customer.table.lastBooking")}</TableHead>
-        <TableHead>{t("common.action")}</TableHead>
+         <TableHead width={120}>{t("customer.table.customerId")}</TableHead>
+        <TableHead width={220}>{t("customer.table.fullName")}</TableHead>
+        <TableHead width={220}>{t("customer.table.email")}</TableHead>
+        <TableHead  width={220}>{t("customer.table.phone")}</TableHead>
+        <TableHead  width={220}>{t("customer.table.totalBookings")}</TableHead>
+        <TableHead  width={220}>{t("customer.table.rewardBalance")}</TableHead>
+        <TableHead  width={220}>{t("customer.table.block")}</TableHead>
+        <TableHead  width={220}>{t("common.status")}</TableHead>
+        <TableHead  width={220}>{t("customer.table.lastBooking")}</TableHead>
+        <TableHead  width={220}>{t("common.action")}</TableHead>
        </TableRow>
       </TableHeader>
       <TableBody>

@@ -79,6 +79,8 @@
             "name": "Tên tiện ích",
             "namePlaceholder": "Nhập tên tiện ích",
             "description": "Mô tả",
+            "upload":"Nhấn để tải ảnh hoặc kéo thả",
+            "uploadHint": "SVG, PNG, JPG",
             "descriptionPlaceholder": "Mô tả tiện ích (hiển thị cho khách)",
             "category": "Danh mục",
             "categoryPlaceholder": "Chọn danh mục",
@@ -992,6 +994,10 @@
     },
     "payment": {
         "title": "Ghi nhận thanh toán",
+        "apply": "Áp dụng",
+        "check": "Kiểm tra voucher",
+        "voucherCode": "Mã giảm giá",
+        "voucherPlaceholder": "Nhập mã giảm giá",
         "subtitle": "Nhập số tiền khách đã thanh toán.",
         "paidAmount": "Số tiền đã trả",
         "paidAmountPlaceholder": "Nhập số tiền đã thanh toán",
@@ -1056,6 +1062,7 @@
     },
     "serviceSelection": {
         "title": "Nâng cao trải nghiệm lưu trú",
+        "ofBooking":"trên tổng đơn đặt",
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",

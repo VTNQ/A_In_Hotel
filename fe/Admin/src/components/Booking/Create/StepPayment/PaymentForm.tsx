@@ -41,7 +41,7 @@ const PaymentForm = ({
       const discountAmount = res.data?.data?.discountAmount || 0;
 
       setDiscount(discountAmount);
-      setVoucherSuccess( "Voucher applied successfully");
+      setVoucherSuccess("Voucher applied successfully");
     } catch (err: any) {
       setDiscount(0);
       setVoucherSuccess("");
@@ -74,16 +74,32 @@ const PaymentForm = ({
       specialRequest: room.specialRequest || "",
       price: Number(room.price) * nights,
     }));
+    const rooms = booking.rooms || [];
 
+    const roomsTotal = rooms.reduce(
+      (sum: number, room: any) => sum + (room.price || 0) * nights,
+      0,
+    );
+    const servicesTotal = (booking.services || []).reduce(
+      (sum: number, s: any) => {
+        const percent = Number(s.extraCharge) || 0;
+        const servicePrice = (roomsTotal * percent) / 100;
+        return sum + servicePrice;
+      },
+      0,
+    );
     // ===== SERVICE DETAILS =====
-    const serviceDetails = (booking.services || []).map((s: any) => ({
-      extraServiceId: s.extraServiceId,
-      price: Number(s.price),
-    }));
-    const originalTotal =
-      roomDetails.reduce((s: number, r: any) => s + r.price, 0) +
-      serviceDetails.reduce((s: number, r: any) => s + r.price, 0);
+    const serviceDetails = (booking.services || []).map((s: any) => {
+      const percent = s.extraCharge || 0;
+      const price = (roomsTotal * percent) / 100;
 
+      return {
+        extraServiceId: s.extraServiceId,
+
+        price: Number(price.toFixed(2)),
+      };
+    });
+    const originalTotal = Number((roomsTotal + servicesTotal).toFixed(2));
     return {
       // ===== GUEST =====
       guestName: booking.guest?.firstName,
@@ -95,7 +111,7 @@ const PaymentForm = ({
       numberOfGuests: booking.guest?.adults ?? 1,
       note: booking.guest?.note,
       idNumber: booking.guest?.idNumber,
-      voucherCode:voucherCode.trim() === "" ? null : voucherCode,
+      voucherCode: voucherCode.trim() === "" ? null : voucherCode,
       originalAmount: originalTotal,
       discountAmount: discount,
       // ===== PAYMENT =====
@@ -152,46 +168,43 @@ const PaymentForm = ({
   };
 
   return (
-  <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm">
-    {/* HEADER */}
-    <h2 className="text-xl sm:text-2xl font-semibold mb-1">
-      {t("payment.title")}
-    </h2>
-    <p className="text-sm text-gray-500 mb-6">
-      {t("payment.subtitle")}
-    </p>
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm">
+      {/* HEADER */}
+      <h2 className="text-xl sm:text-2xl font-semibold mb-1">
+        {t("payment.title")}
+      </h2>
+      <p className="text-sm text-gray-500 mb-6">{t("payment.subtitle")}</p>
 
-    {/* FORM GRID */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* FORM GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* PAID AMOUNT */}
+        <div>
+          <label className="text-sm text-gray-600">
+            {t("payment.paidAmount")}
+          </label>
+          <Input
+            type="number"
+            placeholder={t("payment.paidAmountPlaceholder")}
+            value={paidAmountInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              let value = e.target.value;
+              if (value.length > 1 && value.startsWith("0")) {
+                value = value.replace(/^0+/, "");
+              }
+              setPaidAmountInput(value);
+            }}
+          />
+        </div>
 
-      {/* PAID AMOUNT */}
-      <div>
-        <label className="text-sm text-gray-600">
-          {t("payment.paidAmount")}
-        </label>
-        <Input
-          type="number"
-          placeholder={t("payment.paidAmountPlaceholder")}
-          value={paidAmountInput}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            let value = e.target.value;
-            if (value.length > 1 && value.startsWith("0")) {
-              value = value.replace(/^0+/, "");
-            }
-            setPaidAmountInput(value);
-          }}
-        />
-      </div>
-
-      {/* PAYMENT METHOD */}
-      <div>
-        <label className="text-sm text-gray-600">
-          {t("payment.paymentMethod")}
-        </label>
-        <select
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
-          className="
+        {/* PAYMENT METHOD */}
+        <div>
+          <label className="text-sm text-gray-600">
+            {t("payment.paymentMethod")}
+          </label>
+          <select
+            value={method}
+            onChange={(e) => setMethod(e.target.value)}
+            className="
             mt-1 w-full
             border border-gray-300
             rounded-lg px-3 py-2
@@ -200,61 +213,59 @@ const PaymentForm = ({
             focus:border-[#42578E]
             transition
           "
-        >
-          <option value="CASH">{t("payment.method.CASH")}</option>
-          <option value="CARD">{t("payment.method.CARD")}</option>
-          <option value="BANK_TRANSFER">
-            {t("payment.method.BANK_TRANSFER")}
-          </option>
-        </select>
-      </div>
+          >
+            <option value="CASH">{t("payment.method.CASH")}</option>
+            <option value="CARD">{t("payment.method.CARD")}</option>
+            <option value="BANK_TRANSFER">
+              {t("payment.method.BANK_TRANSFER")}
+            </option>
+          </select>
+        </div>
 
-      {/* OUTSTANDING */}
-      <div>
-        <label className="text-sm text-gray-600">
-          {t("payment.outstanding")}
-        </label>
-        <Input type="number" disabled value={outstanding} />
-      </div>
+        {/* OUTSTANDING */}
+        <div>
+          <label className="text-sm text-gray-600">
+            {t("payment.outstanding")}
+          </label>
+          <Input type="number" disabled value={outstanding} />
+        </div>
 
-      {/* NOTES */}
-      <div>
-        <label className="text-sm text-gray-600">
-          {t("payment.notes")}
-        </label>
-        <Input
-          placeholder={t("payment.notesPlaceholder")}
-          value={note}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setNote(e.target.value)
-          }
-        />
-      </div>
+        {/* NOTES */}
+        <div>
+          <label className="text-sm text-gray-600">{t("payment.notes")}</label>
+          <Input
+            placeholder={t("payment.notesPlaceholder")}
+            value={note}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setNote(e.target.value)
+            }
+          />
+        </div>
 
-      {/* VOUCHER */}
-      <div className="sm:col-span-2">
-        <label className="text-sm text-gray-600">
-          {t("payment.voucherCode")}
-        </label>
+        {/* VOUCHER */}
+        <div className="sm:col-span-2">
+          <label className="text-sm text-gray-600">
+            {t("payment.voucherCode")}
+          </label>
 
-        <div className="flex flex-col sm:flex-row gap-3 mt-1">
-          <div className="flex-1">
-            <Input
-              placeholder={t("payment.voucherPlaceholder")}
-              value={voucherCode}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setVoucherCode(e.target.value);
-                setVoucherError("");
-                setVoucherSuccess("");
-              }}
-            />
-          </div>
+          <div className="flex flex-col sm:flex-row gap-3 mt-1">
+           
+              <Input
+                placeholder={t("payment.voucherPlaceholder")}
+                value={voucherCode}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setVoucherCode(e.target.value);
+                  setVoucherError("");
+                  setVoucherSuccess("");
+                }}
+              />
+          
 
-          <button
-            type="button"
-            onClick={handleApplyVoucher}
-            disabled={isCheckVoucher}
-            className={`
+            <button
+              type="button"
+              onClick={handleApplyVoucher}
+              disabled={isCheckVoucher}
+              className={`
               w-full sm:w-auto
               px-6 py-2
               rounded-xl
@@ -267,51 +278,47 @@ const PaymentForm = ({
                   : "bg-[#42578E] text-white hover:bg-[#536DB2]"
               }
             `}
-          >
-            {isCheckVoucher && (
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                />
-              </svg>
-            )}
-            {isCheckVoucher
-              ? t("payment.checking")
-              : t("payment.apply")}
-          </button>
+            >
+              {isCheckVoucher && (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+              )}
+              {isCheckVoucher ? t("payment.checking") : t("payment.apply")}
+            </button>
+          </div>
+
+          {voucherError && (
+            <p className="text-red-500 text-sm mt-2">{voucherError}</p>
+          )}
+
+          {voucherSuccess && (
+            <p className="text-green-600 text-sm mt-2">
+              {voucherSuccess} (-${discount.toFixed(2)})
+            </p>
+          )}
         </div>
-
-        {voucherError && (
-          <p className="text-red-500 text-sm mt-2">
-            {voucherError}
-          </p>
-        )}
-
-        {voucherSuccess && (
-          <p className="text-green-600 text-sm mt-2">
-            {voucherSuccess} (-${discount.toFixed(2)})
-          </p>
-        )}
       </div>
-    </div>
 
-    {/* SUBMIT */}
-    <div className="mt-8">
-      <button
-        onClick={handleSubmit}
-        disabled={isLoading}
-        className={`
+      {/* SUBMIT */}
+      <div className="mt-8">
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className={`
           w-full sm:w-auto
           px-8 py-3
           rounded-xl
@@ -324,32 +331,30 @@ const PaymentForm = ({
               : "bg-[#42578E] text-white hover:bg-[#536DB2]"
           }
         `}
-      >
-        {isLoading && (
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            />
-          </svg>
-        )}
-        {isLoading
-          ? t("payment.processing")
-          : t("payment.complete")}
-      </button>
+        >
+          {isLoading && (
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+          )}
+          {isLoading ? t("payment.processing") : t("payment.complete")}
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default PaymentForm;

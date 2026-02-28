@@ -87,8 +87,8 @@ const ViewVoucherPage = () => {
   };
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">{t("voucher.title")}</h1>
+      <h1 className="text-xl font-semibold">{t("voucher.title")}</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-start">
         <VoucherFilter
           search={searchValue}
           onSearchChange={setSearchValue}

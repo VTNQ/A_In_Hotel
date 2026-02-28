@@ -6,31 +6,57 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { createBooking } from "@/service/api/Booking";
 import { SelectField } from "@/components/ui/select";
+import { validateVoucher } from "@/service/api/Voucher";
 
-const PaymentForm = ({ booking, onSubmit }: any) => {
+const PaymentForm = ({
+  booking,
+  discount,
+  total,
+  finalTotal,
+  setDiscount,
+  voucherCode,
+  setVoucherCode,
+  onSubmit,
+}: any) => {
   const { t } = useTranslation();
-  const rooms = booking.rooms || [];
-  const services = booking.services || [];
-  const nights = booking.selectDate?.nights || 0;
   const { showAlert } = useAlert();
   // 🔹 TOTAL = ROOMS + SERVICES
-  const total = useMemo(() => {
-    const roomTotal = rooms.reduce(
-      (sum: number, r: any) => sum + Number(r.price || 0) * nights,
-      0,
-    );
+  const [isCheckVoucher, setIsCheckingVoucher] = useState(false);
+  const [voucherError, setVoucherError] = useState("");
+  const [voucherSuccess, setVoucherSuccess] = useState("");
+  const handleApplyVoucher = async () => {
+    if (!voucherCode) {
+      setVoucherError("Please enter voucher code");
+      setVoucherSuccess("");
+      return;
+    }
+    try {
+      setIsCheckingVoucher(true);
+      setVoucherError("");
+      setVoucherSuccess("");
+      const resp = await validateVoucher({
+        voucherCode,
+        totalAmount: total,
+        nights: booking.selectDate?.nights,
+        roomTypeIds: booking.rooms.map((r: any) => r.categoryId),
+      });
+      const discountAmount = resp.data?.data?.discountAmount || 0;
 
-    const serviceTotal = services.reduce(
-      (sum: number, s: any) => sum + Number(s.price || 0),
-      0,
-    );
-
-    return roomTotal + serviceTotal;
-  }, [rooms, services, nights]);
-  console.log(booking);
-
-  // 🔹 PAID AMOUNT = USER INPUT
+      setDiscount(discountAmount);
+      setVoucherSuccess("Voucher applied successfully");
+    } catch (err: any) {
+      setDiscount(0);
+      setVoucherSuccess("");
+      setVoucherCode("");
+      setVoucherError(
+        err?.response?.data?.message || "Invalid or expired voucher",
+      );
+    } finally {
+      setIsCheckingVoucher(false);
+    }
+  };
   const [paidAmountInput, setPaidAmountInput] = useState("");
+
   const navigate = useNavigate();
 
   const [method, setMethod] = useState("CASH");
@@ -38,7 +64,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
   const paidAmount = Number(paidAmountInput || 0);
   const [isLoading, setIsLoading] = useState(false);
   // 🔹 OUTSTANDING = TOTAL - PAID
-  const outstanding = Math.max(0, total - paidAmount);
+  const outstanding = Math.max(0, Number(finalTotal) - paidAmount);
   const buildBookingPayload = (booking: any) => {
     const nights = booking.selectDate?.nights || 0;
 
@@ -48,12 +74,31 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       specialRequest: room.specialRequest || "",
       price: Number(room.price) * nights,
     }));
-
+    const rooms = booking.rooms || [];
+    const roomsTotal = rooms.reduce(
+      (sum: number, room: any) => sum + (room.price || 0) * nights,
+      0,
+    );
+    const servicesTotal = (booking.services || []).reduce(
+      (sum: number, s: any) => {
+        const percent = Number(s.extraCharge) || 0;
+        const servicePrice = (roomsTotal * percent) / 100;
+        return sum + servicePrice;
+      },
+      0,
+    );
     // ===== SERVICE DETAILS =====
-    const serviceDetails = (booking.services || []).map((s: any) => ({
-      extraServiceId: s.extraServiceId,
-      price: Number(s.price),
-    }));
+    const serviceDetails = (booking.services || []).map((s: any) => {
+      const percent = s.extraCharge || 0;
+      const price = (roomsTotal * percent) / 100;
+
+      return {
+        extraServiceId: s.extraServiceId,
+
+        price: Number(price.toFixed(2)),
+      };
+    });
+    const originalTotal = Number((roomsTotal + servicesTotal).toFixed(2));
 
     return {
       // ===== GUEST =====
@@ -67,6 +112,9 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       numberOfGuests: booking.guest?.adults ?? 1,
       note: booking.guest?.note,
       idNumber: booking.guest?.idNumber,
+      voucherCode: voucherCode.trim() === "" ? null : voucherCode,
+      originalAmount: originalTotal,
+      discountAmount: discount,
       // ===== PAYMENT =====
 
       payment: {
@@ -86,9 +134,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       bookingPackage: booking.selectDate?.package,
 
       // ===== TOTAL =====
-      totalPrice:
-        roomDetails.reduce((s: number, r: any) => s + r.price, 0) +
-        serviceDetails.reduce((s: number, r: any) => s + r.price, 0),
+      totalPrice: Math.max(0, originalTotal - discount),
 
       // ===== DETAILS =====
       bookingDetail: [...roomDetails, ...serviceDetails],
@@ -129,7 +175,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
       </h2>
       <p className="text-sm text-gray-500 mb-6">{t("payment.subtitle")}</p>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* PAID AMOUNT */}
         <div>
           <label className="text-sm text-gray-600">
@@ -194,6 +240,59 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
             }
           />
         </div>
+        <div className="sm:col-span-2">
+          <label className="text-sm text-gray-600">
+            {" "}
+            {t("payment.voucherCode")}
+          </label>
+          <div className="flex flex-col gap-3 mt-1">
+            <Input
+              placeholder={t("payment.voucherPlaceholder")}
+              value={voucherCode}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setVoucherCode(e.target.value)
+              }
+            />
+            <button
+              type="button"
+              onClick={handleApplyVoucher}
+              disabled={isCheckVoucher}
+              className={`
+              w-full sm:w-auto
+              px-6 py-2
+              rounded-xl
+              text-sm font-medium
+              flex items-center justify-center gap-2
+              transition
+              ${
+                isCheckVoucher
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-indigo-500 text-white hover:bg-indigo-600"
+              }
+            `}
+            >
+              {isCheckVoucher && (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+              )}
+              {isCheckVoucher ? t("payment.checking") : t("payment.apply")}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* ACTION */}
@@ -219,7 +318,7 @@ const PaymentForm = ({ booking, onSubmit }: any) => {
                 strokeWidth="4"
                 fill="none"
               />
-              
+
               <path
                 className="opacity-75"
                 fill="currentColor"

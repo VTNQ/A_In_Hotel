@@ -40,28 +40,28 @@ const FacilityTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="serviceCode">
+          <TableHead width={120} sortable sortKey="serviceCode">
             {t("facility.table.serviceId")}
           </TableHead>
 
-          <TableHead>{t("facility.table.icon")}</TableHead>
-          <TableHead sortable sortKey="serviceName">
+          <TableHead width={120}>{t("facility.table.icon")}</TableHead>
+          <TableHead sortable sortKey="serviceName" width={120}>
             {t("facility.table.serviceName")}
           </TableHead>
          
-          <TableHead sortable sortKey="category.id">
+          <TableHead width={120} sortable sortKey="category.id">
             {t("facility.table.category")}
           </TableHead>
-           <TableHead>{t("facility.table.description")}</TableHead>
-           <TableHead>{t("facility.table.note")}</TableHead>
-          <TableHead sortable sortKey="createdAt">
+           <TableHead width={220}>{t("facility.table.description")}</TableHead>
+           <TableHead width={220}>{t("facility.table.note")}</TableHead>
+          <TableHead width={220} sortable sortKey="createdAt">
             {t("facility.table.createdAt")}
           </TableHead>
-          <TableHead sortable sortKey="updatedAt">
+          <TableHead width={220} sortable sortKey="updatedAt">
             {t("facility.table.updatedAt")}
           </TableHead>
-          <TableHead>{t("facility.table.status")}</TableHead>
-          <TableHead>{t("facility.table.action")}</TableHead>
+          <TableHead width={190}>{t("facility.table.status")}</TableHead>
+          <TableHead  width={120}>{t("facility.table.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

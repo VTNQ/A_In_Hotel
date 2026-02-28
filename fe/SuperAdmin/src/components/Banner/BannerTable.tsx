@@ -74,7 +74,7 @@ const BannerTable = ({
           <TableHead sortable sortKey="isActive" width={120}>
             {t("common.status")}
           </TableHead>
-          <TableHead>{t("common.action")}</TableHead>
+          <TableHead width={120}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

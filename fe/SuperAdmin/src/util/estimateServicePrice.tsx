@@ -6,29 +6,17 @@ export const estimateServicePrice = (
   service: ExtraService,
   booking: Booking
 ): number => {
-  if (!service || !service.price) return 0;
+ const rooms = booking.rooms || [];
+  const nights = booking.selectDate?.nights || 1;
 
-  const nights = booking.selectDate?.nights ?? 1;
+  const roomsTotal = rooms.reduce(
+    (sum: number, room: any) =>
+      sum + (room.price || 0) * nights,
+    0
+  );
 
-  // nếu FE chưa có days thì suy ra từ nights
-  const days =
-    booking.selectDate?.days ??
-    (nights > 0 ? nights + 1 : 1);
+  const percent = service.extraCharge || 0;
 
-  switch (service.unit) {
-    case "PERNIGHT":
-      return service.price * nights;
-
-    case "PERDAY":
-      return service.price * days;
-
-    case "PERUSE":
-      return service.price;
-
-    case "PERTRIP":
-      return service.price;
-
-    default:
-      return service.price;
-  }
+  return (roomsTotal * percent) / 100;
+  
 };

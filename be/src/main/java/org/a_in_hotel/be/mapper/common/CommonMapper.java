@@ -1,10 +1,8 @@
 package org.a_in_hotel.be.mapper.common;
 
 import org.a_in_hotel.be.Enum.BookingPackage;
-import org.a_in_hotel.be.Enum.PriceType;
-import org.a_in_hotel.be.Enum.UnitExtraService;
 import org.a_in_hotel.be.dto.request.BookingDetailRequest;
-import org.a_in_hotel.be.dto.request.RoomRequest;
+
 import org.a_in_hotel.be.dto.response.ImageResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.BookingDetailMapper;
@@ -19,6 +17,7 @@ import org.mapstruct.Context;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -42,13 +41,15 @@ public interface CommonMapper {
         acc.setId(IdUser);
         return acc;
     }
+
     @Named("mapAccountIdToFullName")
     default String mapAccountIdToFullName(Long idAccount, @Context StaffRepository staffRepository) {
-        if(idAccount == null) return null;
+        if (idAccount == null) return null;
         return staffRepository.findByAccountId(idAccount)
                 .map(Staff::getFullName)
                 .orElse(null);
     }
+
     @Named("mapRoleFromId")
     default Role mapRoleFromId(Long idRole) {
         if (idRole == null) return null;
@@ -69,6 +70,7 @@ public interface CommonMapper {
         c.setId(id);
         return c;
     }
+
     @Named("mapRoom")
     default Room mapRoom(Long id) {
         if (id == null) return null;
@@ -76,6 +78,7 @@ public interface CommonMapper {
         r.setId(id);
         return r;
     }
+
     @Named("mapHotel")
     default Hotel mapHotel(Long id) {
         if (id == null) return null;
@@ -99,18 +102,20 @@ public interface CommonMapper {
         category.setId(idCategory);
         return category;
     }
-    default String resolveHotelName(Long hotelId, HotelService hotelService){
-        if(hotelId ==null) return null;
+
+    default String resolveHotelName(Long hotelId, HotelService hotelService) {
+        if (hotelId == null) return null;
         try {
             var hotel = hotelService.getHotelById(hotelId);
-            if(hotel!=null && hotel.getName()!=null){
+            if (hotel != null && hotel.getName() != null) {
                 return hotel.getName();
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         return null;
     }
+
     default String resolveCreatedBy(String createdBy, StaffService accountService) {
         if (createdBy == null) return null;
 
@@ -128,24 +133,26 @@ public interface CommonMapper {
         return createdBy;
     }
 
-    default List<ImageResponse>  mapImages(List<Image> images) {
+    default List<ImageResponse> mapImages(List<Image> images) {
         if (images == null || images.isEmpty()) return List.of();
         return images.stream()
                 .filter(img -> "Room".equalsIgnoreCase(img.getEntityType()))
                 .map(img -> new ImageResponse(img.getUrl(), img.getAltText()))
                 .toList();
     }
+
     default ImageResponse mapImageV2(
             Long entityId,
             String entityType,
             ImageRepository imageRepository) {
         return imageRepository
-                .findFirstByEntityIdAndEntityType(entityId,entityType)
-                .map(img->new ImageResponse(img.getUrl(),img.getAltText()))
+                .findFirstByEntityIdAndEntityType(entityId, entityType)
+                .map(img -> new ImageResponse(img.getUrl(), img.getAltText()))
                 .orElse(null);
 
 
     }
+
     default ImageResponse mapImage(Image image) {
         if (image == null) return null;
         return new ImageResponse(image.getUrl(), image.getAltText());
@@ -162,83 +169,117 @@ public interface CommonMapper {
             Long userId) {
         List<BookingDetail> details = requests.stream()
                 .map(req -> {
-                    BookingDetail detail = detailMapper.toEntity
-                            (req,roomRepository,extraServiceRepository,userId);
+                    BookingDetail detail = detailMapper.toEntity(
+                            req,
+                            roomRepository,
+                            extraServiceRepository,
+                            userId
+                    );
                     detail.setBooking(booking);
-                    validatePrice(
-                            detail,
-                            req.getPrice(),
-                            booking,roomRepository,extraServiceRepository);
-                    detail.setPrice(req.getPrice());
                     return detail;
                 })
                 .collect(Collectors.toList());
-        BigDecimal systemTotal = calculateTotalPrice(details);
 
-        validateTotalPrice(booking.getTotalPrice(), systemTotal,discountPrice);
+        BigDecimal roomsTotal = calculateRoomsTotal(details, discountPrice);
+
+        for (int i = 0; i < details.size(); i++) {
+            BookingDetail detail = details.get(i);
+            BookingDetailRequest req = requests.get(i);
+
+            BigDecimal correctPrice = calculateCorrectPrice(
+                    detail,
+                    booking,
+                    roomRepository,
+                    extraServiceRepository,
+                    roomsTotal
+            );
+
+            if (req.getPrice() == null) {
+                throw new IllegalArgumentException("Price is required.");
+            }
+
+            if (correctPrice.compareTo(req.getPrice()) != 0) {
+                throw new IllegalArgumentException(
+                        "Invalid price. Expected: " + correctPrice +
+                                ", received: " + req.getPrice()
+                );
+            }
+
+            detail.setPrice(correctPrice);
+        }
+        BigDecimal systemTotal = calculateTotalPrice(details);
+        validateTotalPrice(booking.getTotalPrice(), systemTotal, discountPrice);
 
         return details;
     }
 
-    default void  validatePrice(BookingDetail detail,
-                                BigDecimal fePrice,
-                                Booking booking,
-                                @Context RoomRepository roomRepository,
-                                @Context ExtraServiceRepository extraServiceRepository
-                                ) {
+    private BigDecimal calculateRoomsTotal(
+            List<BookingDetail> details,
+            BigDecimal discountPrice
+    ) {
 
-        BigDecimal systemPrice = calculateCorrectPrice(
-                detail,
-                booking,
-                roomRepository,
-                extraServiceRepository);
+        BigDecimal roomsTotal = details.stream()
+                .filter(d -> d.getRoom() != null)
+                .map(BookingDetail::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        if (fePrice == null)
-            throw new IllegalArgumentException("Price is required.");
-        if(systemPrice.compareTo(fePrice) !=0){
-            throw new IllegalArgumentException(
-                    "Invalid price for detail. Expected: " + systemPrice + ", received: " + fePrice
-            );
-        }
+        return roomsTotal.max(BigDecimal.ZERO);
     }
+
+    //    default void  validatePrice(BookingDetail detail,
+//                                BigDecimal fePrice,
+//                                Booking booking,
+//                                @Context RoomRepository roomRepository,
+//                                @Context ExtraServiceRepository extraServiceRepository,
+//                                BigDecimal discountPrice
+//                                ) {
+//
+//        BigDecimal systemPrice = calculateCorrectPrice(
+//                detail,
+//                booking,
+//                roomRepository,
+//                extraServiceRepository,
+//                discountPrice);
+//
+//        if (fePrice == null)
+//            throw new IllegalArgumentException("Price is required.");
+//        if(systemPrice.compareTo(fePrice) !=0){
+//            throw new IllegalArgumentException(
+//                    "Invalid price for detail. Expected: " + systemPrice + ", received: " + fePrice
+//            );
+//        }
+//    }
     private BigDecimal calculateExtraServicePrice(
             ExtraService extraService,
-            Booking booking
+            BigDecimal roomTotal
     ) {
-        BigDecimal basePrice = extraService.getPrice();
-        UnitExtraService unit = extraService.getUnit();
+        Integer percent = extraService.getExtraCharge();
+        if (percent == null) {
+            return BigDecimal.ZERO;
+        }
 
-        long nights = ChronoUnit.DAYS.between(
-                booking.getCheckInDate(),
-                booking.getCheckOutDate()
-        );
-        if (nights <= 0) nights = 1;
-
-        long days = nights + 1;
-
-        return switch (unit) {
-            case PERNIGHT -> basePrice.multiply(BigDecimal.valueOf(nights));
-            case PERDAY -> basePrice.multiply(BigDecimal.valueOf(days));
-            case PERUSE, PERTRIP -> basePrice;
-        };
+        return roomTotal
+                .multiply(BigDecimal.valueOf(percent))
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 
     default BigDecimal calculateCorrectPrice(
             BookingDetail detail,
             Booking booking,
             @Context RoomRepository roomRepository,
-            @Context ExtraServiceRepository extraServiceRepository
-            ) {
-        if(detail.getExtraService() != null) {
+            @Context ExtraServiceRepository extraServiceRepository,
+            BigDecimal roomTotal
+    ) {
+        if (detail.getExtraService() != null) {
             ExtraService extraService =
                     extraServiceRepository.getReferenceById(
                             detail.getExtraService().getId()
                     );
 
-            return calculateExtraServicePrice(extraService, booking);
+            return calculateExtraServicePrice(extraService, roomTotal);
         }
 
-        if(detail.getRoom()!=null){
+        if (detail.getRoom() != null) {
             Room room = roomRepository.
                     getReferenceById(detail.getRoom().getId());
             BookingPackage bookingPackage = BookingPackage.
@@ -248,7 +289,7 @@ public interface CommonMapper {
                     booking.getCheckInDate(),
                     booking.getCheckOutDate());
 
-            if(days <=0) days = 1;
+            if (days <= 0) days = 1;
             return switch (bookingPackage) {
                 case FIRST_2_HOURS -> room.getBasePrice();         // 2 giờ
                 case OVERNIGHT -> room.getOvernightPrice();    // Qua đêm
@@ -259,7 +300,8 @@ public interface CommonMapper {
         }
         throw new IllegalStateException("BookingDetail must have room or extraService.");
     }
-    default void validateTotalPrice(BigDecimal feTotal, BigDecimal systemTotal,BigDecimal discountPrice) {
+
+    default void validateTotalPrice(BigDecimal feTotal, BigDecimal systemTotal, BigDecimal discountPrice) {
 
         if (feTotal == null) {
             throw new IllegalArgumentException("totalPrice is required");
@@ -292,7 +334,7 @@ public interface CommonMapper {
     }
 
 
-    default BigDecimal calculateTotalPrice(List<BookingDetail> details){
+    default BigDecimal calculateTotalPrice(List<BookingDetail> details) {
         return details.stream()
                 .map(BookingDetail::getPrice)
                 .filter(Objects::nonNull)

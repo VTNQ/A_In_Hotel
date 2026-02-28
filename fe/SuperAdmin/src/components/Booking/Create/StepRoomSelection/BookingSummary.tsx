@@ -40,7 +40,7 @@ const BookingSummary = ({
   const { t } = useTranslation();
 
   return (
-    <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm w-[109%] sm:w-full">
       {/* Header */}
       <div className="mb-4 flex items-center gap-2">
         <CalendarDays className="h-5 w-5 text-indigo-500" />

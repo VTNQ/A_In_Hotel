@@ -148,6 +148,11 @@ const PaymentSummary = ({ booking }: any) => {
               >
                 <span className="text-gray-600">
                   {s.serviceName}
+                   {s.extraCharge && (
+                    <span className="text-gray-400 ml-1">
+                      ({s.extraCharge}%)
+                    </span>
+                  )}
                 </span>
                 <span className="font-medium">
                   ${Number(s.price).toFixed(2)}

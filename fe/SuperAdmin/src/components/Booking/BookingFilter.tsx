@@ -36,9 +36,16 @@ const BookingFilter = ({
   useEffect(() => {
     fetchHotels();
   }, []);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  });
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 flex-1">
         <SelectField
           isRequired={false}
           items={[
@@ -55,7 +62,7 @@ const BookingFilter = ({
             )
           }
           size="sm"
-          fullWidth={false}
+          fullWidth={isMobile}
           getValue={(i) => i.value}
           getLabel={(i) => i.label}
         />
@@ -65,11 +72,11 @@ const BookingFilter = ({
           value={hotelFilter}
           onChange={(v) => onHotelFilterChange(String(v))}
           size="sm"
-          fullWidth={false}
+          fullWidth={isMobile}
           getValue={(i) => String(i.id)}
           getLabel={(i) => i.name}
         />
-        <div className="w-40">
+        <div className="w-full sm:w-40">
           <DatePickerField
             value={dateFilter}
             onChange={onDateFilterChange}
@@ -77,9 +84,9 @@ const BookingFilter = ({
           />
         </div>
       </div>
-      <div className="flex items-center gap-3 ml-auto">
-        <div className="relative w-72">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+      <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
           <Input
             className="pl-9"
             value={search}
