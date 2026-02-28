@@ -1062,6 +1062,7 @@
     },
     "serviceSelection": {
         "title": "Nâng cao trải nghiệm lưu trú",
+        "ofBooking":"trên tổng đơn đặt",
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",

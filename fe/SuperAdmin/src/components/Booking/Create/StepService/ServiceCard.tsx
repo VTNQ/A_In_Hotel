@@ -43,11 +43,12 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
           {/* PRICE */}
           <div className="sm:text-right shrink-0">
           <div className="text-lg sm:text-base font-semibold text-indigo-500">
-            ${service.price}
+            {service.extraCharge}%
+            <span className="text-xs text-gray-400 ml-1">
+                  {t("serviceSelection.ofBooking")}
+                </span>
           </div>
-          <div className="text-xs text-gray-400">
-            / {t(`serviceSelection.unit.${service.unit}`)}
-          </div>
+         
         </div>
         </div>
 

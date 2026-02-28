@@ -133,8 +133,8 @@
             "categoryPlaceholder": "Select category",
             "coverImage": "Cover Image",
             "note": "Note",
-            "upload":"Click to upload or drag and drop",
-            "imageHint":"PNG, JPG, GIF up to 10MB",
+            "upload": "Click to upload or drag and drop",
+            "imageHint": "PNG, JPG, GIF up to 10MB",
             "notePlaceholder": "Internal note (not shown to customer)"
         }
     },
@@ -1092,6 +1092,7 @@
     },
     "serviceSelection": {
         "title": "Enhance Your Stay",
+        "ofBooking": "of booking total",
         "subtitle": "Customize your experience with our exclusive add-ons.",
         "allServices": "All Services",
         "searchPlaceholder": "Search by service name",

@@ -38,7 +38,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           }),
           getAll({
             all: true,
-            filter: "isActive==true and type==1 and price==0",
+            filter: "isActive==true and type==1 and extraCharge==0",
           }),
           getAllCategory({
             all: true,

@@ -12,7 +12,7 @@ import {
 import { getAll } from "@/service/api/Authenticate";
 import { File_URL } from "@/setting/constant/app";
 
-import {  Search, SearchIcon, X } from "lucide-react";
+import { Search, SearchIcon, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +26,7 @@ interface BasicRow {
   birthday: string | number;
   gender: string;
   phone: string;
-  createdOn: string | number;
+  createdAt: string | number;
   url?: string;
 }
 interface Column<T> {
@@ -143,7 +143,7 @@ const ListChildSuperAdmin: React.FC = () => {
         phone: item.phone,
         url: item.avatarUrl,
         birthday: item.birthday,
-        createdOn: item.createdAt,
+        createdAt: item.createdAt,
       }));
       setRows(list);
       setTotalPages(res?.data?.totalPages ?? 1);
@@ -192,12 +192,12 @@ const ListChildSuperAdmin: React.FC = () => {
           ),
       },
       {
-        key: "createdOn",
+        key: "createdAt",
         header: t("childSuperAdmin.table.createdAt"),
         sortable: true,
         cell: (row) => (
           <span className="text-muted-foreground">
-            {formatDate(row.createdOn)}
+            {formatDate(row.createdAt)}
           </span>
         ),
       },
@@ -221,12 +221,12 @@ const ListChildSuperAdmin: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">
-          {t("childSuperAdmin.listTitle")}
-        </h2>
-
-        <div className="flex items-center gap-2">
+      <h2 className="text-xl font-semibold">
+        {t("childSuperAdmin.listTitle")}
+      </h2>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-2">
+          {/* Select search field */}
           <SelectField<{ value: SearchField; label: string }>
             isRequired={false}
             items={[
@@ -248,10 +248,12 @@ const ListChildSuperAdmin: React.FC = () => {
             }}
             placeholder="Tìm theo"
             size="sm"
-            fullWidth={false}
+            fullWidth
             getValue={(i) => i.value}
             getLabel={(i) => i.label}
           />
+
+          {/* Gender filter */}
           <SelectField<{ value: "ALL" | Gender; label: string }>
             isRequired={false}
             items={[
@@ -264,15 +266,16 @@ const ListChildSuperAdmin: React.FC = () => {
               setGenderFilter((val as "ALL" | Gender) ?? "ALL");
               setUiPage(1);
             }}
-            placeholder="Lọc trạng thái"
+            placeholder="Lọc giới tính"
             size="sm"
-            fullWidth={false}
+            fullWidth
             getValue={(i) => i.value}
             getLabel={(i) => i.label}
             clearable={false}
           />
 
-          <div className="relative w-72">
+          {/* Search input */}
+          <div className="relative w-full md:w-72">
             <Search
               className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
@@ -288,7 +291,8 @@ const ListChildSuperAdmin: React.FC = () => {
             />
           </div>
 
-          <Button asChild>
+          {/* Add button */}
+          <Button asChild className="w-full md:w-auto">
             <a href="/Home/ChildSuperAdmin/create">
               + {t("childSuperAdmin.add")}
             </a>
@@ -299,19 +303,12 @@ const ListChildSuperAdmin: React.FC = () => {
       {/* Table */}
       <div className="rounded-2xl border bg-card">
         {error && <div className="p-3 text-sm text-red-600">{error}</div>}
-        <Table
-        sortKey={sortKey}
-        sortDir={sortDir}
-        onSort={onSort}
-        >
+        <Table sortKey={sortKey} sortDir={sortDir} onSort={onSort}>
           <TableHeader>
             <TableRow>
               {cols.map((c) => (
-                <TableHead
-                 
-                >
+                <TableHead width={220}>
                   <span>{c.header}</span>
-                
                 </TableHead>
               ))}
             </TableRow>

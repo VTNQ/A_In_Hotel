@@ -16,7 +16,7 @@ const FacilityFiler = ({
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:items-center lg:justify-end">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:items-center lg:justify-start">
         {/* STATUS */}
         <div className="w-full sm:col-span-1 lg:w-[180px]">
           <SelectField
@@ -52,7 +52,7 @@ const FacilityFiler = ({
 
         {/* BUTTON */}
         <div className="sm:col-span-2 lg:col-span-1 lg:ml-2">
-          <Button asChild className="w-full sm:w-auto whitespace-nowrap">
+          <Button asChild className="w-full sm:w-auto h-10 whitespace-nowrap">
             <a href="/Home/facility/create">
               + {t("facility.create.title")}
             </a>

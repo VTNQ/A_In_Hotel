@@ -27,7 +27,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
       try {
         let filters = [
           `hotelId==${hotelId}`,
-          `price>0`,
+          `extraCharge>0`,
           `isActive==true`,
           `type==2`,
         ];
@@ -129,7 +129,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
               onNext({
                 services: selectedServices.map((s) => ({
                   extraServiceId: s.id,
-                  unit: s.unit,
+                  extraCharge: s.extraCharge,
                   price: estimateServicePrice(s, booking),
                   serviceName: s.serviceName ?? s.name,
                 })),

@@ -7,7 +7,7 @@ import { getBlog, updateStatus } from "@/service/api/Blog";
 import { type Blog, type BlogStatusFilter } from "@/type/blog.types";
 import type { SortDir } from "@/type/common";
 
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const ViewBlogPage = () => {
@@ -25,7 +25,6 @@ const ViewBlogPage = () => {
   const [statusFilter, setStatusFilter] = useState<BlogStatusFilter>("ALL");
   const fetchData = async () => {
     try {
-     
       let filters: string[] = [];
       if (statusFilter !== "ALL") {
         filters.push(`status==${statusFilter}`);
@@ -43,7 +42,7 @@ const ViewBlogPage = () => {
       setTotal(resp.data.totalElements);
     } catch (err: any) {
       setError(err.message || t("common.loadFailed"));
-    } 
+    }
   };
   const loadlBlog = async () => {
     try {
@@ -93,8 +92,8 @@ const ViewBlogPage = () => {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">{t("blog.title")}</h2>
+        <h2 className="text-xl font-semibold">{t("blog.title")}</h2>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <BlogFilter
             statusFilter={statusFilter}
             onStatusFilterChange={setStatusFilter}

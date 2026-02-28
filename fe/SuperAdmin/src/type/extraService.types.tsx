@@ -13,6 +13,7 @@ export interface ExtraService {
   hotelName: string;
   price: number;
   type: number;
+  extraCharge: number;
   icon: ImageResponse;
   unit: string;
   isActive: boolean;

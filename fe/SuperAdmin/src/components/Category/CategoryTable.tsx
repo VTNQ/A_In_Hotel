@@ -43,32 +43,32 @@ const CategoryTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="code">
+          <TableHead width={120} sortable sortKey="code">
             {t("category.code")}
           </TableHead>
-          <TableHead sortable sortKey="name">
+          <TableHead width={120} sortable sortKey="name">
             {t("category.name")}
           </TableHead>
-          <TableHead sortable sortKey="type">
+          <TableHead width={120} sortable sortKey="type">
             {t("category.type")}
           </TableHead>
 
-          <TableHead sortable sortKey="capacity">
+          <TableHead width={120} sortable sortKey="capacity">
             {t("category.capacity")}
           </TableHead>
 
-          <TableHead sortable sortKey="createdAt">
+          <TableHead width={220} sortable sortKey="createdAt">
             {t("category.createdAt")}
           </TableHead>
 
-          <TableHead sortable sortKey="updatedAt">
+          <TableHead width={220} sortable sortKey="updatedAt">
             {t("category.updatedAt")}
           </TableHead>
 
-          <TableHead sortable sortKey="isActive">
+          <TableHead width={120} sortable sortKey="isActive">
             {t("common.status")}
           </TableHead>
-          <TableHead>{t("common.action")}</TableHead>
+          <TableHead width={120}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

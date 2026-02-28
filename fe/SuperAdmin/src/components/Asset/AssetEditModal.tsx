@@ -203,8 +203,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
           max-w-[96vw] sm:max-w-xl lg:max-w-3xl
           max-h-[90vh]
           overflow-y-auto
-          custom-scrollbar
-        "
+          custom-scrollbar"
       >
         {/* HEADER sticky */}
         <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">

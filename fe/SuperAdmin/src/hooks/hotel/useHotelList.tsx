@@ -24,7 +24,7 @@ export function useHotelList(
                 id: item.id,
                 code: item.code,
                 name: item.name,
-                createdOn: item.createdAt,
+                createdAt: item.createdAt,
                 status: Number(item.status),
                 address: item.address || "Chưa cập nhật",
                 fullName: item.fullName || "Chưa cập nhật",

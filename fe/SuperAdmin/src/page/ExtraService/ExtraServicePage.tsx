@@ -103,8 +103,9 @@ const ExtraServicePage = () => {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold"> {t("extraService.title")}</h1>
+        <h1 className="text-xl font-semibold">{t("extraService.title")}</h1>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
+          
           <ExtraServiceFilter
             search={searchValue}
             onSearchChange={setSearchValue}

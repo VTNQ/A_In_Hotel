@@ -74,15 +74,31 @@ const PaymentForm = ({
       specialRequest: room.specialRequest || "",
       price: Number(room.price) * nights,
     }));
-
+    const rooms = booking.rooms || [];
+    const roomsTotal = rooms.reduce(
+      (sum: number, room: any) => sum + (room.price || 0) * nights,
+      0,
+    );
+    const servicesTotal = (booking.services || []).reduce(
+      (sum: number, s: any) => {
+        const percent = Number(s.extraCharge) || 0;
+        const servicePrice = (roomsTotal * percent) / 100;
+        return sum + servicePrice;
+      },
+      0,
+    );
     // ===== SERVICE DETAILS =====
-    const serviceDetails = (booking.services || []).map((s: any) => ({
-      extraServiceId: s.extraServiceId,
-      price: Number(s.price),
-    }));
-    const originalTotal =
-      roomDetails.reduce((s: number, r: any) => s + r.price, 0) +
-      serviceDetails.reduce((s: number, r: any) => s + r.price, 0);
+    const serviceDetails = (booking.services || []).map((s: any) => {
+      const percent = s.extraCharge || 0;
+      const price = (roomsTotal * percent) / 100;
+
+      return {
+        extraServiceId: s.extraServiceId,
+
+        price: Number(price.toFixed(2)),
+      };
+    });
+    const originalTotal = Number((roomsTotal + servicesTotal).toFixed(2));
 
     return {
       // ===== GUEST =====
@@ -229,7 +245,7 @@ const PaymentForm = ({
             {" "}
             {t("payment.voucherCode")}
           </label>
-          <div className="flex flex-col sm:flex-row gap-3 mt-1">
+          <div className="flex flex-col gap-3 mt-1">
             <Input
               placeholder={t("payment.voucherPlaceholder")}
               value={voucherCode}

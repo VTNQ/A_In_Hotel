@@ -21,7 +21,7 @@ public interface ExtraServiceRepository extends JpaRepository<ExtraService, Long
     @Query("""
   SELECT e
   FROM ExtraService e
-  WHERE e.price = 0
+  WHERE e.extraCharge = 0
     AND e.isActive = true
   ORDER BY e.createdAt
 """)

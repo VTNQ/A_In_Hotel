@@ -32,7 +32,7 @@ const FacilityPage: React.FC = () => {
   const fetchFacilities = async () => {
     try {
       setLoading(true);
-      let filter = "price==0 and type==1";
+      let filter = "extraCharge==0 and type==1";
 
       if (statusFilter !== "ALL") {
         filter += ` and isActive==${statusFilter}`;

@@ -46,7 +46,7 @@ const ListHotel: React.FC = () => {
         code: i.code,
         name: i.name,
         address: i.address ?? t("hotel.notUpdated"),
-        createdOn: i.createdAt,
+        createdAt: i.createdAt,
         status: Number(i.status) as HotelStatus,
         fullName: i.fullName,
         idUser: i.idUser,
