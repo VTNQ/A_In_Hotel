@@ -8,12 +8,9 @@ import {
   Boxes,
   ChevronRight,
   ChevronLeft,
-  Search,
+
   Moon,
   SunMedium,
-  Bell,
-  Mail,
-  Maximize2,
   Settings,
   Menu,
   Hotel,
