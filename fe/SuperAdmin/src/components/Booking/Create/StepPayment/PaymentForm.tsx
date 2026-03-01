@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 import { useAlert } from "../../../alert-context";
 import { useNavigate } from "react-router-dom";
@@ -292,6 +292,15 @@ const PaymentForm = ({
               {isCheckVoucher ? t("payment.checking") : t("payment.apply")}
             </button>
           </div>
+          {voucherError && (
+            <p className="text-red-500 text-sm mt-2">{voucherError}</p>
+          )}
+
+          {voucherSuccess && (
+            <p className="text-green-600 text-sm mt-2">
+              {voucherSuccess} (-${discount.toFixed(2)})
+            </p>
+          )}
         </div>
       </div>
 

@@ -237,6 +237,7 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     onChange={(d) =>
                       setFormData((p) => ({ ...p, startDate: d }))
                     }
+                    disabledDate={(date) => isBefore(date, startOfToday())}
                     placeholder={t("banner.createOrUpdate.selectStartAt")}
                   />
                 </div>
@@ -250,6 +251,9 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     value={formData.endDate}
                     minDateTime={formData.startDate}
                     onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
+                    disabledDate={(date) =>
+                      !formData.startDate ? false : date <= formData.startDate
+                    }
                     placeholder={t("banner.createOrUpdate.selectEndAt")}
                   />
                 </div>
