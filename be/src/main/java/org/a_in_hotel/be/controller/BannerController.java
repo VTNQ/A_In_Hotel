@@ -3,6 +3,7 @@ package org.a_in_hotel.be.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.a_in_hotel.be.annotation.ImageFile;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BannerRequest;
 import org.a_in_hotel.be.dto.request.BannerUpdateDTO;
@@ -27,7 +28,7 @@ public class BannerController {
     private BannerService bannerService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())
@@ -36,7 +37,7 @@ public class BannerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
         }
         try {
-            bannerService.save(bannerRequest, image);
+            bannerService.save(bannerRequest, bannerRequest.getImage());
             return ResponseEntity.ok(RequestResponse.success("Thêm banner thành công"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

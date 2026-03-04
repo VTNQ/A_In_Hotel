@@ -424,6 +424,7 @@
             "titleCreate": "Tạo bài viết mới",
             "enterTitle": "Nhập tiêu đề bài viết",
             "selectCategory": "Chọn danh mục",
+            "uploadError": "Sai định dạng file. Vui lòng chọn file hợp lệ.",
             "createSucess": "Bài viết đã được tạo thành công!",
             "createError": "Lỗi khi tạo bài viết",
             "titleEdit": "Sửa bài viết",
@@ -593,7 +594,7 @@
     },
     "serviceSelection": {
         "title": "Nâng cao trải nghiệm lưu trú",
-        "ofBooking":"trên tổng đơn đặt",
+        "ofBooking": "trên tổng đơn đặt",
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",
