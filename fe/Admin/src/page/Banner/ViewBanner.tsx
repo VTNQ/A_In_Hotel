@@ -7,6 +7,7 @@ import { getBanner } from "../../service/api/Banner";
 import BannerFormModal from "../../components/Banner/BannerFormModal";
 import BannerEditFormModal from "../../components/Banner/BannerEditFormModal";
 import { useTranslation } from "react-i18next";
+import { formatISO } from "date-fns";
 
 const ViewBanner = () => {
   const [data, setData] = useState<any[]>([]);
@@ -31,6 +32,7 @@ const ViewBanner = () => {
     if (typeof e === "number" && now > e) return "INACTIVE";
     return "ACTIVE";
   };
+     const now = formatISO(new Date());
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
@@ -50,6 +52,9 @@ const ViewBanner = () => {
         sort: `${key},${order}`,
         size: 10,
         searchValue: searchValue,
+        filter:statusFilter ==="INACTIVE" ? `startAt>${now} or endAt<${now}`:
+        statusFilter ==="ACTIVE" ? `startAt<=${now} and endAt>=${now}`:
+        ""
       };
       const resp = await getBanner(params);
       setData(resp?.data?.content || []);
@@ -69,17 +74,8 @@ const ViewBanner = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [sortKey, sortOrder, searchValue]);
-  const filteredRows = useMemo(() => {
-    if (statusFilter === "") return data;
-    return data.filter((r) => computeStatus(r) === statusFilter);
-  }, [data, statusFilter]);
-  const filteredTotalResults = useMemo(() => {
-    return statusFilter ==="" ?totalPages : filteredRows.length;
-  }, [filteredRows]);
-  const filteredTotalPages = useMemo(() => {
-    return Math.ceil(filteredTotalResults / 10);
-  }, [filteredTotalResults]);
+  }, [sortKey, sortOrder, searchValue,statusFilter]);
+  
   const columns = [
     { key: "bannerCode", label: t("banner.code"), sortable: true },
     { key: "name", label: t("banner.name"), sortable: true },
@@ -199,10 +195,10 @@ const ViewBanner = () => {
       ) : (
         <CommonTable
           columns={columns}
-          data={filteredRows}
+          data={data}
           page={page}
-          totalPages={statusFilter === "" ? totalPages : filteredTotalPages}
-          totalResults={statusFilter === "" ? totalResults : filteredTotalResults}
+          totalPages={totalPages}
+          totalResults={totalResults}
           sortKey={sortKey}
           sortOrder={sortOrder}
           onPageChange={(newPage) => fetchData(newPage)}
