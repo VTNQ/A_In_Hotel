@@ -24,53 +24,25 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "banner")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BannerController {
-    @Autowired
-    private BannerService bannerService;
+
+    private final BannerService bannerService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BannerRequest bannerRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
-        try {
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BannerRequest bannerRequest) {
             bannerService.save(bannerRequest, bannerRequest.getImage());
             return ResponseEntity.ok(RequestResponse.success("Thêm banner thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<RequestResponse<BannerResponse>> getBanner(@PathVariable Long id) {
-        try {
             return ResponseEntity.ok(RequestResponse.success(bannerService.findById(id)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 
     @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerUpdateDTO bannerRequest, BindingResult bindingResult, @RequestParam(value = "image", required = false) MultipartFile image) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
-        try {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerUpdateDTO bannerRequest, @RequestParam(value = "image", required = false) MultipartFile image) {
+
             bannerService.update(id, bannerRequest, image);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật banner thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 
     @GetMapping("/getAll")
@@ -81,27 +53,18 @@ public class BannerController {
                                                                         @RequestParam(required = false) String searchField,
                                                                         @RequestParam(required = false) String searchValue,
                                                                         @RequestParam(required = false) boolean all) {
-        try {
             PageResponse<BannerResponse> pageResponse =
                     new PageResponse<>(bannerService.getListBanner(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(
                     RequestResponse.success(pageResponse, "Lấy banner thành công")
             );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<RequestResponse<Void>> delete(@PathVariable Long id) {
-        try {
             bannerService.delete(id);
             return ResponseEntity.ok(
                     RequestResponse.success("Xóa banner thành công")
             );
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 }

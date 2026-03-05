@@ -29,25 +29,19 @@ public class BlogController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a blog")
     public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute BlogRequest request) {
-        try {
             blogService.save(request, request.getImage());
             return ResponseEntity.ok(RequestResponse.success("Blog created successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Update a blog")
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BlogUpdateRequest request, @RequestParam(value = "image", required = false) MultipartFile image) {
-        try {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,
+                                                        @Valid @ModelAttribute BlogUpdateRequest request,
+                                                        @RequestParam(value = "image", required = false)
+                                                            MultipartFile image) {
             blogService.update(id, request, image);
             return ResponseEntity.ok(RequestResponse.success("Blog updated successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 
     @GetMapping
