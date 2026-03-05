@@ -119,7 +119,7 @@ const ViewBanner = () => {
                 st == "ACTIVE" ? "bg-green-500" : "bg-red-500"
               }`}
             ></span>
-            {st == "ACTIVE" ? "Active" : "Inactive"}
+            {st == "ACTIVE" ? t("common.active") : t("common.inactive")}
           </div>
         );
       },
