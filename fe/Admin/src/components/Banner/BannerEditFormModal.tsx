@@ -97,10 +97,10 @@ const BannerEditFormModal = ({
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-      const response = await updateBanner(bannerId, cleanedData);
+      await updateBanner(bannerId, cleanedData);
       showAlert({
         title:
-          response?.data?.message || t("banner.createOrUpdate.updateSucess"),
+            t("banner.createOrUpdate.updateSucess"),
         type: "success",
         autoClose: 3000,
       });
