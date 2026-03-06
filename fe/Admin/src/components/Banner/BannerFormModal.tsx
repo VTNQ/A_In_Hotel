@@ -102,10 +102,10 @@ const BannerFormModal = ({
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-      const response = await createBanner(cleanedData);
+       await createBanner(cleanedData);
       showAlert({
         title:
-          response?.data?.message || t("banner.createOrUpdate.createSucess"),
+           t("banner.createOrUpdate.createSucess"),
         type: "success",
         autoClose: 3000,
       });

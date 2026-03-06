@@ -139,9 +139,8 @@ const BlogEditFormModal = ({
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-      const response = await updateBlog(Number(formData.id), cleanedData);
-      const message =
-        response?.data?.message || t("blog.createOrUpdate.updateSucess");
+       await updateBlog(Number(formData.id), cleanedData);
+      const message = t("blog.createOrUpdate.updateSucess");
       showAlert({
         title: message,
         type: "success",

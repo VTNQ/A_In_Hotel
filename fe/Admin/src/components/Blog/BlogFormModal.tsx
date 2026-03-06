@@ -136,10 +136,10 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-      const response = await createBlog(cleanedData);
+       await createBlog(cleanedData);
 
       showAlert({
-        title: response?.data?.message || t("blog.createOrUpdate.createSucess"),
+        title:t("blog.createOrUpdate.createSucess"),
         type: "success",
         autoClose: 3000,
       });
