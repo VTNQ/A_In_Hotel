@@ -183,7 +183,7 @@ const ViewBanner = () => {
         isOpen={showUpdateModal}
         onClose={handleCloseModal}
         onSuccess={() => {
-          fetchData();
+          fetchData(page);
           setShowUpdateModal(false);
         }}
         bannerId={selectedBanner}
