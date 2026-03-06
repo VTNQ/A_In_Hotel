@@ -1,10 +1,12 @@
 import { useState } from "react";
 import CommonModal from "../ui/CommonModal";
-import QuillEditor from "react-quill-new";
+import QuillEditor, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useAlert } from "../alert-context";
 import { createBlog } from "../../service/api/Blog";
 import { useTranslation } from "react-i18next";
+import BlotFormatter from "quill-blot-formatter";
+Quill.register("modules/blotFormatter", BlotFormatter);
 import type { BlogFormModalProps } from "../../type/blog.types";
 const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,35 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
 
       ["clean"],
     ],
+      blotFormatter: {
+    overlay: {
+      style: {
+        border: "2px dashed #444",
+      },
+    },
+  },
+  };
+  const fullToolbarDescription = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+
+      [{ header: 1 }, { header: 2 }],
+      [{ font: [] }],
+      [{ size: [] }],
+
+      [{ color: [] }, { background: [] }],
+
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+
+      ["blockquote", "code-block"],
+
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      ["clean"],
+    ],
+    
   };
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -197,7 +228,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             theme="snow"
             value={formData.description}
             onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
-            modules={fullToolbar}
+            modules={fullToolbarDescription}
           />
         </div>
 

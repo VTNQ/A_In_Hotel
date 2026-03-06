@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
-import QuillEditor from "react-quill-new";
+import QuillEditor, { Quill } from "react-quill-new";
 import DateTimePicker from "../ui/DateTimePicker";
 import { createBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
 import type { BannerFormModalProps } from "../../type/banner.types";
+
+import BlotFormatter from "quill-blot-formatter";
+
+Quill.register("modules/blotFormatter", BlotFormatter);
 
 const BannerFormModal = ({
   isOpen,
@@ -27,25 +31,24 @@ const BannerFormModal = ({
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
-
       [{ header: 1 }, { header: 2 }],
       [{ font: [] }],
       [{ size: [] }],
-
       [{ color: [] }, { background: [] }],
-
       [{ align: [] }],
-
       [{ list: "ordered" }, { list: "bullet" }],
-
       ["link", "image"],
-
       ["blockquote", "code-block"],
-
       [{ indent: "-1" }, { indent: "+1" }],
-
       ["clean"],
     ],
+    // blotFormatter: {
+    //   overlay: {
+    //     style: {
+    //       border: "2px dashed #444",
+    //     },
+    //   },
+    // },
   };
   const handleChange = (
     e: React.ChangeEvent<
@@ -114,7 +117,7 @@ const BannerFormModal = ({
         description: "",
         bannerImage: null,
       });
-
+      setPreview(null);
       onSuccess();
     } catch (err: any) {
       console.error("Create error:", err);
@@ -147,10 +150,23 @@ const BannerFormModal = ({
       setFormData((prev) => ({ ...prev, bannerImage: file }));
     }
   };
+  const handleCloseModal = () => {
+    setPreview(null)
+    setFormData({
+      name: "",
+      startDate: null as Date | null,
+      endDate: null as Date | null,
+      ctaLabel: "",
+      description: "",
+      bannerImage: null as File | null,
+    });
+    onClose();
+  };
+
   return (
     <CommonModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleCloseModal}
       onSave={handleSave}
       onsubmit={loading}
       title={t("banner.createOrUpdate.titleCreate")}
