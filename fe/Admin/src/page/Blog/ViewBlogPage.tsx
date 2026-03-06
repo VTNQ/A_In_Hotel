@@ -267,7 +267,7 @@ const ViewBlogPage = () => {
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
         onSuccess={() => {
-          fetchData();
+          fetchData(page);
           setShowUpdateModal(false);
         }}
         blogId={selectedBlog}
