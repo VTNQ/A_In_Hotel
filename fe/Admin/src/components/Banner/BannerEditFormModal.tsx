@@ -267,7 +267,7 @@ const BannerEditFormModal = ({
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
-            {t("banner.createOrUpdate.ctaLabel")} *
+            {t("banner.createOrUpdate.ctaLabel")} 
           </label>
           <input
             type="text"
