@@ -89,6 +89,28 @@ const BlogEditFormModal = ({
       ["clean"],
     ],
   };
+   const fullToolbarDescription = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+
+      [{ header: 1 }, { header: 2 }],
+      [{ font: [] }],
+      [{ size: [] }],
+
+      [{ color: [] }, { background: [] }],
+
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+
+      ["blockquote", "code-block"],
+
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      ["clean"],
+    ],
+    
+  };
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -239,7 +261,7 @@ const BlogEditFormModal = ({
             theme="snow"
             value={formData.description}
             onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
-            modules={fullToolbar}
+            modules={fullToolbarDescription}
           />
         </div>
 
