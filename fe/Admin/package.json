@@ -23,6 +23,8 @@
     "framer-motion": "^12.23.24",
     "i18next": "^25.7.3",
     "lucide-react": "^0.548.0",
+    "quill-blot-formatter": "^1.0.5",
+    "quill-image-resize-module-react": "^3.0.0",
     "react": "^19.1.1",
     "react-apexcharts": "^1.9.0",
     "react-chartjs-2": "^5.3.1",

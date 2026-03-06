@@ -13,6 +13,14 @@ implements ConstraintValidator<StartAtFutureOrPresent, OffsetDateTime> {
         if (value == null) {
             return true; // null để @NotNull xử lý nếu cần
         }
-        return !value.isBefore(OffsetDateTime.now());
+        OffsetDateTime now = OffsetDateTime.now()
+                .withSecond(0)
+                .withNano(0);
+
+        OffsetDateTime input = value
+                .withSecond(0)
+                .withNano(0);
+
+        return !input.isBefore(now);
     }
 }
