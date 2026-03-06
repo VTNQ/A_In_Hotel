@@ -77,8 +77,8 @@ const ViewBlogPage = () => {
   const handleRestore = async (row: any) => {
     try {
       setLoading(true);
-      const response = await updateStatus(row.id, 1);
-      const message = response?.data?.message || t("blog.restoreSucess");
+      await updateStatus(row.id, 1);
+      const message = t("blog.restoreSucess");
       showAlert({ title: message, type: "success", autoClose: 3000 });
       await fetchData(page);
     } catch (err: any) {
@@ -93,8 +93,8 @@ const ViewBlogPage = () => {
   const handlePublish = async (row: any) => {
     try {
       setLoading(true);
-      const response = await updateStatus(row.id, 2);
-      const message = response?.data?.message || t("blog.publishSucess");
+       await updateStatus(row.id, 2);
+      const message =  t("blog.publishSucess");
       await fetchData(page);
       showAlert({ title: message, type: "success", autoClose: 3000 });
     } catch (err: any) {
@@ -109,8 +109,8 @@ const ViewBlogPage = () => {
   const handleArchive = async (row: any) => {
     try {
       setLoading(true);
-      const response = await updateStatus(row.id, 3);
-      const message = response?.data?.message || t("blog.archiveSucess");
+       await updateStatus(row.id, 3);
+      const message =  t("blog.archiveSucess");
       await fetchData(page);
       showAlert({ title: message, type: "success", autoClose: 3000 });
     } catch (err: any) {
