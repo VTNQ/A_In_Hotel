@@ -53,35 +53,22 @@ public class BlogController {
                                                                       @RequestParam(required = false) String searchField,
                                                                       @RequestParam(required = false) String searchValue,
                                                                       @RequestParam(required = false) boolean all) {
-        try {
             PageResponse<BlogResponse> pageResponse =
                     new PageResponse<>(blogService.getAll(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(RequestResponse.success(pageResponse));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/{id}")
     @Operation(summary = "Get Blog By Id")
     public ResponseEntity<RequestResponse<BlogResponse>> getById(@PathVariable Long id) {
-        try {
             BlogResponse blogResponse = blogService.getById(id);
             return ResponseEntity.ok(RequestResponse.success(blogResponse));
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @PatchMapping("/{id}/status")
     @Operation(summary = "update status blog by id")
     public ResponseEntity<RequestResponse<Void>> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
-        try {
             blogService.updateStatus(id, status);
             return ResponseEntity.ok(RequestResponse.success("Updated status successfully"));
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 }

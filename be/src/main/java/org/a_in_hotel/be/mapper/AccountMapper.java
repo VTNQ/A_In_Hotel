@@ -48,7 +48,7 @@ public interface AccountMapper extends CommonMapper {
     @Mapping(target = "fullName",source = "account.staff.fullName")
     @Mapping(target = "birthday",source = "account.staff.birthday")
     @Mapping(target = "gender",source = "account.staff.gender")
-    @Mapping(target = "hotelName",source = "account.hotel.name")
+    @Mapping(target = "hotelName",source = "hotelName")
     @Mapping(target = "phone",source = "account.staff.phone")
-    ProfileSystemResponse toProfile(Account account);
+    ProfileSystemResponse toProfile(Account account,String hotelName);
 }

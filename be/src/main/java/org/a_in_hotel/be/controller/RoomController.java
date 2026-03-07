@@ -30,23 +30,16 @@ public class RoomController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute RoomRequest request, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
 
-        try {
+
             roomService.save(request, images);
             return ResponseEntity.ok(RequestResponse.success("Thêm phòng thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<RequestResponse<RoomResponse>> findById(@PathVariable Long id) {
-        try {
             return ResponseEntity.ok(RequestResponse.success(roomService.findById(id)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 
     @GetMapping("/getAll")
@@ -57,55 +50,33 @@ public class RoomController {
                                                                               @RequestParam(required = false) String searchField,
                                                                               @RequestParam(required = false) String searchValue,
                                                                               @RequestParam(required = false) boolean all) {
-        try {
+
             PageResponse<RoomResponse> pageResponse =
                     new PageResponse<>(roomService.getListRoom(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(
                     RequestResponse.success(pageResponse, "Lấy room thành công")
             );
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error("Get All Config: " + e.getMessage()));
-        }
+
     }
 
     @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute RoomRequest request, BindingResult bindingResult, @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
-        try {
+
             roomService.update(id, request, images);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật phòng thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<RequestResponse<Void>> updateStatus(
             @PathVariable Long id,
             @RequestParam Integer status) {
-        try {
             roomService.updateStatus(id, status);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái phòng thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/representative-by-hotel")
     public ResponseEntity<RequestResponse<List<RoomResponse>>> getRepresentativeByHotel() {
-        try {
             return ResponseEntity.ok(RequestResponse.success(roomService.getRepresentativeRoomsOfHotels()));
-        }catch (Exception e) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 }

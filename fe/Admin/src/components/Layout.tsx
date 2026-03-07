@@ -19,7 +19,7 @@ const MainLayout = () => {
   if (authChecking) {
     return <div className="w-full h-screen bg-white"></div>;
   }
-
+  
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
 

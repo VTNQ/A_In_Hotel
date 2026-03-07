@@ -20,21 +20,13 @@ public class StatisticsController {
 
     @GetMapping("/bookings")
     public ResponseEntity<RequestResponse<BookingStatisticsResponse>> getBookings(){
-        try {
             return ResponseEntity.ok(RequestResponse.success(bookingStatisticsService.getBookingStatistics()));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/rooms")
     public ResponseEntity<RequestResponse<RoomAvailabilityResponse>> getRoomsAvailability(){
-        try {
             return ResponseEntity.ok(RequestResponse.success(bookingStatisticsService.getRoomAvailability()));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/revenue")
     public ResponseEntity<RequestResponse<List<RevenueStatisticsResponse>>> getRevenue(){
@@ -48,11 +40,6 @@ public class StatisticsController {
 
     @GetMapping("/booking/reservation")
     public ResponseEntity<RequestResponse<List<ReservationStatisticsResponse>>> getReservation(){
-        try {
             return ResponseEntity.ok(RequestResponse.success(bookingStatisticsService.getReservation()));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 }

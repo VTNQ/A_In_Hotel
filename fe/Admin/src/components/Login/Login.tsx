@@ -32,13 +32,14 @@ export default function Login() {
     try {
       const response = await login(email, password);
 
-      if (response.data.role === "ADMIN") {
+      if (response.data.role === "ADMIN" || response.data.role === "RECEPTIONIST") {
         saveTokens({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
           accessTokenAt: response.data.accessTokenExpiryAt,
           refreshTokenAt: response.data.refreshTokenExpiryAt,
           hotelId: response.data.hotelId,
+          role: response.data.role,
         });
 
         setSuccess("Đăng nhập thành công!");

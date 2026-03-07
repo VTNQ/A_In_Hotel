@@ -33,21 +33,23 @@ const ViewRoomPage = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const fetchCategories = async () => {
     try {
-      const res = await getAllCategory({ all: true, filter: "isActive==1 and type==1" });
+      const res = await getAllCategory({
+        all: true,
+        filter: "isActive==1 and type==1",
+      });
       setCategories(res.content || []);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
   useEffect(() => {
     fetchCategories();
   }, []);
 
-
   const fetchData = async (
     pageNumber = 1,
     key = sortKey,
-    order = sortOrder
+    order = sortOrder,
   ) => {
     setLoading(true);
     try {
@@ -57,16 +59,15 @@ const ViewRoomPage = () => {
       }
       if (categoryFilter) {
         filters.push(`roomType.id==${categoryFilter}`);
-
       }
-      filters.push(`hotel.id==${getTokens()?.hotelId}`)
+      filters.push(`hotel.id==${getTokens()?.hotelId}`);
       const filterQuery = filters.join(" and ");
       const params = {
         page: pageNumber,
         size: 10,
         sort: `${key},${order}`,
         searchValue: searchValue,
-        ...(filterQuery ? { filter: filterQuery } : {})
+        ...(filterQuery ? { filter: filterQuery } : {}),
       };
       const resp = await getAllRoom(params);
       setData(resp.data?.content || []);
@@ -112,8 +113,7 @@ const ViewRoomPage = () => {
     try {
       setLoading(true);
       const response = await updateStatus(row.id, 3);
-      const message =
-        response?.data?.message || "Room Active successfully!";
+      const message = response?.data?.message || "Room Active successfully!";
       showAlert({ title: message, type: "success", autoClose: 3000 });
       fetchData();
     } catch (err: any) {
@@ -129,8 +129,7 @@ const ViewRoomPage = () => {
     try {
       setLoading(true);
       const response = await updateStatus(row.id, 3);
-      const message =
-        response?.data?.message || "Room DeActived successfully!";
+      const message = response?.data?.message || "Room DeActived successfully!";
       showAlert({ title: message, type: "success", autoClose: 3000 });
       fetchData();
     } catch (err: any) {
@@ -158,7 +157,11 @@ const ViewRoomPage = () => {
       label: t("room.image"),
       render: (row: any) => (
         <img
-          src={row.images?.length > 0 ? File_URL + row.images[0].url : "/default.webp"}
+          src={
+            row.images?.length > 0
+              ? File_URL + row.images[0].url
+              : "/default.webp"
+          }
           alt={row.roomNumber}
           className="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded-lg"
         />
@@ -166,8 +169,10 @@ const ViewRoomPage = () => {
     },
     { key: "roomName", label: t("room.roomName") },
     {
-      key: "roomTypeName", label: t("room.roomTypeName"),
-      sortable: true, sortKey: "roomType.name"
+      key: "roomTypeName",
+      label: t("room.roomTypeName"),
+      sortable: true,
+      sortKey: "roomType.name",
     },
     {
       key: "defaultRate",
@@ -185,14 +190,45 @@ const ViewRoomPage = () => {
         const statusCode = row.status; // status là số (0–5)
 
         // Map status code → label + màu sắc
-        const statusMap: Record<number, { label: string; color: string; dot: string }> = {
-          1: { label: t("room.roomStatus.vacantDirty"), color: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
-          2: { label: t("room.roomStatus.occupied"), color: "bg-blue-50 text-blue-700", dot: "bg-blue-500" },
-          3: { label: t("room.roomStatus.available"), color: "bg-green-50 text-green-700", dot: "bg-green-500" },
-          4: { label: t("room.roomStatus.maintenance"), color: "bg-red-50 text-red-700", dot: "bg-red-500" },
-          5: { label: t("room.roomStatus.blocked"), color: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500" },
-          6: { label: t("room.roomStatus.deactivated"), color: "bg-gray-100 text-gray-500", dot: "bg-gray-400" },
-          7: {label: t("room.roomStatus.reserved"), color: "bg-purple-50 text-purple-700",dot:"bg-purple-500"}
+        const statusMap: Record<
+          number,
+          { label: string; color: string; dot: string }
+        > = {
+          1: {
+            label: t("room.roomStatus.vacantDirty"),
+            color: "bg-amber-50 text-amber-700",
+            dot: "bg-amber-500",
+          },
+          2: {
+            label: t("room.roomStatus.occupied"),
+            color: "bg-blue-50 text-blue-700",
+            dot: "bg-blue-500",
+          },
+          3: {
+            label: t("room.roomStatus.available"),
+            color: "bg-green-50 text-green-700",
+            dot: "bg-green-500",
+          },
+          4: {
+            label: t("room.roomStatus.maintenance"),
+            color: "bg-red-50 text-red-700",
+            dot: "bg-red-500",
+          },
+          5: {
+            label: t("room.roomStatus.blocked"),
+            color: "bg-fuchsia-50 text-fuchsia-700",
+            dot: "bg-fuchsia-500",
+          },
+          6: {
+            label: t("room.roomStatus.deactivated"),
+            color: "bg-gray-100 text-gray-500",
+            dot: "bg-gray-400",
+          },
+          7: {
+            label: t("room.roomStatus.reserved"),
+            color: "bg-purple-50 text-purple-700",
+            dot: "bg-purple-500",
+          },
         };
 
         // Nếu không khớp code nào, dùng mặc định
@@ -235,18 +271,18 @@ const ViewRoomPage = () => {
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
           {t("room.title")}
         </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition"
-        >
-          {t("room.new")}
-        </button>
+        {getTokens()?.role === "ADMIN" && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2] transition"
+          >
+            {t("room.new")}
+          </button>
+        )}
       </div>
-
 
       {/* Bộ lọc */}
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
-
         {/* Search */}
         <div className="relative w-full lg:w-[300px]">
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
@@ -258,7 +294,6 @@ const ViewRoomPage = () => {
             className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
-
 
         {/* Status */}
         <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
@@ -288,7 +323,7 @@ const ViewRoomPage = () => {
           <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
             {t("room.roomTypeName")}
           </div>
-            <div className="w-px bg-[#C2C4C5]" />
+          <div className="w-px bg-[#C2C4C5]" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -302,9 +337,6 @@ const ViewRoomPage = () => {
             ))}
           </select>
         </div>
-
-
-
       </div>
 
       {/* Table */}
@@ -335,9 +367,8 @@ const ViewRoomPage = () => {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             fetchData();
-            setShowModal(false)
+            setShowModal(false);
           }}
-
         />
         <ViewRoomManagement
           isOpen={showViewModal}
@@ -351,7 +382,6 @@ const ViewRoomPage = () => {
             fetchData();
             setShowUpdateModal(false);
           }}
-
           roomId={selectedRoom}
         />
       </div>

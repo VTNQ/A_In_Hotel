@@ -48,7 +48,6 @@ public class StaffServiceImpl implements StaffService {
         try {
             Long currentUserId = securityUtils.getCurrentUserId();
             Long hotelId = securityUtils.getHotelId();
-
             Account account = accountMapper.toEntityStaff(request, currentUserId);
             String randomPassword = generalService.generateRandomPassword(8);
             account.setPassword(passwordEncoder.encode(randomPassword));

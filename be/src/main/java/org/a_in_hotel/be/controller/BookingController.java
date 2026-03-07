@@ -42,7 +42,7 @@ public class BookingController {
             @RequestParam(required = false) String searchValue,
             @RequestParam(defaultValue = "false") boolean all
     ) {
-        try {
+
             Page<BookingListTopResponse> result =
                     service.getBookingTop(
                             page,
@@ -56,10 +56,7 @@ public class BookingController {
 
             return ResponseEntity.ok(RequestResponse.success(result));
 
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping
     public  ResponseEntity<RequestResponse<PageResponse<BookingResponse>>> getBookings
