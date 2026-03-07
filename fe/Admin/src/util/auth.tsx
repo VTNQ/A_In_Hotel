@@ -4,6 +4,7 @@ export type Tokens = {
   accessTokenAt: number;   // milliseconds
   refreshTokenAt?: number; // milliseconds
   hotelId?: number;
+  role?:string
 };
 
 const LS_KEY = "auth/tokens";

@@ -8,6 +8,7 @@ export interface ActionItem {
   icon?: React.ReactNode;
   onClick?: () => void;
   danger?: boolean;
+  roles?: string[];
   disabled?: boolean;
 }
 
