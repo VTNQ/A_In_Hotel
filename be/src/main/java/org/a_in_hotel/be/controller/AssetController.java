@@ -33,6 +33,7 @@ public class AssetController {
         var result = assetService.findAll(page, size, sort, filter, searchField, searchValue, all);
         return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
     }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>> create(
             @Valid @ModelAttribute AssetCreateRequest req,

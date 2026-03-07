@@ -27,14 +27,11 @@ public class CustomerController {
             @RequestParam(required = false) String searchValue,
             @RequestParam(required = false) boolean all
     ){
-        try {
+
             PageResponse<CustomerResponse> pageResponse =
                     new PageResponse<>(service.getListCustomer(page,size,sort,filter,searchField,searchValue,all));
             return ResponseEntity.ok(RequestResponse.success(pageResponse));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/{id}")
     public ResponseEntity<DetailCustomerResponse> getDetailCustomer(
@@ -55,12 +52,9 @@ public class CustomerController {
             @PathVariable Long id,
             @RequestParam Boolean status
     ){
-        try {
+
             service.updateStatus(id,status);
             return ResponseEntity.ok(RequestResponse.success("customer status successfully"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 }

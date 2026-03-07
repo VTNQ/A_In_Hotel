@@ -67,6 +67,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private CustomerMapper customerMapper;
     @Autowired
+    private HotelRepository hotelRepository;
+    @Autowired
     private StaffMapper staffMapper;
     @Autowired
     private StaffRepository staffRepository;
@@ -191,7 +193,9 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(()->new EntityNotFoundException("Profile not account with id:"+securityUtils.getCurrentUserId()));
         imageRepository.findFirstByEntityIdAndEntityType(account.getId(), "avatar")
                 .ifPresent(account::setImage);
-        return accountMapper.toProfile(account);
+        Hotel hotel = hotelRepository.findByAccount_Id(account.getId()).orElse(null);
+        String hotelName = hotel != null ? hotel.getName() : null;
+        return accountMapper.toProfile(account,hotelName);
     }
 
     @Override
