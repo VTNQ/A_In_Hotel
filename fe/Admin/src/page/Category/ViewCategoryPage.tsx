@@ -88,7 +88,7 @@ const ViewCategoryPage = () => {
             const message =
                 response?.data?.message || "Service deactivated successfully!";
             showAlert({ title: message, type: "success", autoClose: 3000 });
-            fetchData();
+            fetchData(page);
         } catch (err: any) {
             showAlert({
                 title:
@@ -108,7 +108,7 @@ const ViewCategoryPage = () => {
             const message =
                 response?.data?.message || "Service activated successfully!";
             showAlert({ title: message, type: "success", autoClose: 3000 });
-            fetchData();
+            fetchData(page);
         } catch (err: any) {
             showAlert({
                 title:
@@ -254,7 +254,7 @@ const ViewCategoryPage = () => {
                 isOpen={showUpdateModal}
                 onClose={handleCloseModal}
                 onSuccess={() => {
-                    fetchData();
+                    fetchData(page);
                     setShowUpdateModal(false);
                 }}
                 categoryId={selectedCategory}

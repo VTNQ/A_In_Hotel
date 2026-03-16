@@ -70,11 +70,10 @@ public class ExtraRoomServiceController {
     public ResponseEntity<RequestResponse<Void>>update
             (
                     @PathVariable Long id,
-                    @Valid @ModelAttribute ExtraServiceRequest extra,
-                    @RequestParam(value = "image",required = false)  MultipartFile image
+                    @Valid @ModelAttribute ExtraServiceRequest extra
             ){
 
-            extraService.update(extra,id,image);
+            extraService.update(extra,id,extra.getImage());
             return ResponseEntity.ok(RequestResponse.success("Cập nhật dịch vụ thành công"));
 
     }

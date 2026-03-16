@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import type { RoomFormModalProps } from "../../type/room.types";
 
 const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
-
   /* ===============================
       FORM STATE
   =============================== */
@@ -65,7 +64,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         if (formData.images.length !== initialData.images.length) return true;
         continue;
       }
-      if (formData[key as keyof typeof formData] !== initialData[key as keyof typeof formData]) {
+      if (
+        formData[key as keyof typeof formData] !==
+        initialData[key as keyof typeof formData]
+      ) {
         return true;
       }
     }
@@ -126,7 +128,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       onClose();
     } catch (err: any) {
       showAlert({
-        title: err?.response?.data?.message || t("room.createOrUpdate.createError"),
+        title:
+          err?.response?.data?.message || t("room.createOrUpdate.createError"),
         type: "error",
         autoClose: 3000,
       });
@@ -160,6 +163,29 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       CONFIRM CLOSE MODAL
   =============================== */
   const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []) as File[];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    const imageFiles = files.filter((file) => allowedTypes.includes(file.type));
+    if (imageFiles.length != files.length) {
+      showAlert({
+        title: t("room.createOrUpdate.onlyImage"),
+        type: "error",
+        autoClose: 3000,
+      });
+    }
+    const totalImages = tempImages.length + imageFiles.length;
+    
+    if (totalImages > 5) {
+      showAlert({
+        title: t("room.createOrUpdate.maxImages"),
+        type: "error",
+        autoClose: 3000,
+      });
+      return;
+    }
+    setTempImages((prev) => [...prev, ...imageFiles]);
+  };
 
   if (isOpen && fetching) {
     return (
@@ -170,7 +196,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         saveLabel={t("common.save")}
         cancelLabel={t("common.cancel")}
         width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
-
       >
         <div className="flex justify-center items-center py-10">
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -193,7 +218,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             handleCancel();
           }
         }}
-
         title={t("room.createOrUpdate.titleCreate")}
         onSave={handleSave}
         saveLabel={loading ? t("common.saving") : t("common.save")}
@@ -202,19 +226,22 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       >
         {/* FORM CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-
-
           {/* LEFT */}
           <div className="space-y-5">
             <div>
-              <label className="block mb-1 font-medium">{t("room.roomTypeName")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.roomTypeName")} *
+              </label>
               <select
                 name="idRoomType"
                 value={formData.idRoomType}
                 onChange={handleChange}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               >
-                <option value=""> {t("room.createOrUpdate.selectRoomType")}</option>
+                <option value="">
+                  {" "}
+                  {t("room.createOrUpdate.selectRoomType")}
+                </option>
                 {category.map((c: any) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -224,7 +251,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomNumber")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.roomNumber")} *
+              </label>
               <input
                 name="roomNumber"
                 value={formData.roomNumber}
@@ -236,7 +265,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomName")}  *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.roomName")} *
+                </label>
                 <input
                   name="roomName"
                   placeholder={t("room.createOrUpdate.enterRoomName")}
@@ -247,7 +278,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.floor")} *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.floor")} *
+                </label>
                 <input
                   type="number"
                   name="floor"
@@ -260,7 +293,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.area")}  *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.area")} *
+              </label>
               <input
                 name="area"
                 type="number"
@@ -272,7 +307,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.capacity")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.capacity")} *
+              </label>
               <input
                 name="capacity"
                 type="number"
@@ -284,7 +321,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.note")}</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.note")}
+              </label>
               <textarea
                 name="note"
                 value={formData.note}
@@ -298,10 +337,11 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
           {/* RIGHT */}
           <div className="space-y-5">
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceBase")} *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.priceBase")} *
+                </label>
                 <input
                   name="hourlyBasePrice"
                   type="number"
@@ -313,7 +353,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceExtraHour")}*</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.priceExtraHour")}*
+                </label>
                 <input
                   name="hourlyAdditionalPrice"
                   type="number"
@@ -340,7 +382,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               <div>
                 <label className="block mb-1 font-medium">
-                   {t("room.createOrUpdate.priceFullDay")} *
+                  {t("room.createOrUpdate.priceFullDay")} *
                 </label>
                 <input
                   name="defaultRate"
@@ -355,7 +397,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
             {/* IMAGE UPLOAD PREVIEW */}
             <div>
-              <label className="text-sm font-medium">{t("room.createOrUpdate.images")}</label>
+              <label className="text-sm font-medium">
+                {t("room.createOrUpdate.images")}
+              </label>
 
               <div
                 onClick={openImageModal}
@@ -365,7 +409,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 sm:p-6 cursor-pointer transition flex flex-col items-center 
                 min-h-[200px] sm:h-64"
               >
-
                 {formData.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {formData.images.map((img, index) => (
@@ -373,7 +416,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                         key={index}
                         src={URL.createObjectURL(img)}
                         className="w-full h-24 sm:h-28 object-cover rounded-lg"
-
                       />
                     ))}
                   </div>
@@ -383,7 +425,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       src="/defaultImage.png"
                       className="w-[167px] h-[117px] opacity-60"
                     />
-                    <p className="text-gray-600 mt-3">{t("room.createOrUpdate.clickSelectImages")}</p>
+                    <p className="text-gray-600 mt-3">
+                      {t("room.createOrUpdate.clickSelectImages")}
+                    </p>
                     <button
                       className="mt-3 w-full 
                       sm:w-auto px-6 sm:px-20 py-1.5 
@@ -392,7 +436,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                     >
                       {t("room.createOrUpdate.selectFiles")}
                     </button>
-
                   </div>
                 )}
               </div>
@@ -415,14 +458,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             <motion.div
               className="bg-white w-[95vw] sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 
               shadow-xl relative overflow-hidden"
-
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
             >
               {/* HEADER */}
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
@@ -430,10 +471,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                     setImageModalOpen(false);
                   }}
                 >
-                 <button>{t("common.cancelButton")}</button>
+                  <button>{t("common.cancelButton")}</button>
                 </button>
 
-                <h2 className="text-xl font-semibold">{t("room.createOrUpdate.selectImages")}</h2>
+                <h2 className="text-xl font-semibold">
+                  {t("room.createOrUpdate.selectImages")}
+                </h2>
 
                 <button
                   className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
@@ -446,12 +489,13 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                     setImageModalOpen(false);
                   }}
                 >
-                {t("common.save")}
+                  {t("common.save")}
                 </button>
               </div>
 
               {/* DROPZONE */}
-              <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
+              <div
+                className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
      max-h-[500px] overflow-auto custom-scroll"
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -465,7 +509,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   e.currentTarget.classList.remove("border-blue-500");
 
                   const droppedFiles = Array.from(e.dataTransfer.files).filter(
-                    (f) => f.type.startsWith("image/")
+                    (f) => f.type.startsWith("image/"),
                   ) as File[];
 
                   if (droppedFiles.length > 0) {
@@ -473,18 +517,21 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   }
                 }}
               >
-
                 {/* NO IMAGES */}
                 {tempImages.length === 0 && (
                   <div className="flex flex-col items-center py-16">
                     <img src="/defaultImage.png" className="w-20 opacity-70" />
 
-                    <p className="mt-4 font-medium">{t("room.createOrUpdate.dragDrop")}</p>
+                    <p className="mt-4 font-medium">
+                      {t("room.createOrUpdate.dragDrop")}
+                    </p>
                     <p className="text-xs text-gray-500 mt-1">
-                     {t("room.createOrUpdate.supportedFormat")}
+                      {t("room.createOrUpdate.supportedFormat")}
                     </p>
 
-                    <p className="mt-4 text-gray-400">{t("room.createOrUpdate.or")}</p>
+                    <p className="mt-4 text-gray-400">
+                      {t("room.createOrUpdate.or")}
+                    </p>
 
                     <label
                       htmlFor="filePicker"
@@ -499,12 +546,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       multiple
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files ?? []) as File[];
-                        if (files.length > 0) {
-                          setTempImages(files);
-                        }
-                      }}
+                      onChange={(e) =>handleImageChange(e)}
                     />
                   </div>
                 )}
@@ -513,13 +555,11 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 {tempImages.length > 0 && (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
                       {/* LARGE IMAGE */}
                       <div className="col-span-2 relative">
                         <img
                           src={URL.createObjectURL(tempImages[0])}
                           className="w-full h-[220px] sm:h-[350px] object-cover rounded-xl"
-
                         />
 
                         <button
@@ -541,7 +581,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                             <img
                               src={URL.createObjectURL(img)}
                               className="w-full h-[120px] sm:h-[165px] object-cover rounded-xl"
-
                             />
 
                             <button
@@ -574,21 +613,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                         multiple
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files ?? []) as File[];
-
-                          if (files.length > 0) {
-                            const clone = [...tempImages, ...files];
-                            setTempImages(clone);
-                          }
-                        }}
+                         onChange={(e) =>handleImageChange(e)}
                       />
                     </div>
                   </>
                 )}
-
               </div>
-
             </motion.div>
           </motion.div>
         )}
@@ -612,11 +642,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </h2>
 
             <p className="text-gray-600 mt-2">
-               {t("room.createOrUpdate.confirmCloseDesc")}
+              {t("room.createOrUpdate.confirmCloseDesc")}
             </p>
 
             <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
               <button
                 className="px-4 py-2 bg-gray-200 rounded-lg"
                 onClick={() => {

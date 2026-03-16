@@ -36,10 +36,8 @@ public class BlogController {
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Update a blog")
     public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id,
-                                                        @Valid @ModelAttribute BlogUpdateRequest request,
-                                                        @RequestParam(value = "image", required = false)
-                                                            MultipartFile image) {
-            blogService.update(id, request, image);
+                                                        @Valid @ModelAttribute BlogUpdateRequest request) {
+            blogService.update(id, request, request.getImage());
             return ResponseEntity.ok(RequestResponse.success("Blog updated successfully"));
 
     }

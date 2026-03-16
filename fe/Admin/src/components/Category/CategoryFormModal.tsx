@@ -75,8 +75,9 @@ const CategoryFormModal = ({
             isOpen={isOpen}
             onClose={handleCancel}
             title={t("category.createOrUpdate.titleCreate")}
+            onsubmit={loading}
             onSave={handleSave}
-            saveLabel={loading ? t("common.saving...") : t("common.save")}
+            saveLabel={loading ? t("common.saving") : t("common.save")}
            cancelLabel={t("common.cancelButton")}
             width="w-[95vw] sm:w-[600px] lg:w-[800px]"
         >
@@ -102,6 +103,9 @@ const CategoryFormModal = ({
                         outline-none"
                         required
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                        {t("category.createOrUpdate.nameLimit")}
+                    </p>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-[#253150]">
@@ -146,6 +150,10 @@ const CategoryFormModal = ({
                         outline-none"
                         rows={3}
                     />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>{t("category.createOrUpdate.descriptionLimit")}</span>
+                        <span>{formData.description?.length || 0}/255</span>
+                    </div>
                 </div>
             </div>
         </CommonModal>

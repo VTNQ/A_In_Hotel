@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.a_in_hotel.be.annotation.ImageFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +25,6 @@ public class BlogUpdateRequest {
     private String content;
     @NotNull(message = "Status is required")
     private Integer status;
-
+    @ImageFile(message = "Invalid image file / File ảnh không hợp lệ")
+    private MultipartFile image;
 }
