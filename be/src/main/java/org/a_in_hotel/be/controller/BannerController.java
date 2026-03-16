@@ -3,21 +3,16 @@ package org.a_in_hotel.be.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.a_in_hotel.be.annotation.ImageFile;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.BannerRequest;
 import org.a_in_hotel.be.dto.request.BannerUpdateDTO;
 import org.a_in_hotel.be.dto.response.BannerResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
-import org.a_in_hotel.be.entity.Banner;
 import org.a_in_hotel.be.service.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/banners")
@@ -39,9 +34,9 @@ public class BannerController {
     }
 
     @PutMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerUpdateDTO bannerRequest, @RequestParam(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<RequestResponse<Void>> update(@PathVariable Long id, @Valid @ModelAttribute BannerUpdateDTO bannerRequest) {
 
-            bannerService.update(id, bannerRequest, image);
+            bannerService.update(id, bannerRequest, bannerRequest.getImage());
             return ResponseEntity.ok(RequestResponse.success("Cập nhật banner thành công"));
     }
 

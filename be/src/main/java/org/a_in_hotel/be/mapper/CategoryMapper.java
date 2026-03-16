@@ -22,7 +22,7 @@ public interface CategoryMapper extends CommonMapper {
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "isActive",ignore = true)
-    Category toEntity(CategoryDTO dto,Long userId);
+    Category   toEntity(CategoryDTO dto,Long userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "updatedBy", source = "userId")

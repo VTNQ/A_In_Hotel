@@ -12,28 +12,28 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class StaffRequest {
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required / Email không được để trống")
+    @Email(message = "Invalid email format / Email không đúng định dạng")
     private String email;
 
-    @NotBlank(message = "Full Name is required")
+    @NotBlank(message = "Full name is required / Họ và tên không được để trống")
     private String fullName;
 
-    @NotNull(message = "Gender is required")
+    @NotNull(message = "Gender is required / Giới tính không được để trống")
     private Integer gender;
 
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(message = "Phone number is required / Số điện thoại không được để trống")
     @Pattern(
             regexp = "^(03|05|07|08|09)[0-9]{8}$",
-            message = "Invalid  phone number"
+            message = "Invalid phone number / Số điện thoại không hợp lệ"
     )
     private String phone;
 
-    @NotNull(message = "birthday is required")
+    @NotNull(message = "Birthday is required / Ngày sinh không được để trống")
     private LocalDate birthday;
 
-    @NotNull(message = "Role is required")
-    @Min(value = 1,message = "Role is required")
+    @NotNull(message = "Role is required / Vai trò không được để trống")
+    @Min(value = 1, message = "Role must be valid / Vai trò không hợp lệ")
     private Long idRole;
     private Boolean isActive;
     private Long hotelId;

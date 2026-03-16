@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class BlogRequest {
     @NotBlank(message = "Title must not be blank / Tiêu đề không được để trống")
+    @NotNull(message = "Title must not be blank / Tiêu đề không được để trống" )
     @Size(max = 255, message = "Title must be at most 255 characters / Tiêu đề chỉ được nhập tối đa 255 ký tự")
     private String title;
 

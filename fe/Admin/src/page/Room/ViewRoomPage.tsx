@@ -99,7 +99,7 @@ const ViewRoomPage = () => {
       const message =
         response?.data?.message || "Room Maintenance successfully!";
       showAlert({ title: message, type: "success", autoClose: 3000 });
-      fetchData();
+      fetchData(page);
     } catch (err: any) {
       showAlert({
         title:
@@ -113,14 +113,14 @@ const ViewRoomPage = () => {
     try {
       setLoading(true);
       const response = await updateStatus(row.id, 3);
-      const message = response?.data?.message || "Room Active successfully!";
+      const message = response?.data?.message || t("room.activateSuccess");
       showAlert({ title: message, type: "success", autoClose: 3000 });
-      fetchData();
+      fetchData(page);
     } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to Active room. Please try again.",
+          t("room.activateFail"),
         type: "error",
       });
     }
@@ -129,14 +129,14 @@ const ViewRoomPage = () => {
     try {
       setLoading(true);
       const response = await updateStatus(row.id, 3);
-      const message = response?.data?.message || "Room DeActived successfully!";
+      const message = response?.data?.message || t("room.deactivateSuccess");
       showAlert({ title: message, type: "success", autoClose: 3000 });
-      fetchData();
+      fetchData(page);
     } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
-          "Failed to Deactived room. Please try again.",
+          t("room.deactivateFail"),
         type: "error",
       });
     }
@@ -379,7 +379,7 @@ const ViewRoomPage = () => {
           isOpen={showUpdateModal}
           onClose={handleCloseModal}
           onSuccess={() => {
-            fetchData();
+            fetchData(page);
             setShowUpdateModal(false);
           }}
           roomId={selectedRoom}

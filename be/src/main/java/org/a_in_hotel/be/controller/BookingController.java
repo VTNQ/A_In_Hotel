@@ -23,8 +23,6 @@ public class BookingController {
 
     private final BookingService service;
 
-
-
     @PostMapping
     public ResponseEntity<RequestResponse<Void>> create(@RequestBody BookingRequest request){
 
