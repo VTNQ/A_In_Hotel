@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { findById, updateExtraService } from "../../service/api/ExtraService";
@@ -23,6 +23,7 @@ const UpdateExtraServiceFormModal = ({
     extraCharge: "",
     image: null as File | null,
   });
+  const [errors, setErrors] = useState<any>({});
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -58,7 +59,43 @@ const UpdateExtraServiceFormModal = ({
       })
       .finally(() => setLoading(false));
   }, [isOpen, serviceId]);
-
+  const validateField = (name: string, value: any) => {
+    let error = "";
+    switch (name) {
+      case "serviceName":
+        if (!value.trim()) {
+          error = t("extraService.validate.serviceNameRequired");
+        }
+        break;
+      case "categoryId":
+        if (!value) {
+          error = t("extraService.validate.categoryRequired");
+        }
+        break;
+      case "extraCharge":
+        if (!value) {
+          error = t("extraService.validate.extraChargeRequired");
+        } else if (isNaN(Number(value)) || Number(value) < 0) {
+          error = t("extraService.validate.extraChargeInvalid");
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+  const handleBlur = (
+    e: React.FocusEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setErrors((prev: any) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -194,6 +231,9 @@ const UpdateExtraServiceFormModal = ({
               className="w-full h-full object-cover absolute inset-0"
             />
           )}
+          {errors.image && (
+            <p className="text-red-500 text-sm mt-2">{errors.image}</p>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -207,10 +247,13 @@ const UpdateExtraServiceFormModal = ({
             name="serviceName"
             value={formData.serviceName}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="Enter service name"
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-            required
           />
+          {errors.serviceName && (
+            <p className="text-red-500 text-sm">{errors.serviceName}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -233,6 +276,7 @@ const UpdateExtraServiceFormModal = ({
             name="categoryId"
             value={formData.categoryId}
             onChange={handleChange}
+            onBlur={handleBlur}
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
             required
           >
@@ -249,8 +293,11 @@ const UpdateExtraServiceFormModal = ({
               <option disabled>{t("common.loading")}</option>
             )}
           </select>
+          {errors.categoryId && (
+            <p className="text-red-500 text-sm">{errors.categoryId}</p>
+          )}
         </div>
- 
+
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
             {t("extraService.extraCharge")} *
@@ -263,8 +310,10 @@ const UpdateExtraServiceFormModal = ({
             placeholder="Enter service extra charge"
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
             min={0}
-            required
           />
+          {errors.extraCharge && (
+            <p className="text-red-500 text-sm">{errors.extraCharge}</p>
+          )}
         </div>
         <div className="col-span-1 sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">

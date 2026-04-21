@@ -10,318 +10,441 @@ import { useTranslation } from "react-i18next";
 import type { UpdateAssetFormModalProps } from "../../type/asset.types";
 
 const UpdateAssetFormModal = ({
-    isOpen,
-    onClose,
-    onSuccess,
-    assetId
+  isOpen,
+  onClose,
+  onSuccess,
+  assetId,
 }: UpdateAssetFormModalProps) => {
-    const [formData, setFormData] = useState({
-        id: "",
-        assetName: "",
-        categoryId: "",
-        price: "",
-        quantity: "",
-        note: "",
-        roomId: "",
-        image: null as File | null,
-    });
-    const { t } = useTranslation();
-    const [categories, setCategories] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [saving, setSaving] = useState(false);
-    const [preview, setPreview] = useState<string | null>(null);
-    const [room, setRooms] = useState<any[]>([]);
-    const { showAlert } = useAlert();
-    useEffect(() => {
-        if (!isOpen || !assetId) return;
-        setLoading(true);
-        fetchCategories();
-        fetchRooms();
-        findById(assetId)
-            .then((res) => {
-                const data = res?.data?.data;
-                setFormData({
-                    id: data.id || "",
-                    assetName: data.assetName || "",
-                    categoryId: data.categoryId || "",
-                    price: data.price || 0,
-                    quantity: data.quantity || 0,
-                    note: data.note || "",
-                    roomId: data.roomId || "",
-                    image: null
-                })
-                setPreview(File_URL + data.thumbnail?.url || null)
-            })
-            .catch(() => {
-                showAlert({
-                    title: t("asset.loadError"),
-                    type: "error",
-                });
-                onClose();
-            })
-            .finally(() => setLoading(false));
-
-
-    }, [isOpen, assetId]);
-    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setFormData((prev) => ({ ...prev, image: file }));
-            setPreview(URL.createObjectURL(file));
-        }
-    };
-    const fetchCategories = async () => {
-        try {
-            const res = await getAllCategory({ all: true, filter: "isActive==1 and type==3" });
-            setCategories(res.content || []);
-        } catch (err) {
-            console.log(err)
-        }
-    }
-    const fetchRooms = async () => {
-        try {
-            setLoading(true)
-            let filters: string[] = [];
-            filters.push(`hotel.id==${getTokens()?.hotelId}`)
-            const filterQuery = filters.join(" and ");
-
-            const res = await getAllRoom(
-                {
-                    all: true,
-                    filter: filterQuery
-                });
-            setRooms(res.data.content || []);
-        } catch (err) {
-            console.log(err)
-        } finally {
-            setLoading(false)
-        }
-    }
-    const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
-    ) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-    const handleUpdate = async () => {
-        setSaving(true);
-        try {
-            const payload = {
-                assetName: formData.assetName,
-                categoryId: formData.categoryId,
-                roomId: formData.roomId,
-                price: formData.price,
-                quantity: formData.quantity,
-                note: formData.note,
-                image: formData.image
-            }
-            const response = await updateAsset(Number(formData.id), payload);
-            const message = response?.data?.message || t("asset.createOrUpdate.updateSuccess");
-            showAlert({
-                title: message,
-                type: "success",
-                autoClose: 3000,
-            });
-
-            onSuccess?.();
-            onClose();
-        } catch (err: any) {
-            console.error("Update error:", err);
-            showAlert({
-                title:
-                    err?.response?.data?.message ||
-                    t("asset.createOrUpdate.updateError"),
-                type: "error",
-                autoClose: 4000,
-            })
-        } finally {
-            setSaving(false)
-        }
-    }
-    const handleCancel = () => {
+  const [formData, setFormData] = useState({
+    id: "",
+    assetName: "",
+    categoryId: "",
+    price: "",
+    quantity: "",
+    note: "",
+    roomId: "",
+    image: null as File | null,
+  });
+  const { t } = useTranslation();
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<any>({});
+  const [preview, setPreview] = useState<string | null>(null);
+  const [room, setRooms] = useState<any[]>([]);
+  const { showAlert } = useAlert();
+  useEffect(() => {
+    if (!isOpen || !assetId) return;
+    setLoading(true);
+    fetchCategories();
+    fetchRooms();
+    findById(assetId)
+      .then((res) => {
+        const data = res?.data?.data;
         setFormData({
-            id: "",
-            assetName: "",
-            categoryId: "",
-            price: "",
-            quantity: "",
-            note: "",
-            roomId: "",
-            image: null
-
-        })
+          id: data.id || "",
+          assetName: data.assetName || "",
+          categoryId: data.categoryId || "",
+          price: data.price || 0,
+          quantity: data.quantity || 0,
+          note: data.note || "",
+          roomId: data.roomId || "",
+          image: null,
+        });
+        setPreview(File_URL + data.thumbnail?.url || null);
+      })
+      .catch(() => {
+        showAlert({
+          title: t("asset.loadError"),
+          type: "error",
+        });
         onClose();
+      })
+      .finally(() => setLoading(false));
+  }, [isOpen, assetId]);
+  const validateField = (name: string, value: any) => {
+    let error = "";
+
+    switch (name) {
+      case "assetName":
+        if (!value.trim()) {
+          error = t("asset.validate.assetNameRequired");
+        }
+        break;
+
+      case "categoryId":
+        if (!value) {
+          error = t("asset.validate.categoryRequired");
+        }
+        break;
+
+      case "roomId":
+        if (!value) {
+          error = t("asset.validate.roomRequired");
+        }
+        break;
+
+      case "price":
+        if (!value) {
+          error = t("asset.validate.priceRequired");
+        } else if (isNaN(Number(value)) || Number(value) < 0) {
+          error = t("asset.validate.priceInvalid");
+        }
+        break;
+
+      case "quantity":
+        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
+          error = t("asset.validate.quantityInvalid");
+        }
+        break;
+
+      default:
+        break;
     }
-    if (isOpen && loading) {
-        return (
-            <CommonModal
-                isOpen={true}
-                onClose={handleCancel}
-                title={t("asset.createOrUpdate.titleEdit")}
-                saveLabel={t("common.save")}
-                cancelLabel={t("common.cancelButton")}
-                width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
-            >
-                <div className="flex justify-center items-center py-10">
-                    <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
-                </div>
-            </CommonModal>
-        );
+
+    return error;
+  };
+  const handleBlur = (
+    e: React.FocusEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setErrors((prev: any) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
+  const validateImage = (file: File | null) => {
+    if (!file) {
+      return t("asset.validate.imageRequired");
     }
+
+    const maxSize = 5 * 1024 * 1024;
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+    if (file.size > maxSize) {
+      return t("asset.validate.imageTooLarge");
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      return t("asset.validate.imageInvalidType");
+    }
+
+    return "";
+  };
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    const error = validateImage(file);
+
+    setErrors((prev: any) => ({
+      ...prev,
+      image: error,
+    }));
+
+    if (error || !file) return;
+
+    setFormData((prev) => ({ ...prev, image: file }));
+    setPreview(URL.createObjectURL(file));
+  };
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    newErrors.assetName = validateField("assetName", formData.assetName);
+    newErrors.categoryId = validateField("categoryId", formData.categoryId);
+    newErrors.roomId = validateField("roomId", formData.roomId);
+    newErrors.price = validateField("price", formData.price);
+    newErrors.quantity = validateField("quantity", formData.quantity);
+    newErrors.image = validateImage(formData.image);
+
+    // remove field không có lỗi
+    Object.keys(newErrors).forEach((key) => {
+      if (!newErrors[key]) delete newErrors[key];
+    });
+
+    return newErrors;
+  };
+  const fetchCategories = async () => {
+    try {
+      const res = await getAllCategory({
+        all: true,
+        filter: "isActive==1 and type==3",
+      });
+      setCategories(res.content || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const fetchRooms = async () => {
+    try {
+      setLoading(true);
+      let filters: string[] = [];
+      filters.push(`hotel.id==${getTokens()?.hotelId}`);
+      const filterQuery = filters.join(" and ");
+
+      const res = await getAllRoom({
+        all: true,
+        filter: filterQuery,
+      });
+      setRooms(res.data.content || []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleUpdate = async () => {
+    const validateErrors = validateForm();
+    if(Object.keys(validateErrors).length > 0){
+        setErrors(validateErrors);
+        return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        assetName: formData.assetName,
+        categoryId: formData.categoryId,
+        roomId: formData.roomId,
+        price: formData.price,
+        quantity: formData.quantity,
+        note: formData.note,
+        image: formData.image,
+      };
+      const response = await updateAsset(Number(formData.id), payload);
+      const message =
+        response?.data?.message || t("asset.createOrUpdate.updateSuccess");
+      showAlert({
+        title: message,
+        type: "success",
+        autoClose: 3000,
+      });
+
+      onSuccess?.();
+      onClose();
+    } catch (err: any) {
+      console.error("Update error:", err);
+      showAlert({
+        title:
+          err?.response?.data?.message || t("asset.createOrUpdate.updateError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+  const handleCancel = () => {
+    setFormData({
+      id: "",
+      assetName: "",
+      categoryId: "",
+      price: "",
+      quantity: "",
+      note: "",
+      roomId: "",
+      image: null,
+    });
+    onClose();
+  };
+  if (isOpen && loading) {
     return (
-        <CommonModal
-            isOpen={isOpen}
-            onClose={handleCancel}
-            onSave={handleUpdate}
-            title={t("asset.createOrUpdate.titleEdit")}
-            saveLabel={saving ? t("common.saving") : t("common.save")}
-            cancelLabel={t("common.cancelButton")}
-            width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
-        >
-            <div className="mb-4">
-                <label className="block mb-1 font-medium text-[#253150]">{t("asset.createOrUpdate.icon")}</label>
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+      <CommonModal
+        isOpen={true}
+        onClose={handleCancel}
+        title={t("asset.createOrUpdate.titleEdit")}
+        saveLabel={t("common.save")}
+        cancelLabel={t("common.cancelButton")}
+        width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
+      >
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
+        </div>
+      </CommonModal>
+    );
+  }
+  return (
+    <CommonModal
+      isOpen={isOpen}
+      onClose={handleCancel}
+      onSave={handleUpdate}
+      title={t("asset.createOrUpdate.titleEdit")}
+      saveLabel={saving ? t("common.saving") : t("common.save")}
+      cancelLabel={t("common.cancelButton")}
+      width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
+    >
+      <div className="mb-4">
+        <label className="block mb-1 font-medium text-[#253150]">
+          {t("asset.createOrUpdate.icon")}
+        </label>
+        <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleIconChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+          />
 
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleIconChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                    />
-
-                    {preview ? (
-                        <img
-                            src={preview}
-                            className="w-full h-full object-cover absolute inset-0"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <img
-                                src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
-                                className="w-full h-full object-cover absolute inset-0"
-                            />
-                        </div>
-                    )}
-
-                    <div className="absolute bottom-2 right-2 bg-[#4B62A0] p-2 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 5a3 3 0 110 6 3 3 0 010-6z" />
-                            <path d="M12 13c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5z" />
-                        </svg>
-                    </div>
-                </div>
+          {preview ? (
+            <img
+              src={preview}
+              className="w-full h-full object-cover absolute inset-0"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <img
+                src="https://backoffice-uat.affina.com.vn/assets/images/ffc6ce5b09395834f6c02a056de78121.png"
+                className="w-full h-full object-cover absolute inset-0"
+              />
             </div>
+          )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]" >
-                        {t("asset.name")} *
-                    </label>
-                    <input
-                        type="text"
-                        name="assetName"
-                        placeholder={t("asset.createOrUpdate.namePlaceHolder")}
-                        value={formData.assetName}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    />
+          <div className="absolute bottom-2 right-2 bg-[#4B62A0] p-2 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-white"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 5a3 3 0 110 6 3 3 0 010-6z" />
+              <path d="M12 13c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5z" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("asset.createOrUpdate.room")} *
-                    </label>
-                    <select
-                        name="roomId"
-                        value={formData.roomId}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    >
-                        <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
-                        {room.length > 0 ? (
-                            room.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.roomNumber}
-                                </option>
-                            ))
-                        ) : (
-                            <option disabled>{t("common.loading")}</option>
-                        )}
-                    </select>
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("asset.category")} *
-                    </label>
-                    <select
-                        name="categoryId"
-                        value={formData.categoryId}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    >
-                        <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
-                        {categories.length > 0 ? (
-                            categories.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name}
-                                </option>
-                            ))
-                        ) : (
-                            <option disabled>{t("common.loading")}</option>
-                        )}
-                    </select>
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("asset.createOrUpdate.price")} *
-                    </label>
-                    <input
-                        type="number"
-                        name="price"
-                        placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
-                        value={formData.price}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.name")} *
+          </label>
+          <input
+            type="text"
+            name="assetName"
+            placeholder={t("asset.createOrUpdate.namePlaceHolder")}
+            value={formData.assetName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+          />
+          {errors.name && (
+            <p className="text-red-500 mt-1">{errors.name}</p>
+          )}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.createOrUpdate.room")} *
+          </label>
+          <select
+            name="roomId"
+            value={formData.roomId}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+            required
+          >
+            <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
+            {room.length > 0 ? (
+              room.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.roomNumber}
+                </option>
+              ))
+            ) : (
+              <option disabled>{t("common.loading")}</option>
+            )}
+          </select>
+          {errors.roomId && (
+            <p className="text-red-500 mt-1">{errors.roomId}</p>
+          )}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.category")} *
+          </label>
+          <select
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+            required
+          >
+            <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
+            {categories.length > 0 ? (
+              categories.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))
+            ) : (
+              <option disabled>{t("common.loading")}</option>
+            )}
+          </select>
+          {errors.categoryId && (
+            <p className="text-red-500 mt-1">{errors.categoryId}</p>
+          )}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.createOrUpdate.price")} *
+          </label>
+          <input
+            type="number"
+            onBlur={handleBlur}
+            name="price"
+            placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+            
+          />
+          {errors.price && (
+            <p className="text-red-500 mt-1">{errors.price}</p>
+          )}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.createOrUpdate.quantity")}
+          </label>
+          <input
+            type="number"
+            name="quantity"
+            placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
+            value={formData.quantity}
+            onChange={handleChange}
+            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+           
+          />
+          {errors.quantity && (
+            <p className="text-red-500 mt-1">{errors.quantity}</p>
+          )}
+        </div>
 
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("asset.createOrUpdate.quantity")}
-                    </label>
-                    <input
-                        type="number"
-                        name="quantity"
-                        placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-                        required
-                    />
-
-                </div>
-
-                <div className="sm:col-span-2">
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("asset.createOrUpdate.note")}
-                    </label>
-                    <textarea
-                        name="note"
-                        value={formData.note}
-                        onChange={handleChange}
-                        placeholder={t("asset.createOrUpdate.notePlaceholder")}
-                        className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
-                        rows={2}
-                    />
-                </div>
-            </div>
-        </CommonModal>
-    )
-}
+        <div className="sm:col-span-2">
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("asset.createOrUpdate.note")}
+          </label>
+          <textarea
+            name="note"
+            value={formData.note}
+            onChange={handleChange}
+            placeholder={t("asset.createOrUpdate.notePlaceholder")}
+            className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+            rows={2}
+          />
+        </div>
+      </div>
+    </CommonModal>
+  );
+};
 export default UpdateAssetFormModal;

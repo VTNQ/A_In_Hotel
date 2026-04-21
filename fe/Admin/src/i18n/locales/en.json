@@ -158,6 +158,17 @@
     "title": "Amenities & Asset Tracking",
     "new": "+ New Asset",
     "code": "Asset ID",
+    "validate": {
+      "assetNameRequired": "Asset name is required",
+      "categoryRequired": "Please select a category",
+      "roomRequired": "Please select a room",
+      "priceRequired": "Price is required",
+      "priceInvalid": "Price must be a valid number and >= 0",
+      "quantityInvalid": "Quantity must be a valid number and >= 0",
+      "imageRequired": "Please select an image",
+      "imageTooLarge": "Image must be less than 5MB",
+      "imageInvalidType": "Only JPG, PNG, GIF are allowed"
+    },
     "loadError": "Failed to load asset information!",
     "icon": "Icon",
     "name": "Asset Name",
@@ -218,6 +229,15 @@
     "searchPlaceholder": "Search by name or ID",
     "icon": "Icon",
     "name": "Service Name",
+    "validate": {
+      "serviceNameRequired": "Service name is required",
+      "categoryRequired": "Please select a category",
+      "extraChargeRequired": "Extra charge is required",
+      "extraChargeInvalid": "Extra charge must be a valid number and >= 0",
+      "imageRequired": "Please select an image",
+      "imageTooLarge": "Image must be less than 5MB",
+      "imageInvalidType": "Only JPG, PNG, GIF are allowed"
+    },
     "createOrUpdate": {
       "icon": "Extra Service Icon",
       "namePlaceHolder": "Enter Service Name",
@@ -333,6 +353,12 @@
     "new": "+ New Category",
     "searchPlaceholder": "Search by Category ID, Category Name",
     "type": "Type",
+    "validate": {
+      "nameRequired": "Please enter category name",
+      "nameMax": "Category name must be less than 100 characters",
+      "typeRequired": "Please select category type",
+      "descriptionMax": "Description must be less than 255 characters"
+    },
     "room": "Room",
     "service": "Extra Service",
     "loadError": "Failed to load category information!",
@@ -371,6 +397,14 @@
     "blogCode": "Blog Code",
     "status": "Status",
     "loading": "Loading...",
+    "validate": {
+      "titleRequired": "Please enter title",
+      "categoryRequired": "Please select a category",
+      "contentRequired": "Please enter content",
+      "imageRequired": "Please select an image",
+      "imageInvalid": "Invalid image format (JPG, PNG, GIF only)",
+      "imageTooLarge": "Image exceeds maximum size (2MB)"
+    },
     "statusMap": {
       "draft": "Draft",
       "published": "Published",
@@ -426,6 +460,15 @@
   "banner": {
     "title": "Banner Management",
     "new": "+ New Banner",
+    "validate": {
+      "nameRequired": "Please enter banner name",
+      "startDateRequired": "Please select start date",
+      "endDateRequired": "Please select end date",
+      "endDateInvalid": "End date must be after start date",
+      "imageRequired": "Please select image",
+      "imageInvalid": "Invalid image format",
+      "imageTooLarge": "Image must be under 2MB"
+    },
     "searchPlaceholder": "Search by id,name",
     "code": "Banner ID",
     "name": "Title",

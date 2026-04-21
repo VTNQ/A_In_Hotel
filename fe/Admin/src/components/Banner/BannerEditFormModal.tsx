@@ -23,6 +23,13 @@ const BannerEditFormModal = ({
     description: "",
     bannerImage: null as File | null,
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    startDate: "",
+    endDate: "",
+    bannerImage: "",
+  });
+
   const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const { showAlert } = useAlert();
@@ -54,6 +61,64 @@ const BannerEditFormModal = ({
       })
       .finally(() => setLoading(false));
   }, [isOpen, bannerId]);
+  const validateField = (name: string, value: any) => {
+    let error = "";
+    switch (name) {
+      case "name":
+        if (!value?.trim()) {
+          error = t("banner.validate.nameRequired");
+        }
+        break;
+      case "startDate":
+        if (!value) {
+          error = t("banner.validate.startDateRequired");
+        }
+        break;
+      case "endDate":
+        if (!value) {
+          error = t("banner.validate.endDateRequired");
+        } else if (formData.startDate && value <= formData.startDate) {
+          error = t("banner.validate.endDateInvalid");
+        }
+        break;
+      case "bannerImage":
+        if (!value) {
+          error = t("banner.validate.imageRequired");
+        }
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+  const validateAll = () => {
+    const newErrors = {
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    };
+
+    if (!formData.name.trim()) {
+      newErrors.name = t("banner.validate.nameRequired");
+    }
+
+    if (!formData.startDate) {
+      newErrors.startDate = t("banner.validate.startDateRequired");
+    }
+
+    if (!formData.endDate) {
+      newErrors.endDate = t("banner.validate.endDateRequired");
+    } else if (formData.startDate && formData.endDate <= formData.startDate) {
+      newErrors.endDate = t("banner.validate.endDateInvalid");
+    }
+
+    if (!formData.bannerImage) {
+      newErrors.bannerImage = t("banner.validate.imageRequired");
+    }
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((e) => e);
+  };
   const toOffsetDateTime = (date?: Date | null) => {
     if (!date) return null;
 
@@ -81,7 +146,12 @@ const BannerEditFormModal = ({
       minutes
     );
   };
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
   const handleSave = async () => {
+    if (!validateAll()) return;
     setSaving(true);
     try {
       const cleanedData = Object.fromEntries(
@@ -99,8 +169,7 @@ const BannerEditFormModal = ({
       );
       await updateBanner(bannerId, cleanedData);
       showAlert({
-        title:
-            t("banner.createOrUpdate.updateSucess"),
+        title: t("banner.createOrUpdate.updateSucess"),
         type: "success",
         autoClose: 3000,
       });
@@ -162,20 +231,35 @@ const BannerEditFormModal = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (file && !allowedTypes.includes(file?.type)) {
-      showAlert({
-        title: t("blog.createOrUpdate.uploadError"),
-        type: "error",
-        autoClose: 3000,
-      });
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, bannerImage: null }));
+    const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageRequired"),
+      }));
       return;
     }
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setFormData((prev) => ({ ...prev, bannerImage: file }));
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageInvalid"),
+      }));
+      return;
     }
+    if (file.size > maxSize) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageTooLarge"),
+      }));
+      return;
+    }
+    setPreview(URL.createObjectURL(file));
+    setFormData((prev) => ({ ...prev, bannerImage: file }));
+
+    setErrors((prev) => ({
+      ...prev,
+      bannerImage: "",
+    }));
   };
   const handleCancel = () => {
     setFormData({
@@ -224,9 +308,11 @@ const BannerEditFormModal = ({
             name="name"
             placeholder={t("banner.createOrUpdate.enterName")}
             value={formData.name}
+            onBlur={handleBlur}
             onChange={handleChange}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -234,7 +320,7 @@ const BannerEditFormModal = ({
           </label>
           <DateTimePicker
             value={formData.startDate}
-            onChange={(date) =>
+            onChange={(date) => {
               setFormData((prev) => ({
                 ...prev,
                 startDate: date,
@@ -242,11 +328,16 @@ const BannerEditFormModal = ({
                   prev.endDate && date && prev.endDate <= date
                     ? null
                     : prev.endDate,
-              }))
-            }
+              }));
+
+              validateField("startDate", date);
+            }}
             minDate={new Date()}
             placeholder={t("banner.createOrUpdate.selectStartAt")}
           />
+          {errors.startDate && (
+            <p className="text-red-500 text-sm">{errors.startDate}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -254,9 +345,10 @@ const BannerEditFormModal = ({
           </label>
           <DateTimePicker
             value={formData.endDate}
-            onChange={(date) =>
-              setFormData((prev) => ({ ...prev, endDate: date }))
-            }
+            onChange={(date) => {
+              setFormData((prev) => ({ ...prev, endDate: date }));
+              validateField("endDate", date);
+            }}
             minDate={
               formData.startDate
                 ? new Date(formData.startDate.getTime() + 60 * 1000) // +1 phút
@@ -264,10 +356,13 @@ const BannerEditFormModal = ({
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
+          {errors.endDate && (
+            <p className="text-red-500 text-sm">{errors.endDate}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
-            {t("banner.createOrUpdate.ctaLabel")} 
+            {t("banner.createOrUpdate.ctaLabel")}
           </label>
           <input
             type="text"
@@ -328,6 +423,9 @@ const BannerEditFormModal = ({
             className="hidden"
             onChange={handleImageChange}
           />
+          {errors.bannerImage && (
+            <p className="text-red-500 text-sm mt-1">{errors.bannerImage}</p>
+          )}
         </div>
       </div>
     </CommonModal>

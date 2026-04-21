@@ -20,9 +20,61 @@ const UpdateCategoryFormModal = ({
     type: "",
     description: "",
   });
-
+  const [errors, setErrors] = useState({
+    name: "",
+    type: "",
+    description: "",
+  })
   const { showAlert } = useAlert();
-
+const validateField = (name: string, value: any) => {
+    let error = "";
+    switch (name) {
+      case "name":
+        if (!value.trim()) {
+          error = t("category.validate.nameRequired");
+        } else if (value.length > 100) {
+          error = t("category.validate.nameMax");
+        }
+        break;
+      case "type":
+        if (!value) {
+          error = t("category.validate.typeRequired");
+        }
+        break;
+      case "description":
+        if (value && value.length > 255) {
+          error = t("category.validate.descriptionMax");
+        }
+        break;
+    }
+    setErrors((prev)=>({...prev,[name]:error}))
+  };
+  const handleBlur = (
+    e:React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  )=>{
+    const { name, value} = e.target;
+    validateField(name,value);
+  }
+  const validateAll =()=>{
+    const newErrors = {
+        name:"",
+        type:"",
+        description:""
+    }
+    if(!formData.name.trim()){
+        newErrors.name = t("category.validate.nameRequired")
+    }else if(formData.name.length > 100){
+        newErrors.name = t("category.validate.nameMax");
+    }
+    if(!formData.type){
+        newErrors.type = t("category.validate.typeRequired");
+    }
+     if(formData.description && formData.description.length > 255){
+        newErrors.description = t("category.validate.descriptionMax")
+    }
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((e)=>e)
+  }
   useEffect(() => {
     if (!isOpen || !categoryId) return;
 
@@ -57,6 +109,7 @@ const UpdateCategoryFormModal = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleUpdate = async () => {
+    if(!validateAll()) return;
     setSaving(true);
     try {
       const cleanedData = Object.fromEntries(
@@ -135,6 +188,7 @@ const UpdateCategoryFormModal = ({
             name="name"
             value={formData.name}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder={t("category.createOrUpdate.enterName")}
             className="w-full border 
                         border-[#4B62A0] 
@@ -144,8 +198,10 @@ const UpdateCategoryFormModal = ({
                         text-sm
                         sm:text-base
                         outline-none"
-            required
           />
+          {errors.name && (
+             <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+          )}
           <p className="text-xs text-gray-500 mt-1">
             {t("category.createOrUpdate.nameLimit")}
           </p>
@@ -159,6 +215,7 @@ const UpdateCategoryFormModal = ({
             name="type"
             value={formData.type}
             onChange={handleChange}
+            onBlur={handleBlur}
             className="w-full border 
                         border-[#4B62A0] 
                         focus:border-[#3E5286] 
@@ -174,6 +231,9 @@ const UpdateCategoryFormModal = ({
             <option value="2">{t("category.service")}</option>
             <option value="3">{t("category.asset")}</option>
           </select>
+          {errors.type && (
+            <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+          )}
         </div>
         <div className="col-span-2">
           <label className="block mb-1 font-medium text-[#253150]">
@@ -183,6 +243,7 @@ const UpdateCategoryFormModal = ({
             name="description"
             value={formData.description}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder={t("category.createOrUpdate.enterDescription")}
             className="w-full border 
                         border-[#4B62A0] 
@@ -194,6 +255,9 @@ const UpdateCategoryFormModal = ({
                         outline-none"
             rows={3}
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+          )}
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{t("category.createOrUpdate.descriptionLimit")}</span>
             <span>{formData.description?.length || 0}/255</span>

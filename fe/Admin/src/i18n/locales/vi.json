@@ -168,6 +168,17 @@
         "code": "Mã tài sản",
         "icon": "Biểu tượng",
         "name": "Tên tài sản",
+        "validate": {
+            "assetNameRequired": "Tên tài sản không được để trống",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "roomRequired": "Vui lòng chọn phòng",
+            "priceRequired": "Giá không được để trống",
+            "priceInvalid": "Giá phải là số hợp lệ và >= 0",
+            "quantityInvalid": "Số lượng phải là số hợp lệ và >= 0",
+            "imageRequired": "Vui lòng chọn hình ảnh",
+            "imageTooLarge": "Hình ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận JPG, PNG, GIF"
+        },
         "price": "giá",
         "searchPlaceholder": "Tìm theo mã hoặc tên tài sản",
         "quantity": "số lượng",
@@ -223,6 +234,15 @@
         "new": "+ Thêm dịch vụ",
         "searchPlaceholder": "Tìm theo tên hoặc mã",
         "category": "Danh mục",
+        "validate": {
+            "serviceNameRequired": "Tên dịch vụ không được để trống",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "extraChargeRequired": "Phụ phí không được để trống",
+            "extraChargeInvalid": "Phụ phí phải là số hợp lệ và >= 0",
+            "imageRequired": "Vui lòng chọn hình ảnh",
+            "imageTooLarge": "Hình ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận JPG, PNG, GIF"
+        },
         "createOrUpdate": {
             "icon": "Biểu tượng dịch vụ",
             "namePlaceHolder": "Nhập tên dịch vụ",
@@ -341,6 +361,12 @@
         "room": "Phòng",
         "service": "Dịch vụ bổ sung",
         "viewCategory": "Xem chi tiết",
+        "validate": {
+            "nameRequired": "Vui lòng nhập tên danh mục",
+            "nameMax": "Tên danh mục tối đa 100 ký tự",
+            "typeRequired": "Vui lòng chọn loại danh mục",
+            "descriptionMax": "Mô tả tối đa 255 ký tự"
+        },
         "view": {
             "title": "Thông tin danh mục"
         },
@@ -400,6 +426,14 @@
         "blogCode": "Mã bài viết",
         "status": "Trạng thái",
         "loading": "Đang tải...",
+        "validate": {
+            "titleRequired": "Vui lòng nhập tiêu đề",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "contentRequired": "Vui lòng nhập nội dung",
+            "imageRequired": "Vui lòng chọn ảnh",
+            "imageInvalid": "Định dạng ảnh không hợp lệ (chỉ hỗ trợ JPG, PNG, GIF)",
+            "imageTooLarge": "Ảnh vượt quá dung lượng cho phép (tối đa 2MB)"
+        },
         "statusMap": {
             "draft": "Bản nháp",
             "published": "Đã xuất bản",
@@ -458,6 +492,15 @@
     "banner": {
         "title": "Quản lý Banner",
         "new": "+ Thêm banner",
+        "validate": {
+            "nameRequired": "Vui lòng nhập tên banner",
+            "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+            "endDateRequired": "Vui lòng chọn ngày kết thúc",
+            "endDateInvalid": "Ngày kết thúc phải sau ngày bắt đầu",
+            "imageRequired": "Vui lòng chọn ảnh",
+            "imageInvalid": "Định dạng ảnh không hợp lệ",
+            "imageTooLarge": "Ảnh tối đa 2MB"
+        },
         "createOrUpdate": {
             "titleCreate": "Tạo Banner mới",
             "titleEdit": "Sửa Banner",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import QuillEditor, { Quill } from "react-quill-new";
@@ -20,6 +20,12 @@ const BannerFormModal = ({
   const { t } = useTranslation();
   const [preview, setPreview] = useState<string | null>(null);
   const { showAlert } = useAlert();
+  const [errors, setErrors] = useState({
+    name: "",
+    startDate: "",
+    endDate: "",
+    bannerImage: "",
+  });
   const [formData, setFormData] = useState({
     name: "",
     startDate: null as Date | null,
@@ -28,6 +34,62 @@ const BannerFormModal = ({
     description: "",
     bannerImage: null as File | null,
   });
+  const validateField = (name: string, value: any) => {
+    let error = "";
+    switch (name) {
+      case "name":
+        if (!value?.trim()) {
+          error = t("banner.validate.nameRequired");
+        }
+        break;
+      case "startDate":
+        if (!value) {
+          error = t("banner.validate.startDateRequired");
+        }
+        break;
+      case "endDate":
+        if (!value) {
+          error = t("banner.validate.endDateRequired");
+        } else if (formData.startDate && value <= formData.startDate) {
+          error = t("banner.validate.endDateInvalid");
+        }
+        break;
+      case "bannerImage":
+        if (!value) {
+          error = t("banner.validate.imageRequired");
+        }
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
+  const validateAll = () => {
+    const newErrors = {
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    };
+    if (!formData.name?.trim()) {
+      newErrors.name = t("banner.validate.nameRequired");
+    }
+    if (!formData.startDate) {
+      newErrors.startDate = t("banner.validate.startDateRequired");
+    }
+    if (!formData.endDate) {
+      newErrors.endDate = t("banner.validate.endDateRequired");
+    } else if (formData.startDate && formData.endDate <= formData.startDate) {
+      newErrors.endDate = t("banner.validate.endDateInvalid");
+    }
+    if (!formData.bannerImage) {
+      newErrors.bannerImage = t("banner.validate.imageRequired");
+    }
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((e) => e);
+  };
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -87,6 +149,7 @@ const BannerFormModal = ({
   };
 
   const handleSave = async () => {
+    if (!validateAll()) return;
     setLoading(true);
     try {
       const cleanedData = Object.fromEntries(
@@ -102,10 +165,9 @@ const BannerFormModal = ({
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-       await createBanner(cleanedData);
+      await createBanner(cleanedData);
       showAlert({
-        title:
-           t("banner.createOrUpdate.createSucess"),
+        title: t("banner.createOrUpdate.createSucess"),
         type: "success",
         autoClose: 3000,
       });
@@ -135,23 +197,38 @@ const BannerFormModal = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (file && !allowedTypes.includes(file?.type)) {
-      showAlert({
-        title: t("blog.createOrUpdate.uploadError"),
-        type: "error",
-        autoClose: 3000,
-      });
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, bannerImage: null }));
+    const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageRequired"),
+      }));
       return;
     }
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setFormData((prev) => ({ ...prev, bannerImage: file }));
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageInvalid"),
+      }));
+      return;
     }
+    if (file.size > maxSize) {
+      setErrors((prev) => ({
+        ...prev,
+        bannerImage: t("banner.validate.imageTooLarge"),
+      }));
+      return;
+    }
+    setPreview(URL.createObjectURL(file));
+    setFormData((prev) => ({ ...prev, bannerImage: file }));
+
+    setErrors((prev) => ({
+      ...prev,
+      bannerImage: "",
+    }));
   };
   const handleCloseModal = () => {
-    setPreview(null)
+    setPreview(null);
     setFormData({
       name: "",
       startDate: null as Date | null,
@@ -184,8 +261,10 @@ const BannerFormModal = ({
             placeholder={t("banner.createOrUpdate.enterName")}
             value={formData.name}
             onChange={handleChange}
+            onBlur={handleBlur}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -193,7 +272,7 @@ const BannerFormModal = ({
           </label>
           <DateTimePicker
             value={formData.startDate}
-            onChange={(date) =>
+            onChange={(date) => {
               setFormData((prev) => ({
                 ...prev,
                 startDate: date,
@@ -201,11 +280,16 @@ const BannerFormModal = ({
                   prev.endDate && date && prev.endDate <= date
                     ? null
                     : prev.endDate,
-              }))
-            }
+              }));
+
+              validateField("startDate", date);
+            }}
             minDate={new Date()}
             placeholder={t("banner.createOrUpdate.selectStartAt")}
           />
+          {errors.startDate && (
+            <p className="text-red-500 text-sm">{errors.startDate}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -213,9 +297,10 @@ const BannerFormModal = ({
           </label>
           <DateTimePicker
             value={formData.endDate}
-            onChange={(date) =>
-              setFormData((prev) => ({ ...prev, endDate: date }))
-            }
+            onChange={(date) => {
+              setFormData((prev) => ({ ...prev, endDate: date }));
+              validateField("endDate", date);
+            }}
             minDate={
               formData.startDate
                 ? new Date(formData.startDate.getTime() + 60 * 1000) // +1 phút
@@ -223,6 +308,9 @@ const BannerFormModal = ({
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
+          {errors.endDate && (
+            <p className="text-red-500 text-sm">{errors.endDate}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -287,6 +375,9 @@ const BannerFormModal = ({
             className="hidden"
             onChange={handleImageChange}
           />
+          {errors.bannerImage && (
+            <p className="text-red-500 text-sm mt-1">{errors.bannerImage}</p>
+          )}
         </div>
       </div>
     </CommonModal>
