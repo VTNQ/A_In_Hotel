@@ -83,6 +83,42 @@
     "setting": "Setting",
     "logout": "Logout"
   },
+  "staff": {
+    "title": "Staff Management",
+    "new": "+ Add Staff",
+    "validate": {
+      "fullNameRequired": "Please enter full name",
+      "emailRequired": "Please enter email",
+      "emailInvalid": "Invalid email format",
+      "phoneInvalid": "Invalid phone number",
+      "birthdayRequired": "Please select date of birth"
+    },
+    "create": {
+      "titleCreate": "Create New Staff",
+      "createSucess": "Staff created successfully!",
+      "createError": "Error creating staff",
+      "male": "Male",
+      "enterphone": "Enter phone number",
+      "selectDate": "Select date of birth",
+      "receiption": "Receptionist",
+      "female": "Female",
+      "enterFullName": "Enter full name"
+    },
+    "searchPlaceholder": "Search by staff code or name",
+    "code": "Staff Code",
+    "fullName": "Full Name",
+    "gender": "Gender",
+    "activeSuccess": "Staff activated successfully!",
+    "activeError": "Error activating staff",
+    "deActivateSuccess": "Staff deactivated successfully!",
+    "deActivateError": "Error deactivating staff",
+    "loadError": "Unable to load staff data!",
+    "dob": "Date of Birth",
+    "phone": "Phone Number",
+    "role": "Role",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At"
+  },
   "customer": {
     "errorLoad": "Failed to load data",
     "management": {
@@ -269,6 +305,25 @@
     "roomNumber": "Room Number",
     "new": "+ New Room",
     "price": "Price",
+    "validation": {
+      "roomNumberRequired": "Please enter room number",
+      "roomNameRequired": "Please enter room name",
+      "roomTypeRequired": "Please select room type",
+      "floorRequired": "Please enter floor",
+      "floorInvalid": "Floor must be greater than 0",
+      "areaRequired": "Please enter area",
+      "areaInvalid": "Area must be greater than 0",
+      "capacityRequired": "Please enter capacity",
+      "capacityInvalid": "Capacity must be greater than 0",
+      "basePriceRequired": "Please enter base price",
+      "basePriceInvalid": "Base price must be greater than 0",
+      "additionalPriceRequired": "Please enter additional hourly price",
+      "additionalPriceInvalid": "Additional hourly price must be greater than 0",
+      "overnightPriceRequired": "Please enter overnight price",
+      "overnightPriceInvalid": "Overnight price must be greater than 0",
+      "defaultRateRequired": "Please enter daily rate",
+      "defaultRateInvalid": "Daily rate must be greater than 0"
+    },
     "searchPlaceholder": "Search by room code, room name",
     "image": "Image",
     "first2Hours": "First 2 hours",

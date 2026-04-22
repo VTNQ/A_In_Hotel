@@ -85,8 +85,7 @@ const BlogEditFormModal = ({
         if (!value || value === "<p><br></p>")
           error = t("blog.createOrUpdate.enterContent");
         break;
-      case "image":
-        if (!value) error = t("blog.createOrUpdate.imageRequired");
+      default:
         break;
     }
     setErrors((prev) => ({ ...prev, [name]: error }));
@@ -107,7 +106,6 @@ const BlogEditFormModal = ({
       newErrors.category = t("blog.valid.categoryRequired");
     if (!formData.content || formData.content === "<p><br></p>")
       newErrors.content = t("blog.valid.contentRequired");
-    if (!formData.image) newErrors.image = t("blog.valid.imageRequired");
     setErrors(newErrors);
     return !Object.values(newErrors).some((e) => e);
   };
@@ -161,29 +159,21 @@ const BlogEditFormModal = ({
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (!file) return;
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     const maxSize = 5 * 1024 * 1024;
-    if (!file) {
-      setErrors((prev) => ({
-        ...prev,
-        image: t("blog.valid.imageRequired"),
-      }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
-      return;
-    }
-    if (!allowedTypes.includes(file?.type)) {
+    if (!allowedTypes.includes(file.type)) {
       showAlert({
         title: t("blog.createOrUpdate.uploadError"),
         type: "error",
         autoClose: 3000,
       });
+
       setErrors((prev) => ({
         ...prev,
-        image: t("blog.valid.imageInvalid"),
+        image: t("blog.validate.imageInvalid"),
       }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
+
       return;
     }
     if(file.size > maxSize){
@@ -191,12 +181,10 @@ const BlogEditFormModal = ({
         ...prev,
         image: t("blog.validate.imageTooLarge")
       }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
       return;
     }
     setPreview(URL.createObjectURL(file));
-    setFormData((prev) => ({ ...prev, image: null }));
+    setFormData((prev) => ({ ...prev, image: file }));
     setErrors((prev) => ({
       ...prev,
       image: "",
@@ -212,6 +200,13 @@ const BlogEditFormModal = ({
       content: "",
       image: null,
     });
+    setErrors({
+      title: "",
+      category: "",
+      content: "",
+      image: "",
+    });
+
     onClose();
   };
   const handleSave = async () => {
@@ -268,6 +263,22 @@ const BlogEditFormModal = ({
       </CommonModal>
     );
   }
+  const isFormValid = () => {
+    const newErrors = {
+      title: "",
+      category: "",
+      content: "",
+      image: "",
+    };
+    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
+    if (!formData.category)
+      newErrors.category = t("blog.valid.categoryRequired");
+    if (!formData.content || formData.content === "<p><br></p>")
+      newErrors.content = t("blog.valid.contentRequired");
+  
+    return !Object.values(newErrors).some((e) => e);
+  };
+  console.log(isFormValid());
   return (
     <CommonModal
       isOpen={isOpen}
@@ -277,6 +288,7 @@ const BlogEditFormModal = ({
       title={t("blog.createOrUpdate.titleEdit")}
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
+      diabled={!isFormValid() || saving}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>
@@ -289,6 +301,7 @@ const BlogEditFormModal = ({
             placeholder={t("blog.createOrUpdate.enterTitle")}
             value={formData.title}
             onChange={handleChange}
+            onBlur={handleBlur}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
           {errors.title && (
@@ -302,6 +315,7 @@ const BlogEditFormModal = ({
           <select
             name="category"
             value={formData.category}
+            onBlur={handleBlur}
             onChange={handleChange}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           >
@@ -391,10 +405,8 @@ const BlogEditFormModal = ({
             className="hidden"
             onChange={handleImageChange}
           />
-          {errors.image && (
-            <p className="text-red-500 text-sm mt-1">{errors.image}</p>
-          )}
         </div>
+       
       </div>
     </CommonModal>
   );

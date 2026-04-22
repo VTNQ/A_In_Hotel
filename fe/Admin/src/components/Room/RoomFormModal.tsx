@@ -26,6 +26,8 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
     note: "",
     images: [] as File[],
   });
+  const [errors, setErrors] = useState<any>({});
+  const DISABLE_VALIDATE = false;
   const { t } = useTranslation();
   const [category, setCategory] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
@@ -49,6 +51,140 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       setFetching(false);
     }
   };
+  const validateField = (name: string, value: any) => {
+     let error = "";
+
+  switch (name) {
+    case "roomNumber":
+      if (!value || value.trim() === "") {
+        error = t("room.validation.roomNumberRequired");
+      }
+      break;
+
+    case "roomName":
+      if (!value || value.trim() === "") {
+        error = t("room.validation.roomNameRequired");
+      }
+      break;
+
+    case "idRoomType":
+      if (!value) {
+        error = t("room.validation.roomTypeRequired");
+      }
+      break;
+
+    case "floor":
+      if (!value) {
+        error = t("room.validation.floorRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.floorInvalid");
+      }
+      break;
+
+    case "area":
+      if (!value) {
+        error = t("room.validation.areaRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.areaInvalid");
+      }
+      break;
+
+    case "capacity":
+      if (!value) {
+        error = t("room.validation.capacityRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.capacityInvalid");
+      }
+      break;
+
+    case "hourlyBasePrice":
+      if (!value) {
+        error = t("room.validation.basePriceRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.basePriceInvalid");
+      }
+      break;
+
+    case "hourlyAdditionalPrice":
+      if (!value) {
+        error = t("room.validation.additionalPriceRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.additionalPriceInvalid");
+      }
+      break;
+
+    case "overnightPrice":
+      if (!value) {
+        error = t("room.validation.overnightPriceRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.overnightPriceInvalid");
+      }
+      break;
+
+    case "defaultRate":
+      if (!value) {
+        error = t("room.validation.defaultRateRequired");
+      } else if (Number(value) <= 0) {
+        error = t("room.validation.defaultRateInvalid");
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return error;
+    
+  };
+  const validateForm = () => {
+  if (DISABLE_VALIDATE) {
+    setErrors({});
+    return true;
+  }
+
+  const newErrors: any = {
+    roomNumber: validateField("roomNumber", formData.roomNumber),
+    roomName: validateField("roomName", formData.roomName),
+    idRoomType: validateField("idRoomType", formData.idRoomType),
+    floor: validateField("floor", formData.floor),
+    area: validateField("area", formData.area),
+    capacity: validateField("capacity", formData.capacity),
+    hourlyBasePrice: validateField("hourlyBasePrice", formData.hourlyBasePrice),
+    hourlyAdditionalPrice: validateField("hourlyAdditionalPrice", formData.hourlyAdditionalPrice),
+    overnightPrice: validateField("overnightPrice", formData.overnightPrice),
+    defaultRate: validateField("defaultRate", formData.defaultRate),
+  };
+
+  // validate image riêng
+  if (formData.images.length === 0) {
+    newErrors.images = t("common.required");
+  }
+
+  Object.keys(newErrors).forEach((key) => {
+    if (!newErrors[key]) delete newErrors[key];
+  });
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+const checkFormValid = () => {
+  if (DISABLE_VALIDATE) return true;
+
+  return (
+    formData.roomNumber &&
+    formData.roomName &&
+    formData.idRoomType &&
+    formData.floor &&
+    formData.area &&
+    formData.capacity &&
+    formData.hourlyBasePrice &&
+    formData.hourlyAdditionalPrice &&
+    formData.overnightPrice &&
+    formData.defaultRate &&
+    formData.images.length > 0
+  );
+};
   useEffect(() => {
     if (isOpen) {
       setInitialData(formData);
@@ -101,6 +237,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       SAVE ROOM
   =============================== */
   const handleSave = async () => {
+    if(!validateForm()) return;
     setLoading(true);
     try {
       const response = await createRoom(formData);
@@ -156,6 +293,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       note: "",
       images: [],
     });
+    setErrors({});
     onClose();
   };
 
@@ -175,7 +313,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       });
     }
     const totalImages = tempImages.length + imageFiles.length;
-    
+
     if (totalImages > 5) {
       showAlert({
         title: t("room.createOrUpdate.maxImages"),
@@ -203,6 +341,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       </CommonModal>
     );
   }
+  const handleBlur =(e:any)=>{
+    if(DISABLE_VALIDATE) return;
+    const { name, value } = e.target;
+    setErrors((prev:any)=>({
+      ...prev,
+      [name]: validateField(name, value)
+    }))
+  }
 
   return (
     <>
@@ -218,6 +364,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             handleCancel();
           }
         }}
+        diabled={!checkFormValid() || loading}
         title={t("room.createOrUpdate.titleCreate")}
         onSave={handleSave}
         saveLabel={loading ? t("common.saving") : t("common.save")}
@@ -236,6 +383,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 name="idRoomType"
                 value={formData.idRoomType}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               >
                 <option value="">
@@ -248,6 +396,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   </option>
                 ))}
               </select>
+              {errors.idRoomType && (
+                <p className="text-red-500 text-xs">{errors.idRoomType}</p>
+              )}
             </div>
 
             <div>
@@ -258,9 +409,13 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 name="roomNumber"
                 value={formData.roomNumber}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t("room.createOrUpdate.enterRoomNumber")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.roomNumber && (
+                <p className="text-red-500 text-xs">{errors.roomNumber}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -273,8 +428,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder={t("room.createOrUpdate.enterRoomName")}
                   value={formData.roomName}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.roomName && (
+                  <p className="text-red-500 text-xs">{errors.roomName}</p>
+                )}
               </div>
 
               <div>
@@ -286,9 +445,13 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   name="floor"
                   placeholder={t("room.createOrUpdate.enterFloor")}
                   value={formData.floor}
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.floor && (
+                  <p className="text-red-500 text-xs">{errors.floor}</p>
+                )}
               </div>
             </div>
 
@@ -300,10 +463,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 name="area"
                 type="number"
                 value={formData.area}
+                onBlur={handleBlur}
                 onChange={handleChange}
                 placeholder={t("room.createOrUpdate.enterArea")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.area && (
+                <p className="text-red-500 text-xs">{errors.area}</p>
+              )}
             </div>
 
             <div>
@@ -314,10 +481,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 name="capacity"
                 type="number"
                 value={formData.capacity}
+                onBlur={handleBlur}
                 placeholder={t("room.createOrUpdate.enterCapacity")}
                 onChange={handleChange}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.capacity && (
+                <p className="text-red-500 text-xs">{errors.capacity}</p>
+              )}
             </div>
 
             <div>
@@ -348,8 +519,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   value={formData.hourlyBasePrice}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.hourlyBasePrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyBasePrice}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -361,9 +538,15 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   value={formData.hourlyAdditionalPrice}
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.hourlyAdditionalPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyAdditionalPrice}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -376,8 +559,15 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   value={formData.overnightPrice}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.overnightPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.overnightPrice}
+                  </p>
+                )}
+              
               </div>
 
               <div>
@@ -390,8 +580,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   value={formData.defaultRate}
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.defaultRate && (
+                  <p className="text-red-500 text-xs">{errors.defaultRate}</p>
+                )}
               </div>
             </div>
 
@@ -546,7 +740,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       multiple
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) =>handleImageChange(e)}
+                      onChange={(e) => handleImageChange(e)}
                     />
                   </div>
                 )}
@@ -613,7 +807,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                         multiple
                         accept="image/*"
                         className="hidden"
-                         onChange={(e) =>handleImageChange(e)}
+                        onChange={(e) => handleImageChange(e)}
                       />
                     </div>
                   </>

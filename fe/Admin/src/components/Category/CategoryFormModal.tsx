@@ -128,7 +128,23 @@ const CategoryFormModal = ({
       description: "",
     });
     onClose();
+    setErrors({
+      name: "",
+      type: "",
+      description: "",
+    });
   };
+  const isFormValid = ()=>{
+    return(
+      formData.name.trim() &&
+      formData.name.length <= 100 &&
+      formData.type &&
+      (!formData.description || formData.description.length <= 255) &&
+      !errors.name &&
+      !errors.type &&
+      !errors.description
+    );
+  }
   return (
     <CommonModal
       isOpen={isOpen}
@@ -139,6 +155,7 @@ const CategoryFormModal = ({
       saveLabel={loading ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[600px] lg:w-[800px]"
+      diabled={!isFormValid() || loading}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>

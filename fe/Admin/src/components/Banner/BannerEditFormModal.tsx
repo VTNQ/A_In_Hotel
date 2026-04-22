@@ -111,10 +111,6 @@ const BannerEditFormModal = ({
       newErrors.endDate = t("banner.validate.endDateInvalid");
     }
 
-    if (!formData.bannerImage) {
-      newErrors.bannerImage = t("banner.validate.imageRequired");
-    }
-
     setErrors(newErrors);
 
     return !Object.values(newErrors).some((e) => e);
@@ -271,6 +267,12 @@ const BannerEditFormModal = ({
       description: "",
       bannerImage: null as File | null,
     });
+    setErrors({
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    })
     onClose();
   };
   if (isOpen && loading) {
@@ -288,15 +290,37 @@ const BannerEditFormModal = ({
       </CommonModal>
     );
   }
+  const isFormValid = ()=>{
+    const newErrors = {
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    };
+     if (!formData.name?.trim()) {
+      newErrors.name = t("banner.validate.nameRequired");
+    }
+    if (!formData.startDate) {
+      newErrors.startDate = t("banner.validate.startDateRequired");
+    }
+    if (!formData.endDate) {
+      newErrors.endDate = t("banner.validate.endDateRequired");
+    } else if (formData.startDate && formData.endDate <= formData.startDate) {
+      newErrors.endDate = t("banner.validate.endDateInvalid");
+    }
+ 
+    return !Object.values(newErrors).some((e) => e);
+  }
   return (
     <CommonModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleCancel}
       onsubmit={saving}
       onSave={handleSave}
       title={t("banner.createOrUpdate.titleEdit")}
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
+      diabled={!isFormValid() || saving}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>

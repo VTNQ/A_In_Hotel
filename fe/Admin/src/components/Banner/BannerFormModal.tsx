@@ -90,6 +90,29 @@ const BannerFormModal = ({
     setErrors(newErrors);
     return !Object.values(newErrors).some((e) => e);
   };
+  const isFormValid = ()=>{
+    const newErrors = {
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    };
+     if (!formData.name?.trim()) {
+      newErrors.name = t("banner.validate.nameRequired");
+    }
+    if (!formData.startDate) {
+      newErrors.startDate = t("banner.validate.startDateRequired");
+    }
+    if (!formData.endDate) {
+      newErrors.endDate = t("banner.validate.endDateRequired");
+    } else if (formData.startDate && formData.endDate <= formData.startDate) {
+      newErrors.endDate = t("banner.validate.endDateInvalid");
+    }
+    if (!formData.bannerImage) {
+      newErrors.bannerImage = t("banner.validate.imageRequired");
+    }
+    return !Object.values(newErrors).some((e) => e);
+  }
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -237,6 +260,12 @@ const BannerFormModal = ({
       description: "",
       bannerImage: null as File | null,
     });
+    setErrors({
+      name: "",
+      startDate: "",
+      endDate: "",
+      bannerImage: "",
+    })
     onClose();
   };
 
@@ -249,6 +278,7 @@ const BannerFormModal = ({
       title={t("banner.createOrUpdate.titleCreate")}
       saveLabel={loading ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
+      diabled={!isFormValid() || loading}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>

@@ -275,6 +275,25 @@
         "title": "Phòng",
         "roomNumber": "Số phòng",
         "price": "Giá",
+        "validation": {
+            "roomNumberRequired": "Vui lòng nhập số phòng",
+            "roomNameRequired": "Vui lòng nhập tên phòng",
+            "roomTypeRequired": "Vui lòng chọn loại phòng",
+            "floorRequired": "Vui lòng nhập tầng",
+            "floorInvalid": "Tầng phải lớn hơn 0",
+            "areaRequired": "Vui lòng nhập diện tích",
+            "areaInvalid": "Diện tích phải lớn hơn 0",
+            "capacityRequired": "Vui lòng nhập sức chứa",
+            "capacityInvalid": "Sức chứa phải lớn hơn 0",
+            "basePriceRequired": "Vui lòng nhập giá cơ bản",
+            "basePriceInvalid": "Giá cơ bản phải lớn hơn 0",
+            "additionalPriceRequired": "Vui lòng nhập giá thêm giờ",
+            "additionalPriceInvalid": "Giá thêm giờ phải lớn hơn 0",
+            "overnightPriceRequired": "Vui lòng nhập giá qua đêm",
+            "overnightPriceInvalid": "Giá qua đêm phải lớn hơn 0",
+            "defaultRateRequired": "Vui lòng nhập giá theo ngày",
+            "defaultRateInvalid": "Giá theo ngày phải lớn hơn 0"
+        },
         "first2Hours": "2 giờ đầu",
         "extraHour": "Những giờ sau",
         "deactivateSuccess": "Phòng đã được vô hiệu hóa thành công!",
@@ -393,6 +412,13 @@
     "staff": {
         "title": "Quản lý nhân viên",
         "new": "+ Thêm nhân viên",
+        "validate": {
+            "fullNameRequired": "Vui lòng nhập họ và tên",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không đúng định dạng",
+            "phoneInvalid": "Số điện thoại không hợp lệ",
+            "birthdayRequired": "Vui lòng chọn ngày sinh"
+        },
         "create": {
             "titleCreate": "Tạo nhân viên mới",
             "createSucess": "Tạo nhân viên thành công!",

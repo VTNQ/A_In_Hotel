@@ -16,7 +16,15 @@ const AssetFormModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState({
+    assetName: "",
+    categoryId: "",
+    price: "",
+    quantity: "",
+    image: "",
+    roomId: "",
+  });
+  const DISABLE_VALIDATE = true;
   const [saving, setSaving] = useState(false);
   const [previewIcon, setPreviewIcon] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
@@ -78,19 +86,45 @@ const AssetFormModal = ({
     return error;
   };
   const validateForm = () => {
-    const newErrors: any = {};
+    if (DISABLE_VALIDATE) {
+      setErrors({
+        assetName: "",
+        categoryId: "",
+        price: "",
+        quantity: "",
+        image: "",
+        roomId: "",
+      });
+      return true;
+    }
 
-    newErrors.assetName = validateField("assetName", formData.assetName);
-    newErrors.categoryId = validateField("categoryId", formData.categoryId);
-    newErrors.roomId = validateField("roomId", formData.roomId);
-    newErrors.price = validateField("price", formData.price);
-    newErrors.quantity = validateField("quantity", formData.quantity);
-    newErrors.image = validateImage(formData.image);
+    const newErrors: any = {
+      assetName: validateField("assetName", formData.assetName),
+      categoryId: validateField("categoryId", formData.categoryId),
+      roomId: validateField("roomId", formData.roomId),
+      price: validateField("price", formData.price),
+      quantity: validateField("quantity", formData.quantity),
+      image: validateImage(formData.image),
+    };
+
     Object.keys(newErrors).forEach((key) => {
       if (!newErrors[key]) delete newErrors[key];
     });
 
-    return newErrors;
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+  const isFormValid = () => {
+    if (DISABLE_VALIDATE) return true;
+
+    return (
+      formData.assetName?.trim() &&
+      formData.categoryId &&
+      formData.roomId &&
+      formData.price &&
+      formData.image
+    );
   };
   const handleBlur = (
     e: React.FocusEvent<
@@ -169,11 +203,7 @@ const AssetFormModal = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleSave = async () => {
-    const validationErros = validateForm();
-    if(Object.keys(validationErros).length > 0){
-        setErrors(validationErros);
-        return;
-    }
+    if (!validateForm()) return;
     setSaving(true);
     try {
       const cleanedData = Object.fromEntries(
@@ -231,6 +261,14 @@ const AssetFormModal = ({
       roomId: "",
       image: null,
     });
+    setErrors({
+      assetName: "",
+      categoryId: "",
+      price: "",
+      quantity: "",
+      image: "",
+      roomId: "",
+    });
     onClose();
   };
   if (isOpen && loading) {
@@ -258,6 +296,7 @@ const AssetFormModal = ({
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
+      diabled={!isFormValid() || saving}
     >
       <div className="mb-4">
         <label className="block mb-1 font-medium text-[#253150]">
@@ -313,8 +352,8 @@ const AssetFormModal = ({
             onBlur={handleBlur}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
-          {errors.name && (
-            <p className="text-red-500 mt-1">{errors.name}</p>
+          {errors.assetName && (
+            <p className="text-red-500 mt-1">{errors.assetName}</p>
           )}
         </div>
         <div>
@@ -382,9 +421,7 @@ const AssetFormModal = ({
             onChange={handleChange}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
-          {errors.price && (
-            <p className="text-red-500 mt-1">{errors.price}</p>
-          )}
+          {errors.price && <p className="text-red-500 mt-1">{errors.price}</p>}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -396,6 +433,7 @@ const AssetFormModal = ({
             placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
             value={formData.quantity}
             onChange={handleChange}
+            onBlur={handleBlur}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
           {errors.quantity && (

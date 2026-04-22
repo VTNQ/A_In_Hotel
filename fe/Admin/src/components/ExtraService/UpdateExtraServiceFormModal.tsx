@@ -115,6 +115,35 @@ const UpdateExtraServiceFormModal = ({
       console.log(err);
     }
   };
+   const validateForm = () => {
+    const newErrors: any = {};
+    if (!formData.serviceName.trim()) {
+      newErrors.serviceName = t("extraService.validate.serviceNameRequired");
+    }
+
+    if (!formData.categoryId) {
+      newErrors.categoryId = t("extraService.validate.categoryRequired");
+    }
+    if (!formData.extraCharge) {
+      newErrors.extraCharge = t("extraService.validate.extraChargeRequired");
+    } else if (
+      isNaN(Number(formData.extraCharge)) ||
+      Number(formData.extraCharge) < 0
+    ) {
+      newErrors.extraCharge = t("extraService.validate.extraChargeInvalid");
+    }
+
+    if (formData.image) {
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (formData.image.size > maxSize) {
+        newErrors.image = t("extraService.validate.imageTooLarge");
+      } else if (!allowedTypes.includes(formData.image.type)) {
+        newErrors.image = t("extraService.validate.imageInvalidType");
+      }
+    }
+    return newErrors;
+  };
   const handleUpdate = async () => {
     setSaving(true);
     try {
@@ -179,6 +208,8 @@ const UpdateExtraServiceFormModal = ({
       extraCharge: "",
       image: null,
     });
+    setErrors({});
+    setPreview(null);
     onClose();
   };
   if (isOpen && loading) {
@@ -197,6 +228,10 @@ const UpdateExtraServiceFormModal = ({
       </CommonModal>
     );
   }
+  const isFormValid = ()=>{
+    const errors = validateForm();
+    return Object.keys(errors).length === 0;
+  }
   return (
     <CommonModal
       isOpen={isOpen}
@@ -206,6 +241,7 @@ const UpdateExtraServiceFormModal = ({
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
+      diabled={!isFormValid() || saving}
     >
       <div className="mb-6 flex flex-col lg:items-start ">
         <label className="block mb-2 font-medium text-[#253150]">

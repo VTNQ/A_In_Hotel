@@ -24,9 +24,9 @@ const UpdateCategoryFormModal = ({
     name: "",
     type: "",
     description: "",
-  })
+  });
   const { showAlert } = useAlert();
-const validateField = (name: string, value: any) => {
+  const validateField = (name: string, value: any) => {
     let error = "";
     switch (name) {
       case "name":
@@ -47,34 +47,47 @@ const validateField = (name: string, value: any) => {
         }
         break;
     }
-    setErrors((prev)=>({...prev,[name]:error}))
+    setErrors((prev) => ({ ...prev, [name]: error }));
   };
   const handleBlur = (
-    e:React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  )=>{
-    const { name, value} = e.target;
-    validateField(name,value);
-  }
-  const validateAll =()=>{
+    e: React.FocusEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
+  const validateAll = () => {
     const newErrors = {
-        name:"",
-        type:"",
-        description:""
+      name: "",
+      type: "",
+      description: "",
+    };
+    if (!formData.name.trim()) {
+      newErrors.name = t("category.validate.nameRequired");
+    } else if (formData.name.length > 100) {
+      newErrors.name = t("category.validate.nameMax");
     }
-    if(!formData.name.trim()){
-        newErrors.name = t("category.validate.nameRequired")
-    }else if(formData.name.length > 100){
-        newErrors.name = t("category.validate.nameMax");
+    if (!formData.type) {
+      newErrors.type = t("category.validate.typeRequired");
     }
-    if(!formData.type){
-        newErrors.type = t("category.validate.typeRequired");
-    }
-     if(formData.description && formData.description.length > 255){
-        newErrors.description = t("category.validate.descriptionMax")
+    if (formData.description && formData.description.length > 255) {
+      newErrors.description = t("category.validate.descriptionMax");
     }
     setErrors(newErrors);
-    return !Object.values(newErrors).some((e)=>e)
-  }
+    return !Object.values(newErrors).some((e) => e);
+  };
+  const isFormValid = () => {
+    return (
+      formData.name.trim() &&
+      formData.name.length <= 100 &&
+      formData.type &&
+      (!formData.description || formData.description.length <= 255) &&
+      !errors.name &&
+      !errors.type &&
+      !errors.description
+    );
+  };
   useEffect(() => {
     if (!isOpen || !categoryId) return;
 
@@ -109,7 +122,7 @@ const validateField = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleUpdate = async () => {
-    if(!validateAll()) return;
+    if (!validateAll()) return;
     setSaving(true);
     try {
       const cleanedData = Object.fromEntries(
@@ -150,6 +163,7 @@ const validateField = (name: string, value: any) => {
 
   const handleCancel = () => {
     setFormData({ id: "", name: "", type: "", description: "" });
+    setErrors({ name: "", type: "", description: "" });
     onClose();
   };
   if (isOpen && loading) {
@@ -177,6 +191,7 @@ const validateField = (name: string, value: any) => {
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[600px] lg:w-[800px]"
+      diabled={!isFormValid() || saving}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -200,7 +215,7 @@ const validateField = (name: string, value: any) => {
                         outline-none"
           />
           {errors.name && (
-             <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
           )}
           <p className="text-xs text-gray-500 mt-1">
             {t("category.createOrUpdate.nameLimit")}

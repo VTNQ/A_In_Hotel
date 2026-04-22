@@ -14,6 +14,7 @@ interface CommonModalProps {
   height?: string;
   showCloseButton?: boolean;
   onsubmit?: boolean;
+  diabled?:boolean;
 }
 
 const CommonModal: React.FC<CommonModalProps> = ({
@@ -29,6 +30,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
   height = "max-h-[85vh]",
   showCloseButton = true,
   onsubmit = false,
+  diabled = false,
 }) => {
   if (!isOpen) return null;
 
@@ -102,27 +104,17 @@ const CommonModal: React.FC<CommonModalProps> = ({
 
             <button
               onClick={onSave}
-              disabled={onsubmit}
+              disabled={onsubmit || diabled}
               className={`w-full sm:w-auto
                 px-6 sm:px-12
                 h-[40px] rounded-lg
-    border border-[#7C7C7C]
-    text-[#4B4B4B]
-    bg-[#F2F2F2]
-    font-medium
-    flex items-center justify-center
-    transition
-
-    hover:bg-[#42578E]
-    hover:text-white
-
-    disabled:bg-[#E5E5E5]
-    disabled:text-[#9CA3AF]
-    disabled:border-[#D1D5DB]
-    disabled:cursor-not-allowed
-    disabled:hover:bg-[#E5E5E5]
-    disabled:hover:text-[#9CA3AF]
-  `}
+                border border-[#7C7C7C]
+                text-[#484848] bg-[#F2F2F2]
+                font-medium flex items-center justify-center
+                transition hover:bg-[#42578E] hover:text-white
+                disabled:bg-[#E5E5E5] disabled:text-[#9CA3AF]
+                disabled:border-[#D1D5DB] disabled:cursor-not-allowed
+                disabled:hover:bg-[#E5E5E5] disabled:hover:text-[#9CA3AF]`}
             >
               {saveLabel}
             </button>

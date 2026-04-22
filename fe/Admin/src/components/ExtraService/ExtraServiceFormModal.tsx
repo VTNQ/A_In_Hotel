@@ -68,15 +68,17 @@ const ExtraServiceFormModal = ({
     return error;
   };
   const handleBlur = (
-    e:React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  )=>{
-        const {name,value} = e.target;
-        const error = validateField(name,value);
-        setErrors((prev:any)=>({
-            ...prev,
-            [name]:error
-        }))
-  }
+    e: React.FocusEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setErrors((prev: any) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
   const validateForm = () => {
     const newErrors: any = {};
     if (!formData.serviceName.trim()) {
@@ -116,10 +118,10 @@ const ExtraServiceFormModal = ({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev:any)=>({
-        ...prev,
-        [name]:"",
-    }))
+    setErrors((prev: any) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -154,6 +156,8 @@ const ExtraServiceFormModal = ({
       extraCharge: "",
       image: null,
     });
+    setErrors({});
+    setPreviewIcon(null);
     onClose();
   };
   const handleSave = async () => {
@@ -227,6 +231,10 @@ const ExtraServiceFormModal = ({
       </CommonModal>
     );
   }
+  const isFormValid = () => {
+    const errors = validateForm();
+    return Object.keys(errors).length === 0;
+  };
   return (
     <CommonModal
       isOpen={isOpen}
@@ -236,6 +244,7 @@ const ExtraServiceFormModal = ({
       saveLabel={saving ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
+      diabled={!isFormValid() || saving}
     >
       <div className="mb-6 flex flex-col lg:items-start ">
         <label className="block mb-2 font-medium text-[#253150]">
@@ -261,9 +270,10 @@ const ExtraServiceFormModal = ({
               className="w-full h-full object-cover absolute inset-0"
             />
           )}
-          {errors.image && <p className="text-red-500 text-sm mt-2">{errors.image}</p>}
         </div>
-        
+        {errors.image && (
+          <p className="text-red-500 text-sm mt-2">{errors.image}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -310,7 +320,6 @@ const ExtraServiceFormModal = ({
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
-            
           >
             <option value="">
               {t("extraService.createOrUpdate.defaultCategory")}

@@ -77,6 +77,21 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
     setErrors(newErrors);
     return !Object.values(newErrors).some((e) => e);
   };
+  const isFormValid = () => {
+    const newErrors = {
+      title: "",
+      category: "",
+      content: "",
+      image: "",
+    };
+    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
+    if (!formData.category)
+      newErrors.category = t("blog.valid.categoryRequired");
+    if (!formData.content || formData.content === "<p><br></p>")
+      newErrors.content = t("blog.valid.contentRequired");
+    if (!formData.image) newErrors.image = t("blog.valid.imageRequired");
+    return !Object.values(newErrors).some((e) => e);
+  };
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -171,7 +186,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
       return;
     }
     setPreview(URL.createObjectURL(file));
-    setFormData((prev) => ({ ...prev, image: null }));
+    setFormData((prev) => ({ ...prev, image: file }));
     setErrors((prev) => ({
       ...prev,
       image: "",
@@ -186,6 +201,12 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
       content: "",
       image: null,
     });
+    setErrors({
+      title: "",
+    category: "",
+    content: "",
+    image: "",
+    })
     setPreview(null);
     onClose();
   };
@@ -245,6 +266,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
       title={t("blog.createOrUpdate.titleCreate")}
       saveLabel={loading ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
+      diabled={!isFormValid() || loading}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>
@@ -361,10 +383,10 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             className="hidden"
             onChange={handleImageChange}
           />
-          {errors.image && (
-            <p className="text-red-500 text-sm mt-1">{errors.image}</p>
-          )}
         </div>
+        {errors.image && (
+          <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+        )}
       </div>
     </CommonModal>
   );
