@@ -2,7 +2,7 @@ import { Calendar } from "lucide-react";
 import type { CreateOrUpdateTabProps } from "../../../type/promotion.types";
 import { useTranslation } from "react-i18next";
 
-const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTabProps) => {
   const {t} = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-10 py-10">
@@ -22,6 +22,7 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               <input
                 value={formData.name}
                 placeholder={t("promotion.general.namePlaceholder")}
+                onBlur={()=>handleBlur("name")}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -31,6 +32,9 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 defaultValue="Summer Getaway"
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name}</p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
@@ -44,10 +48,14 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     priority: e.target.value,
                   }))
                 }
+                onBlur={()=>handleBlur("priority")}
                 placeholder={t("promotion.general.priorityPlaceholder")}
                 type="number"
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.priority && (
+                <p className="text-red-500 text-sm">{errors.priority}</p>
+              )}
             </div>
             <div className="flex flex-col sm:col-span-2">
               <label className="block mb-1 font-medium text-[#253150]">
@@ -92,8 +100,12 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     }))
                   }
                   defaultValue="Jun 15, 2024 - 12:00 PM"
+                  onBlur={()=>handleBlur("startDate")}
                   className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0]  outline-none"
                 />
+                {errors.startDate && (
+                  <p className="text-red-500 text-sm">{errors.startDate}</p>
+                )}
               </div>
             </div>
             <div className="flex flex-col gap-2">
@@ -114,9 +126,13 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                       endDate: e.target.value,
                     }))
                   }
+                  onBlur={()=>handleBlur("endDate")}
                   defaultValue="Jun 15, 2024 - 12:00 PM"
                   className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0]  outline-none"
                 />
+                {errors.endDate && (
+                  <p className="text-red-500 text-sm">{errors.endDate}</p>
+                )}
               </div>
             </div>
           </div>

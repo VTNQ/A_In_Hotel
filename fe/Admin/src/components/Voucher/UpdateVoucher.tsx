@@ -24,6 +24,7 @@ const UpdateVoucher = ({
   const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const { showAlert } = useAlert();
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<voucherFormProps>({
     voucherCode: "",
     voucherName: "",
@@ -44,7 +45,221 @@ const UpdateVoucher = ({
     priority: "",
     roomTypes: [],
   });
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
 
+    // ===== Voucher Name =====
+    if (!formData.voucherName?.trim()) {
+      newErrors.voucherName = t("voucher.validation.nameRequired");
+    } else if (formData.voucherName.length < 3) {
+      newErrors.voucherName = t("voucher.validation.nameMinLength");
+    } else if (formData.voucherName.length > 100) {
+      newErrors.voucherName = t("voucher.validation.nameMaxLength");
+    }
+
+    // ===== Voucher Code =====
+    if (!formData.voucherCode?.trim()) {
+      newErrors.voucherCode = t("voucher.validation.codeRequired");
+    } else if (formData.voucherCode.length < 3) {
+      newErrors.voucherCode = t("voucher.validation.codeMinLength");
+    } else if (formData.voucherCode.length > 20) {
+      newErrors.voucherCode = t("voucher.validation.codeMaxLength");
+    }
+
+    // ===== Value =====
+    if (!formData.value) {
+      newErrors.value = t("voucher.validation.valueRequired");
+    } else {
+      const value = Number(formData.value);
+
+      if (formData.type === "2") {
+        // percent
+        if (value <= 0 || value > 100) {
+          newErrors.value = t("voucher.validation.valuePercentRange");
+        }
+
+        if (!formData.maxDiscountValue) {
+          newErrors.maxDiscountValue = t(
+            "voucher.validation.maxDiscountRequired",
+          );
+        } else if (Number(formData.maxDiscountValue) <= 0) {
+          newErrors.maxDiscountValue = t(
+            "voucher.validation.maxDiscountPositive",
+          );
+        }
+      } else {
+        // money
+        if (value <= 0) {
+          newErrors.value = t("voucher.validation.valueMoneyPositive");
+        } else if (value > 1000000000) {
+          newErrors.value = t("voucher.validation.valueMoneyMax");
+        }
+      }
+    }
+
+    // ===== Date =====
+    if (!formData.startDate) {
+      newErrors.startDate = t("voucher.validation.startDateRequired");
+    }
+
+    if (!formData.endDate) {
+      newErrors.endDate = t("voucher.validation.endDateRequired");
+    } else if (formData.startDate && formData.endDate < formData.startDate) {
+      newErrors.endDate = t("voucher.validation.endDateAfterStart");
+    }
+
+    // ===== Minimum Stay =====
+    if (!formData.minimumStay) {
+      newErrors.minimumStay = t("voucher.validation.minimumStayRequired");
+    } else if (Number(formData.minimumStay) <= 0) {
+      newErrors.minimumStay = t("voucher.validation.minimumStayPositive");
+    } else if (Number(formData.minimumStay) > 30) {
+      newErrors.minimumStay = t("voucher.validation.minimumStayMax");
+    }
+
+    // ===== Usage Limit =====
+    if (!formData.usageLimit) {
+      newErrors.usageLimit = t("voucher.validation.usageLimitRequired");
+    } else if (Number(formData.usageLimit) <= 0) {
+      newErrors.usageLimit = t("voucher.validation.usageLimitPositive");
+    }
+
+    // ===== Usage Per Customer =====
+    if (formData.usagePerCustomer !== "") {
+      if (Number(formData.usagePerCustomer) <= 0) {
+        newErrors.usagePerCustomer = t(
+          "voucher.validation.usagePerCustomerPositive",
+        );
+      }
+    }
+
+    // ===== Booking Type =====
+    if (!formData.bookingType) {
+      newErrors.bookingType = t("voucher.validation.bookingTypeRequired");
+    }
+
+    // ===== Room Types =====
+    const hasRoom = formData.roomTypes.some((r) => r.excluded);
+    if (!hasRoom) {
+      newErrors.roomTypes = t("voucher.validation.roomTypeRequired");
+    }
+
+    // ===== Type =====
+    if (!formData.type) {
+      newErrors.type = t("voucher.validation.typeRequired");
+    }
+
+    return newErrors;
+  };
+  const validateField = (name: string, value: any, formData: any) => {
+    switch (name) {
+      // ===== Voucher Name =====
+      case "voucherName":
+        if (!value?.trim()) return t("voucher.validation.nameRequired");
+        if (value.length < 3) return t("voucher.validation.nameMinLength");
+        if (value.length > 100) return t("voucher.validation.nameMaxLength");
+        return "";
+
+      // ===== Voucher Code =====
+      case "voucherCode":
+        if (!value?.trim()) return t("voucher.validation.codeRequired");
+        if (value.length < 3) return t("voucher.validation.codeMinLength");
+        if (value.length > 20) return t("voucher.validation.codeMaxLength");
+        return "";
+
+      // ===== Type =====
+      case "type":
+        if (!value) return t("voucher.validation.typeRequired");
+        return "";
+
+      // ===== Value =====
+      case "value": {
+        if (!value) return t("voucher.validation.valueRequired");
+
+        const num = Number(value);
+
+        if (formData.type === "2") {
+          // percent
+          if (num <= 0 || num > 100) {
+            return t("voucher.validation.valuePercentRange");
+          }
+        } else {
+          // money
+          if (num <= 0) return t("voucher.validation.valueMoneyPositive");
+          if (num > 1000000000) return t("voucher.validation.valueMoneyMax");
+        }
+
+        return "";
+      }
+
+      // ===== Max Discount (only when percent) =====
+      case "maxDiscountValue":
+        if (formData.type === "2") {
+          if (!value) return t("voucher.validation.maxDiscountRequired");
+          if (Number(value) <= 0)
+            return t("voucher.validation.maxDiscountPositive");
+        }
+        return "";
+
+      // ===== Start Date =====
+      case "startDate":
+        if (!value) return t("voucher.validation.startDateRequired");
+        return "";
+
+      // ===== End Date =====
+      case "endDate":
+        if (!value) return t("voucher.validation.endDateRequired");
+        if (formData.startDate && value < formData.startDate) {
+          return t("voucher.validation.endDateAfterStart");
+        }
+        return "";
+
+      // ===== Minimum Stay =====
+      case "minimumStay":
+        if (!value) return t("voucher.validation.minimumStayRequired");
+        if (Number(value) <= 0)
+          return t("voucher.validation.minimumStayPositive");
+        if (Number(value) > 30) return t("voucher.validation.minimumStayMax");
+        return "";
+
+      // ===== Usage Limit =====
+      case "usageLimit":
+        if (!value) return t("voucher.validation.usageLimitRequired");
+        if (Number(value) <= 0)
+          return t("voucher.validation.usageLimitPositive");
+        return "";
+
+      // ===== Usage Per Customer =====
+      case "usagePerCustomer":
+        if (value !== "" && Number(value) <= 0) {
+          return t("voucher.validation.usagePerCustomerPositive");
+        }
+        return "";
+
+      // ===== Booking Type =====
+      case "bookingType":
+        if (!value) return t("voucher.validation.bookingTypeRequired");
+        return "";
+
+      // ===== Room Types =====
+      case "roomTypes": {
+        const hasRoom = formData.roomTypes?.some((r: any) => r.excluded);
+        if (!hasRoom) return t("voucher.validation.roomTypeRequired");
+        return "";
+      }
+
+      default:
+        return "";
+    }
+  };
+  const handleBlur = (name:keyof voucherFormProps)=>{
+   const error = validateField(name, formData[name], formData);
+
+  setErrors((prev) => ({
+    ...prev,
+    [name]: error,
+  }));
+}
   useEffect(() => {
     if (!isOpen || !voucherId) return;
 
@@ -264,12 +479,16 @@ const UpdateVoucher = ({
                       voucherName: e.target.value,
                     }));
                   }}
+                  onBlur={() => handleBlur("voucherName")}
                   type="text"
                   placeholder={t(
                     "voucher.createOrUpdate.voucherNamePlaceHolder",
                   )}
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
+                {errors.voucherName && (
+                  <span className="text-red-500">{errors.voucherName}</span>
+                )}
               </div>
 
               <div>
@@ -279,6 +498,7 @@ const UpdateVoucher = ({
                 <input
                   type="text"
                   value={formData.voucherCode}
+                  onBlur={()=>handleBlur("voucherCode")}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -290,6 +510,9 @@ const UpdateVoucher = ({
                   )}
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
+                {errors.voucherCode && (
+                  <span className="text-red-500">{errors.voucherCode}</span>
+                )}
               </div>
 
               <div>
@@ -332,6 +555,7 @@ const UpdateVoucher = ({
                     <input
                       type="date"
                       value={formData.startDate}
+                      onBlur={()=>handleBlur("startDate")}
                       onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
@@ -340,6 +564,9 @@ const UpdateVoucher = ({
                       }}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
+                    {errors.startDate && (
+                      <span className="text-red-500">{errors.startDate}</span>
+                    )}
                   </div>
                 </div>
 
@@ -355,6 +582,7 @@ const UpdateVoucher = ({
                     <input
                       type="date"
                       value={formData.endDate}
+                      onBlur={()=>handleBlur("endDate")}
                       onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
@@ -363,6 +591,9 @@ const UpdateVoucher = ({
                       }}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
+                    {errors.endDate && (
+                      <span className="text-red-500">{errors.endDate}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -469,7 +700,12 @@ const UpdateVoucher = ({
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={() => toggleRoomType(room.id)}
+                        onChange={() => {
+                          toggleRoomType(room.id)
+                          setTimeout(()=>{
+                              handleBlur("roomTypes")
+                          },0)
+                        }}
                         className="hidden"
                       />
 
@@ -503,6 +739,9 @@ const UpdateVoucher = ({
                   );
                 })}
               </div>
+              {errors.roomTypes && (
+                <span className="text-red-500">{errors.roomTypes}</span>
+              )}
             </div>
           </div>
 
@@ -526,6 +765,7 @@ const UpdateVoucher = ({
                       type: e.target.value,
                     }));
                   }}
+                  onBlur={()=>handleBlur("type")}
                   className="h-12 w-full rounded-lg border px-4 border-[#4B62A0] bg-white outline-none appearance-none"
                 >
                   <option value="1">{t("voucher.createOrUpdate.fixed")}</option>
@@ -536,6 +776,9 @@ const UpdateVoucher = ({
                     {t("voucher.createOrUpdate.discountTypeSpecial")}
                   </option>
                 </select>
+                {errors.type && (
+                  <span className="text-red-500">{errors.type}</span>
+                )}
               </div>
 
               <div
@@ -549,6 +792,7 @@ const UpdateVoucher = ({
                     <input
                       type="text"
                       value={formData.value}
+                      onBlur={()=>handleBlur("value")}
                       onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
@@ -562,6 +806,7 @@ const UpdateVoucher = ({
                       {isPercent ? "%" : "VND"}
                     </span>
                   </div>
+                  {errors.value && <span className="text-red-500">{errors.value}</span>}
                 </div>
 
                 {isPercent && (
@@ -579,11 +824,17 @@ const UpdateVoucher = ({
                             maxDiscountValue: e.target.value,
                           }))
                         }
+                        onBlur={()=>handleBlur("maxDiscountValue")}
                         placeholder={t(
                           "voucher.createOrUpdate.maxDiscountPlaceholder",
                         )}
                         className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-12"
                       />
+                      {errors.maxDiscountValue && (
+                        <span className="text-red-500">
+                          {errors.maxDiscountValue}
+                        </span>
+                      )}
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] font-medium">
                         VND
                       </span>
@@ -617,6 +868,7 @@ const UpdateVoucher = ({
                           bookingType: e.target.value,
                         }));
                       }}
+                      onBlur={()=>handleBlur("bookingType")}
                       className="h-12 w-full rounded-lg border border-[#4B62A0] bg-white pl-12 pr-4 outline-none appearance-none"
                     >
                       <option value="1">
@@ -629,6 +881,9 @@ const UpdateVoucher = ({
                         {t("bookingDateTime.packageFullDay")}
                       </option>
                     </select>
+                    {errors.bookingType && (
+                      <span className="text-red-500">{errors.bookingType}</span>
+                    )}
                   </div>
                 </div>
 
@@ -644,10 +899,14 @@ const UpdateVoucher = ({
                         minimumStay: e.target.value,
                       }));
                     }}
+                    onBlur={()=>handleBlur("minimumStay")}
                     type="number"
                     placeholder="2"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
+                  {errors.minimumStay && (
+                    <span className="text-red-500">{errors.minimumStay}</span>
+                  )}
                 </div>
               </div>
               {/* Room Types */}
@@ -762,9 +1021,13 @@ const UpdateVoucher = ({
                         usageLimit: e.target.value,
                       }));
                     }}
+                    onBlur={()=>handleBlur("usageLimit")}
                     placeholder="100"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
+                  {errors.usageLimit && (
+                    <span className="text-red-500">{errors.usageLimit}</span>
+                  )}
                 </div>
 
                 <Toggle
@@ -786,6 +1049,7 @@ const UpdateVoucher = ({
                     <input
                       type="number"
                       min={1}
+                      onBlur={()=>handleBlur("usagePerCustomer")}
                       value={formData.usagePerCustomer}
                       onChange={(e) =>
                         setFormData((prev) => ({

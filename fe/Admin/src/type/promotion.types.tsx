@@ -44,6 +44,8 @@ export interface PromotionActionMenuProps {
 export interface CreateOrUpdateTabProps {
   formData: PromotionForm;
   setFormData: React.Dispatch<React.SetStateAction<PromotionForm>>;
+  handleBlur:(field:string)=>void;
+  errors:any;
 }
 export const BOOKING_TYPE = {
   HOURLY: 1,

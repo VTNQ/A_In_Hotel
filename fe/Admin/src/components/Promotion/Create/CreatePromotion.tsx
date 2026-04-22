@@ -19,6 +19,7 @@ const CreatePromotion = ({
   onClose,
   onSuccess,
 }: CreatePromotionModalProps) => {
+  const [errors,setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<TabType>("general");
   const currentIndex = TABS.indexOf(activeTab);
   const isFirstTab = currentIndex === 0;
@@ -39,6 +40,150 @@ const CreatePromotion = ({
     customerType: "0",
     roomTypes: [],
   });
+  const validate =()=>{
+    const newErrors: Record<string,string> = {};
+    if(!formData.name?.trim()){
+      newErrors.name = t("promotion.validation.nameRequired")
+    }else if(formData.name.length<3){
+      newErrors.name = t("promotion.validation.nameMinLength")
+    }else if(formData.name.length > 100){
+       newErrors.name = t("promotion.validation.nameMaxLength");
+    }
+
+    if(!formData.priority){
+      newErrors.priority = t("promotion.validation.priorityRequired")
+    }else if(Number(formData.priority)<1){
+      newErrors.priority = t("promotion.validation.priorityMin")
+    }
+
+    if(!formData.value){
+      newErrors.value = t("promotion.validation.valueRequired")
+    }else{
+      const value = Number(formData.value);
+      if(formData.type === "2"){
+        if(value <=0){
+          newErrors.value = t("promotion.validation.valueMoneyPositive");
+        }else if(value > 100000000){
+          newErrors.value = t("promotion.validation.valueMoneyMax");
+        }
+      }else{
+        if(value <=0 || value >100){
+          newErrors.value = t("promotion.validation.valuePercentRange");
+        }
+      }
+    }
+    if(!formData.startDate){
+      newErrors.startDate = t("promotion.validation.startDateRequired");
+    }
+    if(!formData.endDate){
+      newErrors.endDate = t("promotion.validation.endDateRequired");
+    }else if(formData.startDate && formData.endDate < formData.startDate){
+      newErrors.endDate = t("promotion.endDateAfterStart")
+    }
+
+    if(!formData.minNights){
+      newErrors.minNights = t("promotion.validation.minNightsRequired")
+    }else if(Number(formData.minNights)<=0){
+      newErrors.minNights = t("promotion.validation.minNightsPositive")
+    }else if(Number(formData.minNights) >30){
+      newErrors.minNights = t("promotion.validation.minNightsTooLarge")
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
+  const handleBlur = (field: string) => {
+  setErrors((prev) => {
+    const newErrors = { ...prev };
+
+    switch (field) {
+      // 🟢 NAME
+      case "name":
+        if (!formData.name?.trim()) {
+          newErrors.name = t("promotion.validation.nameRequired");
+        } else if (formData.name.length < 3) {
+          newErrors.name = t("promotion.validation.nameMinLength");
+        } else if (formData.name.length > 100) {
+          newErrors.name = t("promotion.validation.nameMaxLength");
+        } else {
+          delete newErrors.name;
+        }
+        break;
+
+      // 🟢 PRIORITY
+      case "priority":
+        if (!formData.priority) {
+          newErrors.priority = t("promotion.validation.priorityRequired");
+        } else if (Number(formData.priority) < 1) {
+          newErrors.priority = t("promotion.validation.priorityMin");
+        } else {
+          delete newErrors.priority;
+        }
+        break;
+
+      // 🟢 VALUE
+      case "value":
+        if (!formData.value) {
+          newErrors.value = t("promotion.validation.valueRequired");
+        } else {
+          const val = Number(formData.value);
+
+          if (formData.type === "2") {
+            if (val <= 0) {
+              newErrors.value = t("promotion.validation.valueMoneyPositive");
+            } else {
+              delete newErrors.value;
+            }
+          } else {
+            if (val <= 0 || val > 100) {
+              newErrors.value = t("promotion.validation.valuePercentRange");
+            } else {
+              delete newErrors.value;
+            }
+          }
+        }
+        break;
+
+      // 🟢 START DATE
+      case "startDate":
+        if (!formData.startDate) {
+          newErrors.startDate = t("promotion.validation.startDateRequired");
+        } else {
+          delete newErrors.startDate;
+        }
+        break;
+
+      // 🟢 END DATE
+      case "endDate":
+        if (!formData.endDate) {
+          newErrors.endDate = t("promotion.validation.endDateRequired");
+        } else if (
+          formData.startDate &&
+          formData.endDate < formData.startDate
+        ) {
+          newErrors.endDate = t("promotion.validation.endDateAfterStart");
+        } else {
+          delete newErrors.endDate;
+        }
+        break;
+
+      // 🟢 MIN NIGHTS
+      case "minNights":
+        if (!formData.minNights) {
+          newErrors.minNights = t("promotion.validation.minNightsRequired");
+        } else if (Number(formData.minNights) <= 0) {
+          newErrors.minNights = t("promotion.validation.minNightsPositive");
+        } else {
+          delete newErrors.minNights;
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    return newErrors;
+  });
+};
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);
@@ -52,7 +197,9 @@ const CreatePromotion = ({
   };
   const handleSubmit = async () => {
     if (loading) return;
-
+    
+    const isValid = validate();
+    if(!isValid) return;
     try {
       setLoading(true);
       const payload = {
@@ -106,6 +253,7 @@ const CreatePromotion = ({
       setLoading(false);
     }
   };
+  
   const handleCancel = () => {
     setFormData({
       name: "",
@@ -120,9 +268,13 @@ const CreatePromotion = ({
       customerType: "0",
       roomTypes: [],
     });
+    setErrors({})
     setActiveTab("general");
     onClose();
   };
+  const isFormValid = () => {
+  return Object.values(errors).every((e) => !e);
+};
   if (!isOpen) return null;
   return (
     <>
@@ -170,13 +322,28 @@ const CreatePromotion = ({
           </div>
           <div className="flex-1 overflow-y-auto  py-8 custom-scroll">
             {activeTab === "general" && (
-              <GeneralTab formData={formData} setFormData={setFormData} />
+              <GeneralTab 
+              formData={formData} 
+              setFormData={setFormData}
+              handleBlur={handleBlur}
+              errors={errors}
+              />
             )}
             {activeTab === "offer" && (
-              <OfferTab formData={formData} setFormData={setFormData} />
+              <OfferTab 
+              formData={formData} 
+              setFormData={setFormData} 
+              handleBlur={handleBlur}
+              errors={errors}
+              />
             )}
             {activeTab === "targeting" && (
-              <TargetingTab formData={formData} setFormData={setFormData} />
+              <TargetingTab 
+              formData={formData} 
+              setFormData={setFormData} 
+              handleBlur={handleBlur}
+              errors={errors}
+              />
             )}
           </div>
 
@@ -206,13 +373,16 @@ const CreatePromotion = ({
               ) : (
                 <button
                   onClick={handleSubmit}
-                  disabled={loading}
-                  className="flex items-center justify-center gap-2 px-8 h-12 rounded-lg
-                   bg-[#42578E] text-white font-semibold
-                   hover:bg-[#536DB2]
-                   disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={loading || !isFormValid()}
+                  className={`flex items-center justify-center gap-2 px-8
+                    h-12 rounded-lg font-semibold
+                    ${
+                      loading || !isFormValid()
+                      ? "bg-gray-400 cursor-not-allowed"
+                      :"bg-[#42578E] hover:bg-[#536DB2] text-white"
+                    }`}
                 >
-                  {loading ? (
+                  {loading  ? (
                     <>
                       <svg
                         className="animate-spin h-4 w-4 text-white"

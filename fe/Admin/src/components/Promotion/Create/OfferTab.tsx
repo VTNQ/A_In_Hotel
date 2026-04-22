@@ -2,7 +2,7 @@ import { ArrowDown, Moon, Percent, Wallet } from "lucide-react";
 import type { CreateOrUpdateTabProps } from "../../../type/promotion.types";
 import { useTranslation } from "react-i18next";
 
-const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTabProps) => {
   const {t} = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-10 py-10 space-y-16">
@@ -61,11 +61,15 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     value:e.target.value
                   }))
                 }}
+                onBlur={()=>handleBlur("value")}
                 placeholder={
                   formData.type === "1" || formData.type === "3" ? t("promotion.offer.valuePercentPlaceholder") : t("promotion.offer.valueFixedPlaceholder")
                 }
                 className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
               />
+              {errors.value && (
+                <p className="text-red-500 text-sm">{errors.value}</p>
+              )}
             </div>
           </div>
         </div>
@@ -87,6 +91,7 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               <input
                 type="number"
                 value={formData.minNights}
+                onBlur={()=>handleBlur("minNights")}
                 onChange={(e)=>{
                   setFormData((prev)=>({
                     ...prev,
@@ -96,6 +101,9 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 placeholder={t("promotion.conditions.minNightsPlaceholder")}
                 className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
               />
+              {errors.minNights && (
+                <p className="text-red-500 text-sm">{errors.minNights}</p>
+              )}
             </div>
           </div>
           {/* <div className="flex flex-col gap-2">
