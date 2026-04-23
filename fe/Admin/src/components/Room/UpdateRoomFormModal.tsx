@@ -8,6 +8,9 @@ import { File_URL } from "../../setting/constant/app";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
 import type { UpdateRoomFormModalProps } from "../../type/room.types";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const UpdateRoomFormModal = ({
   isOpen,
@@ -15,299 +18,248 @@ const UpdateRoomFormModal = ({
   onSuccess,
   roomId,
 }: UpdateRoomFormModalProps) => {
+  const { t } = useTranslation();
+  const roomSchema = z.object({
+    id: z.string().optional(),
+    status: z.string().optional(),
+    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
+
+    roomName: z.string().min(1, t("room.validation.roomNameRequired")),
+
+    idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
+
+    floor: z
+      .string()
+      .min(1, t("room.validation.floorRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.floorInvalid"),
+      }),
+    area: z
+      .string()
+      .min(1, t("room.validation.areaRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.areaInvalid"),
+      }),
+    capacity: z
+      .string()
+      .min(1, t("room.validation.capacityRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.capacityInvalid"),
+      }),
+    hourlyBasePrice: z
+      .string()
+      .min(1, t("room.validation.basePriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.basePriceInvalid"),
+      }),
+
+    hourlyAdditionalPrice: z
+      .string()
+      .min(1, t("room.validation.additionalPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.additionalPriceInvalid"),
+      }),
+
+    overnightPrice: z
+      .string()
+      .min(1, t("room.validation.overnightPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.overnightPriceInvalid"),
+      }),
+
+    defaultRate: z
+      .string()
+      .min(1, t("room.validation.defaultRateRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.defaultRateInvalid"),
+      }),
+
+    note: z.string().optional(),
+
+    images: z
+      .array(z.instanceof(File))
+      .min(1, t("common.required"))
+      .max(5, t("room.createOrUpdate.maxImages"))
+      .optional(),
+    oldImages: z.array(z.string()).optional(),
+  });
+
+  type FormData = z.infer<typeof roomSchema>;
+
+  const { showAlert } = useAlert();
+
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const { t } = useTranslation();
-  const [errors, setErrors] = useState<any>({});
-  const DISABLE_VALIDATE = false;
-  const { showAlert } = useAlert();
-  const [originalData, setOriginalData] = useState<any>(null);
-  const [categories, setCategories] = useState<any[]>([]);
-
-  const [formData, setFormData] = useState({
-    roomNumber: "",
-    roomName: "",
-    idRoomType: "",
-    defaultRate: "",
-    area: "",
-    capacity: "",
-    status: "",
-    floor: "",
-    hourlyBasePrice: "",
-    hourlyAdditionalPrice: "",
-    overnightPrice: "",
-    note: "",
-    images: [] as File[],
-    oldImages: [] as string[],
-  });
 
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [tempImages, setTempImages] = useState<(File | string)[]>([]);
-    const validateField = (name: string, value: any) => {
-     let error = "";
+  const [oldImages, setOldImages] = useState<string[]>([]);
 
-  switch (name) {
-    case "roomNumber":
-      if (!value || value.trim() === "") {
-        error = t("room.validation.roomNumberRequired");
-      }
-      break;
+  const [initialSnapshot, setInitialSnapshot] = useState<string>("");
 
-    case "roomName":
-      if (!value || value.trim() === "") {
-        error = t("room.validation.roomNameRequired");
-      }
-      break;
-
-    case "idRoomType":
-      if (!value) {
-        error = t("room.validation.roomTypeRequired");
-      }
-      break;
-
-    case "floor":
-      if (!value) {
-        error = t("room.validation.floorRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.floorInvalid");
-      }
-      break;
-
-    case "area":
-      if (!value) {
-        error = t("room.validation.areaRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.areaInvalid");
-      }
-      break;
-
-    case "capacity":
-      if (!value) {
-        error = t("room.validation.capacityRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.capacityInvalid");
-      }
-      break;
-
-    case "hourlyBasePrice":
-      if (!value) {
-        error = t("room.validation.basePriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.basePriceInvalid");
-      }
-      break;
-
-    case "hourlyAdditionalPrice":
-      if (!value) {
-        error = t("room.validation.additionalPriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.additionalPriceInvalid");
-      }
-      break;
-
-    case "overnightPrice":
-      if (!value) {
-        error = t("room.validation.overnightPriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.overnightPriceInvalid");
-      }
-      break;
-
-    case "defaultRate":
-      if (!value) {
-        error = t("room.validation.defaultRateRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.defaultRateInvalid");
-      }
-      break;
-
-    default:
-      break;
-  }
-
-  return error;
-    
-  };
-  const validateForm = () => {
-  if (DISABLE_VALIDATE) {
-    setErrors({});
-    return true;
-  }
-
-  const newErrors: any = {
-    roomNumber: validateField("roomNumber", formData.roomNumber),
-    roomName: validateField("roomName", formData.roomName),
-    idRoomType: validateField("idRoomType", formData.idRoomType),
-    floor: validateField("floor", formData.floor),
-    area: validateField("area", formData.area),
-    capacity: validateField("capacity", formData.capacity),
-    hourlyBasePrice: validateField("hourlyBasePrice", formData.hourlyBasePrice),
-    hourlyAdditionalPrice: validateField("hourlyAdditionalPrice", formData.hourlyAdditionalPrice),
-    overnightPrice: validateField("overnightPrice", formData.overnightPrice),
-    defaultRate: validateField("defaultRate", formData.defaultRate),
-  };
-
-  // validate image riêng
-  if (formData.images.length === 0) {
-    newErrors.images = t("common.required");
-  }
-
-  Object.keys(newErrors).forEach((key) => {
-    if (!newErrors[key]) delete newErrors[key];
+  /* =========================
+     FORM
+  ========================= */
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(roomSchema),
+    mode: "onChange",
+    defaultValues: {
+      roomNumber: "",
+      roomName: "",
+      idRoomType: "",
+      floor: "",
+      area: "",
+      capacity: "",
+      status: "",
+      hourlyBasePrice: "",
+      hourlyAdditionalPrice: "",
+      overnightPrice: "",
+      defaultRate: "",
+      note: "",
+      images: [],
+      oldImages: [],
+    },
   });
 
-  setErrors(newErrors);
+  const images = watch("images");
 
-  return Object.keys(newErrors).length === 0;
-};
+  /* =========================
+     LOAD DATA
+  ========================= */
   useEffect(() => {
     if (!isOpen || !roomId) return;
 
-    setFetching(true);
-    fetchCategories();
-    findById(roomId)
-      .then((res) => {
-        const room = res?.data?.data;
+    const load = async () => {
+      setFetching(true);
+      try {
+        const [catRes, roomRes] = await Promise.all([
+          getAllCategory({ all: true, filter: "isActive==1 and type==1" }),
+          findById(roomId),
+        ]);
 
-        const oldImages =
-          room?.images?.map((img: any) => File_URL + img.url) || [];
+        setCategories(catRes.content || []);
 
-        setFormData({
+        const room = roomRes?.data?.data;
+
+        const oldImgs = room?.images?.map((i: any) => File_URL + i.url) || [];
+
+        setOldImages(oldImgs);
+        setTempImages(oldImgs);
+
+        const form = {
           roomNumber: room?.roomNumber || "",
           roomName: room?.roomName || "",
           idRoomType: room?.idRoomType || "",
-          defaultRate: room?.defaultRate || 0,
-          area: room?.area || "",
-          capacity: room?.capacity || "",
-          status: room?.status || "",
-          floor: room?.floor || "",
-          hourlyBasePrice: room?.hourlyBasePrice || 0,
-          hourlyAdditionalPrice: room?.hourlyAdditionalPrice || 0,
-          overnightPrice: room?.overnightPrice || 0,
+          floor: String(room?.floor || ""),
+          area: String(room?.area || ""),
+          capacity: String(room?.capacity || ""),
+          status: String(room?.status || ""),
+          hourlyBasePrice: String(room?.hourlyBasePrice || ""),
+          hourlyAdditionalPrice: String(room?.hourlyAdditionalPrice || ""),
+          overnightPrice: String(room?.overnightPrice || ""),
+          defaultRate: String(room?.defaultRate || ""),
           note: room?.note || "",
           images: [],
-          oldImages: oldImages,
-        });
-        setOriginalData({
-          roomNumber: room?.roomNumber || "",
-          roomName: room?.roomName || "",
-          idRoomType: room?.idRoomType || "",
-          defaultRate: room?.defaultRate || 0,
-          area: room?.area || "",
-          capacity: room?.capacity || "",
-          status: room?.status || "",
-          floor: room?.floor || "",
-          hourlyBasePrice: room?.hourlyBasePrice || 0,
-          hourlyAdditionalPrice: room?.hourlyAdditionalPrice || 0,
-          overnightPrice: room?.overnightPrice || 0,
-          note: room?.note || "",
-          images: [],
-          oldImages: oldImages,
-        });
+        };
 
-        setTempImages(oldImages);
-      })
-      .catch(() => {
+        reset(form);
+
+        setInitialSnapshot(JSON.stringify({ ...form, oldImages: oldImgs }));
+      } catch {
         showAlert({
-          title: "Failed to load room!",
+          title: "Load failed",
           type: "error",
         });
-        onClose();
-      })
-      .finally(() => setFetching(false));
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    load();
   }, [isOpen, roomId]);
 
+  /* =========================
+     CHANGE CHECK
+  ========================= */
   const hasChanges = () => {
-    const newImages = tempImages.filter((i) => i instanceof File);
-    const newOldImages = tempImages.filter((i) => typeof i === "string");
-
-    const compare = {
-      ...formData,
-      images: newImages,
-      oldImages: newOldImages,
+    const current = {
+      ...watch(),
+      oldImages,
+      images,
     };
 
-    const originalCompare = {
-      ...originalData,
-      images: [],
-      oldImages: originalData.oldImages,
-    };
-    return JSON.stringify(compare) !== JSON.stringify(originalCompare);
+    return JSON.stringify(current) !== initialSnapshot;
   };
-
-  const handleChange = (e: any) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-  const fetchCategories = async () => {
-    try {
-      const res = await getAllCategory({
-        all: true,
-
-        filter: "isActive==1 and type==1",
-      });
-      setCategories(res.content || []);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  /** Update API */
-  const handleUpdate = async () => {
-    if(!validateForm()) return;
+  const watchedValues = watch();
+  /* =========================
+     SAVE
+  ========================= */
+  const onSubmit = async (data: FormData) => {
     if (!hasChanges()) {
       showAlert({
         title: t("common.noChange"),
         type: "warning",
-        autoClose: 2500,
       });
-      onClose();
       return;
     }
-    setLoading(true);
 
+    setLoading(true);
     try {
-      const cleanOldImages = formData.oldImages.map((img) =>
-        img.replace(File_URL, ""),
-      );
-      const cleanFormData = {
-        ...formData,
-        oldImages: cleanOldImages,
+      const finalOld = tempImages.filter((i) => typeof i === "string");
+      const finalNew = tempImages.filter((i) => i instanceof File);
+
+      const payload = {
+        ...data,
+        oldImages: finalOld.map((x) => x.replace(File_URL, "")),
+        images: finalNew,
       };
 
-      const response = await updateRoom(Number(roomId), cleanFormData);
+      await updateRoom(Number(roomId), payload);
 
       showAlert({
-        title:
-          response?.data?.message || t("room.createOrUpdate.updateSuccess"),
+        title: t("room.createOrUpdate.updateSuccess"),
         type: "success",
-        autoClose: 2500,
       });
 
       onSuccess?.();
       onClose();
-    } catch (err: any) {
+    } catch {
       showAlert({
-        title:
-          err?.response?.data?.message || t("room.createOrUpdate.updateError"),
+        title: t("room.createOrUpdate.updateError"),
         type: "error",
-        autoClose: 2500,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  /** Cancel */
-  const handleCancel = () => {
-    setTempImages([]);
-    setErrors({})
-    onClose();
-  };
+  /* =========================
+     UI
+  ========================= */
+  if (isOpen && fetching) {
+    return (
+      <CommonModal isOpen={true} onClose={onClose} title="Loading...">
+        <div className="flex justify-center py-10">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        </div>
+      </CommonModal>
+    );
+  }
 
   if (isOpen && fetching) {
     return (
       <CommonModal
         isOpen={true}
-        onClose={handleCancel}
+        onClose={onClose}
         title={t("room.createOrUpdate.titleEdit")}
         saveLabel={t("common.save")}
         cancelLabel={t("common.cancel")}
@@ -319,30 +271,25 @@ const UpdateRoomFormModal = ({
       </CommonModal>
     );
   }
-  const checkFormValid = () => {
-  if (DISABLE_VALIDATE) return true;
-
-  return (
-    formData.roomNumber &&
-    formData.roomName &&
-    formData.idRoomType &&
-    formData.floor &&
-    formData.area &&
-    formData.capacity &&
-    formData.hourlyBasePrice &&
-    formData.hourlyAdditionalPrice &&
-    formData.overnightPrice &&
-    formData.defaultRate &&
-    formData.images.length > 0
-  );
-};
+  const isFormValid =
+    !!watch("roomNumber") &&
+    !!watch("roomName") &&
+    !!watch("idRoomType") &&
+    !!watch("floor") &&
+    !!watch("area") &&
+    !!watch("capacity") &&
+    !!watch("hourlyBasePrice") &&
+    !!watch("hourlyAdditionalPrice") &&
+    !!watch("overnightPrice") &&
+    !!watch("defaultRate") &&
+    tempImages.length > 0;
   return (
     <>
       <CommonModal
         isOpen={isOpen}
-        onClose={handleCancel}
-        onSave={handleUpdate}
-        diabled={!checkFormValid() || loading}
+        onClose={onClose}
+        onSave={handleSubmit(onSubmit)}
+        diabled={!isFormValid || isSubmitting}
         title={t("room.createOrUpdate.titleEdit")}
         width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
         saveLabel={loading ? t("common.saving") : t("common.save")}
@@ -356,9 +303,7 @@ const UpdateRoomFormModal = ({
                 {t("room.roomTypeName")} *
               </label>
               <select
-                name="idRoomType"
-                value={formData.idRoomType}
-                onChange={handleChange}
+                {...register("idRoomType")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2"
               >
                 <option value="">
@@ -370,6 +315,11 @@ const UpdateRoomFormModal = ({
                   </option>
                 ))}
               </select>
+              {errors.idRoomType && (
+                <p className="text-red-500 text-xs">
+                  {errors.idRoomType.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -377,12 +327,15 @@ const UpdateRoomFormModal = ({
                 {t("room.createOrUpdate.roomNumber")} *
               </label>
               <input
-                name="roomNumber"
-                value={formData.roomNumber}
-                onChange={handleChange}
+                {...register("roomNumber")}
                 placeholder={t("room.createOrUpdate.enterRoomNumber")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2"
               />
+              {errors.roomNumber && (
+                <p className="text-red-500 text-xs">
+                  {errors.roomNumber.message}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -391,25 +344,29 @@ const UpdateRoomFormModal = ({
                   {t("room.createOrUpdate.roomName")} *
                 </label>
                 <input
-                  name="roomName"
                   placeholder={t("room.createOrUpdate.enterRoomName")}
-                  value={formData.roomName}
-                  onChange={handleChange}
+                  {...register("roomName")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.roomName && (
+                  <p className="text-red-500 text-xs">
+                    {errors.roomName.message}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block mb-1 font-medium">
                   {t("room.createOrUpdate.floor")} *
                 </label>
                 <input
-                  name="floor"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterFloor")}
-                  value={formData.floor}
-                  onChange={handleChange}
+                  {...register("floor")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.floor && (
+                  <p className="text-red-500 text-xs">{errors.floor.message}</p>
+                )}
               </div>
             </div>
 
@@ -418,13 +375,14 @@ const UpdateRoomFormModal = ({
                 {t("room.createOrUpdate.area")} *
               </label>
               <input
-                name="area"
                 type="number"
-                value={formData.area}
-                onChange={handleChange}
+                {...register("area")}
                 placeholder={t("room.createOrUpdate.enterArea")}
                 className="w-full border border-[#42578E] rounded-lg p-2"
               />
+              {errors.area && (
+                <p className="text-red-500 text-xs">{errors.area.message}</p>
+              )}
             </div>
 
             <div>
@@ -432,9 +390,7 @@ const UpdateRoomFormModal = ({
                 {t("common.status")}
               </label>
               <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
+                {...register("status")}
                 className="w-full border border-[#42578E] rounded-lg p-2"
               >
                 <option value="0">
@@ -454,13 +410,16 @@ const UpdateRoomFormModal = ({
                 {t("room.createOrUpdate.capacity")} *
               </label>
               <input
-                name="capacity"
                 type="number"
                 placeholder={t("room.createOrUpdate.enterCapacity")}
-                value={formData.capacity}
-                onChange={handleChange}
+                {...register("capacity")}
                 className="w-full border border-[#42578E] rounded-lg p-2"
               />
+              {errors.capacity && (
+                <p className="text-red-500 text-xs">
+                  {errors.capacity.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -468,9 +427,7 @@ const UpdateRoomFormModal = ({
                 {t("room.createOrUpdate.note")}
               </label>
               <textarea
-                name="note"
-                value={formData.note}
-                onChange={handleChange}
+                {...register("note")}
                 placeholder={t("room.createOrUpdate.notePlaceholder")}
                 className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
@@ -487,12 +444,15 @@ const UpdateRoomFormModal = ({
                 </label>
                 <input
                   type="number"
-                  name="hourlyBasePrice"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyBasePrice}
-                  onChange={handleChange}
+                  {...register("hourlyBasePrice")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.hourlyBasePrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyBasePrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -501,12 +461,15 @@ const UpdateRoomFormModal = ({
                 </label>
                 <input
                   type="number"
-                  name="hourlyAdditionalPrice"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyAdditionalPrice}
-                  onChange={handleChange}
+                  {...register("hourlyAdditionalPrice")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.hourlyAdditionalPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyAdditionalPrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -515,12 +478,15 @@ const UpdateRoomFormModal = ({
                 </label>
                 <input
                   type="number"
-                  name="overnightPrice"
-                  value={formData.overnightPrice}
-                  onChange={handleChange}
+                  {...register("overnightPrice")}
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.overnightPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.overnightPrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -529,12 +495,15 @@ const UpdateRoomFormModal = ({
                 </label>
                 <input
                   type="number"
-                  name="defaultRate"
-                  value={formData.defaultRate}
-                  onChange={handleChange}
+                  {...register("defaultRate")}
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   className="w-full border border-[#42578E] rounded-lg p-2"
                 />
+                {errors.defaultRate && (
+                  <p className="text-red-500 text-xs">
+                    {errors.defaultRate.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -597,8 +566,7 @@ const UpdateRoomFormModal = ({
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
-                    // Khôi phục lại hình gốc
-                    setTempImages([...formData.oldImages, ...formData.images]);
+                    setTempImages(watchedValues.images || []);
                     setImageModalOpen(false);
                   }}
                 >
@@ -612,19 +580,16 @@ const UpdateRoomFormModal = ({
                 <button
                   className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
                   onClick={() => {
-                    const finalOld = tempImages.filter(
-                      (i) => typeof i === "string",
-                    );
-                    const finalNew = tempImages.filter(
-                      (i) => i instanceof File,
+                    const files = tempImages.filter(
+                      (x): x is File => x instanceof File,
                     );
 
-                    setFormData((prev) => ({
-                      ...prev,
-                      oldImages: finalOld,
-                      images: finalNew,
-                    }));
+                    setValue("images", files, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
 
+                    trigger("images");
                     setImageModalOpen(false);
                   }}
                 >

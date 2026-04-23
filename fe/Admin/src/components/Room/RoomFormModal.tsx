@@ -7,33 +7,106 @@ import { createRoom } from "../../service/api/Room";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
 import type { RoomFormModalProps } from "../../type/room.types";
-
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
   /* ===============================
       FORM STATE
   =============================== */
-  const [formData, setFormData] = useState({
-    roomNumber: "",
-    roomName: "",
-    idRoomType: "",
-    defaultRate: "",
-    area: "",
-    capacity: "",
-    floor: "",
-    hourlyBasePrice: "",
-    hourlyAdditionalPrice: "",
-    overnightPrice: "",
-    note: "",
-    images: [] as File[],
-  });
-  const [errors, setErrors] = useState<any>({});
-  const DISABLE_VALIDATE = false;
   const { t } = useTranslation();
   const [category, setCategory] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
   const { showAlert } = useAlert();
-  const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState<any>(null);
+
+  const [initialData, setInitialData] = useState<FormData | null>(null);
+  const roomSchema = z.object({
+    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
+
+    roomName: z.string().min(1, t("room.validation.roomNameRequired")),
+
+    idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
+
+    floor: z
+      .string()
+      .min(1, t("room.validation.floorRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.floorInvalid"),
+      }),
+    area: z
+      .string()
+      .min(1, t("room.validation.areaRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.areaInvalid"),
+      }),
+    capacity: z
+      .string()
+      .min(1, t("room.validation.capacityRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.capacityInvalid"),
+      }),
+    hourlyBasePrice: z
+      .string()
+      .min(1, t("room.validation.basePriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.basePriceInvalid"),
+      }),
+
+    hourlyAdditionalPrice: z
+      .string()
+      .min(1, t("room.validation.additionalPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.additionalPriceInvalid"),
+      }),
+
+    overnightPrice: z
+      .string()
+      .min(1, t("room.validation.overnightPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.overnightPriceInvalid"),
+      }),
+
+    defaultRate: z
+      .string()
+      .min(1, t("room.validation.defaultRateRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.defaultRateInvalid"),
+      }),
+
+    note: z.string().optional(),
+
+    images: z
+      .array(z.instanceof(File))
+      .min(1, t("common.required"))
+      .max(5, t("room.createOrUpdate.maxImages")),
+  });
+  type FormData = z.infer<typeof roomSchema>;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(roomSchema),
+    mode: "onBlur",
+    defaultValues: {
+      roomNumber: "",
+      roomName: "",
+      idRoomType: "",
+      defaultRate: "",
+      area: "",
+      capacity: "",
+      floor: "",
+      hourlyBasePrice: "",
+      hourlyAdditionalPrice: "",
+      overnightPrice: "",
+      note: "",
+      images: [],
+    },
+  });
   /* ===============================
       FETCH CATEGORY
   =============================== */
@@ -51,162 +124,52 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       setFetching(false);
     }
   };
-  const validateField = (name: string, value: any) => {
-     let error = "";
-
-  switch (name) {
-    case "roomNumber":
-      if (!value || value.trim() === "") {
-        error = t("room.validation.roomNumberRequired");
-      }
-      break;
-
-    case "roomName":
-      if (!value || value.trim() === "") {
-        error = t("room.validation.roomNameRequired");
-      }
-      break;
-
-    case "idRoomType":
-      if (!value) {
-        error = t("room.validation.roomTypeRequired");
-      }
-      break;
-
-    case "floor":
-      if (!value) {
-        error = t("room.validation.floorRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.floorInvalid");
-      }
-      break;
-
-    case "area":
-      if (!value) {
-        error = t("room.validation.areaRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.areaInvalid");
-      }
-      break;
-
-    case "capacity":
-      if (!value) {
-        error = t("room.validation.capacityRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.capacityInvalid");
-      }
-      break;
-
-    case "hourlyBasePrice":
-      if (!value) {
-        error = t("room.validation.basePriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.basePriceInvalid");
-      }
-      break;
-
-    case "hourlyAdditionalPrice":
-      if (!value) {
-        error = t("room.validation.additionalPriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.additionalPriceInvalid");
-      }
-      break;
-
-    case "overnightPrice":
-      if (!value) {
-        error = t("room.validation.overnightPriceRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.overnightPriceInvalid");
-      }
-      break;
-
-    case "defaultRate":
-      if (!value) {
-        error = t("room.validation.defaultRateRequired");
-      } else if (Number(value) <= 0) {
-        error = t("room.validation.defaultRateInvalid");
-      }
-      break;
-
-    default:
-      break;
-  }
-
-  return error;
-    
-  };
-  const validateForm = () => {
-  if (DISABLE_VALIDATE) {
-    setErrors({});
-    return true;
-  }
-
-  const newErrors: any = {
-    roomNumber: validateField("roomNumber", formData.roomNumber),
-    roomName: validateField("roomName", formData.roomName),
-    idRoomType: validateField("idRoomType", formData.idRoomType),
-    floor: validateField("floor", formData.floor),
-    area: validateField("area", formData.area),
-    capacity: validateField("capacity", formData.capacity),
-    hourlyBasePrice: validateField("hourlyBasePrice", formData.hourlyBasePrice),
-    hourlyAdditionalPrice: validateField("hourlyAdditionalPrice", formData.hourlyAdditionalPrice),
-    overnightPrice: validateField("overnightPrice", formData.overnightPrice),
-    defaultRate: validateField("defaultRate", formData.defaultRate),
-  };
-
-  // validate image riêng
-  if (formData.images.length === 0) {
-    newErrors.images = t("common.required");
-  }
-
-  Object.keys(newErrors).forEach((key) => {
-    if (!newErrors[key]) delete newErrors[key];
-  });
-
-  setErrors(newErrors);
-
-  return Object.keys(newErrors).length === 0;
-};
-const checkFormValid = () => {
-  if (DISABLE_VALIDATE) return true;
-
-  return (
-    formData.roomNumber &&
-    formData.roomName &&
-    formData.idRoomType &&
-    formData.floor &&
-    formData.area &&
-    formData.capacity &&
-    formData.hourlyBasePrice &&
-    formData.hourlyAdditionalPrice &&
-    formData.overnightPrice &&
-    formData.defaultRate &&
-    formData.images.length > 0
-  );
-};
+  const watchedValues = watch();
   useEffect(() => {
     if (isOpen) {
-      setInitialData(formData);
+      setInitialData({
+        ...watchedValues,
+        images: [...(watchedValues.images || [])],
+      });
     }
   }, [isOpen]);
   const isFormChanged = () => {
     if (!initialData) return false;
 
-    const keys = Object.keys(formData);
+    const normalFields: (keyof FormData)[] = [
+      "roomNumber",
+      "roomName",
+      "idRoomType",
+      "defaultRate",
+      "area",
+      "capacity",
+      "floor",
+      "hourlyBasePrice",
+      "hourlyAdditionalPrice",
+      "overnightPrice",
+      "note",
+    ];
 
-    for (const key of keys) {
-      if (key === "images") {
-        if (formData.images.length !== initialData.images.length) return true;
-        continue;
-      }
-      if (
-        formData[key as keyof typeof formData] !==
-        initialData[key as keyof typeof formData]
-      ) {
+    for (const key of normalFields) {
+      if (watchedValues[key] !== initialData[key]) {
         return true;
       }
     }
+
+    // check images
+    const currentImages = watchedValues.images || [];
+    const oldImages = initialData.images || [];
+
+    if (currentImages.length !== oldImages.length) {
+      return true;
+    }
+
+    for (let i = 0; i < currentImages.length; i++) {
+      if (currentImages[i]?.name !== oldImages[i]?.name) {
+        return true;
+      }
+    }
+
     return false;
   };
 
@@ -221,46 +184,27 @@ const checkFormValid = () => {
   const [tempImages, setTempImages] = useState<File[]>([]);
 
   const openImageModal = () => {
-    setTempImages(formData.images);
+    setTempImages(watchedValues.images);
     setImageModalOpen(true);
   };
 
   /* ===============================
       HANDLE INPUT CHANGE
   =============================== */
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   /* ===============================
       SAVE ROOM
   =============================== */
-  const handleSave = async () => {
-    if(!validateForm()) return;
-    setLoading(true);
+  const handleSave = async (data: FormData) => {
     try {
-      const response = await createRoom(formData);
+      const response = await createRoom(data);
 
       showAlert({
         title: response?.data?.message || t("room.createOrUpdate.createSucess"),
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        roomNumber: "",
-        roomName: "",
-        idRoomType: "",
-        defaultRate: "",
-        area: "",
-        capacity: "",
-        floor: "",
-        hourlyBasePrice: "",
-        hourlyAdditionalPrice: "",
-        overnightPrice: "",
-        note: "",
-        images: [],
-      });
+      reset();
       onSuccess?.();
       onClose();
     } catch (err: any) {
@@ -270,8 +214,6 @@ const checkFormValid = () => {
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -279,21 +221,7 @@ const checkFormValid = () => {
       CANCEL FORM
   =============================== */
   const handleCancel = () => {
-    setFormData({
-      roomNumber: "",
-      roomName: "",
-      idRoomType: "",
-      defaultRate: "",
-      area: "",
-      capacity: "",
-      floor: "",
-      hourlyBasePrice: "",
-      hourlyAdditionalPrice: "",
-      overnightPrice: "",
-      note: "",
-      images: [],
-    });
-    setErrors({});
+    reset();
     onClose();
   };
 
@@ -303,18 +231,25 @@ const checkFormValid = () => {
   const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []) as File[];
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
     const imageFiles = files.filter((file) => allowedTypes.includes(file.type));
-    if (imageFiles.length != files.length) {
+
+    // Có file không phải ảnh hợp lệ
+    if (imageFiles.length !== files.length) {
       showAlert({
         title: t("room.createOrUpdate.onlyImage"),
         type: "error",
         autoClose: 3000,
       });
     }
-    const totalImages = tempImages.length + imageFiles.length;
 
-    if (totalImages > 5) {
+    // Dùng tempImages thay vì images để xử lý trong popup
+    const totalImages = [...tempImages, ...imageFiles];
+
+    // Giới hạn tối đa 5 ảnh
+    if (totalImages.length > 5) {
       showAlert({
         title: t("room.createOrUpdate.maxImages"),
         type: "error",
@@ -322,7 +257,10 @@ const checkFormValid = () => {
       });
       return;
     }
-    setTempImages((prev) => [...prev, ...imageFiles]);
+
+    // Update preview trong popup trước
+    setTempImages(totalImages);
+    e.target.value = "";
   };
 
   if (isOpen && fetching) {
@@ -341,15 +279,6 @@ const checkFormValid = () => {
       </CommonModal>
     );
   }
-  const handleBlur =(e:any)=>{
-    if(DISABLE_VALIDATE) return;
-    const { name, value } = e.target;
-    setErrors((prev:any)=>({
-      ...prev,
-      [name]: validateField(name, value)
-    }))
-  }
-
   return (
     <>
       {/* ===============================
@@ -364,10 +293,10 @@ const checkFormValid = () => {
             handleCancel();
           }
         }}
-        diabled={!checkFormValid() || loading}
+        diabled={!isValid || isSubmitting}
         title={t("room.createOrUpdate.titleCreate")}
-        onSave={handleSave}
-        saveLabel={loading ? t("common.saving") : t("common.save")}
+        onSave={handleSubmit(handleSave)}
+        saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
         cancelLabel={t("common.cancelButton")}
         width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
       >
@@ -380,10 +309,7 @@ const checkFormValid = () => {
                 {t("room.roomTypeName")} *
               </label>
               <select
-                name="idRoomType"
-                value={formData.idRoomType}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                {...register("idRoomType")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               >
                 <option value="">
@@ -397,7 +323,9 @@ const checkFormValid = () => {
                 ))}
               </select>
               {errors.idRoomType && (
-                <p className="text-red-500 text-xs">{errors.idRoomType}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.idRoomType.message}
+                </p>
               )}
             </div>
 
@@ -406,15 +334,14 @@ const checkFormValid = () => {
                 {t("room.createOrUpdate.roomNumber")} *
               </label>
               <input
-                name="roomNumber"
-                value={formData.roomNumber}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                {...register("roomNumber")}
                 placeholder={t("room.createOrUpdate.enterRoomNumber")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.roomNumber && (
-                <p className="text-red-500 text-xs">{errors.roomNumber}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.roomNumber.message}
+                </p>
               )}
             </div>
 
@@ -424,15 +351,14 @@ const checkFormValid = () => {
                   {t("room.createOrUpdate.roomName")} *
                 </label>
                 <input
-                  name="roomName"
                   placeholder={t("room.createOrUpdate.enterRoomName")}
-                  value={formData.roomName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  {...register("roomName")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.roomName && (
-                  <p className="text-red-500 text-xs">{errors.roomName}</p>
+                  <p className="text-red-500 text-xs">
+                    {errors.roomName.message}
+                  </p>
                 )}
               </div>
 
@@ -442,15 +368,12 @@ const checkFormValid = () => {
                 </label>
                 <input
                   type="number"
-                  name="floor"
                   placeholder={t("room.createOrUpdate.enterFloor")}
-                  value={formData.floor}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
+                  {...register("floor")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.floor && (
-                  <p className="text-red-500 text-xs">{errors.floor}</p>
+                  <p className="text-red-500 text-xs">{errors.floor.message}</p>
                 )}
               </div>
             </div>
@@ -460,16 +383,13 @@ const checkFormValid = () => {
                 {t("room.createOrUpdate.area")} *
               </label>
               <input
-                name="area"
                 type="number"
-                value={formData.area}
-                onBlur={handleBlur}
-                onChange={handleChange}
+                {...register("area")}
                 placeholder={t("room.createOrUpdate.enterArea")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.area && (
-                <p className="text-red-500 text-xs">{errors.area}</p>
+                <p className="text-red-500 text-xs">{errors.area.message}</p>
               )}
             </div>
 
@@ -478,16 +398,15 @@ const checkFormValid = () => {
                 {t("room.createOrUpdate.capacity")} *
               </label>
               <input
-                name="capacity"
+                {...register("capacity")}
                 type="number"
-                value={formData.capacity}
-                onBlur={handleBlur}
                 placeholder={t("room.createOrUpdate.enterCapacity")}
-                onChange={handleChange}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.capacity && (
-                <p className="text-red-500 text-xs">{errors.capacity}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.capacity.message}
+                </p>
               )}
             </div>
 
@@ -496,9 +415,7 @@ const checkFormValid = () => {
                 {t("room.createOrUpdate.note")}
               </label>
               <textarea
-                name="note"
-                value={formData.note}
-                onChange={handleChange}
+                {...register("note")}
                 placeholder={t("room.createOrUpdate.notePlaceholder")}
                 className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
@@ -514,17 +431,14 @@ const checkFormValid = () => {
                   {t("room.createOrUpdate.priceBase")} *
                 </label>
                 <input
-                  name="hourlyBasePrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyBasePrice}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  {...register("hourlyBasePrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.hourlyBasePrice && (
                   <p className="text-red-500 text-xs">
-                    {errors.hourlyBasePrice}
+                    {errors.hourlyBasePrice.message}
                   </p>
                 )}
               </div>
@@ -534,17 +448,14 @@ const checkFormValid = () => {
                   {t("room.createOrUpdate.priceExtraHour")}*
                 </label>
                 <input
-                  name="hourlyAdditionalPrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyAdditionalPrice}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
+                  {...register("hourlyAdditionalPrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.hourlyAdditionalPrice && (
                   <p className="text-red-500 text-xs">
-                    {errors.hourlyAdditionalPrice}
+                    {errors.hourlyAdditionalPrice.message}
                   </p>
                 )}
               </div>
@@ -554,20 +465,16 @@ const checkFormValid = () => {
                   {t("room.createOrUpdate.priceOvernight")}*
                 </label>
                 <input
-                  name="overnightPrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.overnightPrice}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  {...register("overnightPrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.overnightPrice && (
                   <p className="text-red-500 text-xs">
-                    {errors.overnightPrice}
+                    {errors.overnightPrice.message}
                   </p>
                 )}
-              
               </div>
 
               <div>
@@ -575,16 +482,15 @@ const checkFormValid = () => {
                   {t("room.createOrUpdate.priceFullDay")} *
                 </label>
                 <input
-                  name="defaultRate"
                   type="number"
-                  value={formData.defaultRate}
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  {...register("defaultRate")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.defaultRate && (
-                  <p className="text-red-500 text-xs">{errors.defaultRate}</p>
+                  <p className="text-red-500 text-xs">
+                    {errors.defaultRate.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -603,9 +509,9 @@ const checkFormValid = () => {
                 sm:p-6 cursor-pointer transition flex flex-col items-center 
                 min-h-[200px] sm:h-64"
               >
-                {formData.images.length > 0 ? (
+                {watchedValues.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {formData.images.map((img, index) => (
+                    {watchedValues.images.map((img, index) => (
                       <img
                         key={index}
                         src={URL.createObjectURL(img)}
@@ -661,7 +567,7 @@ const checkFormValid = () => {
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
-                    setTempImages(formData.images);
+                    setTempImages(watchedValues.images);
                     setImageModalOpen(false);
                   }}
                 >
@@ -676,10 +582,13 @@ const checkFormValid = () => {
                   className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
                   onClick={() => {
                     const filtered = tempImages.filter((x) => x !== null);
-                    setFormData((prev) => ({
-                      ...prev,
-                      images: filtered,
-                    }));
+
+                    setValue("images", filtered, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+
+                    trigger("images");
                     setImageModalOpen(false);
                   }}
                 >
@@ -852,10 +761,10 @@ const checkFormValid = () => {
 
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-                onClick={() => {
+                onClick={handleSubmit(async (data) => {
                   setConfirmCloseOpen(false);
-                  handleSave();
-                }}
+                  await handleSave(data);
+                })}
               >
                 {t("common.save")}
               </button>

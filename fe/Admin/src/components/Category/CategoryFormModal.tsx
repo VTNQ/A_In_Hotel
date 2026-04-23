@@ -3,93 +3,42 @@ import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { addCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
-import type { CategoryFormModalProps } from "../../type/category.types";
-
+import type {
+  CategoryFormData,
+  CategoryFormModalProps,
+} from "../../type/category.types";
+import { useForm } from "react-hook-form";
 const CategoryFormModal = ({
   isOpen,
   onClose,
   onSuccess,
 }: CategoryFormModalProps) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "",
-    description: "",
-  });
-  const [errors, setErrors] = useState({
-    name: "",
-    type: "",
-    description: "",
-  });
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<CategoryFormData>({
+    mode:"onBlur",
+    defaultValues: {
+      name: "",
+      type: "",
+      description: "",
+    },
+  });
   const { showAlert } = useAlert();
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value.trim()) {
-          error = t("category.validate.nameRequired");
-        } else if (value.length > 100) {
-          error = t("category.validate.nameMax");
-        }
-        break;
-      case "type":
-        if (!value) {
-          error = t("category.validate.typeRequired");
-        }
-        break;
-      case "description":
-        if (value && value.length > 255) {
-          error = t("category.validate.descriptionMax");
-        }
-        break;
-    }
-    setErrors((prev)=>({...prev,[name]:error}))
-  };
-  const handleBlur = (
-    e:React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  )=>{
-    const { name, value} = e.target;
-    validateField(name,value);
-  }
-  const validateAll = ()=>{
-    const newErrors = {
-        name:"",
-        type:"",
-        description:""
-    }
-    if(!formData.name.trim()){
-        newErrors.name = t("category.validate.nameRequired")
-    }else if(formData.name.length > 100){
-        newErrors.name = t("category.validate.nameMax");
-    }
-    if(!formData.type){
-        newErrors.type = t("category.validate.typeRequired");
-    }
 
-    if(formData.description && formData.description.length > 255){
-        newErrors.description = t("category.validate.descriptionMax")
-    }
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((e)=>e)
-  }
-  const handleSave = async () => {
-    if(!validateAll()) return;
+  const onsubmit = async (data: CategoryFormData) => {
     setLoading(true);
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          name: formData.name,
-          type: formData.type,
-          description: formData.description,
+          name: data.name,
+          type: data.type,
+          description: data.description,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -102,11 +51,7 @@ const CategoryFormModal = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        name: "",
-        type: "",
-        description: "",
-      });
+      reset();
       onSuccess();
     } catch (err: any) {
       console.error("Create error:", err);
@@ -122,40 +67,22 @@ const CategoryFormModal = ({
     }
   };
   const handleCancel = () => {
-    setFormData({
-      name: "",
-      type: "",
-      description: "",
-    });
+    reset();
     onClose();
-    setErrors({
-      name: "",
-      type: "",
-      description: "",
-    });
   };
-  const isFormValid = ()=>{
-    return(
-      formData.name.trim() &&
-      formData.name.length <= 100 &&
-      formData.type &&
-      (!formData.description || formData.description.length <= 255) &&
-      !errors.name &&
-      !errors.type &&
-      !errors.description
-    );
-  }
+  const descriptionValue = watch("description");
+
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
       title={t("category.createOrUpdate.titleCreate")}
       onsubmit={loading}
-      onSave={handleSave}
+      onSave={handleSubmit(onsubmit)}
       saveLabel={loading ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[600px] lg:w-[800px]"
-      diabled={!isFormValid() || loading}
+      diabled={!isValid || loading}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -164,10 +91,6 @@ const CategoryFormModal = ({
           </label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            onBlur={handleBlur}
             placeholder={t("category.createOrUpdate.enterName")}
             className="w-full border 
                         border-[#4B62A0] 
@@ -177,9 +100,16 @@ const CategoryFormModal = ({
                         text-sm
                         sm:text-base
                         outline-none"
+            {...register("name", {
+              required: t("category.validate.nameRequired"),
+              maxLength: {
+                value: 100,
+                message: t("category.validate.nameMaxLength"),
+              },
+            })}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
           )}
           <p className="text-xs text-gray-500 mt-1">
             {t("category.createOrUpdate.nameLimit")}
@@ -190,19 +120,10 @@ const CategoryFormModal = ({
             {t("category.type")} *
           </label>
           <select
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className="w-full border 
-                        border-[#4B62A0] 
-                        focus:border-[#3E5286] 
-                        rounded-lg 
-                        p-2.5
-                        text-sm
-                        sm:text-base
-                        outline-none"
-            required
+           className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 text-sm sm:text-base outline-none"
+            {...register("type", {
+              required: t("category.validate.typeRequired"),
+            })}
           >
             <option value="">{t("category.createOrUpdate.selectType")}</option>
             <option value="1">{t("category.room")}</option>
@@ -210,7 +131,7 @@ const CategoryFormModal = ({
             <option value="3">{t("category.asset")}</option>
           </select>
           {errors.type && (
-            <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
           )}
         </div>
         <div className="col-span-2">
@@ -218,10 +139,12 @@ const CategoryFormModal = ({
             {t("category.createOrUpdate.description")}
           </label>
           <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("description", {
+              maxLength: {
+                value: 255,
+                message: t("category.validate.descriptionMax"),
+              },
+            })}
             placeholder={t("category.createOrUpdate.enterDescription")}
             className="w-full border 
                         border-[#4B62A0] 
@@ -234,11 +157,13 @@ const CategoryFormModal = ({
             rows={3}
           />
           {errors.description && (
-            <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.description.message}
+            </p>
           )}
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{t("category.createOrUpdate.descriptionLimit")}</span>
-            <span>{formData.description?.length || 0}/255</span>
+            <span>{descriptionValue?.length || 0}/255</span>
           </div>
         </div>
       </div>

@@ -7,6 +7,9 @@ import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
 import { useTranslation } from "react-i18next";
 import type { AssetFormModalProps } from "../../type/asset.types";
+import z from "zod";
+import { createImageAssetSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
 
 const AssetFormModal = ({
   isOpen,
@@ -16,16 +19,50 @@ const AssetFormModal = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
-  const [errors, setErrors] = useState({
-    assetName: "",
-    categoryId: "",
-    price: "",
-    quantity: "",
-    image: "",
-    roomId: "",
+  const assetSchema = z.object({
+    assetName: z.string().min(1, t("asset.validate.assetNameRequired")),
+    categoryId: z.string().min(1, t("asset.validate.categoryRequired")),
+    roomId: z.string().min(1, t("asset.validate.roomRequired")),
+    price: z
+      .string()
+      .min(1, t("asset.validate.priceRequired"))
+      .refine((value) => !isNaN(Number(value)) && Number(value) >= 0, {
+        message: t("asset.validate.priceInvalid"),
+      }),
+
+    quantity: z
+      .string()
+      .optional()
+      .refine(
+        (value) => !value || (!isNaN(Number(value)) && Number(value) >= 0),
+        {
+          message: t("asset.validate.quantityInvalid"),
+        },
+      ),
+
+    note: z.string().optional(),
+    image: createImageAssetSchema(t),
   });
-  const DISABLE_VALIDATE = true;
-  const [saving, setSaving] = useState(false);
+  type FormData = z.infer<typeof assetSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    mode: "onBlur",
+    defaultValues: {
+      assetName: "",
+      categoryId: "",
+      roomId: "",
+      price: "",
+      quantity: "",
+      note: "",
+      image: null,
+    },
+  });
   const [previewIcon, setPreviewIcon] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [room, setRooms] = useState<any[]>([]);
@@ -43,125 +80,15 @@ const AssetFormModal = ({
       setLoading(false);
     }
   };
-  const validateField = (name: string, value: any) => {
-    let error = "";
 
-    switch (name) {
-      case "assetName":
-        if (!value.trim()) {
-          error = t("asset.validate.assetNameRequired");
-        }
-        break;
-
-      case "categoryId":
-        if (!value) {
-          error = t("asset.validate.categoryRequired");
-        }
-        break;
-
-      case "roomId":
-        if (!value) {
-          error = t("asset.validate.roomRequired");
-        }
-        break;
-
-      case "price":
-        if (!value) {
-          error = t("asset.validate.priceRequired");
-        } else if (isNaN(Number(value)) || Number(value) < 0) {
-          error = t("asset.validate.priceInvalid");
-        }
-        break;
-
-      case "quantity":
-        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-          error = t("asset.validate.quantityInvalid");
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    return error;
-  };
-  const validateForm = () => {
-    if (DISABLE_VALIDATE) {
-      setErrors({
-        assetName: "",
-        categoryId: "",
-        price: "",
-        quantity: "",
-        image: "",
-        roomId: "",
-      });
-      return true;
-    }
-
-    const newErrors: any = {
-      assetName: validateField("assetName", formData.assetName),
-      categoryId: validateField("categoryId", formData.categoryId),
-      roomId: validateField("roomId", formData.roomId),
-      price: validateField("price", formData.price),
-      quantity: validateField("quantity", formData.quantity),
-      image: validateImage(formData.image),
-    };
-
-    Object.keys(newErrors).forEach((key) => {
-      if (!newErrors[key]) delete newErrors[key];
-    });
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-  const isFormValid = () => {
-    if (DISABLE_VALIDATE) return true;
-
-    return (
-      formData.assetName?.trim() &&
-      formData.categoryId &&
-      formData.roomId &&
-      formData.price &&
-      formData.image
-    );
-  };
-  const handleBlur = (
-    e: React.FocusEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    const error = validateField(name, value);
-    setErrors((prev: any) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-  const validateImage = (file: File | null) => {
-    if (!file) {
-      return t("asset.validate.imageRequired");
-    }
-    const maxSize = 5 * 1024 * 1024;
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (file.size > maxSize) {
-      return t("asset.validate.imageTooLarge");
-    }
-    if (!allowedTypes.includes(file.type)) {
-      return t("asset.validate.imageInvalidType");
-    }
-    return "";
-  };
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    const error = validateImage(file);
-    setErrors((prev: any) => ({
-      ...prev,
-      image: error,
-    }));
-    if (error || !file) return;
-    setFormData((prev) => ({ ...prev, image: file }));
-    setPreviewIcon(URL.createObjectURL(file));
+    const file = e.target.files?.[0];
+    setValue("image", file, {
+      shouldValidate: true,
+    });
+    if (file) {
+      setPreviewIcon(URL.createObjectURL(file));
+    }
   };
   const fetchRooms = async () => {
     try {
@@ -185,36 +112,18 @@ const AssetFormModal = ({
     fetchCategories();
     fetchRooms();
   }, [isOpen]);
-  const [formData, setFormData] = useState({
-    assetName: "",
-    categoryId: "",
-    price: "",
-    quantity: "",
-    note: "",
-    roomId: "",
-    image: null as File | null,
-  });
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleSave = async () => {
-    if (!validateForm()) return;
-    setSaving(true);
+
+  const onSubmit = async (data: FormData) => {
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          assetName: formData.assetName,
-          categoryId: formData.categoryId,
-          roomId: formData.roomId,
-          price: formData.price,
-          quantity: formData.quantity,
-          note: formData.note,
-          image: formData.image,
+          assetName: data.assetName,
+          categoryId: data.categoryId,
+          roomId: data.roomId,
+          price: data.price,
+          quantity: data.quantity,
+          note: data.note,
+          image: data.image,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -227,16 +136,7 @@ const AssetFormModal = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        assetName: "",
-        categoryId: "",
-        price: "",
-        quantity: "",
-        note: "",
-        roomId: "",
-        image: null,
-      });
-
+      reset();
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -247,28 +147,10 @@ const AssetFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSaving(false);
     }
   };
   const handleCancel = () => {
-    setFormData({
-      assetName: "",
-      categoryId: "",
-      price: "",
-      quantity: "",
-      note: "",
-      roomId: "",
-      image: null,
-    });
-    setErrors({
-      assetName: "",
-      categoryId: "",
-      price: "",
-      quantity: "",
-      image: "",
-      roomId: "",
-    });
+    reset();
     onClose();
   };
   if (isOpen && loading) {
@@ -291,12 +173,12 @@ const AssetFormModal = ({
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
-      onSave={handleSave}
+      onSave={handleSubmit(onSubmit)}
       title={t("asset.createOrUpdate.titleCreate")}
-      saveLabel={saving ? t("common.saving") : t("common.save")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
-      diabled={!isFormValid() || saving}
+      diabled={!isValid || isSubmitting}
     >
       <div className="mb-4">
         <label className="block mb-1 font-medium text-[#253150]">
@@ -345,15 +227,12 @@ const AssetFormModal = ({
           </label>
           <input
             type="text"
-            name="assetName"
             placeholder={t("asset.createOrUpdate.namePlaceHolder")}
-            value={formData.assetName}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("assetName")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
           {errors.assetName && (
-            <p className="text-red-500 mt-1">{errors.assetName}</p>
+            <p className="text-red-500 mt-1">{errors.assetName.message}</p>
           )}
         </div>
         <div>
@@ -361,10 +240,7 @@ const AssetFormModal = ({
             {t("asset.createOrUpdate.room")} *
           </label>
           <select
-            name="roomId"
-            value={formData.roomId}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("roomId")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           >
             <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
@@ -379,7 +255,7 @@ const AssetFormModal = ({
             )}
           </select>
           {errors.roomId && (
-            <p className="text-red-500 mt-1">{errors.roomId}</p>
+            <p className="text-red-500 mt-1">{errors.roomId.message}</p>
           )}
         </div>
         <div>
@@ -387,10 +263,7 @@ const AssetFormModal = ({
             {t("asset.category")} *
           </label>
           <select
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("categoryId")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           >
             <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
@@ -405,7 +278,7 @@ const AssetFormModal = ({
             )}
           </select>
           {errors.categoryId && (
-            <p className="text-red-500 mt-1">{errors.categoryId}</p>
+            <p className="text-red-500 mt-1">{errors.categoryId.message}</p>
           )}
         </div>
         <div>
@@ -414,14 +287,13 @@ const AssetFormModal = ({
           </label>
           <input
             type="number"
-            name="price"
             placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
-            value={formData.price}
-            onBlur={handleBlur}
-            onChange={handleChange}
+            {...register("price")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
-          {errors.price && <p className="text-red-500 mt-1">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-red-500 mt-1">{errors.price.message}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
@@ -429,15 +301,12 @@ const AssetFormModal = ({
           </label>
           <input
             type="number"
-            name="quantity"
             placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
-            value={formData.quantity}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("quantity")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           />
           {errors.quantity && (
-            <p className="text-red-500 mt-1">{errors.quantity}</p>
+            <p className="text-red-500 mt-1">{errors.quantity.message}</p>
           )}
         </div>
 
@@ -446,9 +315,7 @@ const AssetFormModal = ({
             {t("asset.createOrUpdate.note")}
           </label>
           <textarea
-            name="note"
-            value={formData.note}
-            onChange={handleChange}
+            {...register("note")}
             placeholder={t("asset.createOrUpdate.notePlaceholder")}
             className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
             rows={2}

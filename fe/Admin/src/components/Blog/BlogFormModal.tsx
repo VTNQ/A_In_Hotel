@@ -6,24 +6,44 @@ import { useAlert } from "../alert-context";
 import { createBlog } from "../../service/api/Blog";
 import { useTranslation } from "react-i18next";
 import BlotFormatter from "quill-blot-formatter";
+import { zodResolver } from "@hookform/resolvers/zod";
 Quill.register("modules/blotFormatter", BlotFormatter);
 import type { BlogFormModalProps } from "../../type/blog.types";
+import z from "zod";
+import { createImageBlogSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
 const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({
-    title: "",
-    category: "",
-    content: "",
-    image: "",
-  });
+
+
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    description: "",
-    content: "",
-    status: "2",
-    image: null as File | null,
+  const blogSchema = z.object({
+    title: z.string().min(1, t("blog.validate.titleRequired")),
+    category: z.string().min(1, t("blog.validate.categoryRequired")),
+    description: z.string().optional(),
+    content: z.string().min(1, t("blog.validate.contentRequired")),
+    status: z.string(),
+    image: createImageBlogSchema(t),
+  });
+  type FormData = z.infer<typeof blogSchema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onBlur",
+    defaultValues: {
+      title: "",
+      category: "",
+      description: "",
+      content: "",
+      status: "2",
+      image: null,
+    },
   });
   const { showAlert } = useAlert();
   const categories = [
@@ -38,60 +58,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
     { id: "9", name: t("blog.blogCategories.travelTips") },
     { id: "10", name: t("blog.blogCategories.guestExperiences") },
   ];
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "title":
-        if (!value?.trim()) error = t("blog.createOrUpdate.enterTitle");
-        break;
-      case "category":
-        if (!value) error = t("blog.createOrUpdate.selectCategory");
-        break;
-      case "content":
-        if (!value || value === "<p><br></p>")
-          error = t("blog.createOrUpdate.enterContent");
-        break;
-      case "image":
-        if (!value) error = t("blog.createOrUpdate.imageRequired");
-        break;
-    }
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-  const handleBlur = (e: any) => {
-    const { name, value } = e.target;
-    validateField(name, value);
-  };
-  const validateAll = () => {
-    const newErrors = {
-      title: "",
-      category: "",
-      content: "",
-      image: "",
-    };
-    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
-    if (!formData.category)
-      newErrors.category = t("blog.valid.categoryRequired");
-    if (!formData.content || formData.content === "<p><br></p>")
-      newErrors.content = t("blog.valid.contentRequired");
-    if (!formData.image) newErrors.image = t("blog.valid.imageRequired");
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((e) => e);
-  };
-  const isFormValid = () => {
-    const newErrors = {
-      title: "",
-      category: "",
-      content: "",
-      image: "",
-    };
-    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
-    if (!formData.category)
-      newErrors.category = t("blog.valid.categoryRequired");
-    if (!formData.content || formData.content === "<p><br></p>")
-      newErrors.content = t("blog.valid.contentRequired");
-    if (!formData.image) newErrors.image = t("blog.valid.imageRequired");
-    return !Object.values(newErrors).some((e) => e);
-  };
+
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -143,85 +110,33 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
       ["clean"],
     ],
   };
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    const maxSize = 5 * 1024 * 1024;
-    if (!file) {
-      setErrors((prev) => ({
-        ...prev,
-        image: t("blog.valid.imageRequired"),
-      }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
-      return;
+    setValue("image", file, {
+      shouldValidate: true,
+    });
+    if (file) {
+      setPreview(URL.createObjectURL(file));
     }
-    if (!allowedTypes.includes(file?.type)) {
-      showAlert({
-        title: t("blog.createOrUpdate.uploadError"),
-        type: "error",
-        autoClose: 3000,
-      });
-      setErrors((prev) => ({
-        ...prev,
-        image: t("blog.valid.imageInvalid"),
-      }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
-      return;
-    }
-    if (file.size > maxSize) {
-      setErrors((prev) => ({
-        ...prev,
-        image: t("blog.validate.imageTooLarge"),
-      }));
-      setPreview(null);
-      setFormData((prev) => ({ ...prev, image: null }));
-      return;
-    }
-    setPreview(URL.createObjectURL(file));
-    setFormData((prev) => ({ ...prev, image: file }));
-    setErrors((prev) => ({
-      ...prev,
-      image: "",
-    }));
   };
   const handleCancel = () => {
-    setFormData({
-      title: "",
-      category: "",
-      description: "",
-      status: "2",
-      content: "",
-      image: null,
-    });
-    setErrors({
-      title: "",
-    category: "",
-    content: "",
-    image: "",
-    })
+    reset();
     setPreview(null);
     onClose();
   };
-  const handleSave = async () => {
-    if (!validateAll()) return;
-    setLoading(true);
+  const onSubmit = async (data: FormData) => {
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          title: formData.title,
-          category: formData.category,
-          description: formData.description,
-          content: formData.content,
-          status: formData.status,
-          image: formData.image,
+          title: data.title,
+          category: data.category,
+          description: data.description,
+          content: data.content,
+          status: data.status,
+          image: data.image,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -234,14 +149,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        title: "",
-        category: "",
-        description: "",
-        status: "2",
-        content: "",
-        image: null,
-      });
+      reset();
       setPreview(null);
       onSuccess?.();
       onClose();
@@ -253,20 +161,18 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
     }
   };
   return (
     <CommonModal
       isOpen={isOpen}
-      onsubmit={loading}
+      onsubmit={isSubmitting}
       onClose={handleCancel}
-      onSave={handleSave}
+      onSave={handleSubmit(onSubmit)}
       title={t("blog.createOrUpdate.titleCreate")}
-      saveLabel={loading ? t("common.saving") : t("common.save")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
-      diabled={!isFormValid() || loading}
+      diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>
@@ -275,15 +181,12 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           </label>
           <input
             type="text"
-            name="title"
+            {...register("title")}
             placeholder={t("blog.createOrUpdate.enterTitle")}
-            value={formData.title}
-            onChange={handleChange}
-            onBlur={handleBlur}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
           {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
           )}
         </div>
         <div>
@@ -291,10 +194,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             {t("blog.category")} *
           </label>
           <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("category")}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           >
             <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
@@ -305,15 +205,15 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             ))}
           </select>
           {errors.category && (
-            <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.category.message}
+            </p>
           )}
         </div>
         <div>
           <label className="font-medium">{t("common.status")} *</label>
           <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
+            {...register("status")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           >
             <option value="1">{t("blog.draft")}</option>
@@ -324,8 +224,16 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           <label className="font-medium">{t("blog.description")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.description}
-            onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
+            value={watch("description")}
+            onChange={(value) => {
+              setValue("description", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => {
+              trigger("description");
+            }}
             modules={fullToolbarDescription}
           />
         </div>
@@ -334,13 +242,17 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           <label className="font-medium">{t("blog.content")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.content}
-            onBlur={() => validateField("content", formData.content)}
-            onChange={(v) => setFormData((f) => ({ ...f, content: v }))}
+            value={watch("content")}
+            onChange={(value) => {
+              setValue("content", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
             modules={fullToolbar}
           />
           {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
           )}
         </div>
         <div className="mb-4">
@@ -384,8 +296,8 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             onChange={handleImageChange}
           />
         </div>
-        {errors.image && (
-          <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+        {errors.image?.message && (
+          <p className="text-red-500 text-sm mt-1">{String(errors.image.message)}</p>
         )}
       </div>
     </CommonModal>

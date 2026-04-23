@@ -5,28 +5,66 @@ import { useAlert } from "../alert-context";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
 import type { ExtraServiceFormModalProps } from "../../type/extraService.types";
-
+import { z } from "zod";
+import { createImageExtraServiceSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
 const ExtraServiceFormModal = ({
   isOpen,
   onClose,
   onSuccess,
 }: ExtraServiceFormModalProps) => {
-  const [errors, setErrors] = useState<any>({});
-  const [formData, setFormData] = useState({
-    serviceName: "",
-    categoryId: "",
-    description: "",
-    note: "",
-    priceType: "1",
-    extraCharge: "",
-    image: null as File | null,
-  });
   const { t } = useTranslation();
   const [previewIcon, setPreviewIcon] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
   const [categories, setCategories] = useState<any[]>([]);
+  const extraServiceSchema = z.object({
+    serviceName: z
+      .string()
+      .min(1, t("extraService.validate.serviceNameRequired")),
+
+    categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
+
+    description: z.string().optional(),
+
+    note: z.string().optional(),
+
+    extraCharge: z
+      .string()
+      .min(1, t("extraService.validate.extraChargeRequired"))
+      .refine((value) => !isNaN(Number(value)) && Number(value) >= 0, {
+        message: t("extraService.validate.extraChargeInvalid"),
+      }),
+    image: createImageExtraServiceSchema(t),
+  });
+  type FormData = z.infer<typeof extraServiceSchema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    mode: "onBlur",
+    defaultValues: {
+      serviceName: "",
+      categoryId: "",
+      description: "",
+      note: "",
+      extraCharge: "",
+      image: null,
+    },
+  });
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setValue("image", file, {
+      shouldValidate: true,
+    });
+    if (file) {
+      setPreviewIcon(URL.createObjectURL(file));
+    }
+  };
   const fetchCategories = async () => {
     try {
       setLoading(true);
@@ -44,139 +82,22 @@ const ExtraServiceFormModal = ({
   useEffect(() => {
     fetchCategories();
   }, [isOpen]);
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "serviceName":
-        if (!value.trim()) {
-          error = t("extraService.validate.serviceNameRequired");
-        }
-        break;
-      case "categoryId":
-        if (!value) {
-          error = t("extraService.validate.categoryRequired");
-        }
-        break;
-      case "extraCharge":
-        if (!value) {
-          error = t("extraService.validate.extraChargeRequired");
-        } else if (isNaN(Number(value)) || Number(value) < 0) {
-          error = t("extraService.validate.extraChargeInvalid");
-        }
-        break;
-    }
-    return error;
-  };
-  const handleBlur = (
-    e: React.FocusEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    const error = validateField(name, value);
-    setErrors((prev: any) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-  const validateForm = () => {
-    const newErrors: any = {};
-    if (!formData.serviceName.trim()) {
-      newErrors.serviceName = t("extraService.validate.serviceNameRequired");
-    }
 
-    if (!formData.categoryId) {
-      newErrors.categoryId = t("extraService.validate.categoryRequired");
-    }
-    if (!formData.extraCharge) {
-      newErrors.extraCharge = t("extraService.validate.extraChargeRequired");
-    } else if (
-      isNaN(Number(formData.extraCharge)) ||
-      Number(formData.extraCharge) < 0
-    ) {
-      newErrors.extraCharge = t("extraService.validate.extraChargeInvalid");
-    }
-
-    if (!formData.image) {
-      newErrors.image = t("extraService.validate.imageRequired");
-    } else {
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      if (formData.image.size > maxSize) {
-        newErrors.image = t("extraService.validate.imageTooLarge");
-      } else if (!allowedTypes.includes(formData.image.type)) {
-        newErrors.image = t("extraService.validate.imageInvalidType");
-      }
-    }
-    return newErrors;
-  };
-  // ✅ Xử lý thay đổi input
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev: any) => ({
-      ...prev,
-      [name]: "",
-    }));
-  };
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const maxSize = 5 * 1024 * 1024;
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (file.size > maxSize) {
-      setErrors((prev: any) => ({
-        ...prev,
-        image: t("extraService.validate.imageTooLarge"),
-      }));
-      return;
-    }
-    if (!allowedTypes.includes(file.type)) {
-      setErrors((prev: any) => ({
-        ...prev,
-        image: t("extraService.validate.imageInvalidType"),
-      }));
-      return;
-    }
-    setErrors((prev: any) => ({ ...prev, image: "" }));
-    setFormData((prev) => ({ ...prev, image: file }));
-    setPreviewIcon(URL.createObjectURL(file));
-  };
   const handleCancel = () => {
-    setFormData({
-      serviceName: "",
-      categoryId: "",
-      description: "",
-      note: "",
-      priceType: "1",
-      extraCharge: "",
-      image: null,
-    });
-    setErrors({});
+    reset();
     setPreviewIcon(null);
     onClose();
   };
-  const handleSave = async () => {
-    const validationErros = validateForm();
-    if (Object.keys(validationErros).length > 0) {
-      setErrors(validationErros);
-      return;
-    }
-    setErrors({});
-    setSaving(true);
+  const handleSave = async (data: FormData) => {
     try {
       const payload = {
-        serviceName: formData.serviceName.trim(),
-        categoryId: Number(formData.categoryId),
-        description: formData.description.trim(),
+        serviceName: data.serviceName.trim(),
+        categoryId: Number(data.categoryId),
+        description: data.description?.trim(),
         isActive: true,
-        note: formData.note.trim(),
-        extraCharge: formData.extraCharge,
-        image: formData.image,
+        note: data.note?.trim(),
+        extraCharge: data.extraCharge,
+        image: data.image,
         type: 2,
       };
       const response = await addExtraService(payload);
@@ -191,15 +112,7 @@ const ExtraServiceFormModal = ({
       });
 
       // Reset form và callback
-      setFormData({
-        serviceName: "",
-        categoryId: "",
-        description: "",
-        note: "",
-        priceType: "1",
-        extraCharge: "",
-        image: null,
-      });
+      reset();
 
       onSuccess?.();
       onClose();
@@ -212,8 +125,6 @@ const ExtraServiceFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSaving(false);
     }
   };
   if (isOpen && loading) {
@@ -231,20 +142,16 @@ const ExtraServiceFormModal = ({
       </CommonModal>
     );
   }
-  const isFormValid = () => {
-    const errors = validateForm();
-    return Object.keys(errors).length === 0;
-  };
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
       title={t("extraService.createOrUpdate.titleCreate")}
-      onSave={handleSave}
-      saveLabel={saving ? t("common.saving") : t("common.save")}
+      onSave={handleSubmit(handleSave)}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[900px]"
-      diabled={!isFormValid() || saving}
+      diabled={!isValid || isSubmitting}
     >
       <div className="mb-6 flex flex-col lg:items-start ">
         <label className="block mb-2 font-medium text-[#253150]">
@@ -271,8 +178,10 @@ const ExtraServiceFormModal = ({
             />
           )}
         </div>
-        {errors.image && (
-          <p className="text-red-500 text-sm mt-2">{errors.image}</p>
+        {errors.image?.message && (
+          <p className="text-red-500 text-sm mt-2">
+            {String(errors.image.message)}
+          </p>
         )}
       </div>
 
@@ -284,15 +193,12 @@ const ExtraServiceFormModal = ({
           </label>
           <input
             type="text"
-            name="serviceName"
-            value={formData.serviceName}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("serviceName")}
             placeholder={t("extraService.createOrUpdate.namePlaceHolder")}
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
           />
           {errors.serviceName && (
-            <p className="text-red-500 mt-1">{errors.serviceName}</p>
+            <p className="text-red-500 mt-1">{errors.serviceName.message}</p>
           )}
         </div>
         <div>
@@ -300,9 +206,7 @@ const ExtraServiceFormModal = ({
             {t("extraService.description")}
           </label>
           <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
+            {...register("description")}
             placeholder={t(
               "extraService.createOrUpdate.descriptionPlaceHolder",
             )}
@@ -315,10 +219,7 @@ const ExtraServiceFormModal = ({
             {t("extraService.category")} *
           </label>
           <select
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("categoryId")}
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
           >
             <option value="">
@@ -335,7 +236,7 @@ const ExtraServiceFormModal = ({
             )}
           </select>
           {errors.categoryId && (
-            <p className="text-red-500 mt-1">{errors.categoryId}</p>
+            <p className="text-red-500 mt-1">{errors.categoryId.message}</p>
           )}
         </div>
 
@@ -345,16 +246,13 @@ const ExtraServiceFormModal = ({
           </label>
           <input
             type="number"
-            name="extraCharge"
-            value={formData.extraCharge}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("extraCharge")}
             placeholder="Enter service extra charge"
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
             min={0}
           />
           {errors.extraCharge && (
-            <p className="text-red-500 mt-1">{errors.extraCharge}</p>
+            <p className="text-red-500 mt-1">{errors.extraCharge.message}</p>
           )}
         </div>
         <div className="col-span-1 sm:col-span-2">
@@ -362,9 +260,7 @@ const ExtraServiceFormModal = ({
             {t("extraService.note")}
           </label>
           <textarea
-            name="note"
-            value={formData.note}
-            onChange={handleChange}
+            {...register("note")}
             placeholder={t("common.notePlaceholder")}
             className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
             rows={2}

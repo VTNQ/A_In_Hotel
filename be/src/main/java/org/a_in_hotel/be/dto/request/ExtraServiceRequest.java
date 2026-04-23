@@ -20,6 +20,5 @@ public class ExtraServiceRequest {
     private Integer type;
     private Boolean isActive;
     private Long hotelId;
-    @ImageFile(message = "Invalid image file / File ảnh không hợp lệ")
     private MultipartFile image;
 }
