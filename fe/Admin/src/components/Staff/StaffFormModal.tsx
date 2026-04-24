@@ -5,113 +5,73 @@ import { create } from "../../service/api/Staff";
 import CustomDatePicker from "../ui/CustomDatePicker";
 import { useTranslation } from "react-i18next";
 import type { StaffFormModalProps } from "../../type/staff.types";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const StaffFormModal = ({
   isOpen,
   onClose,
   onSuccess,
 }: StaffFormModalProps) => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    email: "",
-    fullName: "",
-    gender: "0",
-    phone: "",
-    role: "3",
-    birthday: null as Date | null,
+
+  const staffSchema = z.object({
+    fullName: z.string().trim().min(1, t("staff.validate.fullNameRequired")),
+    email: z
+      .string()
+      .trim()
+      .min(1, t("staff.validate.emailRequired"))
+      .email(t("staff.validate.emailInvalid")),
+    gender: z.string(),
+
+    phone: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || /^[0-9]{9,11}$/.test(val),
+        t("staff.validate.phoneInvalid"),
+      ),
+
+    role: z.string(),
+
+    birthday: z.date({
+      error: t("staff.validate.birthdayRequired"),
+    }),
   });
-  const [errors, setErrors] = useState({
-    email: "",
-    fullName: "",
-    phone: "",
-    birthday: "",
-  });
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "fullName":
-        if (!value?.trim()) {
-          error = t("staff.validate.fullNameRequired");
-        }
-        break;
-      case "email":
-        if (!value?.trim()) {
-          error = t("staff.validate.emailRequired");
-        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
-          error = t("staff.validate.emailInvalid");
-        }
-        break;
-      case "phone":
-        if (value && !/^[0-9]{9,11}$/.test(value)) {
-          error = t("staff.validate.phoneInvalid");
-        }
-        break;
-      case "birthday":
-        if (!value) {
-          error = t("staff.validate.birthdayRequired");
-        }
-        break;
-      default:
-        break;
-    }
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-  const validateAll = () => {
-    const newErrors = {
-      email: "",
+  type StaffForm = z.infer<typeof staffSchema>;
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<StaffForm>({
+    resolver: zodResolver(staffSchema),
+    mode:"onBlur",
+    defaultValues: {
       fullName: "",
+      email: "",
+      gender: "0",
       phone: "",
-      birthday: "",
-    };
-    if (!formData.fullName?.trim()) {
-      newErrors.fullName = t("staff.validate.fullNameRequired");
-    }
+      role: "3",
+      birthday: undefined,
+    },
+  });
 
-    if (!formData.email?.trim()) {
-      newErrors.email = t("staff.validate.emailRequired");
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = t("staff.validate.emailInvalid");
-    }
-
-    if (formData.phone && !/^[0-9]{9,11}$/.test(formData.phone)) {
-      newErrors.phone = t("staff.validate.phoneInvalid");
-    }
-
-    if (!formData.birthday) {
-      newErrors.birthday = t("staff.validate.birthdayRequired");
-    }
-
-    setErrors(newErrors);
-
-    return !Object.values(newErrors).some((e) => e);
-  };
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>)=>{
-    const { name, value } = e.target;
-    validateField(name, value);
-  }
-  const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const handleSave = async () => {
-    if(!validateAll()) return;
-    setLoading(true);
+
+  const handleSave = async (data: StaffForm) => {
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          email: formData.email,
-          fullName: formData.fullName,
-          gender: formData.gender,
-          phone: formData.phone,
-          idRole: formData.role,
-          birthday: formData.birthday
-            ? formData.birthday.toISOString().split("T")[0]
+          email: data?.email,
+          fullName: data.fullName,
+          gender: data.gender,
+          phone: data.phone,
+          idRole: data.role,
+          birthday: data.birthday
+            ? data.birthday.toISOString().split("T")[0]
             : null,
           isActive: true,
         }).map(([key, value]) => [
@@ -127,14 +87,7 @@ const StaffFormModal = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        email: "",
-        fullName: "",
-        gender: "0",
-        phone: "",
-        role: "3",
-        birthday: null as Date | null,
-      });
+      reset();
       onSuccess?.();
       onClose();
     } catch (err: any) {
@@ -144,58 +97,23 @@ const StaffFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
     }
   };
   const handleCancel = () => {
-    setFormData({
-      email: "",
-      fullName: "",
-      gender: "0",
-      phone: "",
-      role: "3",
-      birthday: null as Date | null,
-    });
+    reset();
     onClose();
   };
-  const isFormValid = ()=>{
-     const newErrors = {
-      email: "",
-      fullName: "",
-      phone: "",
-      birthday: "",
-    };
-    if (!formData.fullName?.trim()) {
-      newErrors.fullName = t("staff.validate.fullNameRequired");
-    }
 
-    if (!formData.email?.trim()) {
-      newErrors.email = t("staff.validate.emailRequired");
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = t("staff.validate.emailInvalid");
-    }
-
-    if (formData.phone && !/^[0-9]{9,11}$/.test(formData.phone)) {
-      newErrors.phone = t("staff.validate.phoneInvalid");
-    }
-
-    if (!formData.birthday) {
-      newErrors.birthday = t("staff.validate.birthdayRequired");
-    }
-
-    return !Object.values(newErrors).some((e) => e);
-  }
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
       title={t("staff.create.titleCreate")}
-      onSave={handleSave}
-      saveLabel={loading ? t("common.saving") : t("common.save")}
+      onSave={handleSubmit(handleSave)}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
-      diabled={!isFormValid() || loading}
+      diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -204,15 +122,12 @@ const StaffFormModal = ({
           </label>
           <input
             type="text"
-            name="fullName"
-            onChange={handleChange}
-            value={formData.fullName}
-            onBlur={handleBlur}
+            {...register("fullName")}
             placeholder={t("staff.create.enterFullName")}
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
           />
           {errors.fullName && (
-            <p className="text-red-500 text-sm">{errors.fullName}</p>
+            <p className="text-red-500 text-sm">{errors.fullName.message}</p>
           )}
         </div>
         <div>
@@ -221,14 +136,13 @@ const StaffFormModal = ({
           </label>
           <input
             type="text"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("email")}
             placeholder="Enter Email"
             className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
         </div>
         <div>
           <label className="block text-[15px] font-semibold text-gray-700 mb-1">
@@ -240,10 +154,9 @@ const StaffFormModal = ({
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
-                name="gender"
                 value="0"
-                checked={formData.gender === "0"}
-                onChange={handleChange}
+                checked={watch("gender") === "0"}
+                {...register("gender")}
                 className="hidden peer"
               />
 
@@ -272,10 +185,9 @@ const StaffFormModal = ({
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
-                name="gender"
                 value="1"
-                checked={formData.gender === "1"}
-                onChange={handleChange}
+                checked={watch("gender") === "1"}
+                {...register("gender")}
                 className="hidden peer"
               />
 
@@ -308,33 +220,31 @@ const StaffFormModal = ({
           </label>
           <input
             type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("phone")}
             placeholder={t("staff.create.enterphone")}
             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-        
           />
-          {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+          {errors.phone && (
+            <p className="text-red-500 text-sm">{errors.phone.message}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {t("staff.dob")} <span className="text-red-500">*</span>
           </label>
-          <CustomDatePicker
-            value={formData.birthday}
-            onChange={(date)=>{
-                setFormData((prev)=>({
-                    ...prev,
-                    birthday: date
-                }))
-                validateField("birthday", date)
-            }}
-            placeholder={t("staff.create.selectDate")}
+          <Controller
+            name="birthday"
+            control={control}
+            render={({ field }) => (
+              <CustomDatePicker
+                value={field.value}
+                onChange={field.onChange}
+                placeholder={t("staff.create.selectDate")}
+              />
+            )}
           />
           {errors.birthday && (
-            <p className="text-red-500 text-sm">{errors.birthday}</p>
+            <p className="text-red-500 text-sm">{errors.birthday.message}</p>
           )}
         </div>
         <div>
@@ -342,9 +252,7 @@ const StaffFormModal = ({
             {t("staff.role")} <span className="text-red-500">*</span>
           </label>
           <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
+            {...register("role")}
             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             required
           >

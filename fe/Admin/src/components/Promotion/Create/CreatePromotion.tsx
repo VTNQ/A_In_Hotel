@@ -2,7 +2,6 @@ import { Info, Rocket, Tag, Users, X } from "lucide-react";
 import {
   TABS,
   type CreatePromotionModalProps,
-  type PromotionForm,
   type TabType,
 } from "../../../type/promotion.types";
 import { useState } from "react";
@@ -13,177 +12,141 @@ import TargetingTab from "./TargetingTab";
 import { useAlert } from "../../alert-context";
 import { useTranslation } from "react-i18next";
 import { createPromotion } from "../../../service/api/Promotion";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CreatePromotion = ({
   isOpen,
   onClose,
   onSuccess,
 }: CreatePromotionModalProps) => {
-  const [errors,setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<TabType>("general");
   const currentIndex = TABS.indexOf(activeTab);
   const isFirstTab = currentIndex === 0;
   const { t } = useTranslation();
   const { showAlert } = useAlert();
   const isLastTab = currentIndex === TABS.length - 1;
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<PromotionForm>({
-    name: "",
-    description: "",
-    type: "2",
-    value: "",
-    priority: "",
-    startDate: "",
-    endDate: "",
-    bookingType: 1,
-    minNights: "",
-    customerType: "0",
-    roomTypes: [],
-  });
-  const validate =()=>{
-    const newErrors: Record<string,string> = {};
-    if(!formData.name?.trim()){
-      newErrors.name = t("promotion.validation.nameRequired")
-    }else if(formData.name.length<3){
-      newErrors.name = t("promotion.validation.nameMinLength")
-    }else if(formData.name.length > 100){
-       newErrors.name = t("promotion.validation.nameMaxLength");
-    }
+  const promotionSchema = z
+    .object({
+      name: z
+        .string()
+        .min(1, t("promotion.validation.nameRequired"))
+        .min(3, t("promotion.validation.nameMinLength"))
+        .max(100, t("promotion.validation.nameMaxLength")),
+      description: z.string().optional(),
+      type: z.string(),
+      value: z.string().min(1, t("promotion.validation.valueRequired")),
+      priority: z.string().min(1, t("promotion.validation.priorityRequired")),
+      startDate: z.string().min(1, t("promotion.validation.startDateRequired")),
+      endDate: z.string().min(1, t("promotion.validation.endDateRequired")),
+      bookingType: z.number(),
 
-    if(!formData.priority){
-      newErrors.priority = t("promotion.validation.priorityRequired")
-    }else if(Number(formData.priority)<1){
-      newErrors.priority = t("promotion.validation.priorityMin")
-    }
+      minNights: z.string().min(1, t("promotion.validation.minNightsRequired")),
 
-    if(!formData.value){
-      newErrors.value = t("promotion.validation.valueRequired")
-    }else{
-      const value = Number(formData.value);
-      if(formData.type === "2"){
-        if(value <=0){
-          newErrors.value = t("promotion.validation.valueMoneyPositive");
-        }else if(value > 100000000){
-          newErrors.value = t("promotion.validation.valueMoneyMax");
+      customerType: z.string(),
+
+      roomTypes: z.array(
+        z.object({
+          id: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      // priority
+      if (Number(data.priority) < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["priority"],
+          message: t("promotion.validation.priorityMin"),
+        });
+      }
+
+      // value
+      const value = Number(data.value);
+
+      if (data.type === "2") {
+        if (value <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyPositive"),
+          });
         }
-      }else{
-        if(value <=0 || value >100){
-          newErrors.value = t("promotion.validation.valuePercentRange");
+
+        if (value > 100000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyMax"),
+          });
+        }
+      } else {
+        if (value <= 0 || value > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valuePercentRange"),
+          });
         }
       }
-    }
-    if(!formData.startDate){
-      newErrors.startDate = t("promotion.validation.startDateRequired");
-    }
-    if(!formData.endDate){
-      newErrors.endDate = t("promotion.validation.endDateRequired");
-    }else if(formData.startDate && formData.endDate < formData.startDate){
-      newErrors.endDate = t("promotion.endDateAfterStart")
-    }
 
-    if(!formData.minNights){
-      newErrors.minNights = t("promotion.validation.minNightsRequired")
-    }else if(Number(formData.minNights)<=0){
-      newErrors.minNights = t("promotion.validation.minNightsPositive")
-    }else if(Number(formData.minNights) >30){
-      newErrors.minNights = t("promotion.validation.minNightsTooLarge")
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }
-  const handleBlur = (field: string) => {
-  setErrors((prev) => {
-    const newErrors = { ...prev };
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("promotion.validation.endDateAfterStart"),
+        });
+      }
 
-    switch (field) {
-      // 🟢 NAME
-      case "name":
-        if (!formData.name?.trim()) {
-          newErrors.name = t("promotion.validation.nameRequired");
-        } else if (formData.name.length < 3) {
-          newErrors.name = t("promotion.validation.nameMinLength");
-        } else if (formData.name.length > 100) {
-          newErrors.name = t("promotion.validation.nameMaxLength");
-        } else {
-          delete newErrors.name;
-        }
-        break;
+      // min nights
+      if (Number(data.minNights) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsPositive"),
+        });
+      }
 
-      // 🟢 PRIORITY
-      case "priority":
-        if (!formData.priority) {
-          newErrors.priority = t("promotion.validation.priorityRequired");
-        } else if (Number(formData.priority) < 1) {
-          newErrors.priority = t("promotion.validation.priorityMin");
-        } else {
-          delete newErrors.priority;
-        }
-        break;
+      if (Number(data.minNights) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsTooLarge"),
+        });
+      }
+    });
+  type FormData = z.infer<typeof promotionSchema>;
 
-      // 🟢 VALUE
-      case "value":
-        if (!formData.value) {
-          newErrors.value = t("promotion.validation.valueRequired");
-        } else {
-          const val = Number(formData.value);
-
-          if (formData.type === "2") {
-            if (val <= 0) {
-              newErrors.value = t("promotion.validation.valueMoneyPositive");
-            } else {
-              delete newErrors.value;
-            }
-          } else {
-            if (val <= 0 || val > 100) {
-              newErrors.value = t("promotion.validation.valuePercentRange");
-            } else {
-              delete newErrors.value;
-            }
-          }
-        }
-        break;
-
-      // 🟢 START DATE
-      case "startDate":
-        if (!formData.startDate) {
-          newErrors.startDate = t("promotion.validation.startDateRequired");
-        } else {
-          delete newErrors.startDate;
-        }
-        break;
-
-      // 🟢 END DATE
-      case "endDate":
-        if (!formData.endDate) {
-          newErrors.endDate = t("promotion.validation.endDateRequired");
-        } else if (
-          formData.startDate &&
-          formData.endDate < formData.startDate
-        ) {
-          newErrors.endDate = t("promotion.validation.endDateAfterStart");
-        } else {
-          delete newErrors.endDate;
-        }
-        break;
-
-      // 🟢 MIN NIGHTS
-      case "minNights":
-        if (!formData.minNights) {
-          newErrors.minNights = t("promotion.validation.minNightsRequired");
-        } else if (Number(formData.minNights) <= 0) {
-          newErrors.minNights = t("promotion.validation.minNightsPositive");
-        } else {
-          delete newErrors.minNights;
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    return newErrors;
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(promotionSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      description: "",
+      type: "2",
+      value: "",
+      priority: "",
+      startDate: "",
+      endDate: "",
+      bookingType: 1,
+      minNights: "",
+      customerType: "0",
+      roomTypes: [],
+    },
   });
-};
+  const formData = watch();
+  const [loading, setLoading] = useState(false);
+
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);
@@ -195,16 +158,12 @@ const CreatePromotion = ({
       setActiveTab(TABS[currentIndex - 1]);
     }
   };
-  const handleSubmit = async () => {
-    if (loading) return;
-    
-    const isValid = validate();
-    if(!isValid) return;
+  const onSubmit = async (data: FormData) => {
     try {
       setLoading(true);
       const payload = {
-        name: formData.name,
-        description: formData.description,
+        name: data.name,
+        description: data.description,
         type: formData.type,
         value: formData.value,
         priority: formData.priority,
@@ -225,19 +184,7 @@ const CreatePromotion = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        name: "",
-        description: "",
-        type: "2",
-        value: "",
-        priority: "",
-        startDate: "",
-        endDate: "",
-        bookingType: 1,
-        minNights: "",
-        customerType: "0",
-        roomTypes: [],
-      });
+      reset();
       setActiveTab("general");
       onSuccess();
       onClose();
@@ -249,38 +196,23 @@ const CreatePromotion = ({
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setLoading(false);
     }
   };
-  
+
   const handleCancel = () => {
-    setFormData({
-      name: "",
-      description: "",
-      type: "2",
-      value: "",
-      priority: "",
-      startDate: "",
-      endDate: "",
-      bookingType: 1,
-      minNights: "",
-      customerType: "0",
-      roomTypes: [],
-    });
-    setErrors({})
+    reset();
     setActiveTab("general");
     onClose();
   };
-  const isFormValid = () => {
-  return Object.values(errors).every((e) => !e);
-};
+
   if (!isOpen) return null;
   return (
     <>
-      <div className="fixed inset-0 z-50 
+      <div
+        className="fixed inset-0 z-50 
       flex items-center justify-center 
-      bg-black/40 backdrop-blur-sm p-4">
+      bg-black/40 backdrop-blur-sm p-4"
+      >
         <div className="w-full max-w-4xl h-[95vh] sm:h-auto sm:max-h-[90vh] overflow-hidden rounded-xl  bg-white shadow-2xl flex flex-col">
           <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
             <div className="flex flex-col gap-1">
@@ -322,27 +254,27 @@ const CreatePromotion = ({
           </div>
           <div className="flex-1 overflow-y-auto  py-8 custom-scroll">
             {activeTab === "general" && (
-              <GeneralTab 
-              formData={formData} 
-              setFormData={setFormData}
-              handleBlur={handleBlur}
-              errors={errors}
+              <GeneralTab
+                watch={watch}
+                setValue={setValue}
+                trigger={trigger}
+                errors={errors}
               />
             )}
             {activeTab === "offer" && (
-              <OfferTab 
-              formData={formData} 
-              setFormData={setFormData} 
-              handleBlur={handleBlur}
-              errors={errors}
+              <OfferTab
+                watch={watch}
+                setValue={setValue}
+                trigger={trigger}
+                errors={errors}
               />
             )}
             {activeTab === "targeting" && (
-              <TargetingTab 
-              formData={formData} 
-              setFormData={setFormData} 
-              handleBlur={handleBlur}
-              errors={errors}
+              <TargetingTab
+                watch={watch}
+                setValue={setValue}
+                trigger={trigger}
+                errors={errors}
               />
             )}
           </div>
@@ -372,17 +304,17 @@ const CreatePromotion = ({
                 </button>
               ) : (
                 <button
-                  onClick={handleSubmit}
-                  disabled={loading || !isFormValid()}
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isSubmitting || !isValid}
                   className={`flex items-center justify-center gap-2 px-8
                     h-12 rounded-lg font-semibold
                     ${
-                      loading || !isFormValid()
-                      ? "bg-gray-400 cursor-not-allowed"
-                      :"bg-[#42578E] hover:bg-[#536DB2] text-white"
+                      isSubmitting || !isValid
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-[#42578E] hover:bg-[#536DB2] text-white"
                     }`}
                 >
-                  {loading  ? (
+                  {loading ? (
                     <>
                       <svg
                         className="animate-spin h-4 w-4 text-white"

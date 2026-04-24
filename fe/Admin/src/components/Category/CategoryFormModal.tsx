@@ -14,13 +14,13 @@ const CategoryFormModal = ({
   onSuccess,
 }: CategoryFormModalProps) => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
+ 
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid,isSubmitting },
   } = useForm<CategoryFormData>({
     mode:"onBlur",
     defaultValues: {
@@ -32,7 +32,6 @@ const CategoryFormModal = ({
   const { showAlert } = useAlert();
 
   const onsubmit = async (data: CategoryFormData) => {
-    setLoading(true);
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
@@ -62,9 +61,7 @@ const CategoryFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
   const handleCancel = () => {
     reset();
@@ -77,12 +74,12 @@ const CategoryFormModal = ({
       isOpen={isOpen}
       onClose={handleCancel}
       title={t("category.createOrUpdate.titleCreate")}
-      onsubmit={loading}
+      onsubmit={!isValid}
       onSave={handleSubmit(onsubmit)}
-      saveLabel={loading ? t("common.saving") : t("common.save")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[600px] lg:w-[800px]"
-      diabled={!isValid || loading}
+      diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>

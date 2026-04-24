@@ -150,8 +150,10 @@ const UpdateRoomFormModal = ({
 
         const room = roomRes?.data?.data;
 
-        const oldImgs = room?.images?.map((i: any) => File_URL + i.url) || [];
-
+        const oldImgs =
+          room?.images?.map((i: any) =>
+            i.url?.startsWith("http") ? i.url : `${File_URL}${i.url}`,
+          ) || [];
         setOldImages(oldImgs);
         setTempImages(oldImgs);
 

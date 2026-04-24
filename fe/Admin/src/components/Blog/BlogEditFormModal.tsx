@@ -7,6 +7,10 @@ import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useTranslation } from "react-i18next";
 import type { UpdateBlogFormModalProps } from "../../type/blog.types";
+import z from "zod";
+import { createImageBlogSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const BlogEditFormModal = ({
   isOpen,
@@ -16,22 +20,59 @@ const BlogEditFormModal = ({
 }: UpdateBlogFormModalProps) => {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [errors, setErrors] = useState({
-    title: "",
-    category: "",
-    content: "",
-    image: "",
+  const blogSchema = z
+    .object({
+      id: z.string().optional(),
+      title: z.string().min(1, t("blog.validate.titleRequired")),
+      category: z.string().min(1, t("blog.validate.categoryRequired")),
+      description: z.string().optional(),
+      content: z
+        .string()
+        .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
+          message: t("blog.validate.contentRequired"),
+        }),
+      status: z.string(),
+      image: z.any().optional(),
+    })
+    .superRefine((data, ctx) => {
+      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
+      if (preview) return;
+
+      const imageValidation = createImageBlogSchema(t).safeParse(data.image);
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["image"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+  type FormData = z.infer<typeof blogSchema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      title: "",
+      category: "",
+      description: "",
+      content: "",
+      status: "2",
+      image: null,
+    },
   });
-  const [formData, setFormData] = useState({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    content: "",
-    status: "2",
-    image: null as File | null,
-  });
-  const [saving, setSaving] = useState(false);
+
   const { showAlert } = useAlert();
   const categories = [
     { id: "1", name: t("blog.blogCategories.newsUpdates") },
@@ -48,67 +89,34 @@ const BlogEditFormModal = ({
   const [preview, setPreview] = useState<string | null>(null);
   useEffect(() => {
     if (!isOpen || !blogId) return;
-    setLoading(true);
-    findById(blogId)
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await findById(blogId);
         const data = res?.data?.data;
-        setFormData({
-          id: data.id || "",
+        reset({
+          id: data.id?.toString() || "",
           title: data.title || "",
-          category: data.categoryId || "",
+          category: data.categoryId?.toString() || "",
           description: data.description || "",
           content: data.content || "",
-          status: data.status || "",
+          status: data.status?.toString() || "",
           image: null,
         });
         setPreview(File_URL + data.image?.url || null);
-      })
-      .catch(() => {
+      } catch (error) {
         showAlert({
           title: t("blog.loadError"),
           type: "error",
         });
         onClose();
-      })
-      .finally(() => setLoading(false));
-  }, [isOpen, blogId]);
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "title":
-        if (!value?.trim()) error = t("blog.createOrUpdate.enterTitle");
-        break;
-      case "category":
-        if (!value) error = t("blog.createOrUpdate.selectCategory");
-        break;
-      case "content":
-        if (!value || value === "<p><br></p>")
-          error = t("blog.createOrUpdate.enterContent");
-        break;
-      default:
-        break;
-    }
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-  const handleBlur = (e: any) => {
-    const { name, value } = e.target;
-    validateField(name, value);
-  };
-  const validateAll = () => {
-    const newErrors = {
-      title: "",
-      category: "",
-      content: "",
-      image: "",
+      } finally {
+        setLoading(false);
+      }
     };
-    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
-    if (!formData.category)
-      newErrors.category = t("blog.valid.categoryRequired");
-    if (!formData.content || formData.content === "<p><br></p>")
-      newErrors.content = t("blog.valid.contentRequired");
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((e) => e);
-  };
+    fetchData();
+  }, [isOpen, blogId]);
+
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -153,80 +161,37 @@ const BlogEditFormModal = ({
       ["clean"],
     ],
   };
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    const maxSize = 5 * 1024 * 1024;
-    if (!allowedTypes.includes(file.type)) {
-      showAlert({
-        title: t("blog.createOrUpdate.uploadError"),
-        type: "error",
-        autoClose: 3000,
-      });
-
-      setErrors((prev) => ({
-        ...prev,
-        image: t("blog.validate.imageInvalid"),
-      }));
-
-      return;
+    setValue("image", file, {
+      shouldValidate: true,
+    });
+    if (file) {
+      setPreview(URL.createObjectURL(file));
     }
-    if(file.size > maxSize){
-      setErrors((prev)=>({
-        ...prev,
-        image: t("blog.validate.imageTooLarge")
-      }));
-      return;
-    }
-    setPreview(URL.createObjectURL(file));
-    setFormData((prev) => ({ ...prev, image: file }));
-    setErrors((prev) => ({
-      ...prev,
-      image: "",
-    }));
   };
   const handleCancel = () => {
-    setFormData({
-      id: "",
-      title: "",
-      category: "",
-      description: "",
-      status: "2",
-      content: "",
-      image: null,
-    });
-    setErrors({
-      title: "",
-      category: "",
-      content: "",
-      image: "",
-    });
-
+    reset();
+    setPreview(null);
     onClose();
   };
-  const handleSave = async () => {
-    if (!validateAll()) return;
-    setSaving(true);
+  const handleSave = async (data: FormData) => {
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          title: formData.title,
-          category: formData.category,
-          description: formData.description,
-          content: formData.content,
-          status: formData.status,
-          image: formData.image,
+          title: data.title,
+          category: data.category?.toString(),
+          description: data.description,
+          content: data.content,
+          status: data.status,
+          image: data.image,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
       );
-      await updateBlog(Number(formData.id), cleanedData);
+      await updateBlog(Number(data.id), cleanedData);
       const message = t("blog.createOrUpdate.updateSucess");
       showAlert({
         title: message,
@@ -244,8 +209,6 @@ const BlogEditFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSaving(false);
     }
   };
   if (isOpen && loading) {
@@ -263,32 +226,16 @@ const BlogEditFormModal = ({
       </CommonModal>
     );
   }
-  const isFormValid = () => {
-    const newErrors = {
-      title: "",
-      category: "",
-      content: "",
-      image: "",
-    };
-    if (!formData.title.trim()) newErrors.title = t("blog.valid.titleRequired");
-    if (!formData.category)
-      newErrors.category = t("blog.valid.categoryRequired");
-    if (!formData.content || formData.content === "<p><br></p>")
-      newErrors.content = t("blog.valid.contentRequired");
-  
-    return !Object.values(newErrors).some((e) => e);
-  };
-  console.log(isFormValid());
+
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
-      onSave={handleSave}
-      onsubmit={saving}
+      onSave={handleSubmit(handleSave)}
       title={t("blog.createOrUpdate.titleEdit")}
-      saveLabel={saving ? t("common.saving") : t("common.save")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
-      diabled={!isFormValid() || saving}
+      diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>
@@ -297,15 +244,12 @@ const BlogEditFormModal = ({
           </label>
           <input
             type="text"
-            name="title"
             placeholder={t("blog.createOrUpdate.enterTitle")}
-            value={formData.title}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("title")}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
           {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
           )}
         </div>
         <div>
@@ -313,10 +257,7 @@ const BlogEditFormModal = ({
             {t("blog.category")} *
           </label>
           <select
-            name="category"
-            value={formData.category}
-            onBlur={handleBlur}
-            onChange={handleChange}
+            {...register("category")}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           >
             <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
@@ -327,15 +268,15 @@ const BlogEditFormModal = ({
             ))}
           </select>
           {errors.category && (
-            <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.category.message}
+            </p>
           )}
         </div>
         <div>
           <label className="font-medium">{t("common.status")}*</label>
           <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
+            {...register("status")}
             className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
           >
             <option value="1">{t("blog.draft")}</option>
@@ -347,8 +288,16 @@ const BlogEditFormModal = ({
           <label className="font-medium">{t("blog.description")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.description}
-            onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
+            value={watch("description")}
+            onChange={(value) => {
+              setValue("description", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => {
+              trigger("description");
+            }}
             modules={fullToolbarDescription}
           />
         </div>
@@ -357,13 +306,19 @@ const BlogEditFormModal = ({
           <label className="font-medium">{t("blog.content")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.content}
-            onBlur={() => validateField("content", formData.content)}
-            onChange={(v) => setFormData((f) => ({ ...f, content: v }))}
+            value={watch("content")}
+            onChange={(value) => {
+              setValue("content", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
             modules={fullToolbar}
           />
           {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.content.message}
+            </p>
           )}
         </div>
         <div className="mb-4">
@@ -406,7 +361,6 @@ const BlogEditFormModal = ({
             onChange={handleImageChange}
           />
         </div>
-       
       </div>
     </CommonModal>
   );

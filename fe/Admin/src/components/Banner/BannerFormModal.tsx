@@ -8,6 +8,10 @@ import { useTranslation } from "react-i18next";
 import type { BannerFormModalProps } from "../../type/banner.types";
 
 import BlotFormatter from "quill-blot-formatter";
+import z from "zod";
+import { createImageBannerSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 Quill.register("modules/blotFormatter", BlotFormatter);
 
@@ -16,103 +20,55 @@ const BannerFormModal = ({
   onClose,
   onSuccess,
 }: BannerFormModalProps) => {
-  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [preview, setPreview] = useState<string | null>(null);
   const { showAlert } = useAlert();
-  const [errors, setErrors] = useState({
-    name: "",
-    startDate: "",
-    endDate: "",
-    bannerImage: "",
-  });
-  const [formData, setFormData] = useState({
-    name: "",
-    startDate: null as Date | null,
-    endDate: null as Date | null,
-    ctaLabel: "",
-    description: "",
-    bannerImage: null as File | null,
-  });
-  const validateField = (name: string, value: any) => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value?.trim()) {
-          error = t("banner.validate.nameRequired");
-        }
-        break;
-      case "startDate":
-        if (!value) {
-          error = t("banner.validate.startDateRequired");
-        }
-        break;
-      case "endDate":
-        if (!value) {
-          error = t("banner.validate.endDateRequired");
-        } else if (formData.startDate && value <= formData.startDate) {
-          error = t("banner.validate.endDateInvalid");
-        }
-        break;
-      case "bannerImage":
-        if (!value) {
-          error = t("banner.validate.imageRequired");
-        }
-        break;
-    }
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    validateField(name, value);
-  };
-  const validateAll = () => {
-    const newErrors = {
+
+  const bannerSchema = z
+    .object({
+      name: z.string().trim().min(1, t("banner.validate.nameRequired")),
+
+      startDate: z.date({
+        error: t("banner.validate.startDateRequired"),
+      }),
+
+      endDate: z.date({
+        error: t("banner.validate.endDateRequired"),
+      }),
+
+      ctaLabel: z.string().optional(),
+
+      description: z.string().optional(),
+
+      bannerImage: createImageBannerSchema(t),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+      message: t("banner.validate.endDateInvalid"),
+      path: ["endDate"],
+    });
+
+  type BannerForm = z.input<typeof bannerSchema>;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BannerForm>({
+    mode: "onChange",
+    resolver: zodResolver(bannerSchema),
+    defaultValues: {
       name: "",
-      startDate: "",
-      endDate: "",
-      bannerImage: "",
-    };
-    if (!formData.name?.trim()) {
-      newErrors.name = t("banner.validate.nameRequired");
-    }
-    if (!formData.startDate) {
-      newErrors.startDate = t("banner.validate.startDateRequired");
-    }
-    if (!formData.endDate) {
-      newErrors.endDate = t("banner.validate.endDateRequired");
-    } else if (formData.startDate && formData.endDate <= formData.startDate) {
-      newErrors.endDate = t("banner.validate.endDateInvalid");
-    }
-    if (!formData.bannerImage) {
-      newErrors.bannerImage = t("banner.validate.imageRequired");
-    }
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((e) => e);
-  };
-  const isFormValid = ()=>{
-    const newErrors = {
-      name: "",
-      startDate: "",
-      endDate: "",
-      bannerImage: "",
-    };
-     if (!formData.name?.trim()) {
-      newErrors.name = t("banner.validate.nameRequired");
-    }
-    if (!formData.startDate) {
-      newErrors.startDate = t("banner.validate.startDateRequired");
-    }
-    if (!formData.endDate) {
-      newErrors.endDate = t("banner.validate.endDateRequired");
-    } else if (formData.startDate && formData.endDate <= formData.startDate) {
-      newErrors.endDate = t("banner.validate.endDateInvalid");
-    }
-    if (!formData.bannerImage) {
-      newErrors.bannerImage = t("banner.validate.imageRequired");
-    }
-    return !Object.values(newErrors).some((e) => e);
-  }
+      startDate: undefined,
+      endDate: undefined,
+      ctaLabel: "",
+      description: "",
+      bannerImage: null,
+    },
+  });
+
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -134,14 +90,6 @@ const BannerFormModal = ({
     //     },
     //   },
     // },
-  };
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const toOffsetDateTime = (date?: Date | null) => {
     if (!date) return null;
@@ -171,18 +119,23 @@ const BannerFormModal = ({
     );
   };
 
-  const handleSave = async () => {
-    if (!validateAll()) return;
-    setLoading(true);
+  const handleSave = async (data: BannerForm) => {
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          name: formData.name,
-          startAt: toOffsetDateTime(formData.startDate),
-          endAt: toOffsetDateTime(formData.endDate),
-          ctaLabel: formData.ctaLabel,
-          description: formData.description,
-          image: formData.bannerImage,
+          name: data.name,
+
+          startAt:
+            data.startDate instanceof Date
+              ? toOffsetDateTime(data.startDate)
+              : null,
+          endAt:
+            data.endDate instanceof Date
+              ? toOffsetDateTime(data.endDate)
+              : null,
+          ctaLabel: data.ctaLabel,
+          description: data.description,
+          image: data.bannerImage,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -194,14 +147,7 @@ const BannerFormModal = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        name: "",
-        startDate: null as Date | null,
-        endDate: null as Date | null,
-        ctaLabel: "",
-        description: "",
-        bannerImage: null,
-      });
+      reset();
       setPreview(null);
       onSuccess();
     } catch (err: any) {
@@ -213,72 +159,34 @@ const BannerFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
     }
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    const maxSize = 5 * 1024 * 1024;
-    if (!file) {
-      setErrors((prev) => ({
-        ...prev,
-        bannerImage: t("banner.validate.imageRequired"),
-      }));
-      return;
-    }
-    if (!allowedTypes.includes(file.type)) {
-      setErrors((prev) => ({
-        ...prev,
-        bannerImage: t("banner.validate.imageInvalid"),
-      }));
-      return;
-    }
-    if (file.size > maxSize) {
-      setErrors((prev) => ({
-        ...prev,
-        bannerImage: t("banner.validate.imageTooLarge"),
-      }));
-      return;
-    }
-    setPreview(URL.createObjectURL(file));
-    setFormData((prev) => ({ ...prev, bannerImage: file }));
+    setValue("bannerImage", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
 
-    setErrors((prev) => ({
-      ...prev,
-      bannerImage: "",
-    }));
+    trigger("bannerImage");
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
   };
   const handleCloseModal = () => {
     setPreview(null);
-    setFormData({
-      name: "",
-      startDate: null as Date | null,
-      endDate: null as Date | null,
-      ctaLabel: "",
-      description: "",
-      bannerImage: null as File | null,
-    });
-    setErrors({
-      name: "",
-      startDate: "",
-      endDate: "",
-      bannerImage: "",
-    })
+    reset();
     onClose();
   };
-
   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCloseModal}
-      onSave={handleSave}
-      onsubmit={loading}
+      onSave={handleSubmit(handleSave)}
       title={t("banner.createOrUpdate.titleCreate")}
-      saveLabel={loading ? t("common.saving") : t("common.save")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
-      diabled={!isFormValid() || loading}
+      diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 gap-4">
         <div>
@@ -287,38 +195,34 @@ const BannerFormModal = ({
           </label>
           <input
             type="text"
-            name="name"
             placeholder={t("banner.createOrUpdate.enterName")}
-            value={formData.name}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            {...register("name")}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
             {t("banner.startAt")} *
           </label>
           <DateTimePicker
-            value={formData.startDate}
-            onChange={(date) => {
-              setFormData((prev) => ({
-                ...prev,
-                startDate: date,
-                endDate:
-                  prev.endDate && date && prev.endDate <= date
-                    ? null
-                    : prev.endDate,
-              }));
+            value={watch("startDate")}
+            onChange={(date: any) => {
+              setValue("startDate", date, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
 
-              validateField("startDate", date);
+              trigger("startDate");
             }}
             minDate={new Date()}
             placeholder={t("banner.createOrUpdate.selectStartAt")}
           />
+
           {errors.startDate && (
-            <p className="text-red-500 text-sm">{errors.startDate}</p>
+            <p className="text-red-500 text-sm">{errors.startDate.message}</p>
           )}
         </div>
         <div>
@@ -326,20 +230,24 @@ const BannerFormModal = ({
             {t("banner.endAt")} *
           </label>
           <DateTimePicker
-            value={formData.endDate}
-            onChange={(date) => {
-              setFormData((prev) => ({ ...prev, endDate: date }));
-              validateField("endDate", date);
+            value={watch("endDate")}
+            onChange={(date: any) => {
+              setValue("endDate", date, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+
+              trigger("endDate");
             }}
             minDate={
-              formData.startDate
-                ? new Date(formData.startDate.getTime() + 60 * 1000) // +1 phút
+              watch("startDate")
+                ? new Date(watch("startDate")!.getTime() + 60 * 1000)
                 : undefined
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
           {errors.endDate && (
-            <p className="text-red-500 text-sm">{errors.endDate}</p>
+            <p className="text-red-500 text-sm">{errors.endDate.message}</p>
           )}
         </div>
         <div>
@@ -348,10 +256,8 @@ const BannerFormModal = ({
           </label>
           <input
             type="text"
-            name="ctaLabel"
             placeholder={t("banner.createOrUpdate.enterCtaLabel")}
-            value={formData.ctaLabel}
-            onChange={handleChange}
+            {...register("ctaLabel")}
             className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
           />
         </div>
@@ -361,8 +267,16 @@ const BannerFormModal = ({
           </label>
           <QuillEditor
             theme="snow"
-            value={formData.description}
-            onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
+            value={watch("description")}
+            onChange={(value) => {
+              setValue("description", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => {
+              trigger("description");
+            }}
             modules={fullToolbar}
           />
         </div>
@@ -406,7 +320,9 @@ const BannerFormModal = ({
             onChange={handleImageChange}
           />
           {errors.bannerImage && (
-            <p className="text-red-500 text-sm mt-1">{errors.bannerImage}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {String(errors.bannerImage.message)}
+            </p>
           )}
         </div>
       </div>

@@ -2,8 +2,13 @@ import { Calendar } from "lucide-react";
 import type { CreateOrUpdateTabProps } from "../../../type/promotion.types";
 import { useTranslation } from "react-i18next";
 
-const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTabProps) => {
-  const {t} = useTranslation();
+const GeneralTab = ({
+  watch,
+  setValue,
+  trigger,
+  errors,
+}: CreateOrUpdateTabProps) => {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-10 py-10">
       <div className="space-y-16  mx-auto">
@@ -20,20 +25,20 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
                 {t("promotion.general.name")}
               </label>
               <input
-                value={formData.name}
+                value={watch("name")}
                 placeholder={t("promotion.general.namePlaceholder")}
-                onBlur={()=>handleBlur("name")}
+                onBlur={() => trigger("name")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
+                  setValue("name", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
                 defaultValue="Summer Getaway"
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name}</p>
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
               )}
             </div>
             <div className="flex flex-col gap-2">
@@ -41,20 +46,20 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
                 {t("promotion.general.priority")}
               </label>
               <input
-                value={formData.priority}
+                value={watch("priority")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    priority: e.target.value,
-                  }))
+                  setValue("priority", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
-                onBlur={()=>handleBlur("priority")}
+                onBlur={() => trigger("priority")}
                 placeholder={t("promotion.general.priorityPlaceholder")}
                 type="number"
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.priority && (
-                <p className="text-red-500 text-sm">{errors.priority}</p>
+                <p className="text-red-500 text-sm">{errors.priority.message}</p>
               )}
             </div>
             <div className="flex flex-col sm:col-span-2">
@@ -62,15 +67,15 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
                 {t("promotion.general.description")}
               </label>
               <textarea
-                value={formData.description}
+                value={watch("description")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
+                  setValue("description", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
                 placeholder={t("promotion.general.descriptionPlaceholder")}
-               className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+                className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
               />
             </div>
           </div>
@@ -78,12 +83,14 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
         <section className="space-y-8">
           <div className="flex items-center gap-4">
             <div className="h-8 w-1 bg-[#42578E] rounded-full" />
-            <h3 className="text-xl font-bold text-slate-800">{t("promotion.schedule.title")}</h3>
+            <h3 className="text-xl font-bold text-slate-800">
+              {t("promotion.schedule.title")}
+            </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-2">
               <label className="block mb-1 font-medium text-[#253150]">
-               {t("promotion.schedule.startDate")}
+                {t("promotion.schedule.startDate")}
               </label>
               <div className="relative">
                 <Calendar
@@ -92,19 +99,19 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
                 />
                 <input
                   type="date"
-                  value={formData.startDate}
+                  value={watch("startDate")}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      startDate: e.target.value,
-                    }))
+                    setValue("startDate", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
                   defaultValue="Jun 15, 2024 - 12:00 PM"
-                  onBlur={()=>handleBlur("startDate")}
+                  onBlur={() => trigger("startDate")}
                   className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0]  outline-none"
                 />
                 {errors.startDate && (
-                  <p className="text-red-500 text-sm">{errors.startDate}</p>
+                  <p className="text-red-500 text-sm">{errors.startDate.message}</p>
                 )}
               </div>
             </div>
@@ -119,19 +126,19 @@ const GeneralTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateT
                 />
                 <input
                   type="date"
-                  value={formData.endDate}
+                  value={watch("endDate")}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      endDate: e.target.value,
-                    }))
+                    setValue("endDate", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
-                  onBlur={()=>handleBlur("endDate")}
+                  onBlur={() => trigger("endDate")}
                   defaultValue="Jun 15, 2024 - 12:00 PM"
                   className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0]  outline-none"
                 />
                 {errors.endDate && (
-                  <p className="text-red-500 text-sm">{errors.endDate}</p>
+                  <p className="text-red-500 text-sm">{errors.endDate.message}</p>
                 )}
               </div>
             </div>

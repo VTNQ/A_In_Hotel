@@ -13,14 +13,16 @@ import z from "zod";
 import { createImageBlogSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
 const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
-
-
   const { t } = useTranslation();
   const blogSchema = z.object({
     title: z.string().min(1, t("blog.validate.titleRequired")),
     category: z.string().min(1, t("blog.validate.categoryRequired")),
     description: z.string().optional(),
-    content: z.string().min(1, t("blog.validate.contentRequired")),
+    content: z
+      .string()
+      .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
+        message: t("blog.validate.contentRequired"),
+      }),
     status: z.string(),
     image: createImageBlogSchema(t),
   });
@@ -252,7 +254,9 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
             modules={fullToolbar}
           />
           {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.content.message}
+            </p>
           )}
         </div>
         <div className="mb-4">
@@ -297,7 +301,9 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           />
         </div>
         {errors.image?.message && (
-          <p className="text-red-500 text-sm mt-1">{String(errors.image.message)}</p>
+          <p className="text-red-500 text-sm mt-1">
+            {String(errors.image.message)}
+          </p>
         )}
       </div>
     </CommonModal>

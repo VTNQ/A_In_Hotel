@@ -3,7 +3,6 @@ import {
   CUSTOMER_TYPE_OPTIONS,
   USAGE_TYPE_OPTIONS,
   type CreateVoucherModalProps,
-  type voucherFormProps,
 } from "../../type/voucher.types";
 import CommonModal from "../ui/CommonModal";
 import { useEffect, useState } from "react";
@@ -12,6 +11,9 @@ import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
 import { createVoucher } from "../../service/api/Voucher";
 import { useAlert } from "../alert-context";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CreateVoucher = ({
   isOpen,
@@ -21,258 +23,198 @@ const CreateVoucher = ({
   const [roomTypes, setRoomTypes] = useState<any[]>([]);
   const { t } = useTranslation();
   const { showAlert } = useAlert();
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
+  const voucherSchema = z
+    .object({
+      voucherCode: z
+        .string()
+        .min(1, t("voucher.validation.codeRequired"))
+        .min(3, t("voucher.validation.codeMinLength"))
+        .max(20, t("voucher.validation.codeMaxLength")),
 
-    // ===== Voucher Name =====
-    if (!formData.voucherName?.trim()) {
-      newErrors.voucherName = t("voucher.validation.nameRequired");
-    } else if (formData.voucherName.length < 3) {
-      newErrors.voucherName = t("voucher.validation.nameMinLength");
-    } else if (formData.voucherName.length > 100) {
-      newErrors.voucherName = t("voucher.validation.nameMaxLength");
-    }
+      voucherName: z
+        .string()
+        .min(1, t("voucher.validation.nameRequired"))
+        .min(3, t("voucher.validation.nameMinLength"))
+        .max(100, t("voucher.validation.nameMaxLength")),
 
-    // ===== Voucher Code =====
-    if (!formData.voucherCode?.trim()) {
-      newErrors.voucherCode = t("voucher.validation.codeRequired");
-    } else if (formData.voucherCode.length < 3) {
-      newErrors.voucherCode = t("voucher.validation.codeMinLength");
-    } else if (formData.voucherCode.length > 20) {
-      newErrors.voucherCode = t("voucher.validation.codeMaxLength");
-    }
+      type: z.string().min(1, t("voucher.validation.typeRequired")),
 
-    // ===== Value =====
-    if (!formData.value) {
-      newErrors.value = t("voucher.validation.valueRequired");
-    } else {
-      const value = Number(formData.value);
+      description: z.string().optional(),
 
-      if (formData.type === "2") {
+      value: z.string().min(1, t("voucher.validation.valueRequired")),
+
+      maxDiscountValue: z.string().optional(),
+
+      bookingType: z
+        .string()
+        .min(1, t("voucher.validation.bookingTypeRequired")),
+
+      minimumStay: z
+        .string()
+        .min(1, t("voucher.validation.minimumStayRequired")),
+
+      customerType: z.number(),
+
+      usageType: z.number(),
+
+      usageLimit: z.string().min(1, t("voucher.validation.usageLimitRequired")),
+
+      usagePerCustomer: z.string().optional(),
+
+      startDate: z.string().min(1, t("voucher.validation.startDateRequired")),
+
+      endDate: z.string().min(1, t("voucher.validation.endDateRequired")),
+
+      stackWithPromotion: z.boolean(),
+
+      stackWithOtherVoucher: z.boolean(),
+
+      priority: z.string().optional(),
+
+      roomTypes: z.array(
+        z.object({
+          roomTypeId: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      const value = Number(data.value);
+
+      // value
+      if (data.type === "2") {
         // percent
         if (value <= 0 || value > 100) {
-          newErrors.value = t("voucher.validation.valuePercentRange");
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valuePercentRange"),
+          });
         }
 
-        if (!formData.maxDiscountValue) {
-          newErrors.maxDiscountValue = t(
-            "voucher.validation.maxDiscountRequired",
-          );
-        } else if (Number(formData.maxDiscountValue) <= 0) {
-          newErrors.maxDiscountValue = t(
-            "voucher.validation.maxDiscountPositive",
-          );
+        if (!data.maxDiscountValue) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["maxDiscountValue"],
+            message: t("voucher.validation.maxDiscountRequired"),
+          });
+        } else if (Number(data.maxDiscountValue) <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["maxDiscountValue"],
+            message: t("voucher.validation.maxDiscountPositive"),
+          });
         }
       } else {
-        // money
+        // fixed amount
         if (value <= 0) {
-          newErrors.value = t("voucher.validation.valueMoneyPositive");
-        } else if (value > 1000000000) {
-          newErrors.value = t("voucher.validation.valueMoneyMax");
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valueMoneyPositive"),
+          });
+        }
+
+        if (value > 1000000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valueMoneyMax"),
+          });
         }
       }
-    }
 
-    // ===== Date =====
-    if (!formData.startDate) {
-      newErrors.startDate = t("voucher.validation.startDateRequired");
-    }
-
-    if (!formData.endDate) {
-      newErrors.endDate = t("voucher.validation.endDateRequired");
-    } else if (formData.startDate && formData.endDate < formData.startDate) {
-      newErrors.endDate = t("voucher.validation.endDateAfterStart");
-    }
-
-    // ===== Minimum Stay =====
-    if (!formData.minimumStay) {
-      newErrors.minimumStay = t("voucher.validation.minimumStayRequired");
-    } else if (Number(formData.minimumStay) <= 0) {
-      newErrors.minimumStay = t("voucher.validation.minimumStayPositive");
-    } else if (Number(formData.minimumStay) > 30) {
-      newErrors.minimumStay = t("voucher.validation.minimumStayMax");
-    }
-
-    // ===== Usage Limit =====
-    if (!formData.usageLimit) {
-      newErrors.usageLimit = t("voucher.validation.usageLimitRequired");
-    } else if (Number(formData.usageLimit) <= 0) {
-      newErrors.usageLimit = t("voucher.validation.usageLimitPositive");
-    }
-
-    // ===== Usage Per Customer =====
-    if (formData.usagePerCustomer !== "") {
-      if (Number(formData.usagePerCustomer) <= 0) {
-        newErrors.usagePerCustomer = t(
-          "voucher.validation.usagePerCustomerPositive",
-        );
-      }
-    }
-
-    // ===== Booking Type =====
-    if (!formData.bookingType) {
-      newErrors.bookingType = t("voucher.validation.bookingTypeRequired");
-    }
-
-    // ===== Room Types =====
-    const hasRoom = formData.roomTypes.some((r) => r.excluded);
-    if (!hasRoom) {
-      newErrors.roomTypes = t("voucher.validation.roomTypeRequired");
-    }
-
-    // ===== Type =====
-    if (!formData.type) {
-      newErrors.type = t("voucher.validation.typeRequired");
-    }
-
-    return newErrors;
-  };
-  const validateField = (name: string, value: any, formData: any) => {
-  switch (name) {
-    // ===== Voucher Name =====
-    case "voucherName":
-      if (!value?.trim()) return t("voucher.validation.nameRequired");
-      if (value.length < 3) return t("voucher.validation.nameMinLength");
-      if (value.length > 100) return t("voucher.validation.nameMaxLength");
-      return "";
-
-    // ===== Voucher Code =====
-    case "voucherCode":
-      if (!value?.trim()) return t("voucher.validation.codeRequired");
-      if (value.length < 3) return t("voucher.validation.codeMinLength");
-      if (value.length > 20) return t("voucher.validation.codeMaxLength");
-      return "";
-
-    // ===== Type =====
-    case "type":
-      if (!value) return t("voucher.validation.typeRequired");
-      return "";
-
-    // ===== Value =====
-    case "value": {
-      if (!value) return t("voucher.validation.valueRequired");
-
-      const num = Number(value);
-
-      if (formData.type === "2") {
-        // percent
-        if (num <= 0 || num > 100) {
-          return t("voucher.validation.valuePercentRange");
-        }
-      } else {
-        // money
-        if (num <= 0) return t("voucher.validation.valueMoneyPositive");
-        if (num > 1000000000)
-          return t("voucher.validation.valueMoneyMax");
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("voucher.validation.endDateAfterStart"),
+        });
       }
 
-      return "";
-    }
-
-    // ===== Max Discount (only when percent) =====
-    case "maxDiscountValue":
-      if (formData.type === "2") {
-        if (!value)
-          return t("voucher.validation.maxDiscountRequired");
-        if (Number(value) <= 0)
-          return t("voucher.validation.maxDiscountPositive");
+      // minimumStay
+      if (Number(data.minimumStay) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minimumStay"],
+          message: t("voucher.validation.minimumStayPositive"),
+        });
       }
-      return "";
 
-    // ===== Start Date =====
-    case "startDate":
-      if (!value)
-        return t("voucher.validation.startDateRequired");
-      return "";
-
-    // ===== End Date =====
-    case "endDate":
-      if (!value)
-        return t("voucher.validation.endDateRequired");
-      if (
-        formData.startDate &&
-        value < formData.startDate
-      ) {
-        return t("voucher.validation.endDateAfterStart");
+      if (Number(data.minimumStay) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minimumStay"],
+          message: t("voucher.validation.minimumStayMax"),
+        });
       }
-      return "";
 
-    // ===== Minimum Stay =====
-    case "minimumStay":
-      if (!value)
-        return t("voucher.validation.minimumStayRequired");
-      if (Number(value) <= 0)
-        return t("voucher.validation.minimumStayPositive");
-      if (Number(value) > 30)
-        return t("voucher.validation.minimumStayMax");
-      return "";
-
-    // ===== Usage Limit =====
-    case "usageLimit":
-      if (!value)
-        return t("voucher.validation.usageLimitRequired");
-      if (Number(value) <= 0)
-        return t("voucher.validation.usageLimitPositive");
-      return "";
-
-    // ===== Usage Per Customer =====
-    case "usagePerCustomer":
-      if (value !== "" && Number(value) <= 0) {
-        return t("voucher.validation.usagePerCustomerPositive");
+      // usageLimit
+      if (Number(data.usageLimit) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["usageLimit"],
+          message: t("voucher.validation.usageLimitPositive"),
+        });
       }
-      return "";
 
-    // ===== Booking Type =====
-    case "bookingType":
-      if (!value)
-        return t("voucher.validation.bookingTypeRequired");
-      return "";
+      // usagePerCustomer
+      if (data.usagePerCustomer && Number(data.usagePerCustomer) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["usagePerCustomer"],
+          message: t("voucher.validation.usagePerCustomerPositive"),
+        });
+      }
 
-    // ===== Room Types =====
-    case "roomTypes": {
-      const hasRoom = formData.roomTypes?.some(
-        (r: any) => r.excluded
-      );
-      if (!hasRoom)
-        return t("voucher.validation.roomTypeRequired");
-      return "";
-    }
+      // roomTypes
+      const hasRoom = data.roomTypes.some((r) => r.excluded);
 
-    default:
-      return "";
-  }
-};
-const handleBlur = (name:keyof voucherFormProps)=>{
-   const error = validateField(name, formData[name], formData);
+      if (!hasRoom) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["roomTypes"],
+          message: t("voucher.validation.roomTypeRequired"),
+        });
+      }
+    });
 
-  setErrors((prev) => ({
-    ...prev,
-    [name]: error,
-  }));
-}
-  const [formData, setFormData] = useState<voucherFormProps>({
-    voucherCode: "",
-    voucherName: "",
-    type: "1",
-    description: "",
-    value: "",
-    maxDiscountValue: "",
-    bookingType: "1",
-    minimumStay: "",
-    customerType: 0,
-    usageType: 1,
-    usageLimit: "",
-    usagePerCustomer: "",
-    startDate: "",
-    endDate: "",
-    stackWithPromotion: false,
-    stackWithOtherVoucher: false,
-    priority: "",
-    roomTypes: [],
+  type VoucherFormData = z.infer<typeof voucherSchema>;
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    register,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<VoucherFormData>({
+    resolver: zodResolver(voucherSchema),
+    mode: "onChange",
+    defaultValues: {
+      voucherCode: "",
+      voucherName: "",
+      type: "1",
+      description: "",
+      value: "",
+      maxDiscountValue: "",
+      bookingType: "1",
+      minimumStay: "",
+      customerType: 0,
+      usageType: 1,
+      usageLimit: "",
+      usagePerCustomer: "",
+      startDate: "",
+      endDate: "",
+      stackWithPromotion: false,
+      stackWithOtherVoucher: false,
+      priority: "",
+      roomTypes: [],
+    },
   });
   const [loadingRoom, setLoadingRoom] = useState(false);
-  const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (!isOpen) return;
 
@@ -286,14 +228,17 @@ const handleBlur = (name:keyof voucherFormProps)=>{
 
         const data = response.content || [];
         setRoomTypes(data);
-
-        setFormData((prev) => ({
-          ...prev,
-          roomTypes: data.map((room: any) => ({
+        setValue(
+          "roomTypes",
+          data.map((room: any) => ({
             roomTypeId: room.id,
             excluded: false,
           })),
-        }));
+          {
+            shouldValidate: true,
+            shouldDirty: true,
+          },
+        );
       } catch (err) {
         console.error(err);
       } finally {
@@ -305,59 +250,79 @@ const handleBlur = (name:keyof voucherFormProps)=>{
   }, [isOpen]);
 
   const toggleRoomType = (roomTypeId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) =>
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) =>
         r.roomTypeId === roomTypeId ? { ...r, excluded: !r.excluded } : r,
       ),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
   const selectAllRoomTypes = () => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) => ({
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) => ({
         ...r,
         excluded: true,
       })),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
+
   const unselectAllRoomTypes = () => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) => ({
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) => ({
         ...r,
         excluded: false,
       })),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
-  const isPercent = formData.type === "2";
-  const handleSubmit = async () => {
-    const newErrors = validate();
-    setErrors(newErrors);
-    if(Object.keys(newErrors).length >0) return;
-    if (saving) return;
+  const isPercent = watch("type") === "2";
+  const onSubmit = async (data: VoucherFormData) => {
     try {
-      setSaving(true);
       const payload = {
-        voucherCode: formData.voucherCode,
-        voucherName: formData.voucherName,
-        type: formData.type,
-        description: formData.description,
-        value: formData.value,
-        maxDiscountValue: isPercent ? formData.maxDiscountValue : "",
-        bookingType: formData.bookingType,
-        minimumStay: formData.minimumStay,
-        customerType: formData.customerType,
-        usageType: formData.usageType,
-        usageLimit: formData.usageLimit,
+        voucherCode: data.voucherCode,
+        voucherName: data.voucherName,
+        type: data.type,
+        description: data.description,
+        value: data.value,
+        maxDiscountValue: isPercent ? data.maxDiscountValue : "",
+        bookingType: data.bookingType,
+        minimumStay: data.minimumStay,
+        customerType: data.customerType,
+        usageType: data.usageType,
+        usageLimit: data.usageLimit,
         usagePerCustomer:
-          formData.usagePerCustomer == "" ? null : formData.usagePerCustomer,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        stackWithPromotion: formData.stackWithPromotion,
-        stackWithOtherVoucher: formData.stackWithOtherVoucher,
-        priority: formData.priority,
-        roomTypes: formData.roomTypes.map((r) => ({
+          data.usagePerCustomer == "" ? null : data.usagePerCustomer,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        stackWithPromotion: data.stackWithPromotion,
+        stackWithOtherVoucher: data.stackWithOtherVoucher,
+        priority: data.priority,
+        roomTypes: data.roomTypes.map((r) => ({
           roomTypeId: r.roomTypeId,
           excluded: r.excluded,
         })),
@@ -369,26 +334,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        voucherCode: "",
-        voucherName: "",
-        type: "",
-        description: "",
-        value: "",
-        maxDiscountValue: "",
-        bookingType: "",
-        minimumStay: "",
-        customerType: 0,
-        usageType: 1,
-        usageLimit: "",
-        usagePerCustomer: "",
-        startDate: "",
-        endDate: "",
-        stackWithPromotion: false,
-        stackWithOtherVoucher: false,
-        priority: "",
-        roomTypes: [],
-      });
+      reset();
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -398,33 +344,12 @@ const handleBlur = (name:keyof voucherFormProps)=>{
           t("voucher.createOrUpdate.createError"),
         type: "error",
       });
-    } finally {
-      setSaving(false);
     }
   };
 
   if (!isOpen) return null;
   const handleCancel = () => {
-    setFormData({
-      voucherCode: "",
-      voucherName: "",
-      type: "",
-      description: "",
-      value: "",
-      maxDiscountValue: "",
-      bookingType: "",
-      minimumStay: "",
-      customerType: 0,
-      usageType: 1,
-      usageLimit: "",
-      usagePerCustomer: "",
-      startDate: "",
-      endDate: "",
-      stackWithPromotion: false,
-      stackWithOtherVoucher: false,
-      priority: "",
-      roomTypes: [],
-    });
+    reset();
     onClose();
   };
   return (
@@ -432,9 +357,10 @@ const handleBlur = (name:keyof voucherFormProps)=>{
       isOpen={isOpen}
       onClose={handleCancel}
       title={t("voucher.createOrUpdate.titleCreate")}
-      saveLabel={saving ? t("common.saving") : t("common.save")}
-      onSave={handleSubmit}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
+      onSave={handleSubmit(onSubmit)}
       cancelLabel={t("common.cancelButton")}
+      diabled={!isValid || isSubmitting}
       width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
     >
       {loadingRoom ? (
@@ -459,14 +385,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   {t("voucher.createOrUpdate.voucherName")}
                 </label>
                 <input
-                  value={formData.voucherName}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      voucherName: e.target.value,
-                    }));
-                  }}
-                  onBlur={()=>handleBlur("voucherName")}
+                  {...register("voucherName")}
                   type="text"
                   placeholder={t(
                     "voucher.createOrUpdate.voucherNamePlaceHolder",
@@ -474,7 +393,9 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
                 {errors.voucherName && (
-                  <span className="text-red-500">{errors.voucherName}</span>
+                  <span className="text-red-500">
+                    {errors.voucherName.message}
+                  </span>
                 )}
               </div>
 
@@ -484,21 +405,16 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                 </label>
                 <input
                   type="text"
-                  value={formData.voucherCode}
-                  onBlur={()=>handleBlur("voucherCode")}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      voucherCode: e.target.value,
-                    }))
-                  }
+                  {...register("voucherCode")}
                   placeholder={t(
                     "voucher.createOrUpdate.voucherCodePlaceHolder",
                   )}
                   className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                 />
                 {errors.voucherCode && (
-                  <span className="text-red-500">{errors.voucherCode}</span>
+                  <span className="text-red-500">
+                    {errors.voucherCode.message}
+                  </span>
                 )}
               </div>
 
@@ -507,13 +423,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   {t("voucher.createOrUpdate.description")}
                 </label>
                 <textarea
-                  value={formData.description}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }));
-                  }}
+                  {...register("description")}
                   placeholder={t(
                     "voucher.createOrUpdate.descriptionPlaceholder",
                   )}
@@ -541,18 +451,13 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     />
                     <input
                       type="date"
-                      value={formData.startDate}
-                      onBlur={()=>handleBlur("startDate")}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          startDate: e.target.value,
-                        }));
-                      }}
+                      {...register("startDate")}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
                     {errors.startDate && (
-                      <span className="text-red-500">{errors.startDate}</span>
+                      <span className="text-red-500">
+                        {errors.startDate.message}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -568,14 +473,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     />
                     <input
                       type="date"
-                      value={formData.endDate}
-                      onBlur={()=>handleBlur("endDate")}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          endDate: e.target.value,
-                        }));
-                      }}
+                      {...register("endDate")}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
                   </div>
@@ -595,12 +493,12 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   description={t(
                     "voucher.createOrUpdate.stackWithPromotionDesc",
                   )}
-                  checked={formData.stackWithPromotion}
+                  checked={watch("stackWithPromotion")}
                   onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      stackWithPromotion: value,
-                    }))
+                    setValue("stackWithPromotion", value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
                 />
                 <Toggle
@@ -608,12 +506,12 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   description={t(
                     "voucher.createOrUpdate.stackWithOtherVoucherDesc",
                   )}
-                  checked={formData.stackWithOtherVoucher}
+                  checked={watch("stackWithOtherVoucher")}
                   onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      stackWithOtherVoucher: value,
-                    }))
+                    setValue("stackWithOtherVoucher", value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
                 />
 
@@ -626,13 +524,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   </label>
                   <input
                     type="number"
-                    value={formData.priority}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        priority: e.target.value,
-                      }));
-                    }}
+                    {...register("priority")}
                     placeholder="1"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
@@ -668,7 +560,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
               border-[#E3E7F2] bg-white"
               >
                 {roomTypes.map((room) => {
-                  const roomState = formData.roomTypes.find(
+                  const roomState = watch("roomTypes").find(
                     (r) => r.roomTypeId === room.id,
                   );
 
@@ -684,11 +576,8 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={()=>{
+                        onChange={() => {
                           toggleRoomType(room.id);
-                          setTimeout(()=>{
-                              handleBlur("roomTypes")
-                          },0)
                         }}
                         className="hidden"
                       />
@@ -724,7 +613,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                 })}
               </div>
               {errors.roomTypes && (
-                <span className="text-red-500">{errors.roomTypes}</span>
+                <span className="text-red-500">{errors.roomTypes.message}</span>
               )}
             </div>
           </div>
@@ -742,14 +631,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   {t("voucher.createOrUpdate.discountType")}
                 </label>
                 <select
-                  value={formData.type}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      type: e.target.value,
-                    }));
-                  }}
-                  onBlur={()=>handleBlur("type")}
+                  {...register("type")}
                   className="h-12 w-full rounded-lg border px-4 border-[#4B62A0] bg-white outline-none appearance-none"
                 >
                   <option value="1">{t("voucher.createOrUpdate.fixed")}</option>
@@ -761,7 +643,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   </option>
                 </select>
                 {errors.type && (
-                  <span className="text-red-500">{errors.type}</span>
+                  <span className="text-red-500">{errors.type.message}</span>
                 )}
               </div>
 
@@ -775,14 +657,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   <div className="relative">
                     <input
                       type="text"
-                      value={formData.value}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          value: e.target.value,
-                        }));
-                      }}
-                      onBlur={()=>handleBlur("value")}
+                      {...register("value")}
                       placeholder={t("voucher.createOrUpdate.valuePlaceholder")}
                       className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-10"
                     />
@@ -791,7 +666,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     </span>
                   </div>
                   {errors.value && (
-                    <span className="text-red-500">{errors.value}</span>
+                    <span className="text-red-500">{errors.value.message}</span>
                   )}
                 </div>
 
@@ -803,14 +678,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     <div className="relative">
                       <input
                         type="number"
-                        value={formData.maxDiscountValue}
-                        onBlur={()=>handleBlur("maxDiscountValue")}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            maxDiscountValue: e.target.value,
-                          }))
-                        }
+                        {...register("maxDiscountValue")}
                         placeholder={t(
                           "voucher.createOrUpdate.maxDiscountPlaceholder",
                         )}
@@ -818,7 +686,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                       />
                       {errors.maxDiscountValue && (
                         <span className="text-red-500">
-                          {errors.maxDiscountValue}
+                          {errors.maxDiscountValue.message}
                         </span>
                       )}
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] font-medium">
@@ -847,14 +715,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                       <Calendar size={18} />
                     </span>
                     <select
-                      value={formData.bookingType}
-                      onBlur={()=>handleBlur("bookingType")}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          bookingType: e.target.value,
-                        }));
-                      }}
+                      {...register("bookingType")}
                       className="h-12 w-full rounded-lg border border-[#4B62A0] bg-white pl-12 pr-4 outline-none appearance-none"
                     >
                       <option value="1">
@@ -869,7 +730,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     </select>
                     {errors.bookingType && (
                       <span className="text-red-500">
-                        {errors.bookingType}
+                        {errors.bookingType.message}
                       </span>
                     )}
                   </div>
@@ -880,20 +741,15 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <input
-                    value={formData.minimumStay}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        minimumStay: e.target.value,
-                      }));
-                    }}
-                    onBlur={()=>handleBlur("minimumStay")}
+                    {...register("minimumStay")}
                     type="number"
                     placeholder="2"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
                   {errors.minimumStay && (
-                    <span className="text-red-500">{errors.minimumStay}</span>
+                    <span className="text-red-500">
+                      {errors.minimumStay.message}
+                    </span>
                   )}
                 </div>
               </div>
@@ -912,7 +768,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                 rounded-xl border border-[#E3E7F2] bg-white"
                 >
                   {CUSTOMER_TYPE_OPTIONS.map((type) => {
-                    const checked = formData.customerType === type.value;
+                    const checked = watch("customerType") === type.value;
                     return (
                       <label
                         key={type.value}
@@ -924,10 +780,12 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                           type="checkbox"
                           checked={checked}
                           onChange={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              customerType: type.value,
-                            }));
+                            setValue("customerType", type.value, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
+
+                            trigger("customerType");
                           }}
                           className="hidden"
                         />
@@ -963,17 +821,19 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                 rounded-xl border border-[#E3E7F2] bg-white"
                 >
                   {USAGE_TYPE_OPTIONS.map((opt) => {
-                    const checked = formData.usageType === opt.value;
+                    const checked = watch("usageType") === opt.value;
                     return (
                       <div
                         key={opt.value}
                         role="radio"
                         aria-checked={checked}
                         onClick={() => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            usageType: opt.value,
-                          }));
+                          setValue("usageType", opt.value, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
+
+                          trigger("usageType");
                         }}
                         className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer  ${
                           checked
@@ -1009,34 +869,31 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                   </label>
                   <input
                     type="number"
-                    value={formData.usageLimit}
-                    onBlur={()=>handleBlur("usageLimit")}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        usageLimit: e.target.value,
-                      }));
-                    }}
+                    {...register("usageLimit")}
                     placeholder="100"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
                   {errors.usageLimit && (
-                    <span className="text-red-500">{errors.usageLimit}</span>
+                    <span className="text-red-500">
+                      {errors.usageLimit.message}
+                    </span>
                   )}
                 </div>
 
                 <Toggle
                   label={t("voucher.createOrUpdate.usagePerCustomer")}
                   description={t("voucher.createOrUpdate.usagePerCustomerDesc")}
-                  checked={formData.usagePerCustomer !== ""}
+                  checked={watch("usagePerCustomer") !== ""}
                   onChange={(checked) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      usagePerCustomer: checked ? "1" : "",
-                    }));
+                    setValue("usagePerCustomer", checked ? "1" : "", {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+
+                    trigger("usagePerCustomer");
                   }}
                 />
-                {formData.usagePerCustomer !== "" && (
+                {watch("usagePerCustomer") !== "" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                       {t("voucher.createOrUpdate.usageLimitPerCustomer")}
@@ -1044,14 +901,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     <input
                       type="number"
                       min={1}
-                      onBlur={()=>handleBlur("usagePerCustomer")}
-                      value={formData.usagePerCustomer}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          usagePerCustomer: e.target.value,
-                        }))
-                      }
+                      {...register("usagePerCustomer")}
                       placeholder={t(
                         "voucher.createOrUppdate.usageLimitPerCustomerPlaceholder",
                       )}
@@ -1059,7 +909,7 @@ const handleBlur = (name:keyof voucherFormProps)=>{
                     />
                     {errors.usagePerCustomer && (
                       <span className="text-red-500">
-                        {errors.usagePerCustomer}
+                        {errors.usagePerCustomer.message}
                       </span>
                     )}
                   </div>

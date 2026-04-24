@@ -2,8 +2,13 @@ import { ArrowDown, Moon, Percent, Wallet } from "lucide-react";
 import type { CreateOrUpdateTabProps } from "../../../type/promotion.types";
 import { useTranslation } from "react-i18next";
 
-const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTabProps) => {
-  const {t} = useTranslation();
+const OfferTab = ({
+  watch,
+  setValue,
+  trigger,
+  errors,
+}: CreateOrUpdateTabProps) => {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-10 py-10 space-y-16">
       <section className="space-y-8">
@@ -20,19 +25,18 @@ const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTab
             </label>
             <div className="relative">
               <select
-                value={formData.type}
+                value={watch("type")}
                 onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    type: e.target.value,
-                  }));
+                  setValue("type", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
                 }}
                 className="h-12 w-full rounded-lg border px-4 pr-10 border-[#4B62A0] bg-white  focus:border-primary outline-none appearance-none"
               >
                 <option value="1">{t("promotion.offer.fixed")}</option>
                 <option value="2">{t("promotion.offer.percent")}</option>
                 <option value="3">{t("promotion.offer.special")}</option>
-                
               </select>
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <ArrowDown />
@@ -45,7 +49,7 @@ const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTab
             </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
-                {formData?.type === "1" || formData?.type === "3"? (
+                {watch("type") === "1" || watch("type") === "3" ? (
                   <Percent size={18} />
                 ) : (
                   <Wallet size={18} />
@@ -54,21 +58,23 @@ const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTab
               <input
                 type="number"
                 step="0.01"
-                value={formData.value}
-                onChange={(e)=>{
-                  setFormData((prev)=>({
-                    ...prev,
-                    value:e.target.value
-                  }))
+                value={watch("value")}
+                onChange={(e) => {
+                  setValue("value",e.target.value,{
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }}
-                onBlur={()=>handleBlur("value")}
+                onBlur={() => trigger("value")}
                 placeholder={
-                  formData.type === "1" || formData.type === "3" ? t("promotion.offer.valuePercentPlaceholder") : t("promotion.offer.valueFixedPlaceholder")
+                  watch("type") === "1" || watch("type") === "3"
+                    ? t("promotion.offer.valuePercentPlaceholder")
+                    : t("promotion.offer.valueFixedPlaceholder")
                 }
                 className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
               />
               {errors.value && (
-                <p className="text-red-500 text-sm">{errors.value}</p>
+                <p className="text-red-500 text-sm">{errors.value.message}</p>
               )}
             </div>
           </div>
@@ -77,7 +83,9 @@ const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTab
       <section className="space-y-8">
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 bg-[#42578E] rounded-full" />
-          <h3 className="text-xl font-bold text-slate-800">{t("promotion.conditions.title")}</h3>
+          <h3 className="text-xl font-bold text-slate-800">
+            {t("promotion.conditions.title")}
+          </h3>
         </div>
         <div className="grid grid-cols-1 gap-8">
           <div className="flex flex-col gap-2">
@@ -90,19 +98,19 @@ const OfferTab = ({ formData, setFormData,handleBlur,errors }: CreateOrUpdateTab
               </span>
               <input
                 type="number"
-                value={formData.minNights}
-                onBlur={()=>handleBlur("minNights")}
-                onChange={(e)=>{
-                  setFormData((prev)=>({
-                    ...prev,
-                    minNights:e.target.value
-                  }))
+                value={watch("minNights")}
+                onBlur={() => trigger("minNights")}
+                onChange={(e) => {
+                  setValue("minNights",e.target.value,{
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }}
                 placeholder={t("promotion.conditions.minNightsPlaceholder")}
                 className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
               />
               {errors.minNights && (
-                <p className="text-red-500 text-sm">{errors.minNights}</p>
+                <p className="text-red-500 text-sm">{errors.minNights.message}</p>
               )}
             </div>
           </div>
