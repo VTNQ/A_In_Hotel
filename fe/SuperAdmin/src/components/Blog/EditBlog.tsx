@@ -17,6 +17,10 @@ import { SelectField } from "../ui/select";
 import UploadField from "../ui/UploadField";
 import { Button } from "../ui/button";
 import { File_URL } from "@/setting/constant/app";
+import z, { string } from "zod";
+import { createImageBlogSchema } from "@/validation/image.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const EditBlog: React.FC<BlogEditProps> = ({
   open,
@@ -80,6 +84,59 @@ const EditBlog: React.FC<BlogEditProps> = ({
     "/placeholder-image.png",
   );
   const [fetching, setFetching] = useState(false);
+  const blogSchema = z
+    .object({
+      id: z.string().optional(),
+      title: z.string().min(1, t("blog.validate.titleRequired")),
+      category: z.string().min(1, t("blog.validate.categoryRequired")),
+      description: z.string().optional(),
+      content: z
+        .string()
+        .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
+          message: t("blog.validate.contentRequired"),
+        }),
+      status: z.string(),
+      image: z.any().optional(),
+    })
+    .superRefine((data, ctx) => {
+      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
+      if (defaultPreview) return;
+
+      const imageValidation = createImageBlogSchema(t).safeParse(data.image);
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["image"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+  type FormData = z.infer<typeof blogSchema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      title: "",
+      category: "",
+      description: "",
+      content: "",
+      status: "2",
+      image: null,
+    },
+  });
+
   useEffect(() => {
     if (!open || !blogId) return;
     const fetchData = async () => {
@@ -95,7 +152,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
           status: b.status ? String(b.status) : "",
           image: null,
         });
-        setDefaultPreview(File_URL+ b?.image?.url);
+        setDefaultPreview(File_URL + b?.image?.url);
       } catch (err: any) {
         console.error(err);
       } finally {
@@ -106,19 +163,17 @@ const EditBlog: React.FC<BlogEditProps> = ({
   }, [open, blogId]);
 
   const handleBannerImage = (files: File[] | null) =>
-    setFormData((p) => ({ ...p, image: files?.[0] ?? null }));
-  const handleSubmit = async () => {
-    if (loading) return;
+    setValue("image", files?.[0] ?? null);
+  const onSubmitForm = async (data: FormData) => {
     try {
-      setLoading(true);
       const cleanedData = Object.fromEntries(
         Object.entries({
-          title: formData.title,
-          category: formData.category,
-          description: formData.description,
-          content: formData.content,
-          status: formData.status,
-          image: formData.image,
+          title: data.title,
+          category: data.category,
+          description: data.description,
+          content: data.content,
+          status: data.status,
+          image: data.image,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -147,12 +202,10 @@ const EditBlog: React.FC<BlogEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
     }
   };
   const handleClose = () => {
-    setFormData({
+    reset({
       title: "",
       category: "",
       description: "",
@@ -163,148 +216,177 @@ const EditBlog: React.FC<BlogEditProps> = ({
     onClose();
   };
   if (!open || !blogId) return <></>;
- return (
-  <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-    <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 rounded-2xl overflow-hidden">
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+      <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 rounded-2xl overflow-hidden">
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+          <DialogTitle className="text-lg font-semibold">
+            {t("blog.createOrUpdate.titleEdit")}
+          </DialogTitle>
+        </DialogHeader>
 
-      {/* HEADER */}
-      <DialogHeader className="px-6 py-4 border-b bg-gray-50">
-        <DialogTitle className="text-lg font-semibold">
-          {t("blog.createOrUpdate.titleEdit")}
-        </DialogTitle>
-      </DialogHeader>
+        {fetching ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+          </div>
+        ) : (
+          <>
+            {/* BODY SCROLL */}
+            <div className="px-6 py-6 overflow-y-auto max-h-[70vh] space-y-6">
+              {/* TOP GRID */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* TITLE */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("blog.name")} *
+                  </label>
+                  <Input
+                    name="title"
+                    value={watch("title")}
+                    onChange={(e) => {
+                      setValue("title", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("title");
+                    }}
+                    className="h-11"
+                  />
+                  {errors.title && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.title.message}
+                    </p>
+                  )}
+                </div>
 
-      {fetching ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
-        </div>
-      ) : (
-        <>
-          {/* BODY SCROLL */}
-          <div className="px-6 py-6 overflow-y-auto max-h-[70vh] space-y-6">
+                {/* STATUS */}
+                <div className="space-y-2">
+                  <SelectField
+                    label={t("common.status")}
+                    items={[
+                      { value: "1", label: t("blog.draft") },
+                      { value: "2", label: t("blog.published") },
+                    ]}
+                    value={watch("status")}
+                    onChange={(v) => {
+                      setValue("status", string().parse(v), {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("status");
+                    }}
+                    isRequired
+                    getValue={(i) => String(i.value)}
+                    getLabel={(i) => i.label}
+                  />
+                </div>
 
-            {/* TOP GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* CATEGORY FULL */}
+                <div className="md:col-span-2 space-y-2">
+                  <SelectField
+                    label={t("blog.category")}
+                    items={categories}
+                    value={formData.category}
+                    onChange={(v) => {
+                      setValue("category", String(v), {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("category");
+                    }}
+                    isRequired
+                    getValue={(i) => String(i.id)}
+                    getLabel={(i) => i.name}
+                  />
+                  {errors.category && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.category.message}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-              {/* TITLE */}
+              {/* DESCRIPTION */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  {t("blog.name")} *
+                  {t("blog.description")}
                 </label>
-                <Input
-                  name="title"
-                  value={formData.title}
-                  onChange={handleTextChange}
-                  className="h-11"
-                />
+                <div className="border rounded-lg overflow-hidden">
+                  <QuillEditor
+                    theme="snow"
+                    value={watch("description")}
+                    onChange={(v) => {
+                      setValue("description", v, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("description");
+                    }}
+                    modules={fullToolbar}
+                    className="min-h-[180px]"
+                  />
+                </div>
               </div>
 
-              {/* STATUS */}
+              {/* CONTENT */}
               <div className="space-y-2">
-                <SelectField
-                  label={t("common.status")}
-                  items={[
-                    { value: "1", label: t("blog.draft") },
-                    { value: "2", label: t("blog.published") },
-                  ]}
-                  value={formData.status}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, status: v }))
-                  }
-                  isRequired
-                  getValue={(i) => String(i.value)}
-                  getLabel={(i) => i.label}
-                />
+                <label className="text-sm font-medium">
+                  {t("blog.content")}
+                </label>
+                <div className="border rounded-lg overflow-hidden">
+                  <QuillEditor
+                    theme="snow"
+                    value={watch("content")}
+                    onChange={(v) =>{
+                      setValue("content", v, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("content");
+                    }}
+                    modules={fullToolbar}
+                    className="min-h-[250px]"
+                  />
+                  {errors.content && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.content.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              {/* CATEGORY FULL */}
-              <div className="md:col-span-2 space-y-2">
-                <SelectField
-                  label={t("blog.category")}
-                  items={categories}
-                  value={formData.category}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, category: v }))
-                  }
-                  isRequired
-                  getValue={(i) => String(i.id)}
-                  getLabel={(i) => i.name}
-                />
-              </div>
-
-            </div>
-
-            {/* DESCRIPTION */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("blog.description")}
-              </label>
-              <div className="border rounded-lg overflow-hidden">
-                <QuillEditor
-                  theme="snow"
-                  value={formData.description}
-                  onChange={(v) =>
-                    setFormData((f) => ({ ...f, description: v }))
-                  }
-                  modules={fullToolbar}
-                  className="min-h-[180px]"
+              {/* IMAGE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("banner.thumbnail")}
+                </label>
+                <UploadField
+                  className="w-full"
+                  defaultPreviewUrl={defaultPreview}
+                  onChange={handleBannerImage}
                 />
               </div>
             </div>
 
-            {/* CONTENT */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("blog.content")}
-              </label>
-              <div className="border rounded-lg overflow-hidden">
-                <QuillEditor
-                  theme="snow"
-                  value={formData.content}
-                  onChange={(v) =>
-                    setFormData((f) => ({ ...f, content: v }))
-                  }
-                  modules={fullToolbar}
-                  className="min-h-[250px]"
-                />
-              </div>
-            </div>
+            {/* FOOTER */}
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSubmitting || !isValid}
+              >
+                {t("common.cancel")}
+              </Button>
 
-            {/* IMAGE */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("banner.thumbnail")}
-              </label>
-              <UploadField
-                className="w-full"
-                defaultPreviewUrl={defaultPreview}
-                onChange={handleBannerImage}
-              />
-            </div>
-
-          </div>
-
-          {/* FOOTER */}
-          <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              disabled={loading}
-            >
-              {t("common.cancel")}
-            </Button>
-
-            <Button
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              {loading ? t("common.saving") : t("common.save")}
-            </Button>
-          </DialogFooter>
-        </>
-      )}
-    </DialogContent>
-  </Dialog>
-);
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting}>
+                {isSubmitting ? t("common.saving") : t("common.save")}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 };
 export default EditBlog;

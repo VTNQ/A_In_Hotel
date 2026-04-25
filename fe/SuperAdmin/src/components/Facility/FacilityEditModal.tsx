@@ -17,6 +17,8 @@ import {
 } from "../ui/dialog";
 import { useTranslation } from "react-i18next";
 import { Upload, X } from "lucide-react";
+import z from "zod";
+import { useForm } from "react-hook-form";
 
 const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   open,
@@ -27,7 +29,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   const { showAlert } = useAlert();
   const { t } = useTranslation();
 
-  const [loading, setLoading] = useState(false);
+
   const [fetching, setFetching] = useState(false);
 
   const [formData, setFormData] = useState<FacilityForm>({
@@ -35,6 +37,31 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     description: "",
     note: "",
     categoryId: "",
+  });
+  const extraServiceSchema = z.object({
+    serviceName: z
+      .string()
+      .min(1, t("extraService.validate.serviceNameRequired")),
+    description: z.string().optional(),
+    note: z.string().optional(),
+    categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
+  });
+  type FormData = z.infer<typeof extraServiceSchema>;
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { isValid, isSubmitting },
+  } = useForm<FormData>({
+    mode: "onBlur",
+    defaultValues: {
+      serviceName: "",
+      categoryId: "",
+      description: "",
+      note: "",
+    },
   });
 
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -62,7 +89,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       setFetching(true);
       try {
         const response = await getFacilityById(Number(facilityId));
-        setFormData({
+        reset({
           serviceName: response.serviceName ?? "",
           description: response.description ?? "",
           note: response.note ?? "",
@@ -89,14 +116,6 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
 
   if (!open || !facilityId) return null;
 
-  // ================= Handlers =================
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -114,17 +133,15 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     setPreview(null);
   };
 
-  const handleSubmit = async () => {
-    if (loading) return;
-
+  const onSubmitForm = async (data: FormData) => {
     try {
-      setLoading(true);
+
 
       const payload = {
-        serviceName: formData.serviceName,
-        description: formData.description,
-        note: formData.note,
-        categoryId: Number(formData.categoryId),
+        serviceName: data.serviceName,
+        description: data.description,
+        note: data.note,
+        categoryId: Number(data.categoryId),
         image: coverImage,
         extraCharge: 0,
         price: 0,
@@ -146,9 +163,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleClose = () => {
@@ -199,8 +214,14 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 </label>
                 <Input
                   name="serviceName"
-                  value={formData.serviceName}
-                  onChange={handleChange}
+                  value={watch("serviceName")}
+                  onChange={(e)=>{
+                    setValue("serviceName",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("serviceName")
+                  }}
                   placeholder={t("facility.form.namePlaceholder")}
                 />
               </div>
@@ -213,12 +234,15 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 <SelectField
                   items={categories}
                   isRequired
-                  value={formData.categoryId}
+                  value={watch("categoryId")}
                   onChange={(v) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      categoryId: String(v),
-                    }))
+                  {
+                    setValue("categoryId",String(v),{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("categoryId")
+                  }
                   }
                   placeholder={t("facility.form.categoryPlaceholder")}
                   getValue={(i) => String(i.id)}
@@ -233,8 +257,14 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 </label>
                 <Textarea
                   name="description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  value={watch("description")}
+                  onChange={(e)=>{
+                    setValue("description",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("description")
+                  }}
                   rows={3}
                   placeholder={t("facility.form.descriptionHint")}
                 />
@@ -247,8 +277,14 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                 </label>
                 <Textarea
                   name="note"
-                  value={formData.note}
-                  onChange={handleChange}
+                  value={watch("note")}
+                  onChange={(e)=>{
+                    setValue("note",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("note")
+                  }}
                   rows={2}
                   placeholder={t("facility.form.noteHint")}
                 />
@@ -315,17 +351,17 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
             <Button
               variant="outline"
               onClick={handleClose}
-              disabled={loading}
+              disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
               {t("common.cancel")}
             </Button>
             <Button
-              onClick={handleSubmit}
-              disabled={loading}
+              onClick={handleSubmit(onSubmitForm)}
+              disabled={isSubmitting || !isValid}
               className="w-full sm:w-auto"
             >
-              {loading ? t("common.saving") : t("common.save")}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </DialogFooter>
         </div>

@@ -1,7 +1,6 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/ui/select";
-import type { BlogForm } from "@/type/blog.types";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useState } from "react";
@@ -11,24 +10,47 @@ import { useAlert } from "@/components/alert-context";
 import { createBlog } from "@/service/api/Blog";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
+import { createImageBlogSchema } from "@/validation/image.validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CreateBlogPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<BlogForm>({
-    title: "",
-    category: "",
-    description: "",
-    content: "",
-    status: "",
-    image: null,
+  const blogSchema = z.object({
+    title: z.string().min(1, t("blog.validate.titleRequired")),
+    category: z.string().min(1, t("blog.validate.categoryRequired")),
+    description: z.string().optional(),
+    content: z
+      .string()
+      .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
+        message: t("blog.validate.contentRequired"),
+      }),
+    status: z.string(),
+    image: createImageBlogSchema(t),
   });
-  const handleTextChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  type FormData = z.infer<typeof blogSchema>;
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onBlur",
+    defaultValues: {
+      title: "",
+      category: "",
+      description: "",
+      content: "",
+      status: "2",
+      image: null,
+    },
+  });
+
   const categories = [
     { id: "1", name: t("blog.blogCategories.newsUpdates") },
     { id: "2", name: t("blog.blogCategories.offersPromotions") },
@@ -66,19 +88,17 @@ const CreateBlogPage = () => {
     ],
   };
   const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async (e: React.FormEvent) => {
-    if (submitting) return;
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     try {
       setSubmitting(true);
       const cleanedData = Object.fromEntries(
         Object.entries({
-          title: formData.title,
-          category: formData.category,
-          description: formData.description,
-          content: formData.content,
-          status: formData.status,
-          image: formData.image,
+          title: data.title,
+          category: data.category,
+          description: data.description,
+          content: data.content,
+          status: data.status,
+          image: data.image,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -90,7 +110,7 @@ const CreateBlogPage = () => {
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         title: "",
         category: "",
         description: "",
@@ -105,8 +125,6 @@ const CreateBlogPage = () => {
         type: "error",
         autoClose: 4000,
       });
-    }finally{
-      setSubmitting(false);
     }
   };
   return (
@@ -131,10 +149,19 @@ const CreateBlogPage = () => {
           <Input
             name="title"
             placeholder={t("blog.createOrUpdate.enterTitle")}
-            onChange={handleTextChange}
-            value={formData.title}
+            onChange={(e)=>{
+              setValue("title", e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("title");
+            }}
+            value={watch("title")}
             className="mt-1"
           />
+           {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -142,13 +169,24 @@ const CreateBlogPage = () => {
           </label>
           <SelectField
             items={categories}
-            value={formData.category}
-            onChange={(v) => setFormData((prev) => ({ ...prev, category: v }))}
+            value={watch("category")}
+            onChange={(v) => {
+              setValue("category", String(v), {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("category");
+            }}
             isRequired={true}
             placeholder={t("blog.createOrUpdate.selectCategory")}
             getValue={(i) => String(i.id)}
             getLabel={(i) => i.name}
           />
+           {errors.category && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.category.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -160,9 +198,15 @@ const CreateBlogPage = () => {
               { value: "1", label: t("blog.draft") },
               { value: "2", label: t("blog.published") },
             ]}
-            value={formData.status}
+            value={watch("status")}
             placeholder={t("blog.createOrUpdate.selectStatus")}
-            onChange={(v) => setFormData((prev) => ({ ...prev, status: v }))}
+            onChange={(v) =>{
+              setValue("status", String(v), {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("status");
+            }}
             isRequired={true}
             getValue={(i) => String(i.value)}
             getLabel={(i) => i.label}
@@ -172,8 +216,14 @@ const CreateBlogPage = () => {
           <label className="text-sm font-medium">{t("blog.description")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.description}
-            onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
+            value={watch("description")}
+            onChange={(v) => {
+              setValue("description", v, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("description");
+            }}
             modules={fullToolbar}
           />
         </div>
@@ -181,8 +231,14 @@ const CreateBlogPage = () => {
           <label className="text-sm font-medium">{t("blog.content")}</label>
           <QuillEditor
             theme="snow"
-            value={formData.content}
-            onChange={(v) => setFormData((f) => ({ ...f, content: v }))}
+            value={watch("content")}
+            onChange={(v) => {
+              setValue("content", v, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("content");
+            }}
             modules={fullToolbar}
           />
         </div>
@@ -190,9 +246,14 @@ const CreateBlogPage = () => {
           <label className="text-sm font-medium">{t("blog.thumbnail")}</label>
           <UploadField
             className="w-full mt-2"
-            value={formData.image}
-            onChange={(files) =>
-              setFormData((p) => ({ ...p, image: files?.[0] ?? null }))
+            value={watch("image")}
+            onChange={(files) =>{
+              setValue("image", files?.[0] ?? null, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("image");
+            }
             }
           />
         </div>
@@ -201,8 +262,8 @@ const CreateBlogPage = () => {
             {t("common.cancel")}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={submitting}
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !isValid}
             className="min-w-[140px]"
           >
             {submitting ? (

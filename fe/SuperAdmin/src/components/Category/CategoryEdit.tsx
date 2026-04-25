@@ -17,6 +17,7 @@ import { Input } from "../ui/input";
 import { SelectField } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { useForm } from "react-hook-form";
 
 const CategoryEdit: React.FC<CategoryEditProps> = ({
   open,
@@ -28,34 +29,37 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [formData, setFormData] = useState<CategoryForm>({
-    name: "",
-    type: null,
-    description: "",
-  });
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    trigger,
+    watch,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<CategoryForm>({
+    mode: "onBlur",
+    defaultValues: {
+      name: "",
+      type: "",
+      description: "",
+    },
+  });
   const handleClose = () => {
-    setFormData({
+    reset({
       name: "",
       type: null,
       description: "",
     });
     onClose();
   };
-  const handleSubmit = async () => {
-    if (loading) return;
+  const onSubmitForm = async (data: CategoryForm) => {
     try {
-      setLoading(true);
       const payload = {
-        name: formData.name,
-        type: Number(formData.type),
-        description: formData.description,
+        name: data.name,
+        type: Number(data.type),
+        description: data.description,
       };
       const response = await updateCategoryById(Number(categoryId), payload);
       showAlert({
@@ -72,8 +76,6 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
       });
-    } finally {
-      setLoading(false);
     }
   };
   useEffect(() => {
@@ -82,7 +84,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
       setFetching(true);
       try {
         const response = await getCategoryById(Number(categoryId));
-        setFormData({
+        reset({
           name: response?.data?.data?.name || "",
           type: response?.data?.data?.idType
             ? String(response.data.data.idType)
@@ -122,9 +124,20 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                   {t("category.name")} <span className="text-red-500">*</span>
                 </label>
                 <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  {...register("name", {
+                    required: t("category.validate.nameRequired"),
+                    maxLength: {
+                      value: 100,
+                      message: t("category.validate.nameMaxLength"),
+                    },
+                  })}
+                  onChange={(e) => {
+                    setValue("name", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("name");
+                  }}
                   placeholder={t("category.createOrUpdate.enterName")}
                   className="h-11"
                 />
@@ -139,10 +152,14 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                     { label: t("category.service"), value: "2" },
                     { label: t("category.asset"), value: "3" },
                   ]}
-                  value={formData.type}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, type: v }))
-                  }
+                  value={watch("type")}
+                  onChange={(v) => {
+                    setValue("type", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("type");
+                  }}
                   isRequired
                   getValue={(i) => i.value}
                   getLabel={(i) => i.label}
@@ -155,9 +172,20 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                   {t("category.createOrUpdate.description")}
                 </label>
                 <Textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  {...register("description", {
+                    maxLength: {
+                      value: 255,
+                      message: t("category.validate.descriptionMax"),
+                    },
+                  })}
+                  value={watch("description")}
+                  onChange={(e) => {
+                    setValue("description", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("description");
+                  }}
                   rows={3}
                 />
               </div>
@@ -168,13 +196,13 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
               <Button
                 variant="outline"
                 onClick={handleClose}
-                disabled={loading}
+                disabled={isSubmitting || !isValid}
               >
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit} disabled={loading}>
-                {loading ? t("common.saving") : t("common.save")}
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+                {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
           </>

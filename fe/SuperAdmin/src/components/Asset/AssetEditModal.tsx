@@ -3,7 +3,7 @@ import { getAllCategories } from "@/service/api/Categories";
 import { getAllHotel } from "@/service/api/Hotel";
 import { getRoom } from "@/service/api/Room";
 import { File_URL } from "@/setting/constant/app";
-import type { AssetEditProps, AssetForm } from "@/type/asset.types";
+import type { AssetEditProps } from "@/type/asset.types";
 import type { HotelRow } from "@/type/hotel.types";
 import { Dialog, DialogTitle } from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +15,9 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useAlert } from "../alert-context";
 import { Upload, X } from "lucide-react";
+import z from "zod";
+import { createImageAssetSchema } from "@/validation/image.validation";
+import { useForm } from "react-hook-form";
 
 const AssetEditModal: React.FC<AssetEditProps> = ({
   open,
@@ -23,23 +26,75 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
   assetId,
 }) => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState<AssetForm>({
-    assetName: "",
-    categoryId: "",
-    hotelId: "",
-    roomId: "",
-    price: "",
-    quantity: "",
-    note: "",
-    image: null,
-  });
+
+   const assetSchema = z.object({
+      assetName: z.string().min(1, t("asset.validate.assetNameRequired")),
+      categoryId: z.string().min(1, t("asset.validate.categoryRequired")),
+      roomId: z.string().min(1, t("asset.validate.roomRequired")),
+      price: z
+        .string()
+        .min(1, t("asset.validate.priceRequired"))
+        .refine((value) => !isNaN(Number(value)) && Number(value) >= 0, {
+          message: t("asset.validate.priceInvalid"),
+        }),
+      hotelId: z.string().min(1, t("asset.validate.hotelRequired")),
+      quantity: z
+        .string()
+        .optional()
+        .refine(
+          (value) => !value || (!isNaN(Number(value)) && Number(value) >= 0),
+          {
+            message: t("asset.validate.quantityInvalid"),
+          },
+        ),
+  
+      note: z.string().optional(),
+      image: z.any().optional(),
+    }).superRefine((data, ctx) => {
+      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
+      if (imagePreview) return;
+
+      const imageValidation = createImageAssetSchema(t).safeParse(data.image);
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["image"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+    type FormData = z.infer<typeof assetSchema>;
+  
+    const {
+      handleSubmit,
+      reset,
+      setValue,
+      watch,
+      trigger,
+      formState: { errors, isValid, isSubmitting },
+    } = useForm<FormData>({
+      mode: "onBlur",
+      defaultValues: {
+        assetName: "",
+        categoryId: "",
+        roomId: "",
+        price: "",
+        quantity: "",
+        hotelId: "",
+        note: "",
+        image: null,
+      },
+    });
   const [hotels, setHotels] = useState<HotelRow[]>([]);
   const [fetching, setFetching] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [rooms, setRooms] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [loading, setLoading] = useState(false);
+
   const { showAlert } = useAlert();
   const fetchCategories = async () => {
     try {
@@ -63,13 +118,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
       console.log(err);
     }
   };
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  
   const fetchRooms = async (hotelId: string) => {
     if (!hotelId) {
       setRooms([]);
@@ -95,7 +144,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         const res = await getAssetById(Number(assetId));
         const asset = res;
 
-        setFormData({
+        reset({
           assetName: asset.assetName,
           categoryId: String(asset.categoryId),
           hotelId: String(asset.hotelId),
@@ -120,19 +169,17 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
     fetchData();
   }, [open, assetId]);
 
-  const handleSubmit = async () => {
-    if (loading) return;
+  const onSubmitForm = async (data: FormData) => {
     try {
-      setLoading(true);
       const payload = {
-        assetName: formData.assetName,
-        categoryId: formData.categoryId,
-        hotelId: formData.hotelId,
-        roomId: formData.roomId,
-        price: formData.price,
-        quantity: formData.quantity,
-        note: formData.note,
-        image: formData.image,
+        assetName: data.assetName,
+        categoryId: data.categoryId,
+        hotelId: data.hotelId,
+        roomId: data.roomId,
+        price: data.price,
+        quantity: data.quantity,
+        note: data.note,
+        image: data.image,
       };
       const response = await updateAsset(payload, Number(assetId));
       showAlert({
@@ -141,7 +188,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         assetName: "",
         categoryId: "",
         hotelId: "",
@@ -161,26 +208,24 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
   const handleRemoveImage = () => {
     setImagePreview(null);
-    setFormData((prev) => ({ ...prev, image: null }));
+    setValue("image",null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   useEffect(() => {
-    if (!formData.hotelId) return;
+    if (!watch("hotelId")) return;
 
-    fetchRooms(formData.hotelId);
+    fetchRooms(watch("hotelId"));
 
     if (!assetId) {
-      setFormData((prev) => ({ ...prev, roomId: "" }));
+      setValue("roomId","")
     }
-  }, [formData.hotelId]);
+  }, [watch("hotelId")]);
   const handleClose = () => {
-    setFormData({
+    reset({
       assetName: "",
       categoryId: "",
       hotelId: "",
@@ -233,8 +278,14 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <Input
                   name="assetName"
                   placeholder={t("asset.createOrUpdate.namePlaceHolder")}
-                  onChange={handleChange}
-                  value={formData.assetName}
+                  onChange={(e)=>{
+                    setValue("assetName",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("assetName")
+                  }}
+                  value={watch("assetName")}
                 />
               </div>
 
@@ -245,9 +296,15 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 </label>
                 <SelectField
                   items={categories}
-                  value={formData.categoryId}
+                  value={watch("categoryId")}
                   onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, categoryId: v }))
+                   {
+                    setValue("categoryId",String(v),{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("categoryId")
+                   }
                   }
                   isRequired
                   placeholder={t("asset.createOrUpdate.categoryPlaceHolder")}
@@ -263,9 +320,14 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 </label>
                 <SelectField
                   items={hotels}
-                  value={formData.hotelId}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, hotelId: v, roomId: "" }))
+                  value={watch("hotelId")}
+                  onChange={(v) =>{
+                    setValue("hotelId",String(v),{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("hotelId")
+                  }
                   }
                   isRequired
                   placeholder={t("asset.createOrUpdate.hotelPlaceHolder")}
@@ -281,9 +343,15 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 </label>
                 <SelectField
                   items={rooms}
-                  value={formData.roomId}
+                  value={watch("roomId")}
                   onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, roomId: v }))
+                  {
+                    setValue("roomId",String(v),{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("roomId")
+                  }
                   }
                   isRequired
                   placeholder={t("asset.createOrUpdate.roomPlaceHolder")}
@@ -301,8 +369,14 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   name="price"
                   type="number"
                   placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
-                  onChange={handleChange}
-                  value={formData.price}
+                  onChange={(e)=>{
+                    setValue("price",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("price")
+                  }}
+                  value={watch("price")}
                 />
               </div>
 
@@ -315,8 +389,14 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   name="quantity"
                   type="number"
                   placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
-                  onChange={handleChange}
-                  value={formData.quantity}
+                  onChange={(e)=>{
+                    setValue("quantity",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("quantity")
+                  }}
+                  value={watch("quantity")}
                 />
               </div>
 
@@ -327,8 +407,14 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 </label>
                 <Textarea
                   name="note"
-                  value={formData.note}
-                  onChange={handleChange}
+                  value={watch("note")}
+                  onChange={(e)=>{
+                    setValue("note",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("note")
+                  }}
                   placeholder={t("asset.createOrUpdate.notePlaceholder")}
                   rows={3}
                 />
@@ -350,11 +436,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                     if (imagePreview?.startsWith("blob:")) {
                       URL.revokeObjectURL(imagePreview);
                     }
-
-                    setFormData((prev) => ({
-                      ...prev,
-                      image: file, // ✅ đúng field
-                    }));
+                    setValue("image",file)
 
                     setImagePreview(URL.createObjectURL(file));
                   }}
@@ -410,17 +492,17 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
             <Button
               variant="outline"
               onClick={handleClose}
-              disabled={loading}
+              disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
               {t("common.cancel")}
             </Button>
             <Button
-              onClick={handleSubmit}
-              disabled={loading}
+              onClick={handleSubmit(onSubmitForm)}
+              disabled={isSubmitting || !isValid}
               className="w-full sm:w-auto"
             >
-              {loading ? t("common.saving") : t("common.save")}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </DialogFooter>
         </div>

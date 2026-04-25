@@ -20,6 +20,9 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { getFacilityById, updateExtraServcie } from "@/service/api/facilities";
 import { File_URL } from "@/setting/constant/app";
+import z from "zod";
+import { createImageExtraServiceSchema } from "@/validation/image.validation";
+import { useForm } from "react-hook-form";
 
 const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   open,
@@ -30,24 +33,78 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   const { showAlert } = useAlert();
   const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement | null>(null);
-
-  const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [hotels, setHotels] = useState<any[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState<ExtraServiceForm>({
-    name: "",
-    description: "",
-    categoryId: null,
-    unit: null,
-    price: "",
-    type: "",
-    hotelId: null,
-    extraCharge: "",
-    icon: null,
-    note: "",
+  const extraServiceSchema = z
+    .object({
+      id: z.string(),
+      serviceName: z
+        .string()
+        .min(1, t("extraService.validate.serviceNameRequired")),
+
+      categoryId: z
+        .string()
+        .min(1, t("extraService.validate.categoryRequired")),
+
+      description: z.string().optional(),
+      unit: z.string().optional(),
+      price: z.string().min(1, t("extraService.validate.priceRequired")),
+      hotelId: z.string().min(1, t("extraService.validate.hotelRequired")),
+      note: z.string().optional(),
+      type: z.string().min(1, t("extraService.validate.typeRequired")),
+      extraCharge: z
+        .string()
+        .min(1, t("extraService.validate.extraChargeRequired"))
+        .refine((value) => !isNaN(Number(value)) && Number(value) >= 0, {
+          message: t("extraService.validate.extraChargeInvalid"),
+        }),
+      icon: z.any().optional(),
+    })
+    .superRefine((data, ctx) => {
+      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
+      if (imagePreview) return;
+
+      const imageValidation = createImageExtraServiceSchema(t).safeParse(
+        data.icon,
+      );
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["image"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+  type FormData = z.infer<typeof extraServiceSchema>;
+  const {
+    
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: {  isValid, isSubmitting },
+  } = useForm<FormData>({
+    mode: "onBlur",
+    defaultValues: {
+      id: "",
+      serviceName: "",
+      categoryId: "",
+      unit: "",
+      price: "",
+      type: "",
+      hotelId: "",
+      description: "",
+      note: "",
+      extraCharge: "",
+      icon: null,
+    },
   });
 
   /* ================= FETCH ================= */
@@ -60,8 +117,8 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
       try {
         const res = await getFacilityById(extraServiceId);
 
-        setFormData({
-          name: res.serviceName ?? "",
+        reset({
+          serviceName: res.serviceName ?? "",
           description: res.description ?? "",
           categoryId: res.categoryId ?? null,
           unit: res.unit ?? null,
@@ -73,9 +130,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
           note: res.note ?? "",
         });
 
-        setImagePreview(
-          res?.icon?.url ? File_URL + res.icon.url : null
-        );
+        setImagePreview(res?.icon?.url ? File_URL + res.icon.url : null);
       } finally {
         setFetching(false);
       }
@@ -103,43 +158,31 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   }, [open, extraServiceId]);
 
 
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async () => {
-    if (loading) return;
+  const onSubmitForm = async (data: FormData) => {
+   
 
     try {
-      setLoading(true);
+
 
       const payload = {
-        serviceName: formData.name.trim(),
-        price: Number(formData.price),
-        categoryId: Number(formData.categoryId),
-        unit: formData.unit,
-        description: formData.description.trim(),
-        note: formData.note.trim(),
-        extraCharge: formData.extraCharge,
-        image: formData.icon,
-        hotelId: formData.hotelId,
+        serviceName: data.serviceName.trim(),
+        price: Number(data.price),
+        categoryId: Number(data.categoryId),
+        unit: data.unit,
+        description: data.description?.trim(),
+        note: data.note?.trim(),
+        extraCharge: data.extraCharge,
+        image: data.icon,
+        hotelId: data.hotelId,
         type: 2,
         isActive: true,
       };
 
-      const res = await updateExtraServcie(
-        Number(extraServiceId),
-        payload
-      );
+      const res = await updateExtraServcie(Number(extraServiceId), payload);
 
       showAlert({
         title:
-          res?.data?.message ||
-          t("extraService.createOrUpdate.updateSucess"),
+          res?.data?.message || t("extraService.createOrUpdate.updateSucess"),
         type: "success",
       });
 
@@ -151,9 +194,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   if (!open || !extraServiceId) return null;
@@ -163,7 +204,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl p-0">
-        
         {/* HEADER */}
         <DialogHeader className="px-6 py-4 border-b bg-gray-50">
           <DialogTitle className="text-lg font-semibold">
@@ -179,16 +219,20 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
           <>
             {/* FORM */}
             <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-
               {/* NAME */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
                   {t("extraService.name")} *
                 </label>
                 <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={watch("serviceName")}
+                  onChange={(e)=>{
+                    setValue("serviceName",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("serviceName")
+                  }}
                   className="h-11"
                 />
               </div>
@@ -200,8 +244,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 </label>
                 <Input
                   name="description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  value={watch("description")}
+                  onChange={(e)=>{
+                    setValue("description",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("description")
+                  }}
                   className="h-11"
                 />
               </div>
@@ -211,10 +261,15 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 <SelectField
                   label={t("extraService.category")}
                   items={categories}
-                  value={formData.categoryId}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, categoryId: v }))
-                  }
+                  value={watch("categoryId")}
+                  onChange={(v) =>{
+                    setValue("categoryId",String(v),{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("categoryId")
+                  
+                  }}
                   isRequired
                   getValue={(i) => i.id}
                   getLabel={(i) => i.name}
@@ -230,10 +285,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   { label: "Per Use", value: "PERUSE" },
                   { label: "Per Hour", value: "PERHOUR" },
                 ]}
-                value={formData.unit}
-                onChange={(v) =>
-                  setFormData((prev) => ({ ...prev, unit: v }))
-                }
+                value={watch("unit")}
+                onChange={(v) => {
+                  setValue("unit", String(v), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("unit");
+                }}
                 isRequired
                 getValue={(i) => i.value}
                 getLabel={(i) => i.label}
@@ -245,9 +304,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   {t("extraService.price")} *
                 </label>
                 <Input
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
+                  value={watch("price")}
+                  onChange={(e)=>{
+                    setValue("price",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("price")
+                  }}
                   className="h-11"
                 />
               </div>
@@ -259,8 +323,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 </label>
                 <Input
                   name="extraCharge"
-                  value={formData.extraCharge}
-                  onChange={handleChange}
+                  value={watch("extraCharge")}
+                  onChange={(e)=>{
+                    setValue("extraCharge",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    trigger("extraCharge")
+                  }}
                   className="h-11"
                 />
               </div>
@@ -269,9 +339,14 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
               <SelectField
                 label={t("extraService.hotel")}
                 items={hotels}
-                value={formData.hotelId}
-                onChange={(v) =>
-                  setFormData((prev) => ({ ...prev, hotelId: v }))
+                value={watch("hotelId")}
+                onChange={(v) =>{
+                  setValue("hotelId",String(v),{
+                    shouldValidate:true,
+                    shouldDirty:true
+                  })
+                  trigger("hotelId")
+                }
                 }
                 isRequired
                 getValue={(i) => i.id}
@@ -285,8 +360,15 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 </label>
                 <Textarea
                   name="note"
-                  value={formData.note}
-                  onChange={handleChange}
+                  value={watch("note")}
+                  onChange={(e)=>{
+                    setValue("note",e.target.value,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    
+                    trigger("note")
+                  }}
                   rows={3}
                 />
               </div>
@@ -306,7 +388,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      setFormData((prev) => ({ ...prev, icon: file }));
+                      setValue("icon",file)
                       setImagePreview(URL.createObjectURL(file));
                     }}
                   />
@@ -332,8 +414,8 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
               <Button variant="outline" onClick={onClose}>
                 {t("common.cancel")}
               </Button>
-              <Button onClick={handleSubmit} disabled={loading}>
-                {loading ? t("common.saving") : t("common.save")}
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+                {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
           </>

@@ -19,6 +19,9 @@ import DateTimePicker from "../ui/DateTimePicker";
 import { isBefore, startOfToday } from "date-fns";
 import UploadField from "../ui/UploadField";
 import { Button } from "../ui/button";
+import z from "zod";
+import { createImageBannerSchema } from "@/validation/image.validation";
+import { useForm } from "react-hook-form";
 const BannerEditModal: React.FC<BannerEditProps> = ({
   open,
   bannerId,
@@ -26,20 +29,67 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
   onSubmit,
 }) => {
   const { showAlert } = useAlert();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<BannerForm>({
-    title: "",
-    startDate: undefined,
-    endDate: undefined,
-    cta: "",
-    desc: "",
-    bannerImage: null,
-  });
+
   const { t } = useTranslation();
   const [defaultPreview, setDefaultPreview] = useState<string>(
     "/placeholder-image.png",
   );
+  const bannerSchema = z
+    .object({
+      id: z.string(),
+      name: z.string().min(1, t("banner.validate.nameRequired")),
 
+      startDate: z.date({
+        error: t("banner.validate.startDateRequired"),
+      }),
+
+      endDate: z.date({
+        error: t("banner.validate.endDateRequired"),
+      }),
+
+      ctaLabel: z.string().optional(),
+      description: z.string().optional(),
+      bannerImage: z.any().optional(),
+    })
+    .superRefine((data, ctx) => {
+      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
+      if (defaultPreview) return;
+
+      const imageValidation = createImageBannerSchema(t).safeParse(
+        data.bannerImage,
+      );
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["bannerImage"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+  type BannerForm = z.infer<typeof bannerSchema>;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BannerForm>({
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      name: "",
+      startDate: undefined,
+      endDate: undefined,
+      ctaLabel: "",
+      description: "",
+      bannerImage: null,
+    },
+  });
   const [fetching, setFetching] = useState(false);
   useEffect(() => {
     if (!open || !bannerId) return;
@@ -49,12 +99,12 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
         const response = await findById(bannerId);
         const b = response?.data;
 
-        setFormData({
-          title: b?.name ?? "",
+        reset({
+          name: b?.name ?? "",
           startDate: b?.startAt ? new Date(b.startAt) : undefined,
           endDate: b?.endAt ? new Date(b.endAt) : undefined,
-          cta: b?.ctaLabel ?? "",
-          desc: b?.description ?? "",
+          ctaLabel: b?.ctaLabel ?? "",
+          description: b?.description ?? "",
           bannerImage: null, // ban đầu chưa có file mới
         });
         setDefaultPreview(File_URL + b?.image?.url);
@@ -93,18 +143,18 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
       minutes
     );
   };
-  const handleSubmit = async () => {
-    if (loading) return;
+  const onSubmitForm = async (data: BannerForm) => {
+    
     try {
-      setLoading(true);
+   
       const cleanedData = Object.fromEntries(
         Object.entries({
-          name: formData.title,
-          startAt: toOffsetDateTime(formData.startDate),
-          endAt: toOffsetDateTime(formData.endDate),
-          ctaLabel: formData.cta,
-          description: formData.desc,
-          image: formData.bannerImage,
+          name: data.name,
+          startAt: toOffsetDateTime(data.startDate),
+          endAt: toOffsetDateTime(data.endDate),
+          ctaLabel: data.ctaLabel,
+          description: data.description,
+          image: data.bannerImage,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -116,12 +166,12 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
-        title: "",
+      reset({
+        name: "",
         startDate: undefined,
         endDate: undefined,
-        cta: "",
-        desc: "",
+        ctaLabel: "",
+        description: "",
         bannerImage: null,
       });
       onSubmit();
@@ -133,17 +183,9 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -168,18 +210,18 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
     ],
   };
   const handleClose = () => {
-    setFormData({
-      title: "",
+    reset({
+      name: "",
       startDate: undefined,
       endDate: undefined,
-      cta: "",
-      desc: "",
+      ctaLabel: "",
+      description: "",
       bannerImage: null,
     });
     onClose();
   };
   const handleBannerImage = (files: File[] | null) =>
-    setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }));
+    setValue("bannerImage", files?.[0] ?? null);
   if (!open || !bannerId) return <></>;
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
@@ -207,11 +249,21 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     {t("banner.name")} *
                   </label>
                   <Input
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
+                    value={watch("name")}
+                    onChange={(e) => {
+                      setValue("name", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("name");
+                    }}
                     className="h-11"
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* CTA */}
@@ -220,9 +272,14 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     {t("banner.createOrUpdate.ctaLabel")}
                   </label>
                   <Input
-                    name="cta"
-                    value={formData.cta}
-                    onChange={handleChange}
+                    value={watch("ctaLabel")}
+                    onChange={(e) => {
+                      setValue("ctaLabel", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("ctaLabel");
+                    }}
                     className="h-11"
                   />
                 </div>
@@ -233,10 +290,15 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     {t("banner.startAt")} *
                   </label>
                   <DateTimePicker
-                    value={formData.startDate}
-                    onChange={(d) =>
-                      setFormData((p) => ({ ...p, startDate: d }))
-                    }
+                    value={watch("startDate")}
+                    onChange={(date: any) => {
+                      setValue("startDate", date, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+
+                      trigger("startDate");
+                    }}
                     disabledDate={(date) => isBefore(date, startOfToday())}
                     placeholder={t("banner.createOrUpdate.selectStartAt")}
                   />
@@ -248,11 +310,18 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     {t("banner.endAt")} *
                   </label>
                   <DateTimePicker
-                    value={formData.endDate}
-                    minDateTime={formData.startDate}
-                    onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
+                    value={watch("endDate")}
+                    onChange={(date: any) => {
+                      setValue("endDate", date, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+
+                      trigger("endDate");
+                    }}
+                    minDateTime={watch("startDate")}
                     disabledDate={(date) =>
-                      !formData.startDate ? false : date <= formData.startDate
+                      !watch("startDate") ? false : date <= watch("startDate")
                     }
                     placeholder={t("banner.createOrUpdate.selectEndAt")}
                   />
@@ -267,8 +336,14 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                 <div className="border rounded-lg overflow-hidden">
                   <QuillEditor
                     theme="snow"
-                    value={formData.desc}
-                    onChange={(v) => setFormData((f) => ({ ...f, desc: v }))}
+                    value={watch("description")}
+                    onChange={(e) => {
+                      setValue("description", e, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("description");
+                    }}
                     modules={fullToolbar}
                     className="min-h-[200px]"
                   />
@@ -293,13 +368,13 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
               <Button
                 variant="outline"
                 onClick={handleClose}
-                disabled={loading}
+                disabled={isSubmitting}
               >
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit} disabled={loading}>
-                {loading ? t("common.saving") : t("common.save")}
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting}>
+                {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
           </>

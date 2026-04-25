@@ -6,35 +6,40 @@ import { SelectField } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createCategory } from "@/service/api/Categories";
 import type { CategoryForm } from "@/type/category.types";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const CreateCategoryPage = () => {
-  const [form, setForm] = useState<CategoryForm>({
-    name: "",
-    type: null,
-    description: "",
-  });
-  const { showAlert } = useAlert();
-  const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate();
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
 
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const { showAlert } = useAlert();
+  const navigate = useNavigate();
+ 
   const { t } = useTranslation();
-  const handleSubmit = async () => {
-    if (submitting) return;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors, isValid,isSubmitting },
+  } = useForm<CategoryForm>({
+    mode:"onBlur",
+    defaultValues: {
+      name: "",
+      type: "",
+      description: "",
+    },
+  });
+  const onSubmit = async (data: CategoryForm) => {
+   
     try {
-      setSubmitting(true);
+
       const payload = {
-        name: form.name,
-        type: Number(form.type),
-        description: form.description,
+        name: data.name,
+        type: Number(data.type),
+        description: data.description,
       };
       const response = await createCategory(payload);
       showAlert({
@@ -42,7 +47,7 @@ const CreateCategoryPage = () => {
         type: "success",
         autoClose: 4000,
       });
-      setForm({
+      reset({
         name: "",
         type: null,
         description: "",
@@ -54,9 +59,7 @@ const CreateCategoryPage = () => {
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSubmitting(false);
-    }
+    } 
   };
   return (
     <div className="space-y-6">
@@ -78,12 +81,26 @@ const CreateCategoryPage = () => {
             {t("category.name")} <span className="text-red-500">*</span>
           </label>
           <Input
-            name="name"
             placeholder={t("category.createOrUpdate.enterName")}
-            onChange={handleChange}
-            value={form.name}
+            {...register("name",{
+               required: t("category.validate.nameRequired"),
+              maxLength: {
+                value: 100,
+                message: t("category.validate.nameMaxLength"),
+              },
+            })}
+            onChange={(e)=>{
+              setValue("name",e.target.value,{
+                  shouldValidate: true,
+                  shouldDirty: true,
+              })
+              trigger("name")
+            }}
             className="mt-1"
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          )}
         </div>
         <div>
           <SelectField
@@ -102,22 +119,42 @@ const CreateCategoryPage = () => {
                 value: "3",
               },
             ]}
-            value={form.type}
-            onChange={(v) => setForm((prev) => ({ ...prev, type: v }))}
+              value={watch("type")}
+              onChange={(v) =>{
+                setValue("type", String(v), {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("type")
+              }}
             placeholder={t("category.createOrUpdate.enterType")}
             getValue={(i) => i.value}
             isRequired={true}
             getLabel={(i) => i.label}
           />
+           {errors.type && (
+            <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium text-[#253150]">
             {t("category.createOrUpdate.description")}
           </label>
           <Textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
+            {...register("description", {
+              maxLength: {
+                value: 255,
+                message: t("category.validate.descriptionMax"),
+              },
+            })}
+            value={watch("description")}
+            onChange={(e)=>{
+              setValue("description", e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("description");
+            }}
             placeholder={t("category.createOrUpdate.enterDescription")}
             rows={3}
             className="mt-1"
@@ -128,11 +165,11 @@ const CreateCategoryPage = () => {
             {t("common.cancel")}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={submitting}
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !isValid}
             className="min-w-[140px]"
           >
-            {submitting ? (
+            {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin"
