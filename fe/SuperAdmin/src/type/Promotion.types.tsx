@@ -57,28 +57,33 @@ export interface UpdatePromotionModalProps {
   onSubmit: () => void;
 }
 export const CUSTOMER_TYPE = {
-  ALL:0,
+  ALL: 0,
   PERSONAL: 1,
   COMPANY: 2,
   WALKIN: 3,
   ONLINE: 4,
   VIP: 5,
-}
-export const CUSTOMER_TYPE_OPTIONS =[
-  {value:CUSTOMER_TYPE.ALL,labelKey:"common.all"},
-  {value:CUSTOMER_TYPE.PERSONAL,labelKey:"promotion.customerType.personal"},
-  {value:CUSTOMER_TYPE.COMPANY,labelKey:"promotion.customerType.company"},
-  {value:CUSTOMER_TYPE.WALKIN,labelKey:"promotion.customerType.walkin"},
-  {value:CUSTOMER_TYPE.ONLINE,labelKey:"promotion.customerType.online"},
-  {value:CUSTOMER_TYPE.VIP,labelKey:"promotion.customerType.vip"},
-]
+};
+export const CUSTOMER_TYPE_OPTIONS = [
+  { value: CUSTOMER_TYPE.ALL, labelKey: "common.all" },
+  {
+    value: CUSTOMER_TYPE.PERSONAL,
+    labelKey: "promotion.customerType.personal",
+  },
+  { value: CUSTOMER_TYPE.COMPANY, labelKey: "promotion.customerType.company" },
+  { value: CUSTOMER_TYPE.WALKIN, labelKey: "promotion.customerType.walkin" },
+  { value: CUSTOMER_TYPE.ONLINE, labelKey: "promotion.customerType.online" },
+  { value: CUSTOMER_TYPE.VIP, labelKey: "promotion.customerType.vip" },
+];
 export interface RoomTypes {
   id: number;
   excluded: boolean;
 }
 export interface CreateOrUpdateTabProps {
-  formData: PromotionForm;
-  setFormData: React.Dispatch<React.SetStateAction<PromotionForm>>;
+  watch: any;
+  setValue: any;
+  trigger: any;
+  errors: any;
 }
 export interface PromotionForm {
   name: string;
@@ -112,9 +117,8 @@ export const PROMOTION_TYPE_I18N: Record<number, string> = {
   3: "promotion.typeView.special",
 };
 export interface PromotionActionMenuProps {
-  promotion:Promotion,
-  onView?:(promotion:Promotion)=>void;
-  onEdit?:(promotion:Promotion)=>void;
-  onDiabled?:(promotion:Promotion)=>void;
-
+  promotion: Promotion;
+  onView?: (promotion: Promotion) => void;
+  onEdit?: (promotion: Promotion) => void;
+  onDiabled?: (promotion: Promotion) => void;
 }

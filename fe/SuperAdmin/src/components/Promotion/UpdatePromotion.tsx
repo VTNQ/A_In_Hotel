@@ -15,6 +15,9 @@ import TabButton from "./Create/TabButton";
 import GeneralTab from "./Update/GeneralTab";
 import OfferTab from "./Update/OfferTab";
 import TargetingTab from "./Update/TargetingTab";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const UpdatePromotion = ({
   open,
@@ -26,23 +29,130 @@ const UpdatePromotion = ({
   const currentIndex = TABS.indexOf(activeTab);
   const isFirstTab = currentIndex === 0;
   const { t } = useTranslation();
+  const promotionSchema = z
+    .object({
+      id: z.string(),
+      name: z
+        .string()
+        .min(1, t("promotion.validation.nameRequired"))
+        .min(3, t("promotion.validation.nameMinLength"))
+        .max(100, t("promotion.validation.nameMaxLength")),
+      description: z.string().optional(),
+      type: z.string(),
+      value: z.string().min(1, t("promotion.validation.valueRequired")),
+      priority: z.string().min(1, t("promotion.validation.priorityRequired")),
+      startDate: z.string().min(1, t("promotion.validation.startDateRequired")),
+      endDate: z.string().min(1, t("promotion.validation.endDateRequired")),
+      bookingType: z.number(),
+
+      minNights: z.string().min(1, t("promotion.validation.minNightsRequired")),
+
+      customerType: z.string(),
+
+      roomTypes: z.array(
+        z.object({
+          id: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      // priority
+      if (Number(data.priority) < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["priority"],
+          message: t("promotion.validation.priorityMin"),
+        });
+      }
+
+      // value
+      const value = Number(data.value);
+
+      if (data.type === "2") {
+        if (value <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyPositive"),
+          });
+        }
+
+        if (value > 100000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyMax"),
+          });
+        }
+      } else {
+        if (value <= 0 || value > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valuePercentRange"),
+          });
+        }
+      }
+
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("promotion.validation.endDateAfterStart"),
+        });
+      }
+
+      // min nights
+      if (Number(data.minNights) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsPositive"),
+        });
+      }
+
+      if (Number(data.minNights) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsTooLarge"),
+        });
+      }
+    });
+  type FormData = z.infer<typeof promotionSchema>;
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    trigger,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(promotionSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      name: "",
+      description: "",
+      type: "2",
+      value: "",
+      priority: "",
+      startDate: "",
+      endDate: "",
+      bookingType: 1,
+      minNights: "",
+      customerType: "0",
+      roomTypes: [],
+    },
+  });
+
   const { showAlert } = useAlert();
   const isLastTab = currentIndex === TABS.length - 1;
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<PromotionForm>({
-    name: "",
-    description: "",
-    type: "2",
-    value: "",
-    priority: "",
-    startDate: undefined,
-    endDate: undefined,
-    bookingType: 1,
-    minNights: "",
-    customerType: "0",
-    roomTypes: [],
-  });
+
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);
@@ -54,22 +164,20 @@ const UpdatePromotion = ({
       setActiveTab(TABS[currentIndex - 1]);
     }
   };
-    const handleSubmit = async () => {
-    if (saving) return;
+  const onSubmitForm = async (data: FormData) => {
     try {
-      setSaving(true);
       const payload = {
-        name: formData.name,
-        description: formData.description,
-        type: formData.type,
-        value: formData.value,
-        priority: formData.priority,
-        startDate: formData.startDate || null,
-        endDate: formData.endDate || null,
-        bookingType: formData.bookingType,
-        customerType: formData.customerType,
-        minNights: formData.minNights,
-        promotionRoomTypeRequests: formData.roomTypes.map((r) => ({
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        value: data.value,
+        priority: data.priority,
+        startDate: data.startDate || null,
+        endDate: data.endDate || null,
+        bookingType: data.bookingType,
+        customerType: data.customerType,
+        minNights: data.minNights,
+        promotionRoomTypeRequests: data.roomTypes.map((r) => ({
           roomTypeId: r.id,
           excluded: r.excluded,
         })),
@@ -81,7 +189,7 @@ const UpdatePromotion = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
+      reset({
         name: "",
         description: "",
         type: "2",
@@ -105,8 +213,6 @@ const UpdatePromotion = ({
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setSaving(false);
     }
   };
   useEffect(() => {
@@ -116,7 +222,7 @@ const UpdatePromotion = ({
         setLoading(true);
         const response = await getPromotionById(promotionId);
         const data = response?.data?.data;
-        setFormData({
+        reset({
           name: data.name ?? "",
           description: data.description ?? "",
           type: String(data.type ?? "2"),
@@ -147,7 +253,7 @@ const UpdatePromotion = ({
     fetchData();
   }, [open, promotionId]);
   const handleCancel = () => {
-    setFormData({
+    reset({
       name: "",
       description: "",
       type: "2",
@@ -241,13 +347,28 @@ const UpdatePromotion = ({
             ) : (
               <>
                 {activeTab === "general" && (
-                  <GeneralTab formData={formData} setFormData={setFormData} />
+                  <GeneralTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
                 {activeTab === "offer" && (
-                  <OfferTab formData={formData} setFormData={setFormData} />
+                  <OfferTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
                 {activeTab === "targeting" && (
-                  <TargetingTab formData={formData} setFormData={setFormData} />
+                  <TargetingTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
               </>
             )}
@@ -258,26 +379,19 @@ const UpdatePromotion = ({
                 <Button
                   variant="secondary"
                   onClick={handleBack}
-                  disabled={loading || saving}
+                  disabled={loading || isSubmitting}
                 >
                   {t("promotion.back")}
                 </Button>
               )}
 
               {!isLastTab ? (
-                <Button
-                 
-                  onClick={handleNext}
-                  disabled={loading}
-                >
+                <Button onClick={handleNext} disabled={loading}>
                   {t("promotion.next")}
                 </Button>
               ) : (
-                <Button
-                  onClick={handleSubmit}
-                  disabled={loading || saving}
-                >
-                  {saving ? (
+                <Button onClick={handleSubmit(onSubmitForm)} disabled={loading || isSubmitting}>
+                  {isSubmitting ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                       <span>{t("common.saving")}</span>

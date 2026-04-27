@@ -7,10 +7,13 @@ import TargetingTab from "@/components/Promotion/Create/TargetingTab";
 import { Button } from "@/components/ui/button";
 import { createPromotion } from "@/service/api/Promotion";
 import { TABS, type PromotionForm, type TabType } from "@/type/Promotion.types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Tag, Users } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
 
 const CreatePromotionPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("general");
@@ -19,21 +22,124 @@ const CreatePromotionPage = () => {
   const { t } = useTranslation();
   const { showAlert } = useAlert();
   const isLastTab = currentIndex === TABS.length - 1;
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<PromotionForm>({
-    name: "",
-    description: "",
-    type: "2",
-    value: "",
-    priority: "",
-    startDate: undefined,
-    endDate: undefined,
-    bookingType: 1,
-    minNights: "",
-    customerType: "0",
-    roomTypes: [],
+  const promotionSchema = z
+    .object({
+      name: z
+        .string()
+        .min(1, t("promotion.validation.nameRequired"))
+        .min(3, t("promotion.validation.nameMinLength"))
+        .max(100, t("promotion.validation.nameMaxLength")),
+      description: z.string().optional(),
+      type: z.string(),
+      value: z.string().min(1, t("promotion.validation.valueRequired")),
+      priority: z.string().min(1, t("promotion.validation.priorityRequired")),
+      startDate: z.string().min(1, t("promotion.validation.startDateRequired")),
+      endDate: z.string().min(1, t("promotion.validation.endDateRequired")),
+      bookingType: z.number(),
+
+      minNights: z.string().min(1, t("promotion.validation.minNightsRequired")),
+
+      customerType: z.string(),
+
+      roomTypes: z.array(
+        z.object({
+          id: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      // priority
+      if (Number(data.priority) < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["priority"],
+          message: t("promotion.validation.priorityMin"),
+        });
+      }
+
+      // value
+      const value = Number(data.value);
+
+      if (data.type === "2") {
+        if (value <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyPositive"),
+          });
+        }
+
+        if (value > 100000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyMax"),
+          });
+        }
+      } else {
+        if (value <= 0 || value > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valuePercentRange"),
+          });
+        }
+      }
+
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("promotion.validation.endDateAfterStart"),
+        });
+      }
+
+      // min nights
+      if (Number(data.minNights) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsPositive"),
+        });
+      }
+
+      if (Number(data.minNights) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsTooLarge"),
+        });
+      }
+    });
+  type FormData = z.infer<typeof promotionSchema>;
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(promotionSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      description: "",
+      type: "2",
+      value: "",
+      priority: "",
+      startDate: "",
+      endDate: "",
+      bookingType: 1,
+      minNights: "",
+      customerType: "0",
+      roomTypes: [],
+    },
   });
+  const formData = watch();
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);
@@ -46,22 +152,20 @@ const CreatePromotionPage = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (loading) return;
+  const onSubmit = async (data: FormData) => {
     try {
-      setLoading(true);
       const payload = {
-        name: formData.name,
-        description: formData.description,
-        type: formData.type,
-        value: formData.value,
-        priority: formData.priority,
-        startDate: formData.startDate || null,
-        endDate: formData.endDate || null,
-        bookingType: formData.bookingType,
-        customerType: formData.customerType,
-        minNights: formData.minNights,
-        promotionRoomTypeRequests: formData.roomTypes.map((r) => ({
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        value: data.value,
+        priority: data.priority,
+        startDate: data.startDate || null,
+        endDate: data.endDate || null,
+        bookingType: data.bookingType,
+        customerType: data.customerType,
+        minNights: data.minNights,
+        promotionRoomTypeRequests: data.roomTypes.map((r) => ({
           roomTypeId: r.id,
           excluded: r.excluded,
         })),
@@ -73,7 +177,7 @@ const CreatePromotionPage = () => {
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
+      reset({
         name: "",
         description: "",
         type: "2",
@@ -95,8 +199,6 @@ const CreatePromotionPage = () => {
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setLoading(false);
     }
   };
   return (
@@ -144,13 +246,28 @@ const CreatePromotionPage = () => {
         {/* Content */}
         <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
           {activeTab === "general" && (
-            <GeneralTab formData={formData} setFormData={setFormData} />
+            <GeneralTab
+              watch={watch}
+              setValue={setValue}
+              trigger={trigger}
+              errors={errors}
+            />
           )}
           {activeTab === "offer" && (
-            <OfferTab formData={formData} setFormData={setFormData} />
+            <OfferTab
+              watch={watch}
+              setValue={setValue}
+              trigger={trigger}
+              errors={errors}
+            />
           )}
           {activeTab === "targeting" && (
-            <TargetingTab formData={formData} setFormData={setFormData} />
+            <TargetingTab
+              watch={watch}
+              setValue={setValue}
+              trigger={trigger}
+              errors={errors}
+            />
           )}
         </div>
         <div
@@ -177,7 +294,7 @@ const CreatePromotionPage = () => {
               <Button
                 variant="secondary"
                 onClick={handleBack}
-                disabled={loading}
+                disabled={isSubmitting}
                 className="w-full sm:w-auto"
               >
                 {t("promotion.back")}
@@ -190,18 +307,18 @@ const CreatePromotionPage = () => {
             {!isLastTab ? (
               <Button
                 onClick={handleNext}
-                disabled={loading}
+                disabled={isSubmitting || !isValid}
                 className="w-full sm:w-auto"
               >
                 {t("promotion.next")}
               </Button>
             ) : (
               <Button
-                onClick={handleSubmit}
-                disabled={loading}
+                onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting || !isValid}
                 className="w-full sm:w-auto min-w-[120px]"
               >
-                {loading ? (
+                {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg
                       className="h-4 w-4 animate-spin"

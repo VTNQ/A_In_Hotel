@@ -11,40 +11,223 @@ import { createVoucher } from "@/service/api/Voucher";
 import { CUSTOMER_TYPE_OPTIONS } from "@/type/Promotion.types";
 import {
   USAGE_TYPE_OPTIONS,
-  type voucherFormProps,
 } from "@/type/voucher.types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
 
 const CreateVoucherPage = () => {
-  const [formData, setFormData] = useState<voucherFormProps>({
-    voucherCode: "",
-    voucherName: "",
-    type: "1",
-    description: "",
-    value: "",
-    maxDiscountValue: "",
-    bookingType: "1",
-    minimumStay: "",
-    customerType: 0,
-    usageType: 1,
-    usageLimit: "",
-    usagePerCustomer: "",
-    startDate: undefined,
-    endDate: undefined,
-    stackWithPromotion: false,
-    stackWithOtherVoucher: false,
-    priority: "",
-    roomTypes: [],
+  const { t } = useTranslation();
+  const voucherSchema = z
+    .object({
+      voucherCode: z
+        .string()
+        .min(1, t("voucher.validation.codeRequired"))
+        .min(3, t("voucher.validation.codeMinLength"))
+        .max(20, t("voucher.validation.codeMaxLength")),
+
+      voucherName: z
+        .string()
+        .min(1, t("voucher.validation.nameRequired"))
+        .min(3, t("voucher.validation.nameMinLength"))
+        .max(100, t("voucher.validation.nameMaxLength")),
+
+      type: z.string().min(1, t("voucher.validation.typeRequired")),
+
+      description: z.string().optional(),
+
+      value: z.string().min(1, t("voucher.validation.valueRequired")),
+
+      maxDiscountValue: z.string().optional(),
+
+      bookingType: z
+        .string()
+        .min(1, t("voucher.validation.bookingTypeRequired")),
+
+      minimumStay: z
+        .string()
+        .min(1, t("voucher.validation.minimumStayRequired")),
+
+      customerType: z.number(),
+
+      usageType: z.number(),
+
+      usageLimit: z.string().min(1, t("voucher.validation.usageLimitRequired")),
+
+      usagePerCustomer: z.string().optional(),
+
+      startDate: z
+        .date()
+        .optional()
+        .refine((val) => val !== undefined, {
+          message: t("voucher.validation.startDateRequired"),
+        }),
+      endDate: z
+        .date()
+        .optional()
+        .refine((val) => val !== undefined, {
+          message: t("voucher.validation.endDateRequired"),
+        }),
+
+      stackWithPromotion: z.boolean(),
+
+      stackWithOtherVoucher: z.boolean(),
+
+      priority: z.string().optional(),
+
+      roomTypes: z.array(
+        z.object({
+          roomTypeId: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      const value = Number(data.value);
+
+      // value
+      if (data.type === "2") {
+        // percent
+        if (value <= 0 || value > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valuePercentRange"),
+          });
+        }
+
+        if (!data.maxDiscountValue) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["maxDiscountValue"],
+            message: t("voucher.validation.maxDiscountRequired"),
+          });
+        } else if (Number(data.maxDiscountValue) <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["maxDiscountValue"],
+            message: t("voucher.validation.maxDiscountPositive"),
+          });
+        }
+      } else {
+        // fixed amount
+        if (value <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valueMoneyPositive"),
+          });
+        }
+
+        if (value > 1000000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("voucher.validation.valueMoneyMax"),
+          });
+        }
+      }
+
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("voucher.validation.endDateAfterStart"),
+        });
+      }
+
+      // minimumStay
+      if (Number(data.minimumStay) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minimumStay"],
+          message: t("voucher.validation.minimumStayPositive"),
+        });
+      }
+
+      if (Number(data.minimumStay) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minimumStay"],
+          message: t("voucher.validation.minimumStayMax"),
+        });
+      }
+
+      // usageLimit
+      if (Number(data.usageLimit) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["usageLimit"],
+          message: t("voucher.validation.usageLimitPositive"),
+        });
+      }
+
+      // usagePerCustomer
+      if (data.usagePerCustomer && Number(data.usagePerCustomer) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["usagePerCustomer"],
+          message: t("voucher.validation.usagePerCustomerPositive"),
+        });
+      }
+
+      // roomTypes
+      const hasRoom = data.roomTypes.some((r) => r.excluded);
+
+      if (!hasRoom) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["roomTypes"],
+          message: t("voucher.validation.roomTypeRequired"),
+        });
+      }
+    });
+
+  type VoucherFormData = z.infer<typeof voucherSchema>;
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    register,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<VoucherFormData>({
+    resolver: zodResolver(voucherSchema),
+    mode: "onChange",
+    defaultValues: {
+      voucherCode: "",
+      voucherName: "",
+      type: "1",
+      description: "",
+      value: "",
+      maxDiscountValue: "",
+      bookingType: "1",
+      minimumStay: "",
+      customerType: 0,
+      usageType: 1,
+      usageLimit: "",
+      usagePerCustomer: "",
+      startDate: undefined,
+      endDate: undefined,
+      stackWithPromotion: false,
+      stackWithOtherVoucher: false,
+      priority: "",
+      roomTypes: [],
+    },
   });
+
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const [roomTypes, setRoomTypes] = useState<any[]>([]);
   const [loadingRoom, setLoadingRoom] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const { t } = useTranslation();
+
   useEffect(() => {
     const fetchData = async () => {
       setLoadingRoom(true);
@@ -57,13 +240,17 @@ const CreateVoucherPage = () => {
         const data = response.content || [];
         setRoomTypes(data);
 
-        setFormData((prev) => ({
-          ...prev,
-          roomTypes: data.map((room: any) => ({
+        setValue(
+          "roomTypes",
+          data.map((room: any) => ({
             roomTypeId: room.id,
             excluded: false,
           })),
-        }));
+          {
+            shouldValidate: true,
+            shouldDirty: true,
+          },
+        );
       } catch (err) {
         console.error(err);
       } finally {
@@ -75,56 +262,78 @@ const CreateVoucherPage = () => {
   }, []);
 
   const toggleRoomType = (roomTypeId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) =>
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) =>
         r.roomTypeId === roomTypeId ? { ...r, excluded: !r.excluded } : r,
       ),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
   const selectAllRoomTypes = () => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) => ({
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) => ({
         ...r,
         excluded: true,
       })),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
   const unselectAllRoomTypes = () => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) => ({
+    const currentRoomTypes = watch("roomTypes") || [];
+
+    setValue(
+      "roomTypes",
+      currentRoomTypes.map((r) => ({
         ...r,
         excluded: false,
       })),
-    }));
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("roomTypes");
   };
-  const isPercent = formData.type === "2";
-  const handleSubmit = async () => {
-    if (saving) return;
+
+  const onSumit = async (data: VoucherFormData) => {
     try {
-      setSaving(true);
       const payload = {
-        voucherCode: formData.voucherCode,
-        voucherName: formData.voucherName,
-        type: formData.type,
-        description: formData.description,
-        value: formData.value,
-        maxDiscountValue: isPercent ? formData.maxDiscountValue : "",
-        bookingType: formData.bookingType,
-        minimumStay: formData.minimumStay,
-        customerType: formData.customerType,
-        usageType: formData.usageType,
-        usageLimit: formData.usageLimit,
+        voucherCode: data.voucherCode,
+        voucherName: data.voucherName,
+        type: data.type,
+        description: data.description,
+        value: data.value,
+        maxDiscountValue: watch("type") === "2" ? data.maxDiscountValue : "",
+        bookingType: data.bookingType,
+        minimumStay: data.minimumStay,
+        customerType: data.customerType,
+        usageType: data.usageType,
+        usageLimit: data.usageLimit,
         usagePerCustomer:
-          formData.usagePerCustomer == "" ? null : formData.usagePerCustomer,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        stackWithPromotion: formData.stackWithPromotion,
-        stackWithOtherVoucher: formData.stackWithOtherVoucher,
-        priority: formData.priority,
-        roomTypes: formData.roomTypes.map((r) => ({
+          data.usagePerCustomer == "" ? null : data.usagePerCustomer,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        stackWithPromotion: data.stackWithPromotion,
+        stackWithOtherVoucher: data.stackWithOtherVoucher,
+        priority: data.priority,
+        roomTypes: data.roomTypes.map((r) => ({
           roomTypeId: r.roomTypeId,
           excluded: r.excluded,
         })),
@@ -136,7 +345,7 @@ const CreateVoucherPage = () => {
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
+      reset({
         voucherCode: "",
         voucherName: "",
         type: "",
@@ -163,8 +372,6 @@ const CreateVoucherPage = () => {
           t("voucher.createOrUpdate.createError"),
         type: "error",
       });
-    } finally {
-      setSaving(false);
     }
   };
   return (
@@ -196,18 +403,17 @@ const CreateVoucherPage = () => {
                   {t("voucher.createOrUpdate.voucherName")}
                 </label>
                 <Input
-                  value={formData.voucherName}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      voucherName: e.target.value,
-                    }));
-                  }}
+                  {...register("voucherName")}
                   type="text"
                   placeholder={t(
                     "voucher.createOrUpdate.voucherNamePlaceHolder",
                   )}
                 />
+                {errors.voucherName && (
+                  <span className="text-red-500">
+                    {errors.voucherName.message}
+                  </span>
+                )}
               </div>
 
               <div>
@@ -216,17 +422,16 @@ const CreateVoucherPage = () => {
                 </label>
                 <Input
                   type="text"
-                  value={formData.voucherCode}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      voucherCode: e.target.value,
-                    }))
-                  }
+                  {...register("voucherCode")}
                   placeholder={t(
                     "voucher.createOrUpdate.voucherCodePlaceHolder",
                   )}
                 />
+                {errors.voucherCode && (
+                  <span className="text-red-500">
+                    {errors.voucherCode.message}
+                  </span>
+                )}
               </div>
 
               <div>
@@ -234,13 +439,7 @@ const CreateVoucherPage = () => {
                   {t("voucher.createOrUpdate.description")}
                 </label>
                 <Textarea
-                  value={formData.description}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }));
-                  }}
+                  {...register("description")}
                   placeholder={t(
                     "voucher.createOrUpdate.descriptionPlaceholder",
                   )}
@@ -262,13 +461,22 @@ const CreateVoucherPage = () => {
                   </label>
                   <div className="relative">
                     <DatePickerField
-                      value={formData.startDate}
-                      onChange={(d?: Date) =>
-                        setFormData((p) => ({ ...p, startDate: d }))
-                      }
+                      value={watch("startDate")}
+                      onChange={(d?: Date) => {
+                        setValue("startDate", d, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        trigger("startDate");
+                      }}
                       className="mt-1"
                       placeholder={t("staff.birthdayPlaceholder")}
                     />
+                    {errors.startDate && (
+                      <span className="text-red-500">
+                        {errors.startDate.message}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -278,10 +486,14 @@ const CreateVoucherPage = () => {
                   </label>
                   <div className="relative">
                     <DatePickerField
-                      value={formData.endDate}
-                      onChange={(d?: Date) =>
-                        setFormData((p) => ({ ...p, endDate: d }))
-                      }
+                      value={watch("endDate")}
+                      onChange={(d?: Date) => {
+                        setValue("endDate", d, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        trigger("endDate");
+                      }}
                       className="mt-1"
                       placeholder={t("staff.birthdayPlaceholder")}
                     />
@@ -302,26 +514,28 @@ const CreateVoucherPage = () => {
                   description={t(
                     "voucher.createOrUpdate.stackWithPromotionDesc",
                   )}
-                  checked={formData.stackWithPromotion}
-                  onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      stackWithPromotion: value,
-                    }))
-                  }
+                  checked={watch("stackWithPromotion")}
+                  onChange={(value) => {
+                    setValue("stackWithPromotion", value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("stackWithPromotion");
+                  }}
                 />
                 <Toggle
                   label={t("voucher.createOrUpdate.stackWithOtherVoucher")}
                   description={t(
                     "voucher.createOrUpdate.stackWithOtherVoucherDesc",
                   )}
-                  checked={formData.stackWithOtherVoucher}
-                  onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      stackWithOtherVoucher: value,
-                    }))
-                  }
+                  checked={watch("stackWithOtherVoucher")}
+                  onChange={(value) => {
+                    setValue("stackWithOtherVoucher", value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("stackWithOtherVoucher");
+                  }}
                 />
 
                 <div>
@@ -333,12 +547,13 @@ const CreateVoucherPage = () => {
                   </label>
                   <Input
                     type="number"
-                    value={formData.priority}
+                    value={watch("priority")}
                     onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        priority: e.target.value,
-                      }));
+                      setValue("priority", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("priority");
                     }}
                     placeholder="1"
                   />
@@ -378,7 +593,7 @@ const CreateVoucherPage = () => {
                       />
                     ))
                   : roomTypes.map((room) => {
-                      const roomState = formData.roomTypes.find(
+                      const roomState = watch("roomTypes").find(
                         (r) => r.roomTypeId === room.id,
                       );
 
@@ -450,8 +665,14 @@ const CreateVoucherPage = () => {
                     { value: "2", label: t("promotion.offer.percent") },
                     { value: "3", label: t("promotion.offer.special") },
                   ]}
-                  value={formData.type}
-                  onChange={(v) => setFormData((p) => ({ ...p, type: v }))}
+                  value={watch("type")}
+                  onChange={(v) => {
+                    setValue("type", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("type");
+                  }}
                   size="sm"
                   fullWidth={true}
                   getValue={(i) => i.value}
@@ -460,7 +681,7 @@ const CreateVoucherPage = () => {
               </div>
 
               <div
-                className={`grid ${isPercent ? "grid-cols-2" : "grid-cols-1"} gap-4`}
+                className={`grid ${watch("type") === "2" ? "grid-cols-2" : "grid-cols-1"} gap-4`}
               >
                 <div>
                   <label className="block mb-1 font-medium text-[#253150]">
@@ -469,22 +690,23 @@ const CreateVoucherPage = () => {
                   <div className="relative">
                     <Input
                       type="text"
-                      value={formData.value}
+                      value={watch("value")}
                       onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          value: e.target.value,
-                        }));
+                        setValue("value", e.target.value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        trigger("value");
                       }}
                       placeholder={t("voucher.createOrUpdate.valuePlaceholder")}
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563]">
-                      {isPercent ? "%" : "VND"}
+                      {watch("type") === "2" ? "%" : "VND"}
                     </span>
                   </div>
                 </div>
 
-                {isPercent && (
+                {watch("type") === "2" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                       {t("voucher.createOrUpdate.maxDiscount")}
@@ -492,13 +714,14 @@ const CreateVoucherPage = () => {
                     <div className="relative">
                       <input
                         type="number"
-                        value={formData.maxDiscountValue}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            maxDiscountValue: e.target.value,
-                          }))
-                        }
+                        value={watch("maxDiscountValue")}
+                        onChange={(e) => {
+                          setValue("maxDiscountValue", e.target.value, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
+                          trigger("maxDiscountValue");
+                        }}
                         placeholder={t(
                           "voucher.createOrUpdate.maxDiscountPlaceholder",
                         )}
@@ -545,10 +768,14 @@ const CreateVoucherPage = () => {
                           label: t("bookingDateTime.packageFullDay"),
                         },
                       ]}
-                      value={formData.bookingType}
-                      onChange={(v) =>
-                        setFormData((prev) => ({ ...prev, bookingType: v }))
-                      }
+                      value={watch("bookingType")}
+                      onChange={(v) => {
+                        setValue("bookingType", String(v), {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        trigger("bookingType");
+                      }}
                       size="sm"
                       fullWidth
                       getValue={(i) => i.value}
@@ -562,12 +789,13 @@ const CreateVoucherPage = () => {
                     {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <Input
-                    value={formData.minimumStay}
+                    value={watch("minimumStay")}
                     onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        minimumStay: e.target.value,
-                      }));
+                      setValue("minimumStay", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("minimumStay");
                     }}
                     type="number"
                     placeholder="2"
@@ -586,7 +814,7 @@ const CreateVoucherPage = () => {
 
                 <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-[#E3E7F2] bg-white">
                   {CUSTOMER_TYPE_OPTIONS.map((type) => {
-                    const checked = formData.customerType === type.value;
+                    const checked = watch("customerType") === type.value;
                     return (
                       <label
                         key={type.value}
@@ -598,10 +826,10 @@ const CreateVoucherPage = () => {
                           type="checkbox"
                           checked={checked}
                           onChange={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              customerType: type.value,
-                            }));
+                            setValue("customerType", type.value, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
                           }}
                           className="hidden"
                         />
@@ -633,17 +861,18 @@ const CreateVoucherPage = () => {
 
                 <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[#E3E7F2] bg-white">
                   {USAGE_TYPE_OPTIONS.map((opt) => {
-                    const checked = formData.usageType === opt.value;
+                    const checked = watch("usageType") === opt.value;
                     return (
                       <div
                         key={opt.value}
                         role="radio"
                         aria-checked={checked}
                         onClick={() => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            usageType: opt.value,
-                          }));
+                          setValue("usageType", opt.value, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
+                          trigger("usageType");
                         }}
                         className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer  ${
                           checked
@@ -679,12 +908,13 @@ const CreateVoucherPage = () => {
                   </label>
                   <Input
                     type="number"
-                    value={formData.usageLimit}
+                    value={watch("usageLimit")}
                     onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        usageLimit: e.target.value,
-                      }));
+                      setValue("usageLimit", e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      trigger("usageLimit");
                     }}
                     placeholder="100"
                   />
@@ -693,15 +923,16 @@ const CreateVoucherPage = () => {
                 <Toggle
                   label={t("voucher.createOrUpdate.usagePerCustomer")}
                   description={t("voucher.createOrUpdate.usagePerCustomerDesc")}
-                  checked={formData.usagePerCustomer !== ""}
+                  checked={watch("usagePerCustomer") !== ""}
                   onChange={(checked) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      usagePerCustomer: checked ? "1" : "",
-                    }));
+                    setValue("usagePerCustomer", checked ? "1" : "", {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                   trigger("usagePerCustomer");
                   }}
                 />
-                {formData.usagePerCustomer !== "" && (
+                {watch("usagePerCustomer") !== "" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                       {t("voucher.createOrUpdate.usageLimitPerCustomer")}
@@ -709,12 +940,14 @@ const CreateVoucherPage = () => {
                     <Input
                       type="number"
                       min={1}
-                      value={formData.usagePerCustomer}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          usagePerCustomer: e.target.value,
-                        }))
+                      value={watch("usagePerCustomer")}
+                      onChange={(e) =>{
+                        setValue("usagePerCustomer",e.target.value,{
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                        trigger("usagePerCustomer");
+                      }
                       }
                       placeholder={t(
                         "voucher.createOrUppdate.usageLimitPerCustomerPlaceholder",
@@ -735,11 +968,11 @@ const CreateVoucherPage = () => {
           {t("common.cancel")}
         </Button>
         <Button
-          onClick={handleSubmit}
-          disabled={saving}
+          onClick={handleSubmit(onSumit)}
+          disabled={isSubmitting || !isValid}
           className="min-w-[140px]"
         >
-          {saving ? (
+          {isSubmitting ? (
             <span className="flex items-center gap-2">
               <svg
                 className="h-4 w-4 animate-spin"

@@ -476,6 +476,11 @@ const CreateVoucher = ({
                       {...register("endDate")}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
+                     {errors.endDate && (
+                      <span className="text-red-500">
+                        {errors.endDate.message}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

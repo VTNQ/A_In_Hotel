@@ -12,8 +12,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
   const roomTypes = watch("roomTypes") || [];
-  const customerType = watch("customerType") || "0";
-  const bookingType = watch("bookingType") || 1;
+
   useEffect(() => {
     const fetchData = async () => {
       try {

@@ -47,13 +47,12 @@ const CreateAssetPage = () => {
   type FormData = z.infer<typeof assetSchema>;
 
   const {
-    register,
     handleSubmit,
     reset,
     setValue,
     watch,
     trigger,
-    formState: { errors, isValid, isSubmitting },
+    formState: { isValid, isSubmitting },
   } = useForm<FormData>({
     mode: "onBlur",
     defaultValues: {

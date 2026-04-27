@@ -22,6 +22,10 @@ import { SelectField } from "../ui/select";
 import { Button } from "../ui/button";
 
 import { Plus, Trash2, Upload, X } from "lucide-react";
+import z from "zod";
+import { createImageHotelSchema } from "@/validation/image.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
 
 const HotelEditModal: React.FC<HotelEditProps> = ({
   open,
@@ -31,21 +35,75 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const { t } = useTranslation();
+  const hotelSchema = z
+    .object({
+      name: z.string().min(1, t("hotel.validation.nameRequired")),
 
-  const [loading, setLoading] = useState(false);
+      address: z.string().min(1, t("hotel.validation.addressRequired")),
+
+      idUser: z.preprocess(
+        (val) => (val === null || val === "" ? undefined : Number(val)),
+        z.number({
+          error: t("hotel.validation.managerRequired"),
+        }),
+      ),
+
+      image: z.any().optional(),
+
+      hotlines: z
+        .array(
+          z.object({
+            phone: z
+              .string()
+              .min(1, t("hotel.validation.phoneRequired"))
+              .regex(
+                /^(0|\+84)[0-9]{9,10}$/,
+                t("hotel.validation.phoneInvalid"),
+              ),
+          }),
+        )
+        .min(1, t("hotel.validation.phoneRequired")),
+    })
+    .superRefine((data, ctx) => {
+      if (imagePreview) return;
+      const imageValidation = createImageHotelSchema(t).safeParse(data.image);
+
+      if (!imageValidation.success) {
+        imageValidation.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["image"],
+            message: issue.message,
+          });
+        });
+      }
+    });
+  type FormData = z.input<typeof hotelSchema>;
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(hotelSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      address: "",
+      idUser: undefined,
+      image: null,
+      hotlines: [{ phone: "" }],
+    },
+  });
   const [fetching, setFetching] = useState(false);
   const [users, setUsers] = useState<UserResponse[]>([]);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [formData, setFormData] = useState<HotelFormData>({
-    name: "",
-    address: "",
-    idUser: null,
-    image: null as File | null,
-    hotlines: [],
-  });
 
   // cleanup blob preview
   useEffect(() => {
@@ -55,7 +113,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
   }, [imagePreview]);
 
   const resetForm = () => {
-    setFormData({
+    reset({
       name: "",
       address: "",
       idUser: null,
@@ -84,7 +142,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         const response = await getHotelById(Number(hotelId));
         const d = response?.data?.data;
 
-        setFormData({
+        reset({
           name: d?.name || "",
           address: d?.address || "",
           idUser: d?.idUser ?? null,
@@ -116,22 +174,28 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
 
   const handleRemoveImage = () => {
     setImagePreview(null);
-    setFormData((prev) => ({ ...prev, image: null }));
+    setValue("image",null,{
+      shouldValidate:true,
+      shouldDirty:true
+    })
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
-
-  const handleSubmit = async () => {
-    if (loading || !hotelId) return;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "hotlines",
+  });
+  const onSubmitForm = async (data: FormData) => {
+    if (  !hotelId) return;
 
     try {
-      setLoading(true);
+   
 
       const payload = {
-        name: formData.name,
-        address: formData.address,
-        idUser: formData.idUser,
-        image: formData.image,
-        hotlines: formData.hotlines.filter((h) => h.phone.trim() !== ""),
+        name: data.name,
+        address: data.address,
+        idUser: data.idUser,
+        image: data.image,
+        hotlines: data.hotlines.filter((h) => h.phone.trim() !== ""),
       };
 
       const response = await updateHotel(Number(hotelId), payload);
@@ -152,9 +216,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   return (
@@ -213,30 +275,37 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     {t("hotel.hotelEdit.name")}
                   </label>
                   <Input
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData((f) => ({ ...f, name: e.target.value }))
-                    }
+                    {...register("name")}
                     placeholder={t("hotel.hotelEdit.name")}
                     className="h-10"
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Manager */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">
-                    {t("hotel.hotelEdit.manager")} <span className="text-red-500">*</span>
+                    {t("hotel.hotelEdit.manager")}{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <SelectField<UserResponse>
                     items={users}
                     isRequired
-                    value={formData.idUser != null ? String(formData.idUser) : null}
-                    onChange={(val) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        idUser: val ? Number(val) : null,
-                      }))
-                    }
+                     value={watch("idUser") ? String(watch("idUser")) : null}
+                  onChange={(val)=>{
+                    setValue(
+                      "idUser",
+                      val ? Number(val) : null,
+                      {
+                        shouldValidate:true,
+                        shouldDirty:true
+                      }
+                    )
+                  }}
                     placeholder={t("hotel.hotelEdit.chooseManager")}
                     clearable
                     size="md"
@@ -252,13 +321,15 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     {t("hotel.hotelEdit.address")}
                   </label>
                   <Textarea
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData((f) => ({ ...f, address: e.target.value }))
-                    }
+                    {...register("address")}
                     placeholder={t("hotel.hotelEdit.address")}
                     className="min-h-[96px]"
                   />
+                  {errors.address && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.address.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Hotlines */}
@@ -271,12 +342,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                       type="button"
                       variant="secondary"
                       className="h-9 gap-2"
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          hotlines: [...prev.hotlines, { phone: "" }],
-                        }))
-                      }
+                      onClick={() => append({ phone: "" })}
                     >
                       <Plus className="h-4 w-4" />
                       {t("hotel.hotelEdit.addHotline")}
@@ -284,39 +350,28 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                   </div>
 
                   <div className="space-y-2">
-                    {formData.hotlines.length === 0 ? (
+                    {fields.length === 0 ? (
                       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
                         {t("hotel.hotelEdit.hotlinePlaceholder")}
                       </div>
                     ) : (
-                      formData.hotlines.map((item, index) => (
+                      fields.map((field, index) => (
                         <div
-                          key={index}
+                          key={field.id}
                           className="flex flex-col gap-2 sm:flex-row sm:items-center"
                         >
                           <Input
                             className="h-10 w-full"
-                            placeholder={t("hotel.hotelEdit.hotlinePlaceholder")}
-                            value={item.phone}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setFormData((prev) => {
-                                const hotlines = [...prev.hotlines];
-                                hotlines[index] = { phone: value };
-                                return { ...prev, hotlines };
-                              });
-                            }}
+                            placeholder={t(
+                              "hotel.hotelEdit.hotlinePlaceholder",
+                            )}
+                            {...register(`hotlines.${index}.phone`)}
                           />
                           <Button
                             type="button"
                             variant="outline"
                             className="h-10 w-full sm:w-12"
-                            onClick={() => {
-                              setFormData((prev) => ({
-                                ...prev,
-                                hotlines: prev.hotlines.filter((_, i) => i !== index),
-                              }));
-                            }}
+                            onClick={() => remove(index)}
                             aria-label="Remove hotline"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -341,7 +396,10 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      setFormData((prev) => ({ ...prev, image: file }));
+                      setValue("image",{
+                        shouldValidate:true,
+                        shouldDirty:true
+                      })
                       setImagePreview(URL.createObjectURL(file));
                     }}
                   />
@@ -402,16 +460,16 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
               variant="outline"
               className="h-10 w-full sm:w-auto"
               onClick={handleClose}
-              disabled={loading}
+              disabled={isSubmitting}
             >
               {t("common.cancel")}
             </Button>
             <Button
               className="h-10 w-full sm:w-auto"
-              onClick={handleSubmit}
-              disabled={loading}
+              onClick={handleSubmit(onSubmitForm)}
+              disabled={isSubmitting || !isValid}
             >
-              {loading ? t("common.saving") : t("common.save")}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </DialogFooter>
         </div>

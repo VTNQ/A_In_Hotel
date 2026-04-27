@@ -29,22 +29,8 @@ const EditBlog: React.FC<BlogEditProps> = ({
   onSubmit,
 }) => {
   const { showAlert } = useAlert();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<BlogForm>({
-    title: "",
-    category: "",
-    description: "",
-    content: "",
-    status: "",
-    image: null,
-  });
   const { t } = useTranslation();
-  const handleTextChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+
   const categories = [
     { id: "1", name: t("blog.blogCategories.newsUpdates") },
     { id: "2", name: t("blog.blogCategories.offersPromotions") },
@@ -116,7 +102,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
     });
   type FormData = z.infer<typeof blogSchema>;
   const {
-    register,
+
     handleSubmit,
     reset,
     setValue,
@@ -144,7 +130,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
       try {
         const response = await findById(blogId);
         const b = response?.data?.data;
-        setFormData({
+        reset({
           title: b.title || "",
           category: b.categoryId ? String(b.categoryId) : "",
           description: b.description || "",
@@ -185,7 +171,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         title: "",
         category: "",
         description: "",
@@ -287,7 +273,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
                   <SelectField
                     label={t("blog.category")}
                     items={categories}
-                    value={formData.category}
+                    value={watch("category")}
                     onChange={(v) => {
                       setValue("category", String(v), {
                         shouldValidate: true,

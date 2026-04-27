@@ -70,3 +70,39 @@ export const createImageBannerSchema = (t: (key: string) => string) => {
       },
     );
 };
+
+export const createImageHotelSchema = (t: (key: string) => string) => {
+  return z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: t("hotel.validate.imageRequired"),
+    })
+    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+      message: t("hotel.validate.imageTooLarge"),
+    })
+    .refine(
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      {
+        message: t("hotel.validate.imageInvalidType"),
+      },
+    );
+};
+
+export const createImageAdminSchema = (t: (key: string) => string) => {
+  return z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: t("admin.validate.imageRequired"),
+    })
+    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+      message: t("admin.validate.imageTooLarge"),
+    })
+    .refine(
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      {
+        message: t("admin.validate.imageInvalidType"),
+      },
+    );
+};

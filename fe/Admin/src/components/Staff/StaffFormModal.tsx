@@ -1,4 +1,3 @@
-import { useState } from "react";
 import CommonModal from "../ui/CommonModal";
 import { useAlert } from "../alert-context";
 import { create } from "../../service/api/Staff";
