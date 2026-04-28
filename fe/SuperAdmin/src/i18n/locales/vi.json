@@ -79,7 +79,7 @@
             "name": "Tên tiện ích",
             "namePlaceholder": "Nhập tên tiện ích",
             "description": "Mô tả",
-            "upload":"Nhấn để tải ảnh hoặc kéo thả",
+            "upload": "Nhấn để tải ảnh hoặc kéo thả",
             "uploadHint": "SVG, PNG, JPG",
             "descriptionPlaceholder": "Mô tả tiện ích (hiển thị cho khách)",
             "category": "Danh mục",
@@ -93,6 +93,14 @@
         "title": "Quản lý blog",
         "new": "+ Thêm bài viết",
         "viewTitle": "Xem bài viết",
+        "validate": {
+            "titleRequired": "Vui lòng nhập tiêu đề bài viết",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "contentRequired": "Vui lòng nhập nội dung bài viết",
+            "imageRequired": "Vui lòng chọn ảnh đại diện",
+            "imageTooLarge": "Ảnh tải lên không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ hỗ trợ định dạng ảnh JPG, PNG hoặc GIF"
+        },
         "blogCode": "Mã bài viết",
         "status": "Trạng thái",
         "loading": "Đang tải...",
@@ -186,6 +194,20 @@
     "promotion": {
         "title": "Quản lý chương trình khuyến mãi",
         "new": "+ Thêm chương trình",
+        "validation": {
+            "nameRequired": "Tên khuyến mãi là bắt buộc",
+            "nameMinLength": "Tên khuyến mãi phải có ít nhất 3 ký tự",
+            "nameMaxLength": "Tên khuyến mãi không được vượt quá 100 ký tự",
+            "valueRequired": "Giá trị khuyến mãi là bắt buộc",
+            "valueMoneyPositive": "Giá trị tiền giảm phải lớn hơn 0",
+            "valueMoneyMax": "Giá trị tiền giảm không được vượt quá 100.000.000",
+            "valuePercentRange": "Phần trăm giảm giá phải từ 1 đến 100",
+            "priorityRequired": "Độ ưu tiên là bắt buộc",
+            "priorityMin": "Độ ưu tiên phải lớn hơn hoặc bằng 1",
+            "startDateRequired": "Ngày bắt đầu là bắt buộc",
+            "endDateRequired": "Ngày kết thúc là bắt buộc",
+            "minNightsRequired": "Số đêm tối thiểu là bắt buộc"
+        },
         "code": "Mã chương trình",
         "name": "Tên chương trình",
         "roomType": "Loại phòng",
@@ -385,6 +407,12 @@
     "category": {
         "title": "Danh sách danh mục",
         "new": "+ Thêm danh mục",
+        "validate": {
+            "nameRequired": "Tên danh mục không được để trống",
+            "nameMaxLength": "Tên danh mục không được vượt quá 100 ký tự",
+            "typeRequired": "Loại danh mục không được để trống",
+            "descriptionMax": "Mô tả không được vượt quá 255 ký tự"
+        },
         "searchPlaceholder": "Tìm theo mã hoặc tên danh mục",
         "type": "Loại danh mục",
         "room": "Phòng",
@@ -421,6 +449,16 @@
     "hotel": {
         "listTitle": "Danh sách khách sạn",
         "notUpdated": "Chưa cập nhật",
+        "validation": {
+            "nameRequired": "Tên khách sạn là bắt buộc",
+            "addressRequired": "Địa chỉ khách sạn là bắt buộc",
+            "managerRequired": "Người quản lý là bắt buộc",
+            "phoneRequired": "Số điện thoại là bắt buộc",
+            "phoneInvalid": "Số điện thoại không hợp lệ",
+            "imageRequired": "Hình ảnh khách sạn là bắt buộc",
+            "imageTooLarge": "Kích thước ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận file JPG, PNG hoặc GIF"
+        },
         "loadError": "Không thể tải dữ liệu khách sạn",
         "deleteSuccess": "Xoá khách sạn thành công",
         "deleteError": "Xoá khách sạn thất bại",
@@ -485,6 +523,19 @@
     },
     "admin": {
         "title": "Danh sách Admin",
+        "validation": {
+            "emailRequired": "Email không được để trống",
+            "emailInvalid": "Email không đúng định dạng",
+            "fullNameRequired": "Họ và tên không được để trống",
+            "phoneRequired": "Số điện thoại không được để trống",
+            "phoneInvalid": "Số điện thoại không đúng định dạng",
+            "birthdayRequired": "Ngày sinh không được để trống",
+            "genderRequired": "Giới tính không được để trống",
+            "imageRequired": "Ảnh đại diện không được để trống",
+            "imageInvalid": "Tệp ảnh không hợp lệ",
+            "imageSize": "Kích thước ảnh phải nhỏ hơn 5MB",
+            "imageFormat": "Chỉ cho phép file JPG, JPEG, PNG"
+        },
         "add": "Thêm tài khoản",
         "filterStatus": "Lọc theo trạng thái",
         "search": {
@@ -513,6 +564,19 @@
     "childSuperAdmin": {
         "listTitle": "Danh sách Child SuperAdmin",
         "add": "Thêm tài khoản",
+        "validation": {
+            "emailRequired": "Email không được để trống",
+            "emailInvalid": "Email không đúng định dạng",
+            "fullNameRequired": "Họ và tên không được để trống",
+            "phoneRequired": "Số điện thoại không được để trống",
+            "phoneInvalid": "Số điện thoại không đúng định dạng",
+            "birthdayRequired": "Ngày sinh không được để trống",
+            "genderRequired": "Giới tính không được để trống",
+            "imageRequired": "Ảnh đại diện không được để trống",
+            "imageInvalid": "Tệp ảnh không hợp lệ",
+            "imageSize": "Kích thước ảnh phải nhỏ hơn 5MB",
+            "imageFormat": "Chỉ cho phép file JPG, JPEG, PNG"
+        },
         "search": {
             "default": "Tìm theo",
             "fullName": "Tìm theo tên...",
@@ -564,6 +628,18 @@
         "aboutHotel": {
             "title": "Giới thiệu khách sạn",
             "editTitle": "Chỉnh sửa nội dung",
+            "validate": {
+                "titleRequired": "Tiêu đề là bắt buộc",
+                "titleMinLength": "Tiêu đề phải có ít nhất 3 ký tự",
+                "titleMaxLength": "Tiêu đề không được vượt quá 150 ký tự",
+                "descriptionRequired": "Mô tả là bắt buộc",
+                "descriptionMinLength": "Mô tả phải có ít nhất 10 ký tự",
+                "descriptionMaxLength": "Mô tả không được vượt quá 2000 ký tự",
+                "ctaMaxLength": "Nội dung CTA không được vượt quá 100 ký tự",
+                "imageInvalid": "File hình ảnh không hợp lệ",
+                "imageTooLarge": "Kích thước hình ảnh phải nhỏ hơn 5MB",
+                "imageInvalidType": "Chỉ cho phép file JPG, PNG và GIF"
+            },
             "form": {
                 "success": "Cập nhật nội dung thành công.",
                 "error": "Cập nhật nội dung thất bại",
@@ -585,6 +661,17 @@
         "new": "+ Thêm dịch vụ",
         "searchPlaceholder": "Tìm theo tên hoặc mã",
         "hotel": "Khách sạn",
+        "validate": {
+            "serviceNameRequired": "Tên dịch vụ không được để trống",
+            "categoryRequired": "Danh mục không được để trống",
+            "hotelRequired": "Khách sạn không được để trống",
+            "typeRequired": "Loại dịch vụ không được để trống",
+            "extraChargeRequired": "Phụ phí không được để trống",
+            "extraChargeInvalid": "Phụ phí phải là số hợp lệ và lớn hơn hoặc bằng 0",
+            "imageRequired": "Hình ảnh không được để trống",
+            "imageTooLarge": "Kích thước ảnh phải nhỏ hơn 5MB",
+            "imageInvalidType": "Chỉ chấp nhận file JPG, PNG hoặc GIF"
+        },
         "status": {
             "updateSuccess": "Cập nhật trạng thái thành công",
             "updateFailed": "Cập nhật trạng thái thất bại"
@@ -621,6 +708,18 @@
     },
     "asset": {
         "title": "Tiện nghi & theo dõi tài sản",
+        "validate": {
+            "assetNameRequired": "Tên tài sản không được để trống",
+            "categoryRequired": "Danh mục không được để trống",
+            "roomRequired": "Phòng không được để trống",
+            "priceRequired": "Giá không được để trống",
+            "priceInvalid": "Giá phải là số hợp lệ và lớn hơn hoặc bằng 0",
+            "hotelRequired": "Khách sạn không được để trống",
+            "quantityInvalid": "Số lượng phải là số hợp lệ và lớn hơn hoặc bằng 0",
+            "imageRequired": "Hình ảnh không được để trống",
+            "imageTooLarge": "Kích thước ảnh phải nhỏ hơn 5MB",
+            "imageInvalidType": "Chỉ chấp nhận file JPG, PNG hoặc GIF"
+        },
         "new": "+ Thêm tài sản",
         "code": "Mã tài sản",
         "icon": "Biểu tượng",
@@ -684,6 +783,28 @@
     "room": {
         "code": "Mã phòng",
         "title": "Phòng",
+        "validation": {
+            "roomNumberRequired": "Vui lòng nhập số phòng",
+            "roomNameRequired": "Vui lòng nhập tên phòng",
+            "roomTypeRequired": "Vui lòng chọn loại phòng",
+            "hotelRequired": "Vui lòng chọn khách sạn",
+            "floorRequired": "Vui lòng nhập tầng",
+            "floorInvalid": "Tầng phải lớn hơn 0",
+            "areaRequired": "Vui lòng nhập diện tích",
+            "areaInvalid": "Diện tích phải lớn hơn 0",
+            "capacityRequired": "Vui lòng nhập sức chứa",
+            "capacityInvalid": "Sức chứa phải lớn hơn 0",
+            "basePriceRequired": "Vui lòng nhập giá cơ bản",
+            "basePriceInvalid": "Giá cơ bản phải lớn hơn 0",
+            "additionalPriceRequired": "Vui lòng nhập giá phụ thu theo giờ",
+            "additionalPriceInvalid": "Giá phụ thu theo giờ phải lớn hơn 0",
+            "overnightPriceRequired": "Vui lòng nhập giá qua đêm",
+            "overnightPriceInvalid": "Giá qua đêm phải lớn hơn 0",
+            "defaultRateRequired": "Vui lòng nhập giá cả ngày",
+            "defaultRateInvalid": "Giá cả ngày phải lớn hơn 0",
+            "imageRequired": "Vui lòng chọn ít nhất 1 ảnh",
+            "maxImages": "Tối đa chỉ được tải lên 5 ảnh"
+        },
         "hotel": "Khách sạn",
         "roomNumber": "Số phòng",
         "price": "Giá",
@@ -766,6 +887,14 @@
     },
     "banner": {
         "title": "Quản lý Banner",
+        "validate": {
+            "nameRequired": "Tên banner là bắt buộc",
+            "startDateRequired": "Ngày bắt đầu là bắt buộc",
+            "endDateRequired": "Ngày kết thúc là bắt buộc",
+            "imageRequired": "Hình ảnh banner là bắt buộc",
+            "imageTooLarge": "Kích thước ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận file JPG, PNG hoặc GIF"
+        },
         "name": "Tiêu đề Banner",
         "startAt": "Bắt đầu từ",
         "new": "+ Thêm banner",
@@ -901,6 +1030,14 @@
     },
     "staff": {
         "title": "Quản lý nhân viên",
+        "validate": {
+            "fullNameRequired": "Họ và tên là bắt buộc",
+            "hotelRequired": "Khách sạn là bắt buộc",
+            "emailRequired": "Email là bắt buộc",
+            "emailInvalid": "Định dạng email không hợp lệ",
+            "phoneInvalid": "Số điện thoại phải gồm từ 9 đến 11 chữ số",
+            "birthdayRequired": "Ngày sinh là bắt buộc"
+        },
         "new": "+ Thêm nhân viên",
         "selectHotel": "Chọn chi nhánh khách sạn",
         "active": "Hoạt động",
@@ -1062,7 +1199,7 @@
     },
     "serviceSelection": {
         "title": "Nâng cao trải nghiệm lưu trú",
-        "ofBooking":"trên tổng đơn đặt",
+        "ofBooking": "trên tổng đơn đặt",
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",
@@ -1132,6 +1269,32 @@
     "voucher": {
         "title": "Quản lý Voucher",
         "new": "+ Thêm Voucher",
+        "validation": {
+            "codeRequired": "Mã voucher là bắt buộc",
+            "codeMinLength": "Mã voucher phải có ít nhất 3 ký tự",
+            "codeMaxLength": "Mã voucher không được vượt quá 20 ký tự",
+            "nameRequired": "Tên voucher là bắt buộc",
+            "nameMinLength": "Tên voucher phải có ít nhất 3 ký tự",
+            "nameMaxLength": "Tên voucher không được vượt quá 100 ký tự",
+            "typeRequired": "Loại giảm giá là bắt buộc",
+            "valueRequired": "Giá trị giảm giá là bắt buộc",
+            "valuePercentRange": "Giảm giá theo phần trăm phải từ 1% đến 100%",
+            "valueMoneyPositive": "Số tiền giảm cố định phải lớn hơn 0",
+            "valueMoneyMax": "Số tiền giảm cố định không được vượt quá 1.000.000.000 VNĐ",
+            "maxDiscountRequired": "Giá trị giảm tối đa là bắt buộc",
+            "maxDiscountPositive": "Giá trị giảm tối đa phải lớn hơn 0",
+            "bookingTypeRequired": "Loại đặt phòng là bắt buộc",
+            "minimumStayRequired": "Số ngày lưu trú tối thiểu là bắt buộc",
+            "minimumStayPositive": "Số ngày lưu trú tối thiểu phải lớn hơn 0",
+            "minimumStayMax": "Số ngày lưu trú tối thiểu không được vượt quá 30 ngày",
+            "usageLimitRequired": "Giới hạn sử dụng là bắt buộc",
+            "usageLimitPositive": "Giới hạn sử dụng phải lớn hơn 0",
+            "usagePerCustomerPositive": "Giới hạn sử dụng mỗi khách hàng phải lớn hơn 0",
+            "startDateRequired": "Ngày bắt đầu là bắt buộc",
+            "endDateRequired": "Ngày kết thúc là bắt buộc",
+            "endDateAfterStart": "Ngày kết thúc phải sau ngày bắt đầu",
+            "roomTypeRequired": "Vui lòng chọn ít nhất một loại phòng"
+        },
         "loadError": "Không thể tải thông tin voucher!",
         "expired": "Hết hạn",
         "enable": "kích hoạt",

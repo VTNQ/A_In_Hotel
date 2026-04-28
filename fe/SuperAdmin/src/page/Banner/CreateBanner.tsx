@@ -5,7 +5,7 @@ import { createBanner } from "@/service/api/Banner";
 import Breadcrumb from "@/components/Breadcrumb";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { isBefore, startOfToday } from "date-fns";
+import { isBefore, isValid, startOfToday } from "date-fns";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import z from "zod";
@@ -219,6 +219,9 @@ const CreateBanner = () => {
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
+          {errors.endDate && (
+            <p className="text-red-500 text-sm">{errors.endDate.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -254,19 +257,31 @@ const CreateBanner = () => {
             }}
             modules={fullToolbar}
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.description.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">{t("banner.thumbnail")}</label>
           <UploadField
             className="w-full mt-2"
             value={watch("bannerImage")}
-            onChange={(files) =>
+            onChange={(files) =>{
               setValue("bannerImage", files?.[0] ?? null, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
+              trigger("bannerImage");
+            }
             }
           />
+          {errors.bannerImage && (
+            <p className="text-red-500 text-sm mt-1">
+              {String(errors.bannerImage.message)}
+            </p>
+          )}
         </div>
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button
@@ -275,7 +290,7 @@ const CreateBanner = () => {
           >
             {t("common.cancel")}
           </Button>
-          <Button onClick={handleSubmit(onSubmit)} className="min-w-[140px]">
+          <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || !isValid} className="min-w-[140px]">
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg

@@ -23,6 +23,7 @@ import { File_URL } from "@/setting/constant/app";
 import z from "zod";
 import { createImageExtraServiceSchema } from "@/validation/image.validation";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   open,
@@ -50,8 +51,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         .min(1, t("extraService.validate.categoryRequired")),
 
       description: z.string().optional(),
-      unit: z.string().optional(),
-      price: z.string().min(1, t("extraService.validate.priceRequired")),
       hotelId: z.string().min(1, t("extraService.validate.hotelRequired")),
       note: z.string().optional(),
       type: z.string().min(1, t("extraService.validate.typeRequired")),
@@ -89,15 +88,15 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
     setValue,
     watch,
     trigger,
-    formState: {  isValid, isSubmitting },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
-    mode: "onBlur",
+    resolver: zodResolver(extraServiceSchema),
+    mode: "all",
     defaultValues: {
       id: "",
       serviceName: "",
       categoryId: "",
-      unit: "",
-      price: "",
+      
       type: "",
       hotelId: "",
       description: "",
@@ -121,8 +120,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
           serviceName: res.serviceName ?? "",
           description: res.description ?? "",
           categoryId: res.categoryId ?? null,
-          unit: res.unit ?? null,
-          price: res.price ?? "",
           type: "",
           hotelId: res.hotelId ?? null,
           extraCharge: res.extraCharge ?? "",
@@ -159,16 +156,10 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
 
 
   const onSubmitForm = async (data: FormData) => {
-   
-
     try {
-
-
       const payload = {
         serviceName: data.serviceName.trim(),
-        price: Number(data.price),
         categoryId: Number(data.categoryId),
-        unit: data.unit,
         description: data.description?.trim(),
         note: data.note?.trim(),
         extraCharge: data.extraCharge,
@@ -235,6 +226,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   }}
                   className="h-11"
                 />
+                {errors.serviceName && (
+                  <span className="text-red-600">{errors.serviceName.message}</span>
+                )}
               </div>
 
               {/* DESCRIPTION */}
@@ -254,6 +248,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   }}
                   className="h-11"
                 />
+                {errors.description && (
+                  <span className="text-red-600">{errors.description.message}</span>
+                )}
               </div>
 
               {/* CATEGORY */}
@@ -274,48 +271,10 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   getValue={(i) => i.id}
                   getLabel={(i) => i.name}
                 />
+                {errors.categoryId && (
+                  <span className="text-red-600">{errors.categoryId.message}</span>
+                )}
               </div>
-
-              {/* UNIT */}
-              <SelectField
-                label={t("extraService.unit")}
-                items={[
-                  { label: "Per Night", value: "PERNIGHT" },
-                  { label: "Per Day", value: "PERDAY" },
-                  { label: "Per Use", value: "PERUSE" },
-                  { label: "Per Hour", value: "PERHOUR" },
-                ]}
-                value={watch("unit")}
-                onChange={(v) => {
-                  setValue("unit", String(v), {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                  trigger("unit");
-                }}
-                isRequired
-                getValue={(i) => i.value}
-                getLabel={(i) => i.label}
-              />
-
-              {/* PRICE */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("extraService.price")} *
-                </label>
-                <Input
-                  value={watch("price")}
-                  onChange={(e)=>{
-                    setValue("price",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("price")
-                  }}
-                  className="h-11"
-                />
-              </div>
-
               {/* EXTRA CHARGE */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
@@ -333,6 +292,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   }}
                   className="h-11"
                 />
+                {errors.extraCharge && (
+                  <span className="text-red-600">{errors.extraCharge.message}</span>
+                )}
               </div>
 
               {/* HOTEL */}
@@ -352,7 +314,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 getValue={(i) => i.id}
                 getLabel={(i) => i.name}
               />
-
+              {errors.hotelId && (
+                <span className="text-red-600">{errors.hotelId.message}</span>
+              )}
               {/* NOTE */}
               <div className="md:col-span-2 space-y-2">
                 <label className="text-sm font-medium">
@@ -371,6 +335,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   }}
                   rows={3}
                 />
+                {errors.note && (
+                  <span className="text-red-600">{errors.note.message}</span>
+                )}
               </div>
 
               {/* IMAGE */}
@@ -407,6 +374,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                   </div>
                 </div>
               </div>
+              {errors.icon && (
+                <span className="text-red-600">{String(errors.icon.message)}</span>
+              )}
             </div>
 
             {/* FOOTER */}

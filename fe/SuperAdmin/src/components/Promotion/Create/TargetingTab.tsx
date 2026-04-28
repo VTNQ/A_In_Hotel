@@ -105,6 +105,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                   shouldValidate: true,
                   shouldDirty: true,
                 });
+                trigger("customerType");
               }}
               size="sm"
               fullWidth={true}
@@ -217,10 +218,13 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                     name="bookingType"
                     checked={checked}
                     onChange={() =>
+                    {
                       setValue("minNights", type.value, {
                         shouldValidate: true,
                         shouldDirty: true,
                       })
+                      trigger("minNights")
+                    }
                     }
                     className="h-4 w-4 text-[#3B5CCC]"
                   />

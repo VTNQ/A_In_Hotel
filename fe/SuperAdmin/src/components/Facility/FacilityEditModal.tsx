@@ -19,6 +19,8 @@ import { useTranslation } from "react-i18next";
 import { Upload, X } from "lucide-react";
 import z from "zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createImageExtraServiceSchema } from "@/validation/image.validation";
 
 const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   open,
@@ -32,12 +34,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
 
   const [fetching, setFetching] = useState(false);
 
-  const [formData, setFormData] = useState<FacilityForm>({
-    serviceName: "",
-    description: "",
-    note: "",
-    categoryId: "",
-  });
+
   const extraServiceSchema = z.object({
     serviceName: z
       .string()
@@ -45,6 +42,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     description: z.string().optional(),
     note: z.string().optional(),
     categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
+    image:createImageExtraServiceSchema(t),
   });
   type FormData = z.infer<typeof extraServiceSchema>;
   const {
@@ -53,18 +51,19 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
     setValue,
     watch,
     trigger,
-    formState: { isValid, isSubmitting },
+    formState: {errors, isValid, isSubmitting },
   } = useForm<FormData>({
+    resolver: zodResolver(extraServiceSchema),
     mode: "onBlur",
     defaultValues: {
       serviceName: "",
       categoryId: "",
+      image:null,
       description: "",
       note: "",
     },
   });
 
-  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -124,12 +123,21 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
       URL.revokeObjectURL(preview);
     }
 
-    setCoverImage(file);
+    setValue("image",file,{
+      shouldValidate:true,
+      shouldDirty:true
+    
+    });
+    trigger("image");
     setPreview(URL.createObjectURL(file));
   };
 
   const handleRemoveImage = () => {
-    setCoverImage(null);
+    setValue("image",null,{
+      shouldValidate:true,
+      shouldDirty:true
+    });
+    trigger("image");
     setPreview(null);
   };
 
@@ -142,7 +150,7 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
         description: data.description,
         note: data.note,
         categoryId: Number(data.categoryId),
-        image: coverImage,
+        image: data.image,
         extraCharge: 0,
         price: 0,
       };
@@ -167,13 +175,13 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
   };
 
   const handleClose = () => {
-    setFormData({
+    reset({
       serviceName: "",
       description: "",
       note: "",
       categoryId: "",
+      image:null
     });
-    setCoverImage(null);
     setPreview(null);
     onClose();
   };
@@ -224,6 +232,11 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                   }}
                   placeholder={t("facility.form.namePlaceholder")}
                 />
+                {errors.serviceName && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.serviceName.message}
+                  </p>
+                )}
               </div>
 
               {/* Category */}
@@ -248,6 +261,11 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                   getValue={(i) => String(i.id)}
                   getLabel={(i) => i.name}
                 />
+                {errors.categoryId && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.categoryId.message}
+                  </p>
+                )}
               </div>
 
               {/* Description */}
@@ -341,9 +359,13 @@ const FacilityEditModal: React.FC<FacilitiesEditProps> = ({
                   onChange={onFileInputChange}
                 />
               </div>
+              {errors.image && (
+                <p className="text-sm text-red-500 mt-1">{String(errors.image.message)}</p>
+              )}
             </div>
           )}
         </div>
+
 
         {/* FOOTER */}
         <div className="border-t bg-white px-6 py-4">

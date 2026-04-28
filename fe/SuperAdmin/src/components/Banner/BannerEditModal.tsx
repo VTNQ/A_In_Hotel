@@ -302,6 +302,11 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     disabledDate={(date) => isBefore(date, startOfToday())}
                     placeholder={t("banner.createOrUpdate.selectStartAt")}
                   />
+                  {errors.startDate && (
+                    <p className="text-red-500 text-sm">
+                      {errors.startDate.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* END DATE */}
@@ -325,6 +330,11 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                     }
                     placeholder={t("banner.createOrUpdate.selectEndAt")}
                   />
+                  {errors.endDate && (
+                    <p className="text-red-500 text-sm">
+                      {errors.endDate.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -360,6 +370,11 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                   defaultPreviewUrl={defaultPreview}
                   onChange={handleBannerImage}
                 />
+                {errors.bannerImage && (
+                  <p className="text-red-500 text-sm">
+                    {String(errors.bannerImage.message)}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -373,7 +388,7 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting}>
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>

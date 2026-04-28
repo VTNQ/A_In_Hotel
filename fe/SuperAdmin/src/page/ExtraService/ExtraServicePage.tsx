@@ -26,7 +26,7 @@ const ExtraServicePage = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [filterCategory, setFilterCategory] = useState("");
   const buildParams = () => {
-    let filters: string[] = ["price>0"];
+    let filters: string[] = [];
     filters.push("type==2");
 
     if (statusFilter !== "ALL") {

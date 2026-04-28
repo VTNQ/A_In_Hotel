@@ -11,11 +11,10 @@ export interface ExtraService {
   categoryName: string;
   categoryId: number;
   hotelName: string;
-  price: number;
+ 
   type: number;
   extraCharge: number;
   icon: ImageResponse;
-  unit: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

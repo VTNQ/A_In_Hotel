@@ -128,7 +128,7 @@ const BannerTable = ({
                           st === "ACTIVE" ? "bg-green-500" : "bg-red-500"
                         }`}
                       />
-                      {st === "ACTIVE" ? "Active" : "Inactive"}
+                      {st === "ACTIVE" ? t("status.active") : t("status.inactive")}
                     </div>
                   );
                 })()}

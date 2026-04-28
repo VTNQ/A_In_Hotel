@@ -328,6 +328,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     {...register("roomName")}
                     className="mt-1"
                   />
+                  {errors.roomName && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.roomName.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="text-sm font-medium">
@@ -349,6 +354,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     getValue={(i) => String(i.id)}
                     getLabel={(i) => i.name}
                   />
+                  {errors.idRoomType && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.idRoomType.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="text-sm font-medium">
@@ -370,6 +380,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     getValue={(i) => String(i.id)}
                     getLabel={(i) => i.name}
                   />
+                  {errors.hotelId && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.hotelId.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="text-sm font-medium">
@@ -520,7 +535,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                           shouldValidate: true,
                           shouldDirty: true,
                         });
-
+                        trigger("image")
                         setPreviewReview(
                           files.map((file) => URL.createObjectURL(file)),
                         );
@@ -592,6 +607,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     </div>
                   </div>
                 </div>
+                {errors.image && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.image.message}
+                  </p>
+                )}
               </div>
               <DialogFooter>
                 <Button

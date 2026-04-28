@@ -59,12 +59,7 @@ const ExtraServiceTable = ({
           <TableHead sortable sortKey="category" width={220}>
             {t("extraService.category")}
           </TableHead>
-          <TableHead sortable sortKey="price" width={220}>
-            {t("extraService.price")}
-          </TableHead>
-          <TableHead sortable sortKey="unit" width={220}>
-            {t("extraService.unit")}
-          </TableHead>
+         
 
           <TableHead sortable sortKey="createdAt" width={220}>
             {t("extraService.createdAt")}
@@ -108,8 +103,7 @@ const ExtraServiceTable = ({
               <TableCell>{row.serviceName}</TableCell>
               <TableCell>{row.hotelName}</TableCell>
               <TableCell>{row.categoryName}</TableCell>
-              <TableCell>{row.price}</TableCell>
-              <TableCell>{row.unit}</TableCell>
+             
               <TableCell>{row.createdAt}</TableCell>
               <TableCell>{row.updatedAt}</TableCell>
               <TableCell>

@@ -3,10 +3,12 @@ import type { CreateOrUpdateTabProps } from "@/type/Promotion.types";
 import { Moon, Percent, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const OfferTab = ({  watch,
+const OfferTab = ({
+  watch,
   setValue,
   trigger,
-  errors }: CreateOrUpdateTabProps) => {
+  errors,
+}: CreateOrUpdateTabProps) => {
   const { t } = useTranslation();
   return (
     <div
@@ -34,13 +36,14 @@ const OfferTab = ({  watch,
                 { value: "2", label: t("promotion.offer.percent") },
                 { value: "3", label: t("promotion.offer.special") },
               ]}
-             value={watch("type")}
-                onChange={(e) => {
-                  setValue("type", e, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                }}
+              value={watch("type")}
+              onChange={(e) => {
+                setValue("type", e, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("type");
+              }}
               size="sm"
               fullWidth={true}
               getValue={(i) => i.value}
@@ -67,7 +70,7 @@ const OfferTab = ({  watch,
                   setValue("value", e.target.value, {
                     shouldValidate: true,
                     shouldDirty: true,
-                  })
+                  });
                 }}
                 placeholder={
                   watch("type") === "1" || watch("type") === "3"
@@ -110,7 +113,7 @@ const OfferTab = ({  watch,
               <input
                 value={watch("minNights")}
                 onChange={(e) =>
-                  setValue("minNights",e.target.value, {
+                  setValue("minNights", e.target.value, {
                     shouldValidate: true,
                     shouldDirty: true,
                   })

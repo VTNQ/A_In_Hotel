@@ -8,8 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAllCategories } from "@/service/api/Categories";
 import { addExtraService } from "@/service/api/facilities";
 import { getAllHotel } from "@/service/api/Hotel";
-import { type ExtraServiceForm } from "@/type/extraService.types";
 import { createImageExtraServiceSchema } from "@/validation/image.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {  useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -26,10 +26,7 @@ const CreateExtraServicePage = () => {
     categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
 
     description: z.string().optional(),
-    unit: z.string().optional(),
-    price: z
-      .string()
-      .min(1, t("extraService.validate.priceRequired")),
+   
 
     note: z.string().optional(),
     hotelId: z.string().min(1, t("extraService.validate.hotelRequired")),
@@ -53,12 +50,11 @@ const CreateExtraServicePage = () => {
     trigger,
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
-    mode: "onBlur",
+    resolver: zodResolver(extraServiceSchema),
+    mode: "all",
     defaultValues: {
       serviceName: "",
       categoryId: "",
-      unit: "",
-      price: "",
       type: "",
       hotelId: "",
       description: "",
@@ -110,9 +106,7 @@ const CreateExtraServicePage = () => {
      
       const payload = {
         serviceName: data.serviceName.trim(),
-        price: Number(data.price),
         categoryId: Number(data.categoryId),
-        unit: data.unit?.trim() ?? "",
         description: data.description?.trim(),
         isActive: true,
         note: data.note?.trim(),
@@ -131,8 +125,6 @@ const CreateExtraServicePage = () => {
         serviceName: "",
         description: "",
         categoryId: "",
-        unit: "",
-        price: "",
         type: "",
         extraCharge: "",
         note: "",
@@ -171,7 +163,6 @@ const CreateExtraServicePage = () => {
               {t("extraService.name")} <span className="text-red-500">*</span>
             </label>
             <Input
-              name="name"
               placeholder={t("extraService.createOrUpdate.namePlaceHolder")}
               onChange={(e)=>{
                 setValue("serviceName",e.target.value,{
@@ -183,6 +174,11 @@ const CreateExtraServicePage = () => {
               value={watch("serviceName")}
               className="mt-1"
             />
+            {errors.serviceName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.serviceName.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -203,6 +199,11 @@ const CreateExtraServicePage = () => {
               value={watch("description")}
               className="mt-1"
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.description.message}
+              </p>
+            )}
           </div>
           <SelectField
             label={t("extraService.category")}
@@ -221,57 +222,12 @@ const CreateExtraServicePage = () => {
             getValue={(i) => i.id}
             getLabel={(i) => i.name}
           />
-          <SelectField
-            label={t("extraService.unit")}
-            items={[
-              {
-                label: "Per Night",
-                value: "PERNIGHT",
-              },
-              {
-                label: "Per Day",
-                value: "PERDAY",
-              },
-              {
-                label: "Per Use",
-                value: "PERUSE",
-              },
-              {
-                label: "Per Hour",
-                value: "PERHOUR",
-              },
-            ]}
-            value={watch("unit")}
-            onChange={(v) =>{
-              setValue("unit",String(v),{
-                shouldValidate:true,
-                shouldDirty:true
-              })
-              trigger("unit")
-            }}
-            isRequired={true}
-            placeholder={t("extraService.createOrUpdate.defaultUnit")}
-            getValue={(i) => i.value}
-            getLabel={(i) => i.label}
-          />
-          <div>
-            <label className="text-sm font-medium">
-              {t("extraService.price")} <span className="text-red-500">*</span>
-            </label>
-            <Input
-              name="price"
-              placeholder="Enter service price"
-              onChange={(e)=>{
-                setValue("price",e.target.value,{
-                  shouldValidate:true,
-                  shouldDirty:true
-                })
-                trigger("price")
-              }}
-              value={watch("price")}
-              className="mt-1"
-            />
-          </div>
+        {errors.categoryId && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.categoryId.message}
+              </p>
+        )}
+      
           <div>
             <label className="text-sm font-medium">
               {t("extraService.extraCharge")}{" "}
@@ -290,6 +246,11 @@ const CreateExtraServicePage = () => {
               value={watch("extraCharge")}
               className="mt-1"
             />
+            {errors.extraCharge && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.extraCharge.message}
+              </p>
+            )}
           </div>
         </div>
         <div>
@@ -311,6 +272,11 @@ const CreateExtraServicePage = () => {
             getValue={(i) => i.id}
             getLabel={(i) => i.name}
           />
+          {errors.hotelId && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.hotelId.message}
+              </p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -330,6 +296,11 @@ const CreateExtraServicePage = () => {
             rows={3}
             className="mt-1"
           />
+          {errors.note && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.note.message}
+              </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label>{t("extraService.icon")}</Label>
@@ -407,6 +378,11 @@ const CreateExtraServicePage = () => {
               )}
             </div>
           </div>
+          {errors.icon && (
+              <p className="text-red-500 text-sm mt-1">
+                {String(errors.icon.message)}
+              </p>
+          )}
         </div>
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button variant="outline" onClick={() => navigate("/Home/service")}>

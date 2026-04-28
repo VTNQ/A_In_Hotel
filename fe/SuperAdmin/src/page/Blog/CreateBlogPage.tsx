@@ -24,9 +24,8 @@ const CreateBlogPage = () => {
     description: z.string().optional(),
     content: z
       .string()
-      .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
-        message: t("blog.validate.contentRequired"),
-      }),
+      .optional()
+      ,
     status: z.string(),
     image: createImageBlogSchema(t),
   });
@@ -40,7 +39,7 @@ const CreateBlogPage = () => {
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
-    mode: "onBlur",
+    mode: "all",
     defaultValues: {
       title: "",
       category: "",
@@ -241,6 +240,9 @@ const CreateBlogPage = () => {
             }}
             modules={fullToolbar}
           />
+          {errors.content && (
+            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">{t("blog.thumbnail")}</label>
@@ -257,6 +259,9 @@ const CreateBlogPage = () => {
             }
           />
         </div>
+        {errors.image && (
+            <p className="text-red-500 text-sm mt-1">{String(errors.image.message)}</p>
+        )}
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button variant="outline" onClick={() => navigate("/Home/post/blog")}>
             {t("common.cancel")}

@@ -78,9 +78,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
       description: z.string().optional(),
       content: z
         .string()
-        .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
-          message: t("blog.validate.contentRequired"),
-        }),
+        .optional(),
       status: z.string(),
       image: z.any().optional(),
     })
@@ -108,7 +106,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
     setValue,
     watch,
     trigger,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
     mode: "onChange",
@@ -334,11 +332,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
                     modules={fullToolbar}
                     className="min-h-[250px]"
                   />
-                  {errors.content && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.content.message}
-                    </p>
-                  )}
+                 
                 </div>
               </div>
 
@@ -360,7 +354,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
               <Button
                 variant="outline"
                 onClick={handleClose}
-                disabled={isSubmitting || !isValid}
+                disabled={isSubmitting}
               >
                 {t("common.cancel")}
               </Button>

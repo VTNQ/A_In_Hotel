@@ -80,8 +80,8 @@ const CreateRoomPage = () => {
 
     image: z
       .array(z.instanceof(File))
-      .min(1, t("common.required"))
-      .max(5, t("room.createOrUpdate.maxImages")),
+      .min(1, t("room.validation.roomRequired"))
+      .max(5, t("room.validation.maxImages")),
   });
   type FormData = z.infer<typeof roomSchema>;
 
@@ -90,6 +90,7 @@ const CreateRoomPage = () => {
     handleSubmit,
     control,
     reset,
+    trigger,
     setValue,
     watch,
     formState: { errors, isValid, isSubmitting },
@@ -442,7 +443,7 @@ const CreateRoomPage = () => {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
-
+                  trigger("image")
                   setPreviewReview(
                     files.map((file) => URL.createObjectURL(file)),
                   );

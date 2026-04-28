@@ -34,26 +34,26 @@ const CreateChildSuperAdmin = () => {
   const schema = z.object({
     email: z
       .string()
-      .min(1, t("validation.emailRequired"))
-      .email(t("validation.emailInvalid")),
+      .min(1, t("childSuperAdmin.validation.emailRequired"))
+      .email(t("childSuperAdmin.validation.emailInvalid")),
 
-    fullName: z.string().min(1, t("validation.fullNameRequired")),
+    fullName: z.string().min(1, t("childSuperAdmin.validation.fullNameRequired")),
 
     phone: z
       .string()
-      .min(1, t("validation.phoneRequired"))
-      .regex(/^(0|\+84)[0-9]{9,10}$/, t("validation.phoneInvalid")),
+      .min(1, t("childSuperAdmin.validation.phoneRequired"))
+      .regex(/^(0|\+84)[0-9]{9,10}$/, t("childSuperAdmin.validation.phoneInvalid")),
 
     birthday: z
       .date({
-        error: t("validation.birthdayRequired"),
+        error: t("childSuperAdmin.validation.birthdayRequired"),
       })
       .optional(),
 
-    gender: z.string().min(1, t("validation.genderRequired")),
+    gender: z.string().min(1, t("childSuperAdmin.validation.genderRequired")),
 
     image: z.any().refine((file) => !!file, {
-      message: t("validation.imageRequired"),
+      message: t("childSuperAdmin.validation.imageRequired"),
     }),
   });
   type FormData = z.infer<typeof schema>;
@@ -67,7 +67,7 @@ const CreateChildSuperAdmin = () => {
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode: "onChange",
+    mode: "all",
     defaultValues: {
       email: "",
       fullName: "",

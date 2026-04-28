@@ -27,7 +27,6 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
 
   const {
@@ -141,6 +140,11 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                   placeholder={t("category.createOrUpdate.enterName")}
                   className="h-11"
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               {/* TYPE */}
@@ -201,7 +205,10 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+              <Button
+                onClick={handleSubmit(onSubmitForm)}
+                disabled={isSubmitting || !isValid}
+              >
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>

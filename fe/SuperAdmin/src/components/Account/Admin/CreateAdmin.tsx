@@ -58,7 +58,7 @@ const CreateAdmin = () => {
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(adminSchema),
-    mode: "onChange",
+    mode: "all",
     defaultValues: {
       email: "",
       fullName: "",

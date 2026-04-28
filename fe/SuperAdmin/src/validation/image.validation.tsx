@@ -40,16 +40,16 @@ export const createImageBlogSchema = (t: (key: string) => string) => {
   return z
     .any()
     .refine((file) => file instanceof File, {
-      message: t("blog.valid.imageRequired"),
+      message: t("blog.validate.imageRequired"),
     })
     .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-      message: t("blog.valid.imageTooLarge"),
+      message: t("blog.validate.imageTooLarge"),
     })
     .refine(
       (file) =>
         !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       {
-        message: t("blog.valid.imageInvalidType"),
+        message: t("blog.validate.imageInvalidType"),
       },
     );
 };
@@ -66,7 +66,7 @@ export const createImageBannerSchema = (t: (key: string) => string) => {
       (file) =>
         !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       {
-        message: t("banner.valid.imageInvalidType"),
+        message: t("banner.validate.imageInvalidType"),
       },
     );
 };

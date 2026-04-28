@@ -7,11 +7,12 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const roomTypes = watch("roomTypes") || [];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,16 +26,17 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
         const data = response.content || [];
         setCategories(data);
 
-        setFormData((prev) => {
-          if (prev.roomTypes?.length) return prev;
-          return {
-            ...prev,
-            roomTypes: data.map((r: any) => ({
-              id: r.id,
-              excluded: false,
-            })),
-          };
-        });
+        setValue(
+          "roomTypes",
+          data.map((room: any) => ({
+            id: room.id,
+            excluded: false,
+          })),
+          {
+            shouldValidate: true,
+            shouldDirty: true,
+          },
+        );
       } catch (err) {
         setError(t("promotion.loadErrorRoomType"));
       } finally {
@@ -45,26 +47,32 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
     fetchData();
   }, []);
   const toggleRoomType = (roomId: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) =>
-        r.id === roomId ? { ...r, excluded: !r.excluded } : r,
-      ),
-    }));
-  };
+    const updated = roomTypes.map((r: any) =>
+      r.id === roomId ? { ...r, excluded: !r.excluded } : r,
+    );
 
-  const isAllSelected =
-    formData.roomTypes.length > 0 &&
-    formData.roomTypes.every((r) => r.excluded);
+    setValue("roomTypes", updated, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    trigger("roomTypes");
+  };
+   const isAllSelected =
+    roomTypes.length > 0 && roomTypes.every((r: any) => r.excluded === true);
 
   const toggleSelectAll = () => {
-    setFormData((prev) => ({
-      ...prev,
-      roomTypes: prev.roomTypes.map((r) => ({
-        ...r,
-        excluded: !isAllSelected,
-      })),
+    const updated = roomTypes.map((r: any) => ({
+      ...r,
+      excluded: !isAllSelected,
     }));
+
+    setValue("roomTypes", updated, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    trigger("roomTypes");
   };
   return (
     <div className="flex-1 overflow-y-auto px-9 py-10 space-y-16">
@@ -90,8 +98,14 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 { value: "4", label: t("promotion.customerType.online") },
                 { value: "5", label: t("promotion.customerType.vip") },
               ]}
-              value={formData.customerType}
-              onChange={(v) => setFormData((p) => ({ ...p, customerType: v }))}
+               value={watch("customerType")}
+              onChange={(e) => {
+                setValue("customerType", e, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("customerType");
+              }}
               size="sm"
               fullWidth={true}
               getValue={(i) => i.value}
@@ -151,8 +165,8 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               {/* Room list */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {categories.map((room) => {
-                  const checked =
-                    formData.roomTypes.find((r) => r.id === room.id)
+                   const checked =
+                    watch("roomTypes").find((r: any) => r.id === room.id)
                       ?.excluded === true;
 
                   return (
@@ -187,7 +201,7 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mt-2">
             {BOOKING_TYPE_OPTIONS.map((type) => {
-              const checked = formData.bookingType === type.value;
+               const checked = watch("bookingType") === type.value;
 
               return (
                 <label
@@ -204,10 +218,13 @@ const TargetingTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                     name="bookingType"
                     checked={checked}
                     onChange={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        bookingType: type.value,
-                      }))
+                    {
+                      setValue("minNights", type.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                      trigger("minNights")
+                    }
                     }
                     className="h-4 w-4 text-[#3B5CCC]"
                   />

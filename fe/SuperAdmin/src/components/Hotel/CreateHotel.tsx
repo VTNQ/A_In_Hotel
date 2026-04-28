@@ -257,6 +257,11 @@ export default function CreateHotel() {
                   + {t("hotel.hotelCreate.addHotline")}
                 </Button>
               </div>
+              {errors.hotlines && (
+                <p className="text-red-600 text-xs mt-1">
+                  {errors.hotlines.message}
+                </p>
+              )}
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-slate-700">
                   {t("hotel.hotelCreate.image")} *
@@ -325,6 +330,11 @@ export default function CreateHotel() {
                   {t("hotel.hotelCreate.uploadHint")}
                 </p>
               </div>
+              {errors.image && (
+                <p className="text-red-600 text-xs mt-1">
+                  {String(errors.image.message)}
+                </p>
+              )}
               <Button type="submit"
                 disabled={isSubmitting || !isValid}
               > {t("common.save")}</Button>

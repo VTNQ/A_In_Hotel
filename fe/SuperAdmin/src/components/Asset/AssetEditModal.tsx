@@ -18,6 +18,7 @@ import { Upload, X } from "lucide-react";
 import z from "zod";
 import { createImageAssetSchema } from "@/validation/image.validation";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const AssetEditModal: React.FC<AssetEditProps> = ({
   open,
@@ -76,6 +77,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
       trigger,
       formState: { errors, isValid, isSubmitting },
     } = useForm<FormData>({
+      resolver: zodResolver(assetSchema),
       mode: "onBlur",
       defaultValues: {
         assetName: "",
@@ -287,6 +289,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   }}
                   value={watch("assetName")}
                 />
+                {errors.assetName && (
+                  <p className="text-red-600">{errors.assetName.message}</p>
+                )}
               </div>
 
               {/* Category */}
@@ -311,6 +316,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   getValue={(i) => String(i.id)}
                   getLabel={(i) => i.name}
                 />
+                {errors.categoryId && (
+                  <p className="text-red-600">{errors.categoryId.message}</p>
+                )}
               </div>
 
               {/* Hotel */}
@@ -334,6 +342,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   getValue={(i) => String(i.id)}
                   getLabel={(i) => i.name}
                 />
+                {errors.hotelId && (
+                  <p className="text-red-600">{errors.hotelId.message}</p>
+                )}
               </div>
 
               {/* Room */}
@@ -358,6 +369,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   getValue={(i) => String(i.id)}
                   getLabel={(i) => i.roomNumber}
                 />
+                {errors.roomId && (
+                  <p className="text-red-600">{errors.roomId.message}</p>
+                )}
               </div>
 
               {/* Price */}
@@ -378,6 +392,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   }}
                   value={watch("price")}
                 />
+                {errors.price && (
+                  <p className="text-red-600">{errors.price.message}</p>
+                )}
               </div>
 
               {/* Quantity */}
@@ -398,6 +415,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   }}
                   value={watch("quantity")}
                 />
+                {errors.quantity && (
+                  <p className="text-red-600">{errors.quantity.message}</p>
+                )}
               </div>
 
               {/* Note */}
@@ -418,6 +438,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   placeholder={t("asset.createOrUpdate.notePlaceholder")}
                   rows={3}
                 />
+                {errors.note && (
+                  <p className="text-red-600">{errors.note.message}</p>
+                )}
               </div>
 
               {/* Image */}
@@ -436,7 +459,12 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                     if (imagePreview?.startsWith("blob:")) {
                       URL.revokeObjectURL(imagePreview);
                     }
-                    setValue("image",file)
+                    setValue("image",file,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    
+                    })
+                    trigger("image")
 
                     setImagePreview(URL.createObjectURL(file));
                   }}
@@ -482,6 +510,9 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   )}
                 </div>
               </div>
+              {errors.image && (
+                <p className="text-red-600">{String(errors.image.message)}</p>
+              )}
             </div>
           )}
         </div>

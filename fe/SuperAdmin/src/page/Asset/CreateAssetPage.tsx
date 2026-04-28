@@ -10,6 +10,7 @@ import { getAllHotel } from "@/service/api/Hotel";
 import { getRoom } from "@/service/api/Room";
 import type { HotelRow } from "@/type/hotel.types";
 import { createImageAssetSchema } from "@/validation/image.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload, X } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -52,8 +53,9 @@ const CreateAssetPage = () => {
     setValue,
     watch,
     trigger,
-    formState: { isValid, isSubmitting },
+    formState: { errors,isValid, isSubmitting },
   } = useForm<FormData>({
+    resolver:zodResolver(assetSchema),
     mode: "onBlur",
     defaultValues: {
       assetName: "",
@@ -165,7 +167,7 @@ const CreateAssetPage = () => {
     setValue("image",null)
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
-
+  
   return (
     <div className="space-y-8">
       <div>
@@ -199,6 +201,9 @@ const CreateAssetPage = () => {
               value={watch("assetName")}
               className="mt-1"
             />
+            {errors.assetName && (
+              <p className="text-red-600">{errors.assetName.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -219,6 +224,9 @@ const CreateAssetPage = () => {
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.name}
             />
+            {errors.hotelId && (
+              <p className="text-red-600">{errors.hotelId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -239,6 +247,9 @@ const CreateAssetPage = () => {
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.roomNumber}
             />
+            {errors.roomId && (
+              <p className="text-red-600">{errors.roomId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -260,6 +271,9 @@ const CreateAssetPage = () => {
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.name}
             />
+            {errors.categoryId && (
+              <p className="text-red-600">{errors.categoryId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -278,6 +292,9 @@ const CreateAssetPage = () => {
               value={watch("price")}
               className="mt-1"
             />
+            {errors.price && (
+              <p className="text-red-600">{errors.price.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -296,6 +313,9 @@ const CreateAssetPage = () => {
               value={watch("quantity")}
               className="mt-1"
             />
+            {errors.quantity && (
+              <p className="text-red-600">{errors.quantity.message}</p>
+            )}
           </div>
         </div>
         <div>
@@ -316,6 +336,9 @@ const CreateAssetPage = () => {
             rows={3}
             className="mt-1"
           />
+          {errors.note && (
+            <p className="text-red-600">{errors.note.message}</p>
+          )}
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">{t("asset.icon")}</label>
@@ -329,7 +352,12 @@ const CreateAssetPage = () => {
               const file = e.target.files?.[0];
               if (!file) return;
 
-              setValue("image",file)
+              setValue("image",file,{
+                shouldValidate:true,
+                shouldDirty:true
+              });
+              trigger("image");
+
 
               setImagePreview(URL.createObjectURL(file));
             }}
@@ -377,6 +405,9 @@ const CreateAssetPage = () => {
             )}
           </div>
         </div>
+        {errors.image && (
+          <p className="text-red-600">{String(errors.image.message)}</p>
+        )}
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button variant="outline" onClick={() => navigate("/Home/asset")}>
             {t("common.cancel")}

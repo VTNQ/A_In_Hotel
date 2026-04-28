@@ -313,6 +313,11 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     getValue={(u) => String(u.id)}
                     getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
                   />
+                  {errors.idUser && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.idUser.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Address */}
@@ -381,6 +386,11 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     )}
                   </div>
                 </div>
+                {errors.hotlines && (
+                  <p className="text-red-600 text-sm">
+                    {errors.hotlines.message}
+                  </p>
+                )}
 
                 {/* Image */}
                 <div className="space-y-2 lg:col-span-2">
@@ -448,6 +458,11 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
                     )}
                   </div>
                 </div>
+                {errors.image && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {String(errors.image.message)}
+                  </p>
+                )}
               </div>
             </div>
           )}

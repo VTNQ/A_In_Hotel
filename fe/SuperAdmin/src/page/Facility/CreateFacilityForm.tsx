@@ -7,40 +7,63 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAllCategories } from "@/service/api/Categories";
 import { addExtraService } from "@/service/api/facilities";
 import type { FacilityForm } from "@/type/facility.types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
+import CreateExtraServicePage from "../ExtraService/CreateExtraServicePage";
+import { createImageExtraServiceSchema } from "@/validation/image.validation";
 
 const CreateFacilityForm: React.FC = () => {
     const { t } = useTranslation();
     const [categories, setCategories] = useState<any[]>([]);
     const { showAlert } = useAlert();
-    const [form, setForm] = useState<FacilityForm>({
-        serviceName: "",
-        description: "",
-        note: "",
-        categoryId: null,
-
-    });
+    const extraServiceSchema = z.object({
+        serviceName: z
+          .string()
+          .min(1, t("extraService.validate.serviceNameRequired")),
+        description: z.string().optional(),
+        note: z.string().optional(),
+        categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
+        image: createImageExtraServiceSchema(t)
+      });
+      type FormData = z.infer<typeof extraServiceSchema>;
+      const {
+        handleSubmit,
+        reset,
+        register,
+        setValue,
+        watch,
+        trigger,
+        formState: {errors, isValid, isSubmitting },
+      } = useForm<FormData>({
+        resolver: zodResolver(extraServiceSchema),
+        mode: "onBlur",
+        defaultValues: {
+          serviceName: "",
+          categoryId: "",
+          description: "",
+          note: "",
+        },
+      });
     const navigate = useNavigate();
-    const [coverImage, setCoverImage] = useState<File | null>(null);
+
     const [preview, setPreview] = useState<string | null>(null);
-    const [submitting, setSubmitting] = useState(false);
 
     /* ================= handlers ================= */
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value } = e.target;
 
-
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
 
     const handleImageChange = (file: File) => {
-        setCoverImage(file);
+        setValue("image",file,{
+            shouldValidate:true,
+            shouldDirty:true
+        
+        });
+        trigger("image");
         setPreview(URL.createObjectURL(file));
     }
     const onFileInputChange = (
@@ -68,20 +91,19 @@ const CreateFacilityForm: React.FC = () => {
         fetchCategories();
     }, []);
 
-    const handleSubmit = async () => {
-        if (submitting) return;
+    const onSubmit = async (data: FormData) => {
+
         try {
-            setSubmitting(true);
             const payload = {
-                serviceName: form.serviceName,
-                description: form.description,
-                categoryId: Number(form.categoryId),
+                serviceName: data.serviceName,
+                description: data.description,
+                categoryId: Number(data.categoryId),
                 price: 0,
                 extraCharge: 0,
-                note: form.note,
+                note: data.note,
                 type: 1,
                 isActive: 1,
-                image: coverImage
+                image: data.image
             }
             const response = await addExtraService(payload);
             showAlert({
@@ -89,14 +111,13 @@ const CreateFacilityForm: React.FC = () => {
                 type: "success",
                 autoClose: 4000,
             });
-            setForm({
+            reset({
                 serviceName: "",
                 description: "",
                 note: "",
-                categoryId: null,
-
+                categoryId: "",
+                image:null,
             })
-            setCoverImage(null);
             setPreview(null)
         } catch (err: any) {
             showAlert({
@@ -105,9 +126,7 @@ const CreateFacilityForm: React.FC = () => {
                 type: "error",
                 autoClose: 4000,
             })
-        } finally {
-            setSubmitting(false)
-        }
+        } 
 
 
     }
@@ -137,9 +156,7 @@ const CreateFacilityForm: React.FC = () => {
                         {t("facility.form.name")} <span className="text-red-500">*</span>
                     </label>
                     <Input
-                        name="serviceName"
-                        value={form.serviceName}
-                        onChange={handleChange}
+                        {...register("serviceName")}
                         placeholder={t("facility.form.namePlaceholder")}
                         className="mt-1"
                     />
@@ -151,9 +168,7 @@ const CreateFacilityForm: React.FC = () => {
                         {t("facility.form.description")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <Textarea
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
+                        {...register("description")}
                         placeholder={t("facility.form.descriptionPlaceholder")}
                         rows={3}
                         className="mt-1"
@@ -164,15 +179,25 @@ const CreateFacilityForm: React.FC = () => {
                 <SelectField
                     label={t("facility.form.category")}
                     items={categories}
-                    value={form.categoryId}
-                    onChange={(v) =>
-                        setForm((prev) => ({ ...prev, categoryId: v }))
+                    value={watch("categoryId")}
+                    onChange={(v) =>{
+                        setValue("categoryId",String(v),{
+                            shouldValidate:true,
+                            shouldDirty:true
+                        })
+                        trigger("categoryId")
+                    }
                     }
                     isRequired={true}
                     placeholder={t("facility.form.categoryPlaceholder")}
                     getValue={(i) => i.id}
                     getLabel={(i) => i.name}
                 />
+                {errors.categoryId && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.categoryId.message}
+                    </p>
+                )}
                 {/* Cover Image */}
                 <div>
                     <label className="text-sm font-medium">{t("facility.form.coverImage")}</label>
@@ -235,15 +260,16 @@ const CreateFacilityForm: React.FC = () => {
                         />
                     </div>
                 </div>
+                {errors.image && (
+                    <p className="text-red-500 text-sm mt-1">{String(errors.image.message)}</p>
+                )}
 
 
                 {/* Internal note */}
                 <div>
                     <label className="text-sm font-medium">{t("facility.form.note")}</label>
                     <Textarea
-                        name="note"
-                        value={form.note}
-                        onChange={handleChange}
+                        {...register("note")}
                         placeholder={t("facility.form.notePlaceholder")}
                         rows={2}
                         className="mt-1"
@@ -254,11 +280,11 @@ const CreateFacilityForm: React.FC = () => {
                 <div className="flex justify-end gap-3 border-t pt-4">
                     <Button variant="outline" onClick={() => navigate("/Home/facility")}>  {t("common.cancel")}</Button>
                     <Button
-                        onClick={handleSubmit}
-                        disabled={submitting}
+                        onClick={handleSubmit(onSubmit)}
+                        disabled={isSubmitting || !isValid}
                         className="min-w-[140px]"
                     >
-                        {submitting ? (
+                        {isSubmitting ? (
                             <span className="flex items-center gap-2">
                                 <svg
                                     className="h-4 w-4 animate-spin"
