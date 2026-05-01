@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/ui/select";
 import { getAllHotel } from "@/service/api/Hotel";
 import { createStaff } from "@/service/api/Staff";
-import type { StaffForm } from "@/type/Staff.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";

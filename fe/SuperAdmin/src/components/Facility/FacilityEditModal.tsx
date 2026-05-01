@@ -1,7 +1,7 @@
 import { getAllCategories } from "@/service/api/Categories";
 import { getFacilityById, updateExtraServcie } from "@/service/api/facilities";
 import { File_URL } from "@/setting/constant/app";
-import type { FacilitiesEditProps, FacilityForm } from "@/type/facility.types";
+import type { FacilitiesEditProps } from "@/type/facility.types";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { SelectField } from "../ui/select";

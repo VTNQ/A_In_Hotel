@@ -1,4 +1,4 @@
-import type { BlogEditProps, BlogForm } from "@/type/blog.types";
+import type { BlogEditProps } from "@/type/blog.types";
 import { useAlert } from "../alert-context";
 import { useEffect, useState } from "react";
 import QuillEditor from "react-quill-new";

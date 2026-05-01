@@ -4,7 +4,6 @@ import {
   CUSTOMER_TYPE_OPTIONS,
   USAGE_TYPE_OPTIONS,
   type UpdateVoucherModalProps,
-  type voucherFormProps,
 } from "@/type/voucher.types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

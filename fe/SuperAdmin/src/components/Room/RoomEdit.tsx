@@ -1,4 +1,4 @@
-import { type RoomEditProps, type RoomForm } from "@/type/Room.type";
+import { type RoomEditProps } from "@/type/Room.type";
 import { useAlert } from "../alert-context";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
@@ -101,7 +101,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   const {
     register,
     handleSubmit,
-    control,
     reset,
     setValue,
     watch,

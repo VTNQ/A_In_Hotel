@@ -6,7 +6,7 @@ import TabButton from "@/components/Promotion/Create/TabButton";
 import TargetingTab from "@/components/Promotion/Create/TargetingTab";
 import { Button } from "@/components/ui/button";
 import { createPromotion } from "@/service/api/Promotion";
-import { TABS, type PromotionForm, type TabType } from "@/type/Promotion.types";
+import { TABS, type TabType } from "@/type/Promotion.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Tag, Users } from "lucide-react";
 import { useState } from "react";
@@ -139,7 +139,6 @@ const CreatePromotionPage = () => {
       roomTypes: [],
     },
   });
-  const formData = watch();
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);

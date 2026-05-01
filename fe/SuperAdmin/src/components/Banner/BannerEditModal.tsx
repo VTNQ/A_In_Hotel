@@ -1,4 +1,4 @@
-import { type BannerEditProps, type BannerForm } from "@/type/banner.types";
+import { type BannerEditProps } from "@/type/banner.types";
 import { useAlert } from "../alert-context";
 import { useEffect, useState } from "react";
 import { findById, updateBanner } from "@/service/api/Banner";
@@ -71,7 +71,6 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
     });
   type BannerForm = z.infer<typeof bannerSchema>;
   const {
-    register,
     handleSubmit,
     setValue,
     watch,

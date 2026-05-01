@@ -12,7 +12,7 @@ import {
   type Gender,
   type SuperAdminForm,
 } from "@/type/Account/SuperAdmin/SuperAdminForm";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Loader2 } from "lucide-react"; // spinner icon
 import { useTranslation } from "react-i18next";
 import Breadcrumb from "@/components/Breadcrumb";
