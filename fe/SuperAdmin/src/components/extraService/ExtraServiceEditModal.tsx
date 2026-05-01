@@ -1,6 +1,5 @@
 import {
   type ExtraServiceEditProps,
-  type ExtraServiceForm,
 } from "@/type/extraService.types";
 import { useAlert } from "../alert-context";
 import { useEffect, useRef, useState } from "react";

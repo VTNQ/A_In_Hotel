@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import type { HotelEditProps, HotelFormData } from "@/type/hotel.types";
+import type { HotelEditProps } from "@/type/hotel.types";
 import type { UserResponse } from "@/type/UserResponse";
 import { useAlert } from "../alert-context";
 import { useTranslation } from "react-i18next";

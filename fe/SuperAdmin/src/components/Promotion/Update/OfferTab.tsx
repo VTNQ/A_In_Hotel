@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 
 const OfferTab = ({ watch,
   setValue,
-  trigger,
-  errors }: CreateOrUpdateTabProps) => {
+  trigger, }: CreateOrUpdateTabProps) => {
   const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-9 py-10 space-y-16">

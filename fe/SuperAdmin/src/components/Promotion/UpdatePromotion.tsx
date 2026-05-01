@@ -1,7 +1,6 @@
 import { getPromotionById, updatePromotion } from "@/service/api/Promotion";
 import {
   TABS,
-  type PromotionForm,
   type TabType,
   type UpdatePromotionModalProps,
 } from "@/type/Promotion.types";

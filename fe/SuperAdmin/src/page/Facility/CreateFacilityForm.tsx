@@ -6,7 +6,6 @@ import { SelectField } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { getAllCategories } from "@/service/api/Categories";
 import { addExtraService } from "@/service/api/facilities";
-import type { FacilityForm } from "@/type/facility.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import React, { useEffect, useState } from "react";
@@ -14,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
-import CreateExtraServicePage from "../ExtraService/CreateExtraServicePage";
 import { createImageExtraServiceSchema } from "@/validation/image.validation";
 
 const CreateFacilityForm: React.FC = () => {

@@ -4,9 +4,8 @@ import {
   updateSystemContent,
 } from "@/service/api/SystemContent";
 import { File_URL } from "@/setting/constant/app";
-import type { AboutHotelContentForm } from "@/type/SystemContent";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import z from "zod";
@@ -59,11 +58,10 @@ const AboutHotelContent = () => {
   const {
     register,
     handleSubmit,
-    control,
     reset,
     setValue,
     watch,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors },
   } = useForm<AboutHotelContentForm>({
     resolver: zodResolver(aboutHotelSchema),
     mode: "onBlur",

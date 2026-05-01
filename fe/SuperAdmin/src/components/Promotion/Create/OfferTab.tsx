@@ -7,7 +7,6 @@ const OfferTab = ({
   watch,
   setValue,
   trigger,
-  errors,
 }: CreateOrUpdateTabProps) => {
   const { t } = useTranslation();
   return (
