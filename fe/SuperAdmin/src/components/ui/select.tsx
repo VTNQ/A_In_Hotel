@@ -34,9 +34,9 @@ function SelectTrigger({
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40",
         "disabled:cursor-not-allowed disabled:opacity-50",
 
-        size === "sm" && "h-9 px-3 text-sm min-w-[120px]",
-        size === "md" && "h-10 px-3.5 text-sm min-w-[160px]",
-        size === "lg" && "h-11 px-4 text-base min-w-[200px]",
+        size === "sm" && "h-9 px-3 text-sm min-w-[100px] sm:min-w-[120px]",
+        size === "md" && "h-10 px-3.5 text-sm min-w-[120px] sm:min-w-[160px]",
+        size === "lg" && "h-11 px-4 text-base min-w-[140px] sm:min-w-[200px]",
 
         fullWidth ? "w-full" : "w-auto",
 
@@ -48,7 +48,7 @@ function SelectTrigger({
       )}
       {...props}
     >
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1 truncate">{children}</div>
       {/* nút clear / icon khác */}
       {rightAdornment}
       <SelectPrimitive.Icon asChild>
@@ -74,7 +74,7 @@ function SelectContent({
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
-          "w-[var(--radix-select-trigger-width)]",
+          "w-[var(--radix-select-trigger-width)] max-w-[95vw]",
           className,
         )}
         {...props}
@@ -82,7 +82,7 @@ function SelectContent({
         <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 text-muted-foreground">
           <ChevronUp className="size-4" />
         </SelectPrimitive.ScrollUpButton>
-        <SelectPrimitive.Viewport className="max-h-[320px] p-1">
+        <SelectPrimitive.Viewport className="max-h-[240px] sm:max-h-[320px] p-1">
           {children}
         </SelectPrimitive.Viewport>
         <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 text-muted-foreground">
@@ -134,7 +134,7 @@ type SelectFieldProps<T> = {
   getValue: (item: T) => string;
   getLabel: (item: T) => React.ReactNode;
   emptyText?: string;
-    getDisabled?: (item: T) => boolean;
+  getDisabled?: (item: T) => boolean;
 };
 
 function SelectField<T>({
@@ -181,7 +181,7 @@ function SelectField<T>({
     ) : null;
 
   return (
-    <div className={cn(fullWidth && "w-full")}>
+    <div className={cn(fullWidth ? "w-full" : "w-auto", "min-w-0")}>
       {/* LABEL */}
       {label && (
         <label className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -230,9 +230,7 @@ function SelectField<T>({
 
       {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
       {description && !error && (
-        <p className="mt-1.5 text-xs text-muted-foreground">
-          {description}
-        </p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{description}</p>
       )}
     </div>
   );

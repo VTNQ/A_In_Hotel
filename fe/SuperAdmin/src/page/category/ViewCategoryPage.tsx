@@ -43,8 +43,8 @@ const ViewCategoryPage = () => {
           "Failed to change status of category. Please try again.",
         type: "error",
       });
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
   const handleSort = (key: keyof Category) => {
@@ -93,13 +93,13 @@ const ViewCategoryPage = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [page, sortKey, sortDir, searchValue, statusFilter,typeFilter]);
+  }, [page, sortKey, sortDir, searchValue, statusFilter, typeFilter]);
 
   return (
     <>
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">{t("category.title")}</h2>
+        <h2 className="text-xl font-semibold">{t("category.title")}</h2>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
           <CategoryFilter
             search={searchValue}
             onSearchChange={setSearchValue}
@@ -122,8 +122,8 @@ const ViewCategoryPage = () => {
           onSortChange={handleSort}
           onView={(row) => handleView(row)}
           onEdit={(row) => setEditModal(row)}
-          onActivate={(row) => handleChangeStatus(row?.id ?? 0,true)}
-          onDeactivate={(row) => handleChangeStatus(row?.id ?? 0,false)}
+          onActivate={(row) => handleChangeStatus(row?.id ?? 0, true)}
+          onDeactivate={(row) => handleChangeStatus(row?.id ?? 0, false)}
         />
         <CategoryEdit
           open={!!editModal}
@@ -131,7 +131,7 @@ const ViewCategoryPage = () => {
           onClose={() => setEditModal(null)}
           onSubmit={fetchData}
         />
-  
+
         <CategoryViewInformation
           isOpen={showViewModal}
           onClose={() => setShowViewModal(false)}

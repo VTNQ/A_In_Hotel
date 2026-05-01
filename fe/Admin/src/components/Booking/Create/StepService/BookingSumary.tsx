@@ -12,20 +12,25 @@ const BookingSummary = ({
   const rooms = booking.rooms || [];
   const nights = booking.selectDate?.nights || 1;
 
-  // ✅ Tổng tiền phòng
+  /* ================= ROOM TOTAL ================= */
   const roomsTotal = rooms.reduce(
     (sum: number, room: any) =>
       sum + (room.price || 0) * nights,
     0
   );
 
-  // ✅ Tổng tiền service (estimate)
-  const servicesTotal = services.reduce(
-    (sum: number, s: any) =>
-      sum + estimateServicePrice(s, booking),
+  /* ================= SERVICES ================= */
+  const servicesWithPrice = services.map((s: any) => ({
+    ...s,
+    estimated: estimateServicePrice(s, booking),
+  }));
+
+  const servicesTotal = servicesWithPrice.reduce(
+    (sum: number, s: any) => sum + s.estimated,
     0
   );
 
+  /* ================= FINAL TOTAL ================= */
   const total = roomsTotal + servicesTotal;
 
   return (
@@ -79,21 +84,20 @@ const BookingSummary = ({
         </div>
 
         {/* SERVICES */}
-        {services?.length > 0 && (
+        {servicesWithPrice.length > 0 && (
           <>
             <p className="text-xs text-[#42578E] mt-4 mb-2 font-semibold">
-               {t("serviceSelection.addedServices")}
+              {t("serviceSelection.addedServices")}
             </p>
 
             <div className="space-y-2 text-sm">
-              {services.map((s: any) => (
-                <div
-                  key={s.id}
-                  className="flex justify-between"
-                >
-                  <span>{s.serviceName}</span>
+              {servicesWithPrice.map((s: any) => (
+                <div key={s.id} className="flex justify-between">
+                  <span>
+                    {s.serviceName} ({s.extraCharge}%)
+                  </span>
                   <span className="font-medium">
-                    ${estimateServicePrice(s, booking).toFixed(2)}
+                    ${s.estimated.toFixed(2)}
                   </span>
                 </div>
               ))}
@@ -108,10 +112,9 @@ const BookingSummary = ({
               <p className="text-sm text-gray-500">
                 {t("serviceSelection.totalEstimate")}
               </p>
-              <p className="text-xs text-gray-400">
-                USD
-              </p>
+              <p className="text-xs text-gray-400">USD</p>
             </div>
+
             <p className="text-2xl font-bold text-gray-900">
               ${total.toFixed(2)}
             </p>
@@ -126,14 +129,12 @@ const BookingSummary = ({
           {t("serviceSelection.continue")}
         </button>
 
-
-
         <p className="text-xs text-gray-400 mt-3 text-center">
-         {t("serviceSelection.secure")}
+          {t("serviceSelection.secure")}
         </p>
       </div>
     </div>
   );
 };
 
-export default BookingSummary;
+export default BookingSummary;  

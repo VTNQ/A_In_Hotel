@@ -5,12 +5,19 @@ import {
 import { useAlert } from "../alert-context";
 import { useEffect, useState } from "react";
 import { getCategoryById, updateCategoryById } from "@/service/api/Categories";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { useTranslation } from "react-i18next";
 import { Input } from "../ui/input";
 import { SelectField } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { useForm } from "react-hook-form";
 
 const CategoryEdit: React.FC<CategoryEditProps> = ({
   open,
@@ -20,63 +27,63 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [formData, setFormData] = useState<CategoryForm>({
-    name: "",
-    type: null,
-    description: "",
-  });
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleClose = ()=>{
-    setFormData({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    trigger,
+    watch,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<CategoryForm>({
+    mode: "onBlur",
+    defaultValues: {
+      name: "",
+      type: "",
+      description: "",
+    },
+  });
+  const handleClose = () => {
+    reset({
       name: "",
       type: null,
       description: "",
     });
     onClose();
-
-  }
-  const handleSubmit = async ()=>{
-    if(loading) return
-    try{
-      setLoading(true);
+  };
+  const onSubmitForm = async (data: CategoryForm) => {
+    try {
       const payload = {
-        name: formData.name,
-        type: Number(formData.type),
-        description: formData.description,
-      }
-      const response = await updateCategoryById(Number(categoryId),payload);
+        name: data.name,
+        type: Number(data.type),
+        description: data.description,
+      };
+      const response = await updateCategoryById(Number(categoryId), payload);
       showAlert({
-        title: response?.data?.message || t("category.createOrUpdate.updateSuccess"),
+        title:
+          response?.data?.message || t("category.createOrUpdate.updateSuccess"),
         type: "success",
         autoClose: 4000,
       });
       onSubmit();
       onClose();
-    }catch(err:any){
+    } catch (err: any) {
       showAlert({
         title: t("category.createOrUpdate.updateError"),
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
-      })
-    }finally{
-      setLoading(false)
+      });
     }
-  }
+  };
   useEffect(() => {
     if (!open || !categoryId) return;
     const fetchData = async () => {
       setFetching(true);
       try {
         const response = await getCategoryById(Number(categoryId));
-        setFormData({
+        reset({
           name: response?.data?.data?.name || "",
           type: response?.data?.data?.idType
             ? String(response.data.data.idType)
@@ -93,85 +100,118 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
   }, [open, categoryId]);
   if (!open || !categoryId) return null;
   return (
-    <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent
-        className="sm:max-w-md max-h-[90vh]  overflow-y-auto
-    custom-scrollbar"
-      >
-        <DialogHeader>
-          <DialogTitle>{t("category.createOrUpdate.titleEdit")}</DialogTitle>
+    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+      <DialogContent className="w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl p-0">
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+          <DialogTitle className="text-lg font-semibold">
+            {t("category.createOrUpdate.titleEdit")}
+          </DialogTitle>
         </DialogHeader>
+
         {fetching ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#253150]/20 border-t-[#253150] rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
-              {t("category.createOrUpdate.titleEdit")}
-            </span>
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
           </div>
         ) : (
           <>
-            <div className="space-y-4 py-2">
-              <div className="grid gap-2">
+            {/* BODY */}
+            <div className="px-6 py-6 space-y-6">
+              {/* NAME */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium">
                   {t("category.name")} <span className="text-red-500">*</span>
                 </label>
                 <Input
-                  name="name"
+                  {...register("name", {
+                    required: t("category.validate.nameRequired"),
+                    maxLength: {
+                      value: 100,
+                      message: t("category.validate.nameMaxLength"),
+                    },
+                  })}
+                  onChange={(e) => {
+                    setValue("name", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("name");
+                  }}
                   placeholder={t("category.createOrUpdate.enterName")}
-                  onChange={handleChange}
-                  value={formData.name}
-                  className="mt-1"
+                  className="h-11"
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
-              <div className="grid gap-2">
+
+              {/* TYPE */}
+              <div className="space-y-2">
                 <SelectField
                   label={t("category.type")}
                   items={[
-                    {
-                      label: t("category.room"),
-                      value: "1",
-                    },
-                    {
-                      label: t("category.service"),
-                      value: "2",
-                    },
-                    {
-                      label: t("category.asset"),
-                      value: "3",
-                    },
+                    { label: t("category.room"), value: "1" },
+                    { label: t("category.service"), value: "2" },
+                    { label: t("category.asset"), value: "3" },
                   ]}
-                  value={formData.type}
-                  onChange={(v) =>
-                    setFormData((prev) => ({ ...prev, type: v }))
-                  }
-                  placeholder={t("category.createOrUpdate.enterType")}
+                  value={watch("type")}
+                  onChange={(v) => {
+                    setValue("type", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("type");
+                  }}
+                  isRequired
                   getValue={(i) => i.value}
-                  isRequired={true}
                   getLabel={(i) => i.label}
                 />
               </div>
-              <div className="grid gap-2">
-                <label className="block mb-1 font-medium text-[#253150]">
+
+              {/* DESCRIPTION */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
                   {t("category.createOrUpdate.description")}
                 </label>
                 <Textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder={t("category.createOrUpdate.enterDescription")}
+                  {...register("description", {
+                    maxLength: {
+                      value: 255,
+                      message: t("category.validate.descriptionMax"),
+                    },
+                  })}
+                  value={watch("description")}
+                  onChange={(e) => {
+                    setValue("description", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("description");
+                  }}
                   rows={3}
-                  className="mt-1"
                 />
               </div>
-                <DialogFooter>
-                <Button variant="outline" onClick={handleClose} disabled={loading}>
-                  {t("common.cancel")}
-                </Button>
-                <Button onClick={handleSubmit} disabled={loading}>
-                  {loading ? t("common.saving") : t("common.save")}
-                </Button>
-              </DialogFooter>
             </div>
+
+            {/* FOOTER */}
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSubmitting || !isValid}
+              >
+                {t("common.cancel")}
+              </Button>
+
+              <Button
+                onClick={handleSubmit(onSubmitForm)}
+                disabled={isSubmitting || !isValid}
+              >
+                {isSubmitting ? t("common.saving") : t("common.save")}
+              </Button>
+            </DialogFooter>
           </>
         )}
       </DialogContent>

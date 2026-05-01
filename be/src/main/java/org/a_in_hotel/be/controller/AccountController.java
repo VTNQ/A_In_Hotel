@@ -6,13 +6,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.config.JwtService;
 import org.a_in_hotel.be.dto.PageResponse;
-import org.a_in_hotel.be.dto.request.AccountDTO;
-import org.a_in_hotel.be.dto.request.LoginDTO;
-import org.a_in_hotel.be.dto.request.UserDTO;
-import org.a_in_hotel.be.dto.response.AccountResponse;
-import org.a_in_hotel.be.dto.response.CustomerProfileResponse;
-import org.a_in_hotel.be.dto.response.RequestResponse;
-import org.a_in_hotel.be.dto.response.TokenResponse;
+import org.a_in_hotel.be.dto.request.*;
+import org.a_in_hotel.be.dto.response.*;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.AccountMapper;
@@ -48,182 +43,178 @@ public class AccountController {
     private HotelService hotelService;
     @Autowired
     private JwtService jwtService;
-    @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute AccountDTO accountDTO, BindingResult result,@RequestParam(value = "image", required = false) MultipartFile image) {
-        if (result.hasErrors()) {
-            String errorMessage = result.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Dữ liệu không hợp lệ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(errorMessage));
-        }
-        try {
-            accountService.save(accountDTO,image);
-            return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
 
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> create(@Valid @ModelAttribute AccountDTO accountDTO,
+                                                        @RequestParam(value = "image", required = false) MultipartFile image) {
+        accountService.save(accountDTO, image);
+        return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
     }
+
     @PostMapping(value = "/register/user")
-    public ResponseEntity<RequestResponse<Void>>registerUser(@Valid @RequestBody UserDTO userDTO){
-        try {
-            accountService.saveUser(userDTO);
-            return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+    public ResponseEntity<RequestResponse<Void>> registerUser(@Valid @RequestBody UserDTO userDTO) {
+        accountService.saveUser(userDTO);
+        return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
     }
+
     @GetMapping("/role")
     public ResponseEntity<RequestResponse<String>> getUserRole(@RequestParam("email") String email) {
-        try {
-            Account account = accountService.findByEmail(email);
-            if (account == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(RequestResponse.error("User not found"));
-            }
-            return ResponseEntity.ok(RequestResponse.success(account.getRole().getName()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
+        Account account = accountService.findByEmail(email);
+        if (account == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(RequestResponse.error("User not found"));
         }
+        return ResponseEntity.ok(RequestResponse.success(account.getRole().getName()));
     }
-    @GetMapping("/me")
-    public ResponseEntity<?>getMyInfo(@RequestHeader("Authorization")String authHeader) {
-        try {
-            Account account=accountService.getAccountFromToken(authHeader);
-            AccountResponse accountDTO= accountMapper.toResponse(account);
-            return ResponseEntity.ok(RequestResponse.success(accountDTO,"lấy account Theo token thành công"));
 
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
-        }
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyInfo(@RequestHeader("Authorization") String authHeader) {
+        Account account = accountService.getAccountFromToken(authHeader);
+        AccountResponse accountDTO = accountMapper.toResponse(account);
+        return ResponseEntity.ok(RequestResponse.success(accountDTO, "lấy account Theo token thành công"));
     }
+
     @GetMapping("/user/profile")
-    public ResponseEntity<RequestResponse<CustomerProfileResponse>>profileUser(){
-        try {
-            return ResponseEntity.ok(RequestResponse.success(accountService.getAccountUserProfile()));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
-        }
+    public ResponseEntity<RequestResponse<CustomerProfileResponse>> profileUser() {
+        return ResponseEntity.ok(RequestResponse.success(
+                accountService.getAccountUserProfile()));
     }
+
     @GetMapping("/getAll")
-    public ResponseEntity<RequestResponse<PageResponse<AccountResponse>>>getAll(@RequestParam(defaultValue = "1") int page,
-                                                                           @RequestParam(defaultValue = "5") int size,
-                                                                           @RequestParam(defaultValue = "id,desc") String sort,
-                                                                           @RequestParam(required = false) String filter,
-                                                                           @RequestParam(required = false)  String searchField,
-                                                                           @RequestParam(required = false)  String searchValue,
-                                                                           @RequestParam(required = false) boolean all){
-        try {
-            return ResponseEntity.ok(
-                    RequestResponse.success(
-                            new PageResponse<>(accountService.findAll(page,size,sort,filter,searchField,searchValue,all))
-                    )
-            );
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
-        }
+    public ResponseEntity<RequestResponse<PageResponse<AccountResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
+                                                                                 @RequestParam(defaultValue = "5") int size,
+                                                                                 @RequestParam(defaultValue = "id,desc") String sort,
+                                                                                 @RequestParam(required = false) String filter,
+                                                                                 @RequestParam(required = false) String searchField,
+                                                                                 @RequestParam(required = false) String searchValue,
+                                                                                 @RequestParam(required = false) boolean all) {
+        return ResponseEntity.ok(
+                RequestResponse.success(
+                        new PageResponse<>(accountService.findAll(page, size, sort, filter, searchField, searchValue, all))
+                )
+        );
+
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RequestResponse<Map<String,Object>>>refreshToken(@RequestBody Map<String, String> map) {
-        String refreshToken=map.get("refreshToken");
-        if(refreshToken==null){
+    public ResponseEntity<RequestResponse<Map<String, Object>>> refreshToken(@RequestBody Map<String, String> map) {
+        String refreshToken = map.get("refreshToken");
+        if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(RequestResponse.error("Refresh Token is required"));
         }
-        try {
-            if(jwtService.isTokenExpired(refreshToken)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(RequestResponse.error("Refresh Token is expired"));
-            }
-            String email= jwtService.extractEmail(refreshToken);
-            Long userId= jwtService.extractUserId(refreshToken);
-            String role= jwtService.extractRole(refreshToken);
-            Long hotelId=jwtService.extractHotelId(refreshToken);
-            String newAccessToken= jwtService.generateAccessToken(email,userId,role,hotelId==null?null:hotelId);
-            long accessTokenExpiryAt=jwtService.getAccessTokenExpiryAt();
-
-            Map<String,Object>response=new HashMap<>();
-            response.put("accessToken",newAccessToken);
-            response.put("accessTokenExpiryAt",accessTokenExpiryAt);
-            return ResponseEntity.ok(RequestResponse.success(response));
-        }catch (JwtException e){
+        if (jwtService.isTokenExpired(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(RequestResponse.error("Invalid refresh token: " + e.getMessage()));
+                    .body(RequestResponse.error("Refresh Token is expired"));
         }
+        String email = jwtService.extractEmail(refreshToken);
+        Long userId = jwtService.extractUserId(refreshToken);
+        String role = jwtService.extractRole(refreshToken);
+        Long hotelId = jwtService.extractHotelId(refreshToken);
+        String newAccessToken = jwtService.generateAccessToken(email, userId, role, hotelId == null ? null : hotelId);
+        long accessTokenExpiryAt = jwtService.getAccessTokenExpiryAt();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accessToken", newAccessToken);
+        response.put("accessTokenExpiryAt", accessTokenExpiryAt);
+        return ResponseEntity.ok(RequestResponse.success(response));
+    }
+
+    @GetMapping("/me/profile")
+    public ResponseEntity<RequestResponse<ProfileSystemResponse>> getMyProfile() {
+        return ResponseEntity.ok(
+                RequestResponse.success(accountService.getProfile())
+        );
+
+    }
+
+    @PatchMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> updateProfile(
+            @ModelAttribute ProfileSystemRequest request,
+            @RequestParam(value = "image", required = false) MultipartFile file
+    ) {
+        accountService.updateProfileSystem(request, file);
+        return ResponseEntity.ok(RequestResponse.success("Cập nhật profile thành công"));
+    }
+
+    @PutMapping(value = "/me/password")
+    public ResponseEntity<RequestResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+        accountService.changePassword(request);
+        return ResponseEntity.ok(
+                RequestResponse.success("Password updated successfully")
+        );
     }
 
     @PostMapping("/login")
     public ResponseEntity<RequestResponse<TokenResponse>> login(@RequestBody LoginDTO loginDTO) {
-        try {
-            // 1. Xác thực tài khoản
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginDTO.getUsername(),
-                            loginDTO.getPassword()
-                    )
-            );
 
-            if (!authentication.isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(RequestResponse.error("Invalid username or password"));
+        // 1. Xác thực tài khoản
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getUsername(),
+                        loginDTO.getPassword()
+                )
+        );
+
+        if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(RequestResponse.error("Invalid username or password"));
+        }
+
+        // 2. Lấy account sau khi login thành công
+        Account account = (Account) authentication.getPrincipal();
+
+        // 3. Lấy hotel (có thể null)
+        Long hotelId = null;
+        if (account.getRole().getId() == 2) {
+            Hotel hotel = hotelService.getHotelByAccountId(account.getId());
+            if (hotel != null) {
+                hotelId = hotel.getId();
             }
 
-            // 2. Lấy account sau khi login thành công
-            Account account = (Account) authentication.getPrincipal();
+        }else if(account.getRole().getId()==3){
+            if(account.getStaff()!=null){
+                hotelId = account.getStaff().getHotelId();
+            }
 
-            // 3. Lấy hotel (có thể null)
-            Hotel hotel = hotelService.getHotelByAccountId(account.getId());
-            Long hotelId = (hotel != null) ? hotel.getId() : null;
-
-            // 4. Generate token
-            String accessToken = jwtService.generateAccessToken(
-                    account.getEmail(),
-                    account.getId(),
-                    account.getRole().getName(),
-                    hotelId
-            );
-
-            String refreshToken = jwtService.generateRefreshToken(
-                    account.getEmail(),
-                    account.getId(),
-                    account.getRole().getName(),
-                    hotelId
-            );
-
-            // 5. Expiry time
-            long accessTokenExpiryAt = jwtService.getAccessTokenExpiryAt();
-            long refreshTokenExpiryAt = jwtService.getRefreshTokenExpiryAt();
-
-            // 6. Role
-            String role = jwtService.extractRole(accessToken);
-
-            // 7. Trả response thành công
-            TokenResponse tokenResponse = new TokenResponse(
-                    refreshToken,
-                    accessToken,
-                    accessTokenExpiryAt,
-                    refreshTokenExpiryAt,
-                    role,
-                    hotelId
-            );
-
-            return ResponseEntity.ok(RequestResponse.success(tokenResponse));
-
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(RequestResponse.error("Incorrect username or password"));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
         }
+
+        // 4. Generate token
+        String accessToken = jwtService.generateAccessToken(
+                account.getEmail(),
+                account.getId(),
+                account.getRole().getName(),
+                hotelId
+        );
+
+        String refreshToken = jwtService.generateRefreshToken(
+                account.getEmail(),
+                account.getId(),
+                account.getRole().getName(),
+                hotelId
+        );
+
+        // 5. Expiry time
+        long accessTokenExpiryAt = jwtService.getAccessTokenExpiryAt();
+        long refreshTokenExpiryAt = jwtService.getRefreshTokenExpiryAt();
+
+        // 6. Role
+        String role = jwtService.extractRole(accessToken);
+
+        // 7. Trả response thành công
+        TokenResponse tokenResponse = new TokenResponse(
+                refreshToken,
+                accessToken,
+                accessTokenExpiryAt,
+                refreshTokenExpiryAt,
+                role,
+                hotelId
+        );
+
+        return ResponseEntity.ok(RequestResponse.success(tokenResponse));
+
+
     }
 }

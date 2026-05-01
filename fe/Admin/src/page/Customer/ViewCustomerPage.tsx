@@ -29,7 +29,7 @@ const ViewCustomerPage = () => {
         size: 10,
         sort: `${sortKey},${sortOrder}`,
         searchValue,
-        filter:`hotelId==${getTokens()?.hotelId}`
+        filter: `hotelId==${getTokens()?.hotelId}`,
       };
 
       const res = await getCustomer(params);
@@ -83,30 +83,27 @@ const ViewCustomerPage = () => {
     {
       key: "customerCode",
       label: t("customer.table.customerId"),
-      
     },
     { key: "fullName", label: t("customer.table.fullName") },
     {
       key: "email",
       label: t("customer.table.email"),
-    
+
       sortKey: "account.email",
     },
     {
       key: "phone",
       label: t("customer.table.phone"),
-    
+
       sortKey: "phoneNumber",
     },
     {
       key: "totalCompletedBookings",
       label: t("customer.table.totalBookings"),
-     
     },
     {
       key: "rewardBalance",
       label: t("customer.table.rewardBalance"),
-   
     },
     {
       key: "block",
@@ -166,7 +163,6 @@ const ViewCustomerPage = () => {
     {
       key: "lastBookingAt",
       label: t("customer.table.lastBooking"),
- 
     },
     {
       key: "action",

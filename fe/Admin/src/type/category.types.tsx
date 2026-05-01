@@ -13,6 +13,12 @@ export interface Category {
   isActive?: boolean;
   [key: string]: any;
 }
+export interface CategoryFormData {
+  id?:string;
+  name: string;
+  type: string;
+  description: string;
+}
 export interface CategoryActionMenuProps {
   category: Category;
   onView?: (category: Category) => void;

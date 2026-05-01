@@ -50,7 +50,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           }),
           getAllFicilities({
             all: true,
-            filter: "isActive==true and type==1 and price==0",
+            filter: "isActive==true and type==1 and extraCharge==0",
           }),
           getAllCategories({
             all: true,
@@ -162,7 +162,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           if (key === "roomType") setRoomType(value || "");
         }}
       />
-      <div className="grid grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <div className="col-span-2 space-y-4">
           {loading ? (
             <RoomSkeleton />

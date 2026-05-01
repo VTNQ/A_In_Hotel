@@ -28,29 +28,30 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
 
   return (
     <div className="bg-gray-50">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            {t("bookingDateTime.title")}
-          </h2>
-          <p className="text-sm text-gray-500">{t("bookingDateTime.step")}</p>
-        </div>
+      <div className="mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+          {t("bookingDateTime.title")}
+        </h2>
+        <p className="text-sm text-gray-500">{t("bookingDateTime.step")}</p>
       </div>
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 bg-white rounded-xl p-4 shadow-sm">
-          <CalendarRange
-            value={{
-              start: form.checkInDate,
-              end: form.checkOutDate,
-            }}
-            onChange={(range) =>
-              setForm((p: any) => ({
-                ...p,
-                checkInDate: range.start,
-                checkOutDate: range.end,
-              }))
-            }
-          />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <CalendarRange
+              value={{
+                start: form.checkInDate,
+                end: form.checkOutDate,
+              }}
+              onChange={(range) =>
+                setForm((p: any) => ({
+                  ...p,
+                  checkInDate: range.start,
+                  checkOutDate: range.end,
+                }))
+              }
+            />
+          </div>
         </div>
         <BookingDetailsPanel
           form={form}
@@ -60,38 +61,38 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
           }
         />
       </div>
-      <div className="flex justify-between items-center mt-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mt-8">
         {/* CANCEL - NGOÀI, BÊN TRÁI */}
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-sm font-medium 
-                    text-red-600 border border-red-200 bg-red-50
-                    hover:bg-red-100 hover:border-red-300 transition"
+          className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
+          text-red-600 border border-red-200 bg-red-50
+          hover:bg-red-100 hover:border-red-300 transition"
         >
           {t("bookingDateTime.cancel")}
         </button>
         {/* BACK + NEXT - NHÓM RIÊNG */}
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
           <button
             onClick={onBack}
-            className="px-4 py-2 rounded-lg 
-                bg-[#F2F2F2] text-[#4B4B4B]"
+            className="w-full sm:w-auto px-4 py-2 rounded-lg
+            bg-[#F2F2F2] text-[#4B4B4B]"
           >
             {t("bookingDateTime.back")}
           </button>
 
-          <button
-            disabled={!isValid}
-            onClick={() => onNext({ ...form, nights })}
-            className={`px-5 py-2 rounded-lg transition
-                ${
-                  isValid
-                    ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
-                    : "bg-gray-300 text-gray-400 cursor-not-allowed"
-                }`}
-          >
-            {t("bookingDateTime.next")}
-          </button>
+         <button
+          disabled={!isValid}
+          onClick={() => onNext({ ...form, nights })}
+          className={`w-full sm:w-auto px-6 py-3 rounded-xl transition
+            ${
+              isValid
+                ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
+        >
+          {t("bookingDateTime.next")}
+        </button>
         </div>
       </div>
     </div>

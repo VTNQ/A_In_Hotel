@@ -13,6 +13,9 @@ import GeneralTab from "./Create/GeneralTab";
 import OfferTab from "./Create/OfferTab";
 import TargetingTab from "./Create/TargetingTab";
 import TabButton from "./Create/TabButton";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const UpdatePromotion = ({
   isOpen,
@@ -25,22 +28,129 @@ const UpdatePromotion = ({
   const isFirstTab = currentIndex === 0;
   const { t } = useTranslation();
   const { showAlert } = useAlert();
+  const promotionSchema = z
+    .object({
+      id: z.string(),
+      name: z
+        .string()
+        .min(1, t("promotion.validation.nameRequired"))
+        .min(3, t("promotion.validation.nameMinLength"))
+        .max(100, t("promotion.validation.nameMaxLength")),
+      description: z.string().optional(),
+      type: z.string(),
+      value: z.string().min(1, t("promotion.validation.valueRequired")),
+      priority: z.string().min(1, t("promotion.validation.priorityRequired")),
+      startDate: z.string().min(1, t("promotion.validation.startDateRequired")),
+      endDate: z.string().min(1, t("promotion.validation.endDateRequired")),
+      bookingType: z.number(),
+
+      minNights: z.string().min(1, t("promotion.validation.minNightsRequired")),
+
+      customerType: z.string(),
+
+      roomTypes: z.array(
+        z.object({
+          id: z.any(),
+          excluded: z.boolean(),
+        }),
+      ),
+    })
+    .superRefine((data, ctx) => {
+      // priority
+      if (Number(data.priority) < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["priority"],
+          message: t("promotion.validation.priorityMin"),
+        });
+      }
+
+      // value
+      const value = Number(data.value);
+
+      if (data.type === "2") {
+        if (value <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyPositive"),
+          });
+        }
+
+        if (value > 100000000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valueMoneyMax"),
+          });
+        }
+      } else {
+        if (value <= 0 || value > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["value"],
+            message: t("promotion.validation.valuePercentRange"),
+          });
+        }
+      }
+
+      // endDate > startDate
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endDate"],
+          message: t("promotion.validation.endDateAfterStart"),
+        });
+      }
+
+      // min nights
+      if (Number(data.minNights) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsPositive"),
+        });
+      }
+
+      if (Number(data.minNights) > 30) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["minNights"],
+          message: t("promotion.validation.minNightsTooLarge"),
+        });
+      }
+    });
+  type FormData = z.infer<typeof promotionSchema>;
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(promotionSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      name: "",
+      description: "",
+      type: "2",
+      value: "",
+      priority: "",
+      startDate: "",
+      endDate: "",
+      bookingType: 1,
+      minNights: "",
+      customerType: "0",
+      roomTypes: [],
+    },
+  });
   const isLastTab = currentIndex === TABS.length - 1;
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<PromotionForm>({
-    name: "",
-    description: "",
-    type: "2",
-    value: "",
-    priority: "",
-    startDate: "",
-    endDate: "",
-    bookingType: 1,
-    minNights: "",
-    customerType: "0",
-    roomTypes: [],
-  });
+
+
   const handleNext = () => {
     if (!isLastTab) {
       setActiveTab(TABS[currentIndex + 1]);
@@ -52,6 +162,7 @@ const UpdatePromotion = ({
       setActiveTab(TABS[currentIndex - 1]);
     }
   };
+
   useEffect(() => {
     if (!isOpen || !promotionId) return;
     const fetchData = async () => {
@@ -59,7 +170,8 @@ const UpdatePromotion = ({
         setLoading(true);
         const response = await getPromotionById(promotionId);
         const data = response?.data?.data;
-        setFormData({
+        reset({
+          id: data.id.toString() || "",
           name: data.name ?? "",
           description: data.description ?? "",
           type: String(data.type ?? "2"),
@@ -89,22 +201,21 @@ const UpdatePromotion = ({
     };
     fetchData();
   }, [isOpen, promotionId]);
-  const handleSubmit = async () => {
-    if (saving) return;
+  const onSubmit = async (data: FormData) => {
     try {
-      setSaving(true);
+
       const payload = {
-        name: formData.name,
-        description: formData.description,
-        type: formData.type,
-        value: formData.value,
-        priority: formData.priority,
-        startDate: formData.startDate || null,
-        endDate: formData.endDate || null,
-        bookingType: formData.bookingType,
-        customerType: formData.customerType,
-        minNights: formData.minNights,
-        promotionRoomTypeRequests: formData.roomTypes.map((r) => ({
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        value: data.value,
+        priority: data.priority,
+        startDate: data.startDate || null,
+        endDate: data.endDate || null,
+        bookingType: data.bookingType,
+        customerType: data.customerType,
+        minNights: data.minNights,
+        promotionRoomTypeRequests: data.roomTypes.map((r) => ({
           roomTypeId: r.id,
           excluded: r.excluded,
         })),
@@ -116,19 +227,7 @@ const UpdatePromotion = ({
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        name: "",
-        description: "",
-        type: "2",
-        value: "",
-        priority: "",
-        startDate: "",
-        endDate: "",
-        bookingType: 1,
-        minNights: "",
-        customerType: "0",
-        roomTypes: [],
-      });
+      reset();
       setActiveTab("general");
       onSuccess();
       onClose();
@@ -140,35 +239,37 @@ const UpdatePromotion = ({
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setSaving(false);
     }
   };
   const handleCancel = () => {
-    setFormData({
-      name: "",
-      description: "",
-      type: "2",
-      value: "",
-      priority: "",
-      startDate: "",
-      endDate: "",
-      bookingType: 1,
-      minNights: "",
-      customerType: "0",
-      roomTypes: [],
-    });
+    reset();
     setActiveTab("general");
     onClose();
   };
   if (!isOpen || !promotionId) return <></>;
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-        <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
-          <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
+        <div
+          className="w-full
+  sm:w-[95%]
+  lg:w-[850px]
+  max-h-[90vh]
+  overflow-hidden
+  rounded-xl
+  bg-white
+  shadow-2xl
+  flex flex-col"
+        >
+          <header
+            className="flex items-start sm:items-center justify-between
+  border-b border-gray-100
+  px-4 sm:px-6 lg:px-8
+  py-5 sm:py-6
+  gap-4"
+          >
             <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-bold text-slate-800">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800">
                 {t("promotion.createOrUpdate.editTitle")}
               </h1>
               <p className="text-sm italic text-slate-500">
@@ -182,8 +283,8 @@ const UpdatePromotion = ({
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </header>
-          <div className="border-b px-10 py-4 border-gray-200 bg-white sticky top-0 z-10 ">
-            <div className="flex gap-10">
+          <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
+            <div className="flex gap-6 px-4 sm:px-6 lg:px-8 py-3 overflow-y-auto whitespace-nowrap">
               <TabButton
                 icon={<Info size={18} />}
                 label={t("promotion.tabs.general")}
@@ -207,9 +308,9 @@ const UpdatePromotion = ({
               />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto  py-8 custom-scroll">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8  py-6 custom-scroll">
             {loading ? (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-60 sm:h-80">
                 <div className="flex flex-col items-center gap-4">
                   <svg
                     className="animate-spin h-8 w-8 text-[#42578E]"
@@ -239,29 +340,47 @@ const UpdatePromotion = ({
             ) : (
               <>
                 {activeTab === "general" && (
-                  <GeneralTab formData={formData} setFormData={setFormData} />
+                  <GeneralTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
                 {activeTab === "offer" && (
-                  <OfferTab formData={formData} setFormData={setFormData} />
+                  <OfferTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
                 {activeTab === "targeting" && (
-                  <TargetingTab formData={formData} setFormData={setFormData} />
+                  <TargetingTab
+                    watch={watch}
+                    setValue={setValue}
+                    trigger={trigger}
+                    errors={errors}
+                  />
                 )}
               </>
             )}
           </div>
 
-          <footer className="flex items-center justify-end border-t border-gray-200 px-10 py-6">
-            
-            <div className="flex gap-4">
+          <footer
+            className="flex flex-col sm:flex-row items-stretch sm:items-center 
+          justify-between sm:justify-end gap-4 
+          border-t border-gray-200 px-4 sm:px-6 lg:px-8 py-5"
+          >
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               {/* Back */}
               {!isFirstTab && (
                 <button
                   onClick={handleBack}
-                  disabled={loading || saving}
+                  disabled={loading || isSubmitting || !isValid}
                   className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
                 >
-                {t("promotion.back")}
+                  {t("promotion.back")}
                 </button>
               )}
 
@@ -269,22 +388,22 @@ const UpdatePromotion = ({
               {!isLastTab ? (
                 <button
                   onClick={handleNext}
-                  disabled={loading || saving}
+                  disabled={loading || isSubmitting || !isValid}
                   className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {t("promotion.next")}
+                  {t("promotion.next")}
                 </button>
               ) : (
                 <button
-                  onClick={handleSubmit}
-                  disabled={loading || saving}
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={loading || isSubmitting || !isValid}
                   className="flex items-center justify-center gap-2 px-8 h-12 rounded-lg
                    bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2]
                    disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {loading || saving ? (
+                  {loading || isSubmitting || !isValid? (
                     <>
                       <svg
                         className="animate-spin h-4 w-4 text-white"
@@ -310,7 +429,9 @@ const UpdatePromotion = ({
                     </>
                   ) : (
                     <>
-                      <span>{t("promotion.createOrUpdate.saveUpdateButton")}</span>
+                      <span>
+                        {t("promotion.createOrUpdate.saveUpdateButton")}
+                      </span>
                       <Rocket size={18} />
                     </>
                   )}

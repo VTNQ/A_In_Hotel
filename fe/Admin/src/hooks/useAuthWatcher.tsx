@@ -1,17 +1,24 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { clearTokens, getTokens, saveTokens } from "../util/auth";
 import { refresh } from "../service/api/Authenticate";
 
 export const useAuthWatcher = (
   setAuthChecking: (v: boolean) => void,
-  setShowModal: (v: boolean) => void
+  setShowModal: (v: boolean) => void,
 ) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // =============================
   // 🔥 CHECK 1 LẦN LÚC MỞ TRANG
   // =============================
+  const receptionAllowPages = [
+    "/Dashboard/facility/room",
+    "/Dashboard/booking",
+    "/Dashboard"
+    
+  ];
   useEffect(() => {
     const initCheck = async () => {
       const tokens = getTokens();
@@ -21,7 +28,12 @@ export const useAuthWatcher = (
         navigate("/", { replace: true });
         return;
       }
-
+      if(tokens.role ==="RECEPTIONIST" && 
+        !receptionAllowPages.includes(location.pathname)
+      ){
+        navigate(-1);
+        return;
+      }
       const remain = tokens.accessTokenAt - Date.now();
 
       // Token gần hết hạn → refresh

@@ -38,7 +38,7 @@ const ViewExtraServicePage = () => {
       filters.push(`isActive==${statusFilter}`);
     }
     filters.push("type==2")
-    filters.push("price>0")
+    filters.push("extraCharge>0")
 
     // Nếu có category (id)
     if (categoryFilter) {
@@ -187,20 +187,12 @@ const ViewExtraServicePage = () => {
     },
     { key: "serviceName", label: t("extraService.name"), sortable: true },
     { key: "categoryName", label: t("extraService.category"), sortable: true },
-    {
-      key: "price",
-      label: t("extraService.price"),
-      render: (row: any) =>
-        `${row.price?.toLocaleString("vi-VN")} ${"VNĐ"}`,
-      sortable: true,
-    },
+   
     {
       key: "extraCharge",
       label: t("extraService.extraCharge"),
       sorable: true
     },
-
-    { key: "unit", label: t("extraService.unit"), sortable: true, },
  
     { key: "createdAt", label: t("common.createdAt"), sortable: true },
     { key: "updatedAt", label: t("common.updatedAt"), sortable: true, },

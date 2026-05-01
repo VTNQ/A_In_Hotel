@@ -1,34 +1,66 @@
 import { useState } from "react";
 import { useAlert } from "../../components/alert-context";
-import type { BannerForm } from "@/type/banner.types";
 import { useTranslation } from "react-i18next";
 import { createBanner } from "@/service/api/Banner";
 import Breadcrumb from "@/components/Breadcrumb";
+import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { isBefore, startOfToday } from "date-fns";
+import { isBefore, isValid, startOfToday } from "date-fns";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import z from "zod";
 import UploadField from "@/components/ui/UploadField";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import DateTimePicker from "@/components/ui/DateTimePicker";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createImageBannerSchema } from "@/validation/image.validation";
 const CreateBanner = () => {
   const { showAlert } = useAlert();
-  const [formData, setFormData] = useState<BannerForm>({
-    title: "",
-    startDate: undefined,
-    endDate: undefined,
-    cta: "",
-    desc: "",
-    bannerImage: null,
-  });
   const { t } = useTranslation();
-  const handleTextChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const bannerSchema = z
+    .object({
+      name: z.string().trim().min(1, t("banner.validate.nameRequired")),
+
+      startDate: z.date({
+        error: t("banner.validate.startDateRequired"),
+      }),
+
+      endDate: z.date({
+        error: t("banner.validate.endDateRequired"),
+      }),
+
+      ctaLabel: z.string().optional(),
+
+      description: z.string().optional(),
+
+      bannerImage: createImageBannerSchema(t),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+      message: t("banner.validate.endDateInvalid"),
+      path: ["endDate"],
+    });
+
+  type BannerForm = z.input<typeof bannerSchema>;
+  const {
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isSubmitting },
+  } = useForm<BannerForm>({
+    mode: "onChange",
+    resolver: zodResolver(bannerSchema),
+    defaultValues: {
+      name: "",
+      startDate: undefined,
+      endDate: undefined,
+      ctaLabel: "",
+      description: "",
+      bannerImage: null,
+    },
+  });
 
   const navigate = useNavigate();
   const fullToolbar = {
@@ -81,20 +113,16 @@ const CreateBanner = () => {
       minutes
     );
   };
-  const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async (e: React.FormEvent) => {
-    if (submitting) return;
-    e.preventDefault();
+  const onSubmit = async (data: BannerForm) => {
     try {
-      setSubmitting(true);
       const cleanedData = Object.fromEntries(
         Object.entries({
-          name: formData.title,
-          startAt: toOffsetDateTime(formData.startDate),
-          endAt: toOffsetDateTime(formData.endDate),
-          ctaLabel: formData.cta,
-          description: formData.desc,
-          image: formData.bannerImage,
+          name: data.name,
+          startAt: toOffsetDateTime(data.startDate),
+          endAt: toOffsetDateTime(data.endDate),
+          ctaLabel: data.ctaLabel,
+          description: data.description,
+          image: data.bannerImage,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
@@ -106,14 +134,7 @@ const CreateBanner = () => {
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
-        title: "",
-        startDate: undefined,
-        endDate: undefined,
-        cta: "",
-        desc: "",
-        bannerImage: null,
-      });
+      reset();
     } catch (err: any) {
       showAlert({
         title: t("banner.createOrUpdate.createError"),
@@ -121,8 +142,6 @@ const CreateBanner = () => {
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSubmitting(false);
     }
   };
   return (
@@ -145,37 +164,64 @@ const CreateBanner = () => {
             {t("banner.name")} <span className="text-red-500">*</span>
           </label>
           <Input
-            name="title"
             placeholder={t("banner.createOrUpdate.enterName")}
-            onChange={handleTextChange}
-            value={formData.title}
+            onChange={(e: any) => {
+              setValue("name", e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            value={watch("name")}
             className="mt-1"
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
             {t("banner.startAt")} <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
-            value={formData.startDate}
-            onChange={(d) => setFormData((p) => ({ ...p, startDate: d }))}
+            value={watch("startDate")}
+            onChange={(date: any) => {
+              setValue("startDate", date, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+
+              trigger("startDate");
+            }}
             disabledDate={(date) => isBefore(date, startOfToday())}
             placeholder={t("banner.createOrUpdate.selectStartAt")}
           />
+          {errors.startDate && (
+            <p className="text-red-500 text-sm">{errors.startDate.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
             {t("banner.endAt")} <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
-            value={formData.endDate}
-            minDateTime={formData.startDate}
-            onChange={(d) => setFormData((p) => ({ ...p, endDate: d }))}
+            value={watch("endDate")}
+            onChange={(date: any) => {
+              setValue("endDate", date, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+
+              trigger("endDate");
+            }}
+            minDateTime={watch("startDate")}
             disabledDate={(date) =>
-              !formData.startDate ? false : date <= formData.startDate
+              !watch("startDate") ? false : date <= watch("startDate")
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
+          {errors.endDate && (
+            <p className="text-red-500 text-sm">{errors.endDate.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -184,8 +230,14 @@ const CreateBanner = () => {
           <Input
             name="cta"
             placeholder={t("banner.createOrUpdate.enterCtaLabel")}
-            onChange={handleTextChange}
-            value={formData.cta}
+            onChange={(e) => {
+              setValue("ctaLabel", e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("ctaLabel");
+            }}
+            value={watch("ctaLabel")}
             className="mt-1"
           />
         </div>
@@ -195,27 +247,51 @@ const CreateBanner = () => {
           </label>
           <QuillEditor
             theme="snow"
-            value={formData.desc}
-            onChange={(v) => setFormData((f) => ({ ...f, desc: v }))}
+            value={watch("description")}
+            onChange={(e) => {
+              setValue("description", e, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("description");
+            }}
             modules={fullToolbar}
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.description.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">{t("banner.thumbnail")}</label>
           <UploadField
             className="w-full mt-2"
-            value={formData.bannerImage}
-            onChange={(files) =>
-              setFormData((p) => ({ ...p, bannerImage: files?.[0] ?? null }))
+            value={watch("bannerImage")}
+            onChange={(files) =>{
+              setValue("bannerImage", files?.[0] ?? null, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+              trigger("bannerImage");
+            }
             }
           />
+          {errors.bannerImage && (
+            <p className="text-red-500 text-sm mt-1">
+              {String(errors.bannerImage.message)}
+            </p>
+          )}
         </div>
         <div className="flex justify-end gap-3 border-t pt-4">
-          <Button variant="outline" onClick={() => navigate("/Home/post/banner")}>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/Home/post/banner")}
+          >
             {t("common.cancel")}
           </Button>
-          <Button onClick={handleSubmit} className="min-w-[140px]">
-            {submitting ? (
+          <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || !isValid} className="min-w-[140px]">
+            {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin"

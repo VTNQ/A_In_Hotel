@@ -63,10 +63,10 @@ export function Table<SortKey extends string>({
     <TableContext.Provider
       value={{ sortKey: sortKey ?? null, sortDir, onSort }}
     >
-      <div className="relative w-full rounded-2xl border bg-white shadow-sm">
+      <div className="relative w-full rounded-2xl border bg-white shadow-sm  ">
         {/* TABLE */}
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className={cn("w-full text-sm table-fixed", className)}>{children}</table>
+        <div className="overflow-x-auto w-full custom-scrollbar">
+          <table className={cn("w-full  text-sm table-fixed", className)}>{children}</table>
         </div>
 
         {/* PAGINATION FOOTER */}

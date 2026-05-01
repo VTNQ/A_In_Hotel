@@ -7,60 +7,136 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAllCategories } from "@/service/api/Categories";
 import { getAllHotel } from "@/service/api/Hotel";
 import { createRoom } from "@/service/api/Room";
-import type { RoomForm } from "@/type/Room.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PictureInPicture } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
 
 const CreateRoomPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const roomSchema = z.object({
+    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
+
+    roomName: z.string().min(1, t("room.validation.roomNameRequired")),
+
+    idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
+
+    hotelId: z.string().min(1, t("room.validation.hotelRequired")),
+
+    floor: z
+      .string()
+      .min(1, t("room.validation.floorRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.floorInvalid"),
+      }),
+
+    area: z
+      .string()
+      .min(1, t("room.validation.areaRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.areaInvalid"),
+      }),
+
+    capacity: z
+      .string()
+      .min(1, t("room.validation.capacityRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.capacityInvalid"),
+      }),
+
+    hourlyBasePrice: z
+      .string()
+      .min(1, t("room.validation.basePriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.basePriceInvalid"),
+      }),
+
+    hourlyAdditionalPrice: z
+      .string()
+      .min(1, t("room.validation.additionalPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.additionalPriceInvalid"),
+      }),
+
+    overnightPrice: z
+      .string()
+      .min(1, t("room.validation.overnightPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.overnightPriceInvalid"),
+      }),
+
+    defaultRate: z
+      .string()
+      .min(1, t("room.validation.defaultRateRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.defaultRateInvalid"),
+      }),
+
+    note: z.string().optional(),
+
+    image: z
+      .array(z.instanceof(File))
+      .min(1, t("room.validation.roomRequired"))
+      .max(5, t("room.validation.maxImages")),
+  });
+  type FormData = z.infer<typeof roomSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    trigger,
+    setValue,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(roomSchema),
+    mode: "onChange",
+    defaultValues: {
+      roomNumber: "",
+      roomName: "",
+      idRoomType: "",
+      hotelId: "",
+      capacity: "",
+      defaultRate: "",
+      floor: "",
+      area: "",
+      hourlyBasePrice: "",
+      hourlyAdditionalPrice: "",
+      overnightPrice: "",
+      note: "",
+      image: [],
+    },
+  });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const { showAlert } = useAlert();
-  const [formData, setFormData] = useState<RoomForm>({
-    roomNumber: "",
-    roomName: "",
-    idRoomType: "",
-    hotelId: "",
-    capacity: "",
-    defaultRate: "",
-    floor: "",
-    area: "",
-    hourlyBasePrice: "",
-    hourlyAdditionalPrice: "",
-    overnightPrice: "",
-    note: "",
-    image: null,
-  });
+
   const [imagePreview, setPreviewReview] = useState<string[]>([]);
-  const [submitting, setSubmitting] = useState(false);
+
   const [hotels, setHotels] = useState<any[]>([]);
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleSubmit = async () => {
-    if (submitting) return;
+
+  const onSubmit = async (data: FormData) => {
     try {
-      setSubmitting(true);
       const payload = {
-        roomNumber: formData.roomNumber,
-        roomName: formData.roomName,
-        idRoomType: formData.idRoomType,
-        capacity: formData.capacity,
-        defaultRate: formData.defaultRate,
-        floor: formData.floor,
-        area: formData.area,
-        note: formData.note,
-        hourlyBasePrice: formData.hourlyBasePrice,
-        hourlyAdditionalPrice: formData.hourlyAdditionalPrice,
-        overnightPrice: formData.overnightPrice,
-        hotelId: formData.hotelId,
-        images: formData.image,
+        roomNumber: data.roomNumber,
+        roomName: data.roomName,
+        idRoomType: data.idRoomType,
+        capacity: data.capacity,
+        defaultRate: data.defaultRate,
+        floor: data.floor,
+        area: data.area,
+        note: data.note,
+        hourlyBasePrice: data.hourlyBasePrice,
+        hourlyAdditionalPrice: data.hourlyAdditionalPrice,
+        overnightPrice: data.overnightPrice,
+        hotelId: data.hotelId,
+        images: data.image,
       };
 
       const response = await createRoom(payload);
@@ -69,7 +145,7 @@ const CreateRoomPage = () => {
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         roomNumber: "",
         roomName: "",
         idRoomType: "",
@@ -82,7 +158,7 @@ const CreateRoomPage = () => {
         hourlyAdditionalPrice: "",
         overnightPrice: "",
         note: "",
-        image: null,
+        image: [],
       });
       setPreviewReview([]);
     } catch (err: any) {
@@ -92,9 +168,7 @@ const CreateRoomPage = () => {
         type: "error",
         autoClose: 4000,
       });
-    } finally {
-      setSubmitting(false);
-    }
+    } 
   };
   const fetchCategories = async () => {
     try {
@@ -137,19 +211,22 @@ const CreateRoomPage = () => {
         />
       </div>
       <div className="rounded-xl border bg-white p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-medium">
               {t("room.createOrUpdate.roomNumber")}
               <span className="text-red-500">*</span>
             </label>
             <Input
-              name="roomNumber"
               placeholder={t("room.createOrUpdate.enterRoomNumber")}
-              onChange={handleChange}
-              value={formData.roomNumber}
+              {...register("roomNumber")}
               className="mt-1"
             />
+            {errors.roomNumber && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.roomNumber.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -157,44 +234,67 @@ const CreateRoomPage = () => {
               <span className="text-red-500">*</span>
             </label>
             <Input
-              name="roomName"
+              {...register("roomName")}
               placeholder={t("room.createOrUpdate.enterRoomName")}
-              onChange={handleChange}
-              value={formData.roomName}
               className="mt-1"
             />
+            {errors.roomName && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.roomName.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
               {t("room.createOrUpdate.roomType")}
               <span className="text-red-500">*</span>
             </label>
-            <SelectField
-              items={categories}
-              value={formData.idRoomType}
-              onChange={(v) =>
-                setFormData((prev) => ({ ...prev, idRoomType: v }))
-              }
-              isRequired={true}
-              placeholder={t("room.createOrUpdate.selectRoomType")}
-              getValue={(i) => String(i.id)}
-              getLabel={(i) => i.name}
+            <Controller
+              control={control}
+              name="idRoomType"
+              render={({ field }) => (
+                <SelectField
+                  items={categories}
+                  value={field.value}
+                  onChange={field.onChange}
+                  isRequired
+                  placeholder={t("room.createOrUpdate.selectRoomType")}
+                  getValue={(i) => String(i.id)}
+                  getLabel={(i) => i.name}
+                />
+              )}
             />
+            {errors.idRoomType && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.idRoomType.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
               {t("room.hotel")}
               <span className="text-red-500">*</span>
             </label>
-            <SelectField
-              items={hotels}
-              value={formData.hotelId}
-              onChange={(v) => setFormData((prev) => ({ ...prev, hotelId: v }))}
-              isRequired={true}
-              placeholder={t("room.createOrUpdate.selectHotel")}
-              getValue={(i) => String(i.id)}
-              getLabel={(i) => i.name}
+            <Controller
+              control={control}
+              name="hotelId"
+              render={({ field }) => (
+                <SelectField
+                  items={hotels}
+                  value={field.value}
+                  onChange={field.onChange}
+                  isRequired
+                  placeholder={t("room.createOrUpdate.selectHotel")}
+                  getValue={(i) => String(i.id)}
+                  getLabel={(i) => i.name}
+                />
+              )}
             />
+            {errors.hotelId && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.hotelId.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -203,12 +303,15 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="floor"
               placeholder={t("room.createOrUpdate.enterFloor")}
-              onChange={handleChange}
-              value={formData.floor}
+              {...register("floor")}
               className="mt-1"
             />
+            {errors.floor && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.floor.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -217,12 +320,13 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="area"
               placeholder={t("room.createOrUpdate.enterArea")}
-              onChange={handleChange}
-              value={formData.area}
+              {...register("area")}
               className="mt-1"
             />
+            {errors.area && (
+              <p className="text-sm text-red-500 mt-1">{errors.area.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -231,12 +335,15 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="capacity"
+              {...register("capacity")}
               placeholder={t("room.createOrUpdate.enterCapacity")}
-              onChange={handleChange}
-              value={formData.capacity}
               className="mt-1"
             />
+            {errors.capacity && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.capacity.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -244,13 +351,16 @@ const CreateRoomPage = () => {
               <span className="text-red-500">*</span>
             </label>
             <Input
-              name="hourlyBasePrice"
               type="number"
               placeholder={t("room.createOrUpdate.enterPrice")}
-              onChange={handleChange}
-              value={formData.hourlyBasePrice}
+              {...register("hourlyBasePrice")}
               className="mt-1"
             />
+            {errors.hourlyBasePrice && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.hourlyBasePrice.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -259,12 +369,15 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="hourlyAdditionalPrice"
               placeholder={t("room.createOrUpdate.enterPrice")}
-              onChange={handleChange}
-              value={formData.hourlyAdditionalPrice}
+              {...register("hourlyAdditionalPrice")}
               className="mt-1"
             />
+            {errors.hourlyAdditionalPrice && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.hourlyAdditionalPrice.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -273,12 +386,15 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="overnightPrice"
               placeholder={t("room.createOrUpdate.enterPrice")}
-              onChange={handleChange}
-              value={formData.overnightPrice}
+              {...register("overnightPrice")}
               className="mt-1"
             />
+            {errors.overnightPrice && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.overnightPrice.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -287,21 +403,22 @@ const CreateRoomPage = () => {
             </label>
             <Input
               type="number"
-              name="defaultRate"
+              {...register("defaultRate")}
               placeholder={t("room.createOrUpdate.enterPrice")}
-              onChange={handleChange}
-              value={formData.defaultRate}
               className="mt-1"
             />
+            {errors.defaultRate && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.defaultRate.message}
+              </p>
+            )}
           </div>
           <div className="sm:col-span-2">
             <label className="text-sm font-medium">
               {t("room.createOrUpdate.note")}
             </label>
             <Textarea
-              name="note"
-              value={formData.note}
-              onChange={handleChange}
+              {...register("note")}
               placeholder={t("room.createOrUpdate.notePlaceholder")}
               rows={3}
               className="mt-1"
@@ -322,19 +439,21 @@ const CreateRoomPage = () => {
                 onChange={(e) => {
                   const files = Array.from(e.target.files || []);
                   if (!files.length) return;
-
-                  setFormData((prev) => ({
-                    ...prev,
-                    image: [...(prev.image ?? []), ...files],
-                  }));
-
-                  setPreviewReview((prev) => [
-                    ...prev,
-                    ...files.map((f) => URL.createObjectURL(f)),
-                  ]);
+                  setValue("image", files, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("image")
+                  setPreviewReview(
+                    files.map((file) => URL.createObjectURL(file)),
+                  );
                 }}
               />
-
+              {errors.image && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.image.message}
+                </p>
+              )}
               <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 hover:border-[#42578E] transition">
                 {imagePreview.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10 text-center">
@@ -374,12 +493,16 @@ const CreateRoomPage = () => {
                               prev.filter((_, i) => i !== idx),
                             );
 
-                            setFormData((prev) => ({
-                              ...prev,
-                              image: (prev.image ?? []).filter(
-                                (_, i) => i !== idx,
-                              ),
-                            }));
+                            setValue(
+                              "image",
+                              Array.isArray(watch("image"))
+                                ? watch("image").filter((_, i) => i !== idx)
+                                : [],
+                              {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              },
+                            );
                           }}
                           className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100"
                         >
@@ -398,11 +521,11 @@ const CreateRoomPage = () => {
             {t("common.cancel")}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={submitting}
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !isValid}
             className="min-w-[140px]"
           >
-            {submitting ? (
+            {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin"

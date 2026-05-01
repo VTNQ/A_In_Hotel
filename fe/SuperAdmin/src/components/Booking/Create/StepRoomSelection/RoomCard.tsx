@@ -65,7 +65,7 @@ const RoomCard = ({
         }
       `}
     >
-      <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* IMAGE */}
         <img
           src={
@@ -74,7 +74,9 @@ const RoomCard = ({
               : "/images/room-placeholder.jpg"
           }
           alt={room.roomName}
-          className="h-32 w-44 rounded-xl object-cover"
+          className="w-full h-48 sm:h-40 lg:h-32 
+          lg:w-44 
+          rounded-xl object-cover"
         />
 
         {/* CONTENT */}

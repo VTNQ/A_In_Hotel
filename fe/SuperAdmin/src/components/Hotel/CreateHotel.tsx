@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -9,9 +9,13 @@ import { SelectField } from "../ui/select";
 import { useAlert } from "../alert-context";
 import { AddHotel } from "@/service/api/Hotel";
 import { useNavigate } from "react-router-dom";
-import type { HotelFormData } from "@/type/hotel.types";
 import Breadcrumb from "../Breadcrumb";
 import { useTranslation } from "react-i18next";
+import { Upload, X } from "lucide-react";
+import z from "zod";
+import { createImageHotelSchema } from "@/validation/image.validation";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 /**
  * FormLayouts
@@ -25,6 +29,56 @@ export default function CreateHotel() {
   const navigate = useNavigate();
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const hotelSchema = z.object({
+    name: z.string().min(1, t("hotel.validation.nameRequired")),
+
+    address: z.string().min(1, t("hotel.validation.addressRequired")),
+
+    idUser: z.preprocess(
+      (val) => (val === null || val === "" ? undefined : Number(val)),
+      z.number({
+        error: t("hotel.validation.managerRequired"),
+      }),
+    ),
+
+    image: createImageHotelSchema(t),
+
+    hotlines: z
+      .array(
+        z.object({
+          phone: z
+            .string()
+            .min(1, t("hotel.validation.phoneRequired"))
+            .regex(/^(0|\+84)[0-9]{9,10}$/, t("hotel.validation.phoneInvalid")),
+        }),
+      )
+      .min(1, t("hotel.validation.phoneRequired")),
+  });
+  type FormData = z.input<typeof hotelSchema>;
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(hotelSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      address: "",
+      idUser: undefined,
+      image: null,
+      hotlines: [{ phone: "" }],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+  control,
+  name: "hotlines",
+});
   const getUser = async () => {
     try {
       const response = await getAll({
@@ -40,19 +94,12 @@ export default function CreateHotel() {
   useEffect(() => {
     getUser();
   }, []);
-  const [formData, setFormData] = useState<HotelFormData>({
-    name: "",
-    address: "",
-    idUser: null,
-    image: null as File | null,
-    hotlines: [{ phone: "" }],
-  });
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ 
+  const onSubmit = async (data:FormData) => {
     try {
       const payload = {
-        ...formData,
-        hotlines: formData.hotlines.filter((h) => h.phone.trim() !== ""),
+        ...data,
+        hotlines: data.hotlines.filter((h) => h.phone.trim() !== ""),
       };
       const response = await AddHotel(payload);
 
@@ -61,7 +108,7 @@ export default function CreateHotel() {
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         name: "",
         address: "",
         idUser: null,
@@ -78,21 +125,30 @@ export default function CreateHotel() {
       });
     }
   };
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setValue("image",null,{
+      shouldValidate:true,
+      shouldDirty:true
+    })
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-
-      <div>
-        <h1 className="text-2xl font-semibold">
-          {t("hotel.hotelCreate.title")}
-        </h1>
-        <Breadcrumb
-          items={[
-            { label: t("hotel.breadcrumb.home"), href: "/Home" },
-            { label: t("hotel.breadcrumb.hotel"), href: "/Home/hotel" },
-          ]}
-        />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            {t("hotel.hotelCreate.title")}
+          </h1>
+          <Breadcrumb
+            items={[
+              { label: t("hotel.breadcrumb.home"), href: "/Home" },
+              { label: t("hotel.breadcrumb.hotel"), href: "/Home/hotel" },
+            ]}
+          />
+        </div>
       </div>
 
       {/* Grid */}
@@ -104,47 +160,53 @@ export default function CreateHotel() {
             </h3>
           </div>
           <div className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <Label htmlFor="Hotel Name">
                   {t("hotel.hotelCreate.name")}
                 </Label>
                 <Input
-                  value={formData.name}
-                  onChange={(val) =>
-                    setFormData((prev) => ({ ...prev, name: val.target.value }))
-                  }
+                  {...register("name")}
+                
                   placeholder="Enter Name Hotel"
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="Address">
                   {t("hotel.hotelCreate.address")}
                 </Label>
                 <Textarea
-                  value={formData.address}
                   placeholder="Enter Address Hotel"
-                  onChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      address: val.target.value,
-                    }))
-                  }
+                  {...register("address")}
                   className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                   rows={3}
                 />
+                {errors.address && (
+                  <p className="text-red-500 text-xs mt-1">
+                      {errors.address.message}
+                  </p>
+                )}
               </div>
               <div>
                 <SelectField<UserResponse>
                   items={users}
                   isRequired={true}
-                  value={formData.idUser ? String(formData.idUser) : ""}
-                  onChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      idUser: val ? Number(val) : null,
-                    }))
-                  }
+                  value={watch("idUser") ? String(watch("idUser")) : null}
+                  onChange={(val)=>{
+                    setValue(
+                      "idUser",
+                      val ? Number(val) : null,
+                      {
+                        shouldValidate:true,
+                        shouldDirty:true
+                      }
+                    )
+                  }}
                   label={t("hotel.hotelCreate.manager")}
                   placeholder={t("hotel.hotelCreate.selectManager")}
                   description={t("hotel.hotelCreate.managerDesc")}
@@ -153,36 +215,27 @@ export default function CreateHotel() {
                   getValue={(u) => String(u.id)}
                   getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
                 />
+                {errors.idUser && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.idUser.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <label>{t("hotel.hotelCreate.hotlines")}</label>
                 <div className="space-y-2">
-                  {formData.hotlines.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2">
+                  {fields.map((field, index) => (
+                    <div key={field.id} className="flex items-center gap-2">
                       <Input
                         placeholder={t("hotel.hotelCreate.hotlinePlaceholder")}
-                        value={item.phone}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setFormData((prev) => {
-                            const hotlines = [...prev.hotlines];
-                            hotlines[index] = { phone: value };
-                            return { ...prev, hotlines };
-                          });
-                        }}
+                        {...register(`hotlines.${index}.phone`)}
+                       
                       />
-                      {formData.hotlines.length > 1 && (
+                      {fields.length > 1 && (
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              hotlines: prev.hotlines.filter(
-                                (_, i) => i !== index,
-                              ),
-                            }))
-                          }
+                         onClick={()=>remove(index)}
                         >
                           ✕
                         </Button>
@@ -190,98 +243,101 @@ export default function CreateHotel() {
                     </div>
                   ))}
                 </div>
+                {errors.hotlines && (
+                  <p className="text-red-500 text-sm">
+                      {errors.hotlines.message}
+                  </p>
+                )}
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      hotlines: [...prev.hotlines, { phone: "" }],
-                    }))
-                  }
+                  onClick={()=>append({phone:""})}
+                  
                 >
                   + {t("hotel.hotelCreate.addHotline")}
                 </Button>
               </div>
+              {errors.hotlines && (
+                <p className="text-red-600 text-xs mt-1">
+                  {errors.hotlines.message}
+                </p>
+              )}
               <div className="space-y-2">
-                <Label>{t("hotel.hotelCreate.image")}</Label>
+                <Label className="text-sm font-medium text-slate-700">
+                  {t("hotel.hotelCreate.image")} *
+                </Label>
 
-                <div className="relative mt-2 w-[13%]">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className={`absolute inset-0 cursor-pointer opacity-0 ${
-                      imagePreview ? "pointer-events-none" : "z-10"
-                    }`}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      setFormData((prev) => ({
-                        ...prev,
-                        image: file,
-                      }));
-                      setImagePreview(URL.createObjectURL(file));
-                    }}
-                  />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setValue("image",file,{
+                      shouldValidate:true,
+                      shouldDirty:true
+                    })
+                    setImagePreview(URL.createObjectURL(file));
+                  }}
+                />
 
-                  <div className="flex min-h-[130px] w-[126%] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50  text-center hover:border-[#42578E]">
-                    {!imagePreview ? (
-                      <>
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200">
-                          <svg
-                            className="h-6 w-6 text-slate-500"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 16.5V7.5A2.25 2.25 0 015.25 5.25h13.5A2.25 2.25 0 0121 7.5v9a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 16.5z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 13.5l4.5-4.5a2.25 2.25 0 013.182 0L15 13.5"
-                            />
-                          </svg>
-                        </div>
-                        <p className="text-sm font-medium text-slate-600">
-                          {t("hotel.hotelCreate.uploadHint")}
-                        </p>
-                        <p className="text-xs text-slate-400">JPG, PNG</p>
-                      </>
-                    ) : (
-                      <div className="relative w-full">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="h-48 w-full rounded-lg object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImagePreview(null);
-                            setFormData((prev) => ({
-                              ...prev,
-                              image: null,
-                            }));
-                            if (fileInputRef.current) {
-                              fileInputRef.current.value = "";
-                            }
-                          }}
-                          className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
-                        >
-                          ✕
-                        </button>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => !imagePreview && fileInputRef.current?.click()}
+                  className="
+                    relative overflow-hidden rounded-2xl border-2 border-dashed
+                    border-slate-200 bg-slate-50
+                    hover:border-slate-300 transition
+                    cursor-pointer
+                  "
+                >
+                  {!imagePreview ? (
+                    <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12">
+                      <div className="rounded-full bg-white p-3 shadow-sm">
+                        <Upload className="h-5 w-5 text-slate-600" />
                       </div>
-                    )}
-                  </div>
+                      <p className="text-sm font-medium text-slate-700">
+                        {t("hotel.hotelCreate.uploadHint")}
+                      </p>
+                      <p className="text-xs text-slate-500">JPG, PNG</p>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-[220px] w-full object-cover sm:h-[280px]"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveImage();
+                        }}
+                        className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white hover:bg-black/70"
+                        aria-label="Remove image"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                <p className="text-xs text-slate-500">
+                  {t("hotel.hotelCreate.uploadHint")}
+                </p>
               </div>
-              <Button type="submit"> {t("common.save")}</Button>
+              {errors.image && (
+                <p className="text-red-600 text-xs mt-1">
+                  {String(errors.image.message)}
+                </p>
+              )}
+              <Button type="submit"
+                disabled={isSubmitting || !isValid}
+              > {t("common.save")}</Button>
             </form>
           </div>
         </div>

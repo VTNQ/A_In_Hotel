@@ -21,7 +21,7 @@ export interface HotelRow {
     id: number;
     code?: string;
     name: string;
-    createdOn: string | number;
+    createdAt: string | number;
     status: Status;
     address: string;
     thumbnail:ImageResponse;

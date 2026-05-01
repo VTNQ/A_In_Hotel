@@ -7,7 +7,7 @@ import ServiceCard from "./ServiceCard";
 import BookingSummary from "./BookingSummary";
 import { estimateServicePrice } from "@/util/estimateServicePrice";
 
-const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
+const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   const [services, setServices] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [search, setSearch] = useState("");
@@ -15,16 +15,14 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
   const [loading, setLoading] = useState(false);
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const { t } = useTranslation();
-  console.log(booking)
   useEffect(() => {
-    
     if (!booking?.hotelId) return;
     const fetchData = async () => {
       setLoading(true);
       try {
         let filters = [
           `hotelId==${booking?.hotelId}`,
-          `price>0`,
+          `extraCharge>0`,
           `isActive==true`,
           `type==2`,
         ];
@@ -86,16 +84,16 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
         search={search}
         onSearch={setSearch}
       />
-      <div className="grid grid-cols-3 gap-6 mt-6">
-        <div className="col-span-2 space-y-4">
+      <div className="grid grid-cols-1  sm:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2 space-y-4">
           {loading ? (
-             <ServiceSkeleton />
-          ): services.length === 0 ? (
-             <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
-          ):(
-            services.map((service)=>(
+            <ServiceSkeleton />
+          ) : services.length === 0 ? (
+            <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
+          ) : (
+            services.map((service) => (
               <ServiceCard
-              key={service.id}
+                key={service.id}
                 service={service}
                 booking={booking}
                 selected={selectedServices.some((s) => s.id === service.id)}
@@ -104,14 +102,14 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
             ))
           )}
         </div>
-          <BookingSummary
+        <BookingSummary
           booking={booking}
           services={selectedServices}
           onNext={() =>
             onNext({
               services: selectedServices.map((s) => ({
                 extraServiceId: s.id,
-                unit: s.unit,
+                extraCharge: s.extraCharge,
                 price: estimateServicePrice(s, booking),
                 serviceName: s.serviceName ?? s.name,
               })),
@@ -119,9 +117,9 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
           }
         />
       </div>
-       <div className="flex justify-between items-center pt-5">
+      <div className="flex justify-between items-center pt-5">
         <button
-         onClick={onCancel}
+          onClick={onCancel}
           className="
             px-4 py-2 rounded-lg text-sm font-medium
             text-gray-600 border border-gray-300 bg-white
@@ -130,17 +128,16 @@ const StepServiceSelection = ({ booking, onBack, onNext,onCancel }: any) => {
         >
           {t("bookingDateTime.cancel")}
         </button>
-          <button
-            onClick={onBack}
-            className="
+        <button
+          onClick={onBack}
+          className="
               px-4 py-2 rounded-lg text-sm
               bg-gray-100 text-gray-700
               hover:bg-gray-200 transition
             "
-          >
-            {t("bookingDateTime.back")}
-          </button>
-
+        >
+          {t("bookingDateTime.back")}
+        </button>
       </div>
     </div>
   );

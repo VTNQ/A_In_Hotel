@@ -72,7 +72,7 @@ const buildPriceFilter = (ranges: string[]) => {
   }, [search, page,priceRange]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {loading &&
         Array.from({ length: 5 }).map((_, i) => <RoomCardSkeleton key={i} />)}
       {!loading && rooms.length === 0 && (

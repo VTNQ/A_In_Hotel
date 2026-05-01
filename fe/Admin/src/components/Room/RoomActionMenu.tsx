@@ -3,6 +3,7 @@ import type { ActionItem } from "../ui/ActionMenu";
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
 import type { RoomActionMenuProps } from "../../type/room.types";
+import { getTokens } from "../../util/auth";
 
 const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   room,
@@ -30,6 +31,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
         {
           label: t("common.edit"),
           icon: <Edit size={16} />,
+          roles: ["ADMIN"],
           onClick: () => onEdit?.(room),
         },
         {
@@ -61,6 +63,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
           label: t("common.edit"),
           icon: <Edit size={16} />,
           onClick: () => onEdit?.(room),
+            roles: ["ADMIN"],
         },
         {
           label: t("common.deActivate"),
@@ -85,6 +88,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
         },
         {
           label: t("common.edit"),
+            roles: ["ADMIN"],
           icon: <Edit size={16} />,
           onClick: () => onEdit?.(room),
         },
@@ -93,47 +97,54 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
           icon: <Power size={16} />,
           onClick: () => onDeactivate?.(room),
         },
-      ];
+      ].filter(action => action?.roles?.includes(getTokens()?.role ?? "") ?? true);
       break;
     case 5:
       statusLabel = t("room.roomStatus.blocked");
       actions = [
         {
           label: t("room.viewRoom"),
+
           icon: <Eye size={16} />,
           onClick: () => onView?.(room),
         },
+        
         {
           label: t("common.edit"),
+            roles: ["ADMIN"],
           icon: <Edit size={16} />,
           onClick: () => onEdit?.(room),
         },
         {
           label: t("common.deActivate"),
+
           icon: <Power size={16} />,
           onClick: () => onDeactivate?.(room),
         },
-      ];
+      ].filter(action => action?.roles?.includes(getTokens()?.role ?? "") ?? true);
       break;
     case 6:
       statusLabel = t("common.deActivate");
       actions = [
         {
           label: t("room.viewRoom"),
+
           icon: <Eye size={16} />,
           onClick: () => onView?.(room),
         },
         {
           label: t("common.edit"),
           icon: <Edit size={16} />,
+            roles: ["ADMIN"],
           onClick: () => onEdit?.(room),
         },
         {
           label: t("common.active"),
+
           icon: <Power size={16} />,
           onClick: () => onActivate?.(room),
         },
-      ];
+      ].filter(action => action?.roles?.includes(getTokens()?.role ?? "") ?? true);
       break;
     case 7:
       statusLabel = t("room.roomStatus.reserved");
@@ -142,8 +153,9 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
           label: t("room.viewRoom"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(room),
+          roles: ["ADMIN","RECEPTIONIST"],
         },
-      ];
+      ].filter(action => action?.roles?.includes(getTokens()?.role ?? "") ?? true);
       break;
     default:
       statusLabel = "Unknown";
@@ -151,6 +163,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
         {
           label: t("room.viewRoom"),
           icon: <Eye size={16} />,
+          roles:[],
           onClick: () => onView?.(room),
         },
       ];

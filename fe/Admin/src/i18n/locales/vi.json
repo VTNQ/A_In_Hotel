@@ -7,6 +7,7 @@
         "edit": "Chỉnh sửa",
         "tip": "Gợi ý",
         "close": "Đóng",
+        "profile": "Trang cá nhân",
         "filter": "Lọc",
         "filtering": "Đang lọc...",
         "noData": "Không có dữ liệu",
@@ -27,6 +28,53 @@
         "inactive": "Ngừng hoạt động",
         "loading": "Đang tải...",
         "notePlaceholder": "Nhập bất kỳ ghi chú bổ sung"
+    },
+    "profile": {
+        "title": "Cài đặt hồ sơ",
+        "personalInfo": "Thông tin cá nhân",
+        "active": "ĐANG HOẠT ĐỘNG",
+        "inactive": "KHÔNG HOẠT ĐỘNG",
+        "avatarNote1": "JPG, GIF hoặc PNG",
+        "avatarNote2": "Tối đa 2MB",
+        "staffCode": "Mã nhân viên",
+        "email": "Địa chỉ Email",
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "birthday": "Ngày sinh",
+        "gender": "Giới tính",
+        "update": "Cập nhật hồ sơ",
+        "loading": "Đang tải hồ sơ...",
+        "selectGender": "Chọn giới tính",
+        "male": "Nam",
+        "female": "Nữ",
+        "updating": "Đang cập nhật...",
+        "security": "Cài đặt bảo mật",
+        "discard": "Hủy",
+        "changePassword": "Đổi mật khẩu",
+        "securityDesc": "Đảm bảo tài khoản của bạn sử dụng mật khẩu dài và an toàn.",
+        "accountDetails": "Thông tin tài khoản",
+        "role": "Vai trò",
+        "assignedHotel": "Khách sạn được phân công",
+        "createdDate": "Ngày tạo",
+        "roleNote": "Vai trò và phân công khách sạn được quản lý bởi Quản trị viên và không thể thay đổi tại đây.",
+        "twoFactor": "Xác thực hai lớp",
+        "notEnabled": "Chưa kích hoạt",
+        "twoFactorDesc": "Thêm một lớp bảo mật bổ sung cho tài khoản của bạn.",
+        "enable2fa": "Bật 2FA"
+    },
+    "auth": {
+        "changePassword": {
+            "title": "Đổi mật khẩu",
+            "description": "Để đảm bảo an toàn cho tài khoản, vui lòng nhập mật khẩu hiện tại trước khi đặt mật khẩu mới.",
+            "currentPassword": "Mật khẩu hiện tại",
+            "newPassword": "Mật khẩu mới",
+            "confirmPassword": "Xác nhận mật khẩu mới",
+            "minLength": "Tối thiểu 8 ký tự",
+            "ruleLength": "Ít nhất 8 ký tự",
+            "ruleNumber": "Bao gồm số hoặc ký tự đặc biệt",
+            "update": "Cập nhật mật khẩu",
+            "success": "Đổi mật khẩu thành công"
+        }
     },
     "sideBar": {
         "DashBoard": "Bảng Điều khiển",
@@ -50,7 +98,7 @@
         "logout": "Đăng xuất"
     },
     "customer": {
-         "errorLoad": "Không thể tải dữ liệu",
+        "errorLoad": "Không thể tải dữ liệu",
         "management": {
             "title": "Quản lý khách hàng"
         },
@@ -120,6 +168,17 @@
         "code": "Mã tài sản",
         "icon": "Biểu tượng",
         "name": "Tên tài sản",
+        "validate": {
+            "assetNameRequired": "Tên tài sản không được để trống",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "roomRequired": "Vui lòng chọn phòng",
+            "priceRequired": "Giá không được để trống",
+            "priceInvalid": "Giá phải là số hợp lệ và >= 0",
+            "quantityInvalid": "Số lượng phải là số hợp lệ và >= 0",
+            "imageRequired": "Vui lòng chọn hình ảnh",
+            "imageTooLarge": "Hình ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận JPG, PNG, GIF"
+        },
         "price": "giá",
         "searchPlaceholder": "Tìm theo mã hoặc tên tài sản",
         "quantity": "số lượng",
@@ -175,6 +234,15 @@
         "new": "+ Thêm dịch vụ",
         "searchPlaceholder": "Tìm theo tên hoặc mã",
         "category": "Danh mục",
+        "validate": {
+            "serviceNameRequired": "Tên dịch vụ không được để trống",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "extraChargeRequired": "Phụ phí không được để trống",
+            "extraChargeInvalid": "Phụ phí phải là số hợp lệ và >= 0",
+            "imageRequired": "Vui lòng chọn hình ảnh",
+            "imageTooLarge": "Hình ảnh không được vượt quá 5MB",
+            "imageInvalidType": "Chỉ chấp nhận JPG, PNG, GIF"
+        },
         "createOrUpdate": {
             "icon": "Biểu tượng dịch vụ",
             "namePlaceHolder": "Nhập tên dịch vụ",
@@ -207,11 +275,36 @@
         "title": "Phòng",
         "roomNumber": "Số phòng",
         "price": "Giá",
+        "validation": {
+            "roomNumberRequired": "Vui lòng nhập số phòng",
+            "roomNameRequired": "Vui lòng nhập tên phòng",
+            "roomTypeRequired": "Vui lòng chọn loại phòng",
+            "floorRequired": "Vui lòng nhập tầng",
+            "floorInvalid": "Tầng phải lớn hơn 0",
+            "areaRequired": "Vui lòng nhập diện tích",
+            "areaInvalid": "Diện tích phải lớn hơn 0",
+            "capacityRequired": "Vui lòng nhập sức chứa",
+            "capacityInvalid": "Sức chứa phải lớn hơn 0",
+            "basePriceRequired": "Vui lòng nhập giá cơ bản",
+            "basePriceInvalid": "Giá cơ bản phải lớn hơn 0",
+            "additionalPriceRequired": "Vui lòng nhập giá thêm giờ",
+            "additionalPriceInvalid": "Giá thêm giờ phải lớn hơn 0",
+            "overnightPriceRequired": "Vui lòng nhập giá qua đêm",
+            "overnightPriceInvalid": "Giá qua đêm phải lớn hơn 0",
+            "defaultRateRequired": "Vui lòng nhập giá theo ngày",
+            "defaultRateInvalid": "Giá theo ngày phải lớn hơn 0"
+        },
         "first2Hours": "2 giờ đầu",
         "extraHour": "Những giờ sau",
+        "deactivateSuccess": "Phòng đã được vô hiệu hóa thành công!",
+        "deactivateFail": "Không thể vô hiệu hóa phòng. Vui lòng thử lại.",
         "overnight": "Qua đêm",
         "dayNight": "Cả ngày",
+        "maintenanceSuccess": "Phòng đã được chuyển sang trạng thái bảo trì!",
+        "maintenanceFail": "Không thể chuyển phòng sang trạng thái bảo trì. Vui lòng thử lại.",
         "image": "Hình ảnh",
+        "activateSuccess": "Phòng đã được kích hoạt thành công!",
+        "activateFail": "Không thể kích hoạt phòng. Vui lòng thử lại.",
         "viewRoom": "Xem chi tiết",
         "view": {
             "noNote": "Không có ghi chú.",
@@ -232,6 +325,8 @@
         "createOrUpdate": {
             "titleCreate": "Tạo phòng mới",
             "roomType": "Loại phòng",
+            "onlyImage": "Chỉ cho phép tải lên file hình ảnh",
+            "maxImages": "Tối đa 5 hình ảnh",
             "selectRoomType": "Chọn loại phòng",
             "titleEdit": "Sửa phòng",
             "roomNumber": "Số phòng",
@@ -285,6 +380,12 @@
         "room": "Phòng",
         "service": "Dịch vụ bổ sung",
         "viewCategory": "Xem chi tiết",
+        "validate": {
+            "nameRequired": "Vui lòng nhập tên danh mục",
+            "nameMax": "Tên danh mục tối đa 100 ký tự",
+            "typeRequired": "Vui lòng chọn loại danh mục",
+            "descriptionMax": "Mô tả tối đa 255 ký tự"
+        },
         "view": {
             "title": "Thông tin danh mục"
         },
@@ -311,6 +412,13 @@
     "staff": {
         "title": "Quản lý nhân viên",
         "new": "+ Thêm nhân viên",
+        "validate": {
+            "fullNameRequired": "Vui lòng nhập họ và tên",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không đúng định dạng",
+            "phoneInvalid": "Số điện thoại không hợp lệ",
+            "birthdayRequired": "Vui lòng chọn ngày sinh"
+        },
         "create": {
             "titleCreate": "Tạo nhân viên mới",
             "createSucess": "Tạo nhân viên thành công!",
@@ -344,6 +452,14 @@
         "blogCode": "Mã bài viết",
         "status": "Trạng thái",
         "loading": "Đang tải...",
+        "validate": {
+            "titleRequired": "Vui lòng nhập tiêu đề",
+            "categoryRequired": "Vui lòng chọn danh mục",
+            "contentRequired": "Vui lòng nhập nội dung",
+            "imageRequired": "Vui lòng chọn ảnh",
+            "imageInvalid": "Định dạng ảnh không hợp lệ (chỉ hỗ trợ JPG, PNG, GIF)",
+            "imageTooLarge": "Ảnh vượt quá dung lượng cho phép (tối đa 2MB)"
+        },
         "statusMap": {
             "draft": "Bản nháp",
             "published": "Đã xuất bản",
@@ -376,8 +492,11 @@
             "titleCreate": "Tạo bài viết mới",
             "enterTitle": "Nhập tiêu đề bài viết",
             "selectCategory": "Chọn danh mục",
+            "uploadError": "Sai định dạng file. Vui lòng chọn file hợp lệ.",
             "createSucess": "Bài viết đã được tạo thành công!",
             "createError": "Lỗi khi tạo bài viết",
+            "nameLimit": "Tối đa 120 ký tự",
+            "descriptionLimit": "Tối đa 255 ký tự",
             "titleEdit": "Sửa bài viết",
             "enterContent": "Nhập nội dung bài viết",
             "clickSelectImages": "Nhấn để chọn hình ảnh",
@@ -399,6 +518,15 @@
     "banner": {
         "title": "Quản lý Banner",
         "new": "+ Thêm banner",
+        "validate": {
+            "nameRequired": "Vui lòng nhập tên banner",
+            "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+            "endDateRequired": "Vui lòng chọn ngày kết thúc",
+            "endDateInvalid": "Ngày kết thúc phải sau ngày bắt đầu",
+            "imageRequired": "Vui lòng chọn ảnh",
+            "imageInvalid": "Định dạng ảnh không hợp lệ",
+            "imageTooLarge": "Ảnh tối đa 2MB"
+        },
         "createOrUpdate": {
             "titleCreate": "Tạo Banner mới",
             "titleEdit": "Sửa Banner",
@@ -545,6 +673,7 @@
     },
     "serviceSelection": {
         "title": "Nâng cao trải nghiệm lưu trú",
+        "ofBooking": "trên tổng đơn đặt",
         "subtitle": "Cá nhân hóa kỳ nghỉ của bạn với các dịch vụ bổ sung.",
         "allServices": "Tất cả dịch vụ",
         "noServices": "Không có dịch vụ phù hợp",
@@ -569,6 +698,9 @@
     },
     "payment": {
         "title": "Ghi nhận thanh toán",
+        "voucherCode": "Mã giảm giá",
+        "voucherPlaceholder": "Nhập mã giảm giá",
+        "apply": "Áp dụng",
         "subtitle": "Nhập số tiền khách đã thanh toán.",
         "paidAmount": "Số tiền đã trả",
         "paidAmountPlaceholder": "Nhập số tiền đã thanh toán",
@@ -731,6 +863,23 @@
         "roomType": "Loại phòng",
         "bookingType": "Loại hình đặt phòng",
         "type": "Loại khuyến mãi",
+        "validation": {
+            "nameRequired": "Tên chương trình là bắt buộc",
+            "nameMinLength": "Tên phải có ít nhất 3 ký tự",
+            "nameMaxLength": "Tên không được vượt quá 100 ký tự",
+            "priorityRequired": "Độ ưu tiên là bắt buộc",
+            "priorityMin": "Độ ưu tiên phải lớn hơn 0",
+            "valueRequired": "Giá trị giảm là bắt buộc",
+            "valueMoneyPositive": "Số tiền giảm phải lớn hơn 0",
+            "valueMoneyTooLarge": "Số tiền giảm quá lớn",
+            "valuePercentRange": "Phần trăm giảm phải từ 1 đến 100",
+            "startDateRequired": "Ngày bắt đầu là bắt buộc",
+            "endDateRequired": "Ngày kết thúc là bắt buộc",
+            "endDateAfterStart": "Ngày kết thúc phải sau ngày bắt đầu",
+            "minNightsRequired": "Số đêm tối thiểu là bắt buộc",
+            "minNightsPositive": "Số đêm phải lớn hơn 0",
+            "minNightsTooLarge": "Số đêm không được vượt quá 30"
+        },
         "priorityLevel": "Mức {{level}}",
         "description": "Mô tả",
         "minNights": "Số đêm tối thiểu",
@@ -839,6 +988,32 @@
     "voucher": {
         "title": "Quản lý Voucher",
         "new": "+ Thêm Voucher",
+        "validation": {
+            "nameRequired": "Tên voucher không được để trống",
+            "nameMinLength": "Tên voucher phải có ít nhất 3 ký tự",
+            "nameMaxLength": "Tên voucher không được vượt quá 100 ký tự",
+            "codeRequired": "Mã voucher không được để trống",
+            "codeMinLength": "Mã voucher phải có ít nhất 3 ký tự",
+            "codeMaxLength": "Mã voucher không được vượt quá 20 ký tự",
+            "typeRequired": "Vui lòng chọn loại giảm giá",
+            "valueRequired": "Vui lòng nhập giá trị giảm",
+            "valuePercentRange": "Phần trăm giảm phải từ 1 đến 100",
+            "valueMoneyPositive": "Số tiền giảm phải lớn hơn 0",
+            "valueMoneyMax": "Số tiền giảm không được vượt quá 1,000,000,000",
+            "maxDiscountRequired": "Vui lòng nhập số tiền giảm tối đa",
+            "maxDiscountPositive": "Số tiền giảm tối đa phải lớn hơn 0",
+            "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+            "endDateRequired": "Vui lòng chọn ngày kết thúc",
+            "endDateAfterStart": "Ngày kết thúc phải sau ngày bắt đầu",
+            "minimumStayRequired": "Vui lòng nhập số ngày lưu trú tối thiểu",
+            "minimumStayPositive": "Số ngày lưu trú phải lớn hơn 0",
+            "minimumStayMax": "Số ngày lưu trú không được vượt quá 30",
+            "usageLimitRequired": "Vui lòng nhập số lượng sử dụng",
+            "usageLimitPositive": "Số lượng sử dụng phải lớn hơn 0",
+            "usagePerCustomerPositive": "Số lần sử dụng mỗi khách phải lớn hơn 0",
+            "bookingTypeRequired": "Vui lòng chọn loại đặt phòng",
+            "roomTypeRequired": "Vui lòng chọn ít nhất 1 loại phòng"
+        },
         "loadError": "Không thể tải thông tin voucher!",
         "expired": "Hết hạn",
         "enable": "kích hoạt",

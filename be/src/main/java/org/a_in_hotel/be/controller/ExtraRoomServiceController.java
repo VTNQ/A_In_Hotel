@@ -30,12 +30,9 @@ public class ExtraRoomServiceController {
                     @Valid @ModelAttribute ExtraServiceRequest extra,
                     @RequestParam(value = "image",required = false) MultipartFile image
             ){
-        try {
             extraService.save(extra,image);
             return ResponseEntity.ok(RequestResponse.success("Thêm dịch vụ thành công"));
-        }catch (Exception e){
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/all")
     public ResponseEntity<RequestResponse<PageResponse<ExtraServiceResponse>>>getAll(@RequestParam(defaultValue = "1") int page,
@@ -45,12 +42,8 @@ public class ExtraRoomServiceController {
                                                                                      @RequestParam(required = false) String searchField,
                                                                                      @RequestParam(required = false) String searchValue,
                                                                                      @RequestParam(required = false) boolean all){
-        try {
+
             return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(extraService.getAll(page, size, sort, filter, searchField, searchValue, all))));
-        }catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error( "Get All extra room service: " + e.getMessage()));
-        }
     }
     @GetMapping("/all/v2")
     public ResponseEntity<RequestResponse<PageResponse<ExtraServiceV2Response>>>getAllV2(@RequestParam(defaultValue = "1") int page,
@@ -60,12 +53,9 @@ public class ExtraRoomServiceController {
                                                                                        @RequestParam(required = false) String searchField,
                                                                                        @RequestParam(required = false) String searchValue,
                                                                                        @RequestParam(required = false) boolean all){
-        try {
+
             return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(extraService.getAllV2(page, size, sort, filter, searchField, searchValue, all))));
-        }catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error( "Get All extra room service: " + e.getMessage()));
-        }
+
     }
     @GetMapping("/findById/{id}")
     public ResponseEntity<RequestResponse<ExtraServiceResponse>>findById(@PathVariable Long id){
@@ -80,26 +70,19 @@ public class ExtraRoomServiceController {
     public ResponseEntity<RequestResponse<Void>>update
             (
                     @PathVariable Long id,
-                    @Valid @ModelAttribute ExtraServiceRequest extra,
-                    @RequestParam(value = "image",required = false)  MultipartFile image
+                    @Valid @ModelAttribute ExtraServiceRequest extra
             ){
-        try {
-            extraService.update(extra,id,image);
+
+            extraService.update(extra,id,extra.getImage());
             return ResponseEntity.ok(RequestResponse.success("Cập nhật dịch vụ thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<RequestResponse<Void>>updateStatus(@PathVariable Long id,@RequestParam Boolean status){
-        try {
+
             extraService.updateStatus(id,status);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái dịch vụ thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
 
-        }
     }
 
 }

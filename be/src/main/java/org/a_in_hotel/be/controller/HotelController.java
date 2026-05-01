@@ -56,23 +56,16 @@ public class HotelController {
     @PutMapping(value = "update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@Valid @ModelAttribute HotelUpdate hotelRequest
             , @RequestPart(value = "image",required = false)MultipartFile image) {
-        try {
             hotelService.update(hotelRequest,id,image);
             return ResponseEntity.ok(RequestResponse.success("Hotel updated successfully"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("An error occurred: " + e.getMessage()));
-        }
+
     }
     @PutMapping("updateStatus/{id}")
     public ResponseEntity<?>updateStatus(@RequestBody Integer hotelStatus, @PathVariable Long id) {
-        try {
+
             hotelService.updateStatus(hotelStatus,id);
             return ResponseEntity.ok(RequestResponse.success("Hotel updated Status successfully"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ExceptionResponse("An error occurred: " + e.getMessage()));
-        }
+
     }
     @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<HotelResponse>>>getAll(@RequestParam(defaultValue = "1") int page,

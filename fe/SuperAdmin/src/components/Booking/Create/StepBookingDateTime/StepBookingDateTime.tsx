@@ -37,8 +37,8 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
           {t("bookingDateTime.step")}
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 border rounded-xl p-4 bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 border rounded-xl p-3 sm:p-4 bg-white">
           <CalendarRange
             value={{
               start: form.checkInDate,
@@ -61,7 +61,7 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
           }
         />
       </div>
-      <div className="flex justify-between items-center border-t pt-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-t pt-5">
         <button
           onClick={onCancel}
           className="
@@ -72,7 +72,7 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
         >
           {t("bookingDateTime.cancel")}
         </button>
-        <div className="flex gap-3">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
           <button
             onClick={onBack}
             className="

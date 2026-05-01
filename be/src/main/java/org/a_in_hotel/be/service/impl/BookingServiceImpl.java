@@ -10,6 +10,7 @@ import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.Enum.PaymentType;
 import org.a_in_hotel.be.Enum.RoomStatus;
 import org.a_in_hotel.be.dto.request.*;
+import org.a_in_hotel.be.dto.response.BookingListTopResponse;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.mapper.*;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -42,6 +44,10 @@ public class BookingServiceImpl implements BookingService {
 
     private final GeneralService generalService;
 
+    private final VoucherRepository voucherRepository;
+
+    private final BookingVoucherRepository bookingVoucherRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
@@ -51,6 +57,8 @@ public class BookingServiceImpl implements BookingService {
     private final AccountRepository accountRepository;
 
     private final CustomerRepository customerRepository;
+
+    private final CustomerStatsRepository customerStatsRepository;
 
     private final CustomerMapper customerMapper;
 
@@ -90,7 +98,9 @@ public class BookingServiceImpl implements BookingService {
                 (request, detailMapper, roomRepository, extraServiceRepository,
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId()!=null ? securityUtils.getHotelId() : request.getHotelId());
+        booking.setCustomer(customer);
         repository.save(booking);
+        createBookingUsingVoucher(booking, request);
         if(request.getPayment()!=null){
             Payment payment = paymentMapper.toEntity(request.getPayment());
             payment.setBooking(booking);
@@ -102,6 +112,21 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
+    }
+    private void createBookingUsingVoucher(Booking booking,BookingRequest request) {
+        Voucher voucher = voucherRepository.findByVoucherCodeAndIsActiveTrue(request.getVoucherCode())
+                .orElse(null);
+        if(voucher==null){
+            return;
+        }
+        BookingVoucher bookingVoucher = new BookingVoucher();
+        bookingVoucher.setBooking(booking);
+        bookingVoucher.setVoucher(voucher);
+        bookingVoucher.setOriginalAmount(request.getOriginalAmount());
+        bookingVoucher.setDiscountAmount(request.getDiscountAmount());
+        bookingVoucher.setFinalAmount(booking.getTotalPrice());
+        bookingVoucherRepository.save(bookingVoucher);
+
     }
     private Customer getOrCreateCustomer(BookingRequest request) {
 
@@ -126,9 +151,19 @@ public class BookingServiceImpl implements BookingService {
                 .orElseGet(() -> createAccountFromCustomer(request));
 
         customer.setAccount(account);
+
         account.setCustomer(customer); // nếu mapping 2 chiều
 
         customerRepository.save(customer);
+    }
+    private void rewardPoint(Customer account,BigDecimal totalAmount){
+        if(account==null || totalAmount == null) return;
+
+        Integer rewardDecimal  = totalAmount.multiply(BigDecimal.valueOf(0.01))
+                .setScale(0, RoundingMode.HALF_UP).intValue();
+        Integer currentPoints = account.getPoints()!=null?
+                account.getPoints():0;
+        account.setPoints(currentPoints+rewardDecimal);
     }
     private Account createAccountFromCustomer(BookingRequest request) {
 
@@ -207,18 +242,33 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Page<BookingResponse> findAll(
             Integer page, Integer size, String sort, String filter, String searchField,
-            String searchValue, boolean all
+            String searchValue,boolean mine, boolean all
     ) {
         log.info("start get bookings");
-        Specification<Booking> sortable = RSQLJPASupport.toSort(sort);
-        Specification<Booking> filterable = RSQLJPASupport.toSpecification(filter);
-        Specification<Booking> searchable = SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
-        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
-        return repository.findAll(
-                sortable
-                        .and(filterable)
-                        .and(searchable),
-                pageable).map(mapper::toResponse);
+        Specification<Booking> spec = Specification.where(null);
+
+        if(sort !=null && !sort.isBlank()){
+            spec = spec.and(RSQLJPASupport.toSort(sort));
+        }
+
+        if(filter !=null && !filter.isBlank()){
+            spec = spec.and(
+                    SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS)
+            );
+        }
+        if(mine){
+            Long currentAccountId = securityUtils.getCurrentUserId();
+
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("customer").get("account").get("id"), currentAccountId)
+            );
+        }
+        Pageable pageable = all
+                ? Pageable.unpaged()
+                :PageRequest.of(page-1, size);
+
+        return repository.findAll(spec, pageable)
+                .map(mapper::toResponse);
 
     }
 
@@ -268,7 +318,7 @@ public class BookingServiceImpl implements BookingService {
                 detail.getRoom().setStatus(RoomStatus.AVAILABLE.getCode());
             }
         });
-
+        
         repository.save(booking);
     }
 
@@ -289,8 +339,40 @@ public class BookingServiceImpl implements BookingService {
         booking.setUpdatedBy(securityUtils.getCurrentUserId().toString());
 
         releaseRooms(booking);
-
+        updateCustomerStatsAfterCheckout(booking);
         repository.save(booking);
+    }
+    @Transactional
+    public void updateCustomerStatsAfterCheckout(Booking booking) {
+        if(booking.getCustomer() == null) {
+            return;
+        }
+        Customer customer = booking.getCustomer();
+        rewardPoint(customer, booking.getTotalPrice());
+        customerRepository.save(customer);
+        int rewardPoint = booking.getTotalPrice()
+                .multiply(BigDecimal.valueOf(0.01))
+                .setScale(0, RoundingMode.HALF_UP)
+                .intValue();
+
+        CustomerStats stats = customerStatsRepository
+                .findById(customer.getId())
+                .orElseGet(() -> createCustomerStats(customer, rewardPoint));
+        stats.setTotalCompletedBookings(stats.getTotalCompletedBookings() + 1);
+        stats.setLastBookingAt(OffsetDateTime.now());
+        BigDecimal currentBalance = Optional.ofNullable(stats.getRewardBalance())
+                .orElse(BigDecimal.ZERO);
+
+        stats.setRewardBalance(currentBalance.add(BigDecimal.valueOf(rewardPoint)));
+        customerStatsRepository.save(stats);
+
+    }
+    private CustomerStats createCustomerStats(Customer customer,int totalPrice) {
+        CustomerStats stats = new CustomerStats();
+        stats.setCustomer(customer);
+        stats.setTotalCompletedBookings(1);
+        stats.setRewardBalance(BigDecimal.valueOf(totalPrice));
+        return stats;
     }
 
     @Override
@@ -318,6 +400,20 @@ public class BookingServiceImpl implements BookingService {
         return repository.findByIdFetchActiveDetail(id)
                 .map(mapper::toResponse)
                 .orElseThrow(()->new EntityNotFoundException("Booking Not found"));
+    }
+
+    @Override
+    public Page<BookingListTopResponse> getBookingTop(Integer page, Integer size, String sort, String filter, String searchField, String searchValue, boolean all) {
+
+        Specification<BookingDetail> sortable = RSQLJPASupport.toSort(sort);
+        Specification<BookingDetail> filterable = RSQLJPASupport.toSpecification(filter);
+        Specification<BookingDetail> searchable = SearchHelper.buildSearchSpec(searchField, searchValue,SEARCH_FIELDS );
+        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+        return bookingDetailRepository.findAll(
+                sortable
+                        .and(filterable)
+                        .and(searchable),
+                pageable).map(detailMapper::toResponseTop);
     }
 
     private void validateSwitchRoomItems(
@@ -519,7 +615,9 @@ public class BookingServiceImpl implements BookingService {
             Long bookingId,
             Integer status) {
 
-        Booking booking = repository.getReferenceById(bookingId);
+        Booking booking = repository.findById(bookingId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Booking ID " + bookingId + " not found"));
 
         if (!booking.getStatus().equals(BookingStatus.fromCode(status).getCode())) {
             throw new IllegalStateException("Invalid booking status. Allowed:" + BookingStatus.fromCode(status));

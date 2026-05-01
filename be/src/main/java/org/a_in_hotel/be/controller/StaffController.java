@@ -21,13 +21,10 @@ public class StaffController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<RequestResponse<Void>> create(@Valid @RequestBody StaffRequest request) {
-        try {
+
             staffService.createStaff(request);
             return ResponseEntity.ok(RequestResponse.success("Thêm nhân viên thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
 
     @GetMapping(value = "/getAll")
@@ -40,23 +37,14 @@ public class StaffController {
             @RequestParam(required = false) String searchValue,
             @RequestParam(required = false) boolean all
     ) {
-        try {
             PageResponse<StaffResponse> pageResponse =
                     new PageResponse<>(staffService.getAll(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(RequestResponse.success(pageResponse));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error("Get All staff:" + e.getMessage()));
-        }
+
     }
     @PatchMapping(value = "/updateStatus/{id}")
     public ResponseEntity<RequestResponse<Void>> updateStatus(@PathVariable Long id, @RequestParam Boolean status) {
-        try {
             staffService.updateStatus(id, status);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật trạng thái thành công"));
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
     }
 }

@@ -12,35 +12,37 @@ const BookingStepper = ({ currentStep }: BookingStepProps) => {
     { step: BookingStep.Payment, label: t("booking.Payment") },
   ];
   return (
-    <div className="flex items-center gap-4">
-      {steps.map((s, index) => (
-        <div key={s.step} className="flex items-center gap-2">
-          <div
-            className={clsx(
-              "h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium",
-              currentStep >= s.step
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-100 text-gray-400",
-            )}
-          >
-            {s.step}
-          </div>
-          <span
-            className={clsx(
-              "text-sm",
-              currentStep >= s.step
-                ? "text-indigo-500 font-medium"
-                : "text-gray-500",
-            )}
-          >
-            {s.label}
-          </span>
+    <div className="w-full overflow-y-auto no-scrollbar">
+      <div className="flex items-center gap-4 min-w-max px-1">
+        {steps.map((s, index) => (
+          <div key={s.step} className="flex items-center gap-2 shrink-0">
+            <div
+              className={clsx(
+                "h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition",
+                currentStep >= s.step
+                  ? "bg-indigo-500 text-white"
+                  : "bg-gray-100 text-gray-400",
+              )}
+            >
+              {s.step}
+            </div>
+            <span
+              className={clsx(
+                "text-sm whitespace-nowrap",
+                currentStep >= s.step
+                  ? "text-indigo-500 font-medium"
+                  : "text-gray-500",
+              )}
+            >
+              {s.label}
+            </span>
 
-          {index < steps.length - 1 && (
-            <div className="w-10 h-px bg-gray-300 mx-2" />
-          )}
-        </div>
-      ))}
+            {index < steps.length - 1 && (
+              <div className="w-8 sm:w-10 h-px bg-gray-300 mx-2 shrink-0" />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

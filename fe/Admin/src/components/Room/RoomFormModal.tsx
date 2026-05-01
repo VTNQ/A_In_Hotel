@@ -7,32 +7,106 @@ import { createRoom } from "../../service/api/Room";
 import { getAllCategory } from "../../service/api/Category";
 import { useTranslation } from "react-i18next";
 import type { RoomFormModalProps } from "../../type/room.types";
-
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
-
   /* ===============================
       FORM STATE
   =============================== */
-  const [formData, setFormData] = useState({
-    roomNumber: "",
-    roomName: "",
-    idRoomType: "",
-    defaultRate: "",
-    area: "",
-    capacity: "",
-    floor: "",
-    hourlyBasePrice: "",
-    hourlyAdditionalPrice: "",
-    overnightPrice: "",
-    note: "",
-    images: [] as File[],
-  });
   const { t } = useTranslation();
   const [category, setCategory] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
   const { showAlert } = useAlert();
-  const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState<any>(null);
+
+  const [initialData, setInitialData] = useState<FormData | null>(null);
+  const roomSchema = z.object({
+    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
+
+    roomName: z.string().min(1, t("room.validation.roomNameRequired")),
+
+    idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
+
+    floor: z
+      .string()
+      .min(1, t("room.validation.floorRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.floorInvalid"),
+      }),
+    area: z
+      .string()
+      .min(1, t("room.validation.areaRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.areaInvalid"),
+      }),
+    capacity: z
+      .string()
+      .min(1, t("room.validation.capacityRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.capacityInvalid"),
+      }),
+    hourlyBasePrice: z
+      .string()
+      .min(1, t("room.validation.basePriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.basePriceInvalid"),
+      }),
+
+    hourlyAdditionalPrice: z
+      .string()
+      .min(1, t("room.validation.additionalPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.additionalPriceInvalid"),
+      }),
+
+    overnightPrice: z
+      .string()
+      .min(1, t("room.validation.overnightPriceRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.overnightPriceInvalid"),
+      }),
+
+    defaultRate: z
+      .string()
+      .min(1, t("room.validation.defaultRateRequired"))
+      .refine((value) => Number(value) > 0, {
+        message: t("room.validation.defaultRateInvalid"),
+      }),
+
+    note: z.string().optional(),
+
+    images: z
+      .array(z.instanceof(File))
+      .min(1, t("common.required"))
+      .max(5, t("room.createOrUpdate.maxImages")),
+  });
+  type FormData = z.infer<typeof roomSchema>;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(roomSchema),
+    mode: "onBlur",
+    defaultValues: {
+      roomNumber: "",
+      roomName: "",
+      idRoomType: "",
+      defaultRate: "",
+      area: "",
+      capacity: "",
+      floor: "",
+      hourlyBasePrice: "",
+      hourlyAdditionalPrice: "",
+      overnightPrice: "",
+      note: "",
+      images: [],
+    },
+  });
   /* ===============================
       FETCH CATEGORY
   =============================== */
@@ -50,25 +124,52 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       setFetching(false);
     }
   };
+  const watchedValues = watch();
   useEffect(() => {
     if (isOpen) {
-      setInitialData(formData);
+      setInitialData({
+        ...watchedValues,
+        images: [...(watchedValues.images || [])],
+      });
     }
   }, [isOpen]);
   const isFormChanged = () => {
     if (!initialData) return false;
 
-    const keys = Object.keys(formData);
+    const normalFields: (keyof FormData)[] = [
+      "roomNumber",
+      "roomName",
+      "idRoomType",
+      "defaultRate",
+      "area",
+      "capacity",
+      "floor",
+      "hourlyBasePrice",
+      "hourlyAdditionalPrice",
+      "overnightPrice",
+      "note",
+    ];
 
-    for (const key of keys) {
-      if (key === "images") {
-        if (formData.images.length !== initialData.images.length) return true;
-        continue;
-      }
-      if (formData[key as keyof typeof formData] !== initialData[key as keyof typeof formData]) {
+    for (const key of normalFields) {
+      if (watchedValues[key] !== initialData[key]) {
         return true;
       }
     }
+
+    // check images
+    const currentImages = watchedValues.images || [];
+    const oldImages = initialData.images || [];
+
+    if (currentImages.length !== oldImages.length) {
+      return true;
+    }
+
+    for (let i = 0; i < currentImages.length; i++) {
+      if (currentImages[i]?.name !== oldImages[i]?.name) {
+        return true;
+      }
+    }
+
     return false;
   };
 
@@ -83,55 +184,36 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
   const [tempImages, setTempImages] = useState<File[]>([]);
 
   const openImageModal = () => {
-    setTempImages(formData.images);
+    setTempImages(watchedValues.images);
     setImageModalOpen(true);
   };
 
   /* ===============================
       HANDLE INPUT CHANGE
   =============================== */
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   /* ===============================
       SAVE ROOM
   =============================== */
-  const handleSave = async () => {
-    setLoading(true);
+  const handleSave = async (data: FormData) => {
     try {
-      const response = await createRoom(formData);
+      const response = await createRoom(data);
 
       showAlert({
         title: response?.data?.message || t("room.createOrUpdate.createSucess"),
         type: "success",
         autoClose: 3000,
       });
-      setFormData({
-        roomNumber: "",
-        roomName: "",
-        idRoomType: "",
-        defaultRate: "",
-        area: "",
-        capacity: "",
-        floor: "",
-        hourlyBasePrice: "",
-        hourlyAdditionalPrice: "",
-        overnightPrice: "",
-        note: "",
-        images: [],
-      });
+      reset();
       onSuccess?.();
       onClose();
     } catch (err: any) {
       showAlert({
-        title: err?.response?.data?.message || t("room.createOrUpdate.createError"),
+        title:
+          err?.response?.data?.message || t("room.createOrUpdate.createError"),
         type: "error",
         autoClose: 3000,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -139,20 +221,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       CANCEL FORM
   =============================== */
   const handleCancel = () => {
-    setFormData({
-      roomNumber: "",
-      roomName: "",
-      idRoomType: "",
-      defaultRate: "",
-      area: "",
-      capacity: "",
-      floor: "",
-      hourlyBasePrice: "",
-      hourlyAdditionalPrice: "",
-      overnightPrice: "",
-      note: "",
-      images: [],
-    });
+    reset();
     onClose();
   };
 
@@ -160,6 +229,39 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       CONFIRM CLOSE MODAL
   =============================== */
   const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []) as File[];
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+    const imageFiles = files.filter((file) => allowedTypes.includes(file.type));
+
+    // Có file không phải ảnh hợp lệ
+    if (imageFiles.length !== files.length) {
+      showAlert({
+        title: t("room.createOrUpdate.onlyImage"),
+        type: "error",
+        autoClose: 3000,
+      });
+    }
+
+    // Dùng tempImages thay vì images để xử lý trong popup
+    const totalImages = [...tempImages, ...imageFiles];
+
+    // Giới hạn tối đa 5 ảnh
+    if (totalImages.length > 5) {
+      showAlert({
+        title: t("room.createOrUpdate.maxImages"),
+        type: "error",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Update preview trong popup trước
+    setTempImages(totalImages);
+    e.target.value = "";
+  };
 
   if (isOpen && fetching) {
     return (
@@ -170,7 +272,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         saveLabel={t("common.save")}
         cancelLabel={t("common.cancel")}
         width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
-
       >
         <div className="flex justify-center items-center py-10">
           <div className="animate-spin h-8 w-8 border-4 border-[#2E3A8C] border-t-transparent rounded-full" />
@@ -178,7 +279,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       </CommonModal>
     );
   }
-
   return (
     <>
       {/* ===============================
@@ -193,102 +293,129 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             handleCancel();
           }
         }}
-
+        diabled={!isValid || isSubmitting}
         title={t("room.createOrUpdate.titleCreate")}
-        onSave={handleSave}
-        saveLabel={loading ? t("common.saving") : t("common.save")}
+        onSave={handleSubmit(handleSave)}
+        saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
         cancelLabel={t("common.cancelButton")}
         width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
       >
         {/* FORM CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-
-
           {/* LEFT */}
           <div className="space-y-5">
             <div>
-              <label className="block mb-1 font-medium">{t("room.roomTypeName")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.roomTypeName")} *
+              </label>
               <select
-                name="idRoomType"
-                value={formData.idRoomType}
-                onChange={handleChange}
+                {...register("idRoomType")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               >
-                <option value=""> {t("room.createOrUpdate.selectRoomType")}</option>
+                <option value="">
+                  {" "}
+                  {t("room.createOrUpdate.selectRoomType")}
+                </option>
                 {category.map((c: any) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
                 ))}
               </select>
+              {errors.idRoomType && (
+                <p className="text-red-500 text-xs">
+                  {errors.idRoomType.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomNumber")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.roomNumber")} *
+              </label>
               <input
-                name="roomNumber"
-                value={formData.roomNumber}
-                onChange={handleChange}
+                {...register("roomNumber")}
                 placeholder={t("room.createOrUpdate.enterRoomNumber")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.roomNumber && (
+                <p className="text-red-500 text-xs">
+                  {errors.roomNumber.message}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.roomName")}  *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.roomName")} *
+                </label>
                 <input
-                  name="roomName"
                   placeholder={t("room.createOrUpdate.enterRoomName")}
-                  value={formData.roomName}
-                  onChange={handleChange}
+                  {...register("roomName")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.roomName && (
+                  <p className="text-red-500 text-xs">
+                    {errors.roomName.message}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.floor")} *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.floor")} *
+                </label>
                 <input
                   type="number"
-                  name="floor"
                   placeholder={t("room.createOrUpdate.enterFloor")}
-                  value={formData.floor}
-                  onChange={handleChange}
+                  {...register("floor")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.floor && (
+                  <p className="text-red-500 text-xs">{errors.floor.message}</p>
+                )}
               </div>
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.area")}  *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.area")} *
+              </label>
               <input
-                name="area"
                 type="number"
-                value={formData.area}
-                onChange={handleChange}
+                {...register("area")}
                 placeholder={t("room.createOrUpdate.enterArea")}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.area && (
+                <p className="text-red-500 text-xs">{errors.area.message}</p>
+              )}
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.capacity")} *</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.capacity")} *
+              </label>
               <input
-                name="capacity"
+                {...register("capacity")}
                 type="number"
-                value={formData.capacity}
                 placeholder={t("room.createOrUpdate.enterCapacity")}
-                onChange={handleChange}
                 className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
               />
+              {errors.capacity && (
+                <p className="text-red-500 text-xs">
+                  {errors.capacity.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">{t("room.createOrUpdate.note")}</label>
+              <label className="block mb-1 font-medium">
+                {t("room.createOrUpdate.note")}
+              </label>
               <textarea
-                name="note"
-                value={formData.note}
-                onChange={handleChange}
+                {...register("note")}
                 placeholder={t("room.createOrUpdate.notePlaceholder")}
                 className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
                 rows={4}
@@ -298,30 +425,39 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
           {/* RIGHT */}
           <div className="space-y-5">
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceBase")} *</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.priceBase")} *
+                </label>
                 <input
-                  name="hourlyBasePrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyBasePrice}
-                  onChange={handleChange}
+                  {...register("hourlyBasePrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.hourlyBasePrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyBasePrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block mb-1 font-medium">{t("room.createOrUpdate.priceExtraHour")}*</label>
+                <label className="block mb-1 font-medium">
+                  {t("room.createOrUpdate.priceExtraHour")}*
+                </label>
                 <input
-                  name="hourlyAdditionalPrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.hourlyAdditionalPrice}
-                  onChange={handleChange}
+                  {...register("hourlyAdditionalPrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.hourlyAdditionalPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.hourlyAdditionalPrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -329,33 +465,41 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   {t("room.createOrUpdate.priceOvernight")}*
                 </label>
                 <input
-                  name="overnightPrice"
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  value={formData.overnightPrice}
-                  onChange={handleChange}
+                  {...register("overnightPrice")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.overnightPrice && (
+                  <p className="text-red-500 text-xs">
+                    {errors.overnightPrice.message}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label className="block mb-1 font-medium">
-                   {t("room.createOrUpdate.priceFullDay")} *
+                  {t("room.createOrUpdate.priceFullDay")} *
                 </label>
                 <input
-                  name="defaultRate"
                   type="number"
-                  value={formData.defaultRate}
                   placeholder={t("room.createOrUpdate.enterPrice")}
-                  onChange={handleChange}
+                  {...register("defaultRate")}
                   className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
+                {errors.defaultRate && (
+                  <p className="text-red-500 text-xs">
+                    {errors.defaultRate.message}
+                  </p>
+                )}
               </div>
             </div>
 
             {/* IMAGE UPLOAD PREVIEW */}
             <div>
-              <label className="text-sm font-medium">{t("room.createOrUpdate.images")}</label>
+              <label className="text-sm font-medium">
+                {t("room.createOrUpdate.images")}
+              </label>
 
               <div
                 onClick={openImageModal}
@@ -365,15 +509,13 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 sm:p-6 cursor-pointer transition flex flex-col items-center 
                 min-h-[200px] sm:h-64"
               >
-
-                {formData.images.length > 0 ? (
+                {watchedValues.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {formData.images.map((img, index) => (
+                    {watchedValues.images.map((img, index) => (
                       <img
                         key={index}
                         src={URL.createObjectURL(img)}
                         className="w-full h-24 sm:h-28 object-cover rounded-lg"
-
                       />
                     ))}
                   </div>
@@ -383,7 +525,9 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       src="/defaultImage.png"
                       className="w-[167px] h-[117px] opacity-60"
                     />
-                    <p className="text-gray-600 mt-3">{t("room.createOrUpdate.clickSelectImages")}</p>
+                    <p className="text-gray-600 mt-3">
+                      {t("room.createOrUpdate.clickSelectImages")}
+                    </p>
                     <button
                       className="mt-3 w-full 
                       sm:w-auto px-6 sm:px-20 py-1.5 
@@ -392,7 +536,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                     >
                       {t("room.createOrUpdate.selectFiles")}
                     </button>
-
                   </div>
                 )}
               </div>
@@ -415,43 +558,47 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             <motion.div
               className="bg-white w-[95vw] sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 
               shadow-xl relative overflow-hidden"
-
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
             >
               {/* HEADER */}
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-
                 <button
                   className="px-5 py-1.5 rounded-full border hover:bg-gray-100"
                   onClick={() => {
-                    setTempImages(formData.images);
+                    setTempImages(watchedValues.images);
                     setImageModalOpen(false);
                   }}
                 >
-                 <button>{t("common.cancelButton")}</button>
+                  <button>{t("common.cancelButton")}</button>
                 </button>
 
-                <h2 className="text-xl font-semibold">{t("room.createOrUpdate.selectImages")}</h2>
+                <h2 className="text-xl font-semibold">
+                  {t("room.createOrUpdate.selectImages")}
+                </h2>
 
                 <button
                   className="px-5 py-1.5 rounded-full bg-black text-white hover:bg-gray-800"
                   onClick={() => {
                     const filtered = tempImages.filter((x) => x !== null);
-                    setFormData((prev) => ({
-                      ...prev,
-                      images: filtered,
-                    }));
+
+                    setValue("images", filtered, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+
+                    trigger("images");
                     setImageModalOpen(false);
                   }}
                 >
-                {t("common.save")}
+                  {t("common.save")}
                 </button>
               </div>
 
               {/* DROPZONE */}
-              <div className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
+              <div
+                className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
      max-h-[500px] overflow-auto custom-scroll"
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -465,7 +612,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   e.currentTarget.classList.remove("border-blue-500");
 
                   const droppedFiles = Array.from(e.dataTransfer.files).filter(
-                    (f) => f.type.startsWith("image/")
+                    (f) => f.type.startsWith("image/"),
                   ) as File[];
 
                   if (droppedFiles.length > 0) {
@@ -473,18 +620,21 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   }
                 }}
               >
-
                 {/* NO IMAGES */}
                 {tempImages.length === 0 && (
                   <div className="flex flex-col items-center py-16">
                     <img src="/defaultImage.png" className="w-20 opacity-70" />
 
-                    <p className="mt-4 font-medium">{t("room.createOrUpdate.dragDrop")}</p>
+                    <p className="mt-4 font-medium">
+                      {t("room.createOrUpdate.dragDrop")}
+                    </p>
                     <p className="text-xs text-gray-500 mt-1">
-                     {t("room.createOrUpdate.supportedFormat")}
+                      {t("room.createOrUpdate.supportedFormat")}
                     </p>
 
-                    <p className="mt-4 text-gray-400">{t("room.createOrUpdate.or")}</p>
+                    <p className="mt-4 text-gray-400">
+                      {t("room.createOrUpdate.or")}
+                    </p>
 
                     <label
                       htmlFor="filePicker"
@@ -499,12 +649,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       multiple
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files ?? []) as File[];
-                        if (files.length > 0) {
-                          setTempImages(files);
-                        }
-                      }}
+                      onChange={(e) => handleImageChange(e)}
                     />
                   </div>
                 )}
@@ -513,13 +658,11 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 {tempImages.length > 0 && (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
                       {/* LARGE IMAGE */}
                       <div className="col-span-2 relative">
                         <img
                           src={URL.createObjectURL(tempImages[0])}
                           className="w-full h-[220px] sm:h-[350px] object-cover rounded-xl"
-
                         />
 
                         <button
@@ -541,7 +684,6 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                             <img
                               src={URL.createObjectURL(img)}
                               className="w-full h-[120px] sm:h-[165px] object-cover rounded-xl"
-
                             />
 
                             <button
@@ -574,21 +716,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                         multiple
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files ?? []) as File[];
-
-                          if (files.length > 0) {
-                            const clone = [...tempImages, ...files];
-                            setTempImages(clone);
-                          }
-                        }}
+                        onChange={(e) => handleImageChange(e)}
                       />
                     </div>
                   </>
                 )}
-
               </div>
-
             </motion.div>
           </motion.div>
         )}
@@ -612,11 +745,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             </h2>
 
             <p className="text-gray-600 mt-2">
-               {t("room.createOrUpdate.confirmCloseDesc")}
+              {t("room.createOrUpdate.confirmCloseDesc")}
             </p>
 
             <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
               <button
                 className="px-4 py-2 bg-gray-200 rounded-lg"
                 onClick={() => {
@@ -629,10 +761,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-                onClick={() => {
+                onClick={handleSubmit(async (data) => {
                   setConfirmCloseOpen(false);
-                  handleSave();
-                }}
+                  await handleSave(data);
+                })}
               >
                 {t("common.save")}
               </button>

@@ -6,11 +6,13 @@ import org.a_in_hotel.be.dto.request.BookingRequest;
 import org.a_in_hotel.be.dto.request.CheckOutRequest;
 import org.a_in_hotel.be.dto.request.EditGuestRequest;
 import org.a_in_hotel.be.dto.request.SwitchRoomRequest;
+import org.a_in_hotel.be.dto.response.BookingListTopResponse;
 import org.a_in_hotel.be.dto.response.BookingResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
 import org.a_in_hotel.be.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,32 @@ public class BookingController {
 
         return ResponseEntity.ok(RequestResponse.success("Booking created successfully"));
     }
+    @GetMapping("/top")
+    public ResponseEntity<RequestResponse<Page<BookingListTopResponse>>> getBookingTop(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String searchField,
+            @RequestParam(required = false) String searchValue,
+            @RequestParam(defaultValue = "false") boolean all
+    ) {
 
+            Page<BookingListTopResponse> result =
+                    service.getBookingTop(
+                            page,
+                            size,
+                            sort,
+                            filter,
+                            searchField,
+                            searchValue,
+                            all
+                    );
+
+            return ResponseEntity.ok(RequestResponse.success(result));
+
+
+    }
     @GetMapping
     public  ResponseEntity<RequestResponse<PageResponse<BookingResponse>>> getBookings
             (
@@ -38,10 +65,11 @@ public class BookingController {
                     @RequestParam(required = false) String filter,
                     @RequestParam(required = false) String searchField,
                     @RequestParam(required = false) String searchValue,
+                    @RequestParam(defaultValue = "false") boolean mine,
                     @RequestParam(required = false) boolean all
             ){
         PageResponse<BookingResponse> pageResponse =
-                new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,all));
+                new PageResponse<>(service.findAll(page,size,sort,filter,searchField,searchValue,mine,all));
         return ResponseEntity.ok(RequestResponse.success(pageResponse));
     }
     @GetMapping("/{id}/active-details")

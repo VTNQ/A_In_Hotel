@@ -87,9 +87,8 @@ const ViewCustomerPage = () => {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h1 className="text-xl font-semibold">
-            {" "}
             {t("customer.management.title")}
           </h1>
           <CustomerFilter

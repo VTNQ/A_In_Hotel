@@ -1,28 +1,24 @@
 package org.a_in_hotel.be.dto.request;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.a_in_hotel.be.Enum.UnitExtraService;
+import org.a_in_hotel.be.annotation.ImageFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 @Data
 public class ExtraServiceRequest {
-    @NotNull(message = "Service Name is required")
+    @NotNull(message = "Service name is required / Tên dịch vụ không được để trống")
     private String serviceName;
     private String description;
-    @NotNull(message = "Category is required")
-    @Min(value = 1, message = "Category is required")
+    @NotNull(message = "Category is required / Danh mục không được để trống")
+    @Min(value = 1, message = "Category must be valid / Danh mục không hợp lệ")
     private Long categoryId;
-    @NotNull(message = "Price is required")
-    private BigDecimal price;
-    @NotNull(message = "Extra Charge is required")
+    @NotNull(message = "Extra charge is required / Phụ phí không được để trống")
     private Integer extraCharge;
     private String note;
     private Integer type;
-    private UnitExtraService unit;
     private Boolean isActive;
     private Long hotelId;
+    private MultipartFile image;
 }

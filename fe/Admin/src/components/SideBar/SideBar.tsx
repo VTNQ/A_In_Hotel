@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SECTIONS } from "./Section";
 import { useTranslation } from "react-i18next";
-import { clearTokens } from "../../util/auth";
+import { clearTokens, getTokens } from "../../util/auth";
 import ConfirmLogoutModal from "../logout/ConfirmLogoutModal";
 
 const SideBarItem = ({
@@ -17,6 +17,7 @@ const SideBarItem = ({
   onAction?: (action: string) => void;
 }) => {
   const navigate = useNavigate();
+
   const { t } = useTranslation();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -32,24 +33,23 @@ const SideBarItem = ({
     }
   }, [isParentActive]);
 
-const handleClick = () => {
-  if (item.children) {
-    setOpen((prev) => !prev);
-    return;
-  }
+  const handleClick = () => {
+    if (item.children) {
+      setOpen((prev) => !prev);
+      return;
+    }
 
-  if (item.action) {
-    onAction?.(item.action);
-    onNavigate?.();
-    return;
-  }
+    if (item.action) {
+      onAction?.(item.action);
+      onNavigate?.();
+      return;
+    }
 
-  if (item.path) {
-    navigate(item.path);
-    onNavigate?.();
-  }
-};
-
+    if (item.path) {
+      navigate(item.path);
+      onNavigate?.();
+    }
+  };
 
   return (
     <div>
@@ -87,27 +87,32 @@ const handleClick = () => {
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className="ml-6 mt-1 space-y-1 overflow-hidden"
           >
-            {item.children.map((child: any, i: number) => {
-              const isChildActive = location.pathname === child.path;
+            {item.children
+              .filter(
+                (child: any) =>
+                  child.roles?.includes(getTokens()?.role) ?? true,
+              )
+              .map((child: any, i: number) => {
+                const isChildActive = location.pathname === child.path;
 
-              return (
-                <div
-                  key={i}
-                  onClick={() => {
-                    navigate(child.path);
-                    onNavigate?.(); // ⭐ đóng sidebar mobile
-                  }}
-                  className={`
+                return (
+                  <div
+                    key={i}
+                    onClick={() => {
+                      navigate(child.path);
+                      onNavigate?.(); // ⭐ đóng sidebar mobile
+                    }}
+                    className={`
                     px-3 py-2 text-sm rounded-md cursor-pointer
                     hover:bg-[#2A3553]
                     transition-colors duration-150
                     ${isChildActive ? "bg-[#2A3553]" : ""}
                   `}
-                >
-                  {t(child.label)}
-                </div>
-              );
-            })}
+                  >
+                    {t(child.label)}
+                  </div>
+                );
+              })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -127,6 +132,7 @@ const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     clearTokens();
     window.location.href = "/";
   };
+  const role = getTokens()?.role ?? "ADMIN";
   return (
     <>
       <aside
@@ -157,14 +163,16 @@ const SideBar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                     {section.title}
                   </h2>
                 )}
-                {section.items.map((item: any) => (
-                  <SideBarItem
-                    key={item.label}
-                    item={item}
-                    onAction={handleAction}
-                    onNavigate={onClose}
-                  />
-                ))}
+                {section.items
+                  .filter((item: any) => item.roles?.includes(role) ?? true)
+                  .map((item: any) => (
+                    <SideBarItem
+                      key={item.label}
+                      item={item}
+                      onAction={handleAction}
+                      onNavigate={onClose}
+                    />
+                  ))}
               </div>
             ))}
           </nav>

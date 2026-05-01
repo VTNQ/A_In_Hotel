@@ -11,9 +11,11 @@ import ConfirmBooking from './pages/ConfirmBooking';
 import GalleryPage from './pages/GalleryPage';
 import BookingSuccess from './pages/BookingSuccess';
 import OAuth2Success from './pages/OAuth2SuccessPage';
-import BlogPage from './pages/BlogPage';
-import BlogDetailPage from './pages/BlogDetailPage';
 import BookingContentSection from './pages/BookingContentSection';
+import PromotionPage from './pages/PromotionPage';
+import PromotionDetailPage from './pages/PromotionDetailPage';
+import MyBookingsPage from './pages/MyBookingPage';
+import BookingDetailPage from './pages/BookingDetailPage';
 function App() {
 
   return (
@@ -26,10 +28,12 @@ function App() {
     <Route path='/Hotel/Room/:id' element={<HotelRoomPage/>}/>
     <Route path='/confirmBooking' element={<ConfirmBooking/>} />
     <Route path='/gallery' element={<GalleryPage/>}/>
+    <Route path='/my-booking/:id' element={<BookingDetailPage/>}/>
     <Route path='/Room/:id' element={<RoomDetailPage/>}/>
     <Route path='/Login' element={<LoginPage/>}/>
-    <Route path='/blog' element={<BlogPage/>}/>
-    <Route path='/blog/:id' element={<BlogDetailPage/>}/>
+    <Route path='/promotion' element={<PromotionPage/>}/>
+    <Route path='/my-booking' element={<MyBookingsPage/>}/>
+    <Route path='/promotion/:id' element={<PromotionDetailPage/>}/>
     <Route path="/Register" element={<RegisterPage/>} />
     <Route path="/booking-success" element={<BookingSuccess />} />
     <Route path='/booking-v2' element={<BookingContentSection/>}/>

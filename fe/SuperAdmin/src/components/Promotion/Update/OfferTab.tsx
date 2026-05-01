@@ -4,7 +4,10 @@ import type { CreateOrUpdateTabProps } from "@/type/Promotion.types";
 import { Moon, Percent, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+const OfferTab = ({ watch,
+  setValue,
+  trigger,
+  errors }: CreateOrUpdateTabProps) => {
   const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-9 py-10 space-y-16">
@@ -28,8 +31,14 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                   { value: "2", label: t("promotion.offer.percent") },
                   { value: "3", label: t("promotion.offer.special") },
                 ]}
-                value={formData.type}
-                onChange={(v) => setFormData((p) => ({ ...p, type: v }))}
+                value={watch("type")}
+               onChange={(e) => {
+                setValue("type", e, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("type");
+              }}
                 size="sm"
                 fullWidth={true}
                 getValue={(i) => i.value}
@@ -43,7 +52,7 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
             </label>
             <div className="relative ">
               <span className="absolute left-2 top-1/2 -translate-y-1/3 text-slate-500">
-                {formData.type === "1" || formData.type === "3" ? (
+                {watch("type") === "1" || watch("type") === "3" ? (
                   <Percent size={18} />
                 ) : (
                   <Wallet size={18} />
@@ -52,15 +61,15 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               <input
                 type="number"
                 step="0.01"
-                value={formData.value}
+                value={watch("value")}
                 onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    value: e.target.value,
-                  }));
+                  setValue("value", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
                 }}
                 placeholder={
-                  formData.type === "1" || formData.type === "3"
+                   watch("type") === "1" || watch("type") === "3"
                     ? t("promotion.offer.valuePercentPlaceholder")
                     : t("promotion.offer.valueFixedPlaceholder")
                 }
@@ -89,12 +98,12 @@ const OfferTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 className="absolute left-4 top-1/2 -translate-y-1/3 text-slate-500"
               />
               <input
-               value={formData.minNights}
+               value={watch("minNights")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    minNights: e.target.value,
-                  }))
+                  setValue("minNights", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
                  placeholder={t(
                   "promotion.conditions.minNightsPlaceholder"

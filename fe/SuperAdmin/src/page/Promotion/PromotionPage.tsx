@@ -87,7 +87,7 @@ const PromotionPage = () => {
   };
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
         <h1 className="text-xl font-semibold">{t("promotion.title")}</h1>
         <PromotionFilter
           search={searchValue}

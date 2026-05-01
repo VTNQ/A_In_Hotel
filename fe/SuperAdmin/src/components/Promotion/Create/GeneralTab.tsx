@@ -4,7 +4,12 @@ import { Textarea } from "@/components/ui/textarea";
 import type { CreateOrUpdateTabProps } from "@/type/Promotion.types";
 import { useTranslation } from "react-i18next";
 
-const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
+const GeneralTab = ({
+  watch,
+  setValue,
+  trigger,
+  errors,
+}: CreateOrUpdateTabProps) => {
   const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto px-3 py-3">
@@ -22,15 +27,19 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 {t("promotion.general.name")}
               </label>
               <Input
-                value={formData.name}
+                value={watch("name")}
                 placeholder={t("promotion.general.namePlaceholder")}
+                onBlur={() => trigger("name")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
+                  setValue("name", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="font-medium text-[#253150]">
@@ -38,29 +47,35 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               </label>
               <Input
                 type="number"
-                value={formData.priority}
-                placeholder={t("promotion.general.priorityPlaceholder")}
+                value={watch("priority")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    priority: e.target.value,
-                  }))
+                  setValue("priority", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
+                onBlur={() => trigger("priority")}
+                placeholder={t("promotion.general.priorityPlaceholder")}
               />
+              {errors.priority && (
+                <p className="text-red-500 text-sm">
+                  {errors.priority.message}
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-2 sm:col-span-2">
               <label className="font-medium text-[#253150]">
                 {t("promotion.general.description")}
               </label>
               <Textarea
-                value={formData.description}
-                placeholder={t("promotion.general.descriptionPlaceholder")}
+                value={watch("description")}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
+                  setValue("description", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
+                placeholder={t("promotion.general.descriptionPlaceholder")}
                 rows={4}
               />
             </div>
@@ -73,16 +88,20 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
               {t("promotion.schedule.title")}
             </h3>
           </div>
-          <div className="grid grid-cols-3 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label className="font-medium text-[#253150">
                 {t("promotion.schedule.startDate")}
               </label>
               <DatePickerField
-                value={formData.startDate}
-                onChange={(d?: Date) =>
-                  setFormData((p) => ({ ...p, startDate: d }))
-                }
+                value={watch("startDate")}
+                onChange={(d?: Date) => {
+                  setValue("startDate", d, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("startDate");
+                }}
                 className="mt-1"
                 placeholder={t("staff.birthdayPlaceholder")}
               />
@@ -92,10 +111,14 @@ const GeneralTab = ({ formData, setFormData }: CreateOrUpdateTabProps) => {
                 {t("promotion.schedule.endDate")}
               </label>
               <DatePickerField
-                value={formData.endDate}
-                onChange={(d?: Date) =>
-                  setFormData((p) => ({ ...p, endDate: d }))
-                }
+                value={watch("endDate")}
+                onChange={(d?: Date) => {
+                  setValue("endDate", d, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("endDate");
+                }}
                 className="mt-1"
                 placeholder={t("staff.birthdayPlaceholder")}
               />

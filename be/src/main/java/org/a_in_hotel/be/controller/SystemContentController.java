@@ -19,32 +19,23 @@ public class SystemContentController {
 
     private final SystemContentService service;
 
-    @PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RequestResponse<Void>>update
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RequestResponse<Void>> update
             (
                     @PathVariable Long id,
                     @ModelAttribute SystemContentRequest request,
-                    @RequestParam(value = "image",required = false) MultipartFile file
-            ){
-        try {
-            service.update(id, request, file);
-            return ResponseEntity.ok(RequestResponse.success("system content updated successfully"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+                    @RequestParam(value = "image", required = false) MultipartFile file
+            ) {
+        service.update(id, request, file);
+        return ResponseEntity.ok(RequestResponse.success("system content updated successfully"));
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RequestResponse<SystemContentResponse>> findByContentKey
             (
                     @PathVariable Integer id
-            ){
-        try {
-            return ResponseEntity.ok(RequestResponse.success(service.findByContentKey(id)));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+            ) {
+        return ResponseEntity.ok(RequestResponse.success(service.findByContentKey(id)));
     }
 }

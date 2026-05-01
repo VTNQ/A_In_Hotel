@@ -67,8 +67,8 @@ const BannerPage = () => {
   };
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">{t("banner.title")}</h2>
+      <h2 className="text-xl font-semibold">{t("banner.title")}</h2>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <BannerFilter
           search={searchValue}
           onSearchChange={setSearchValue}
@@ -87,7 +87,7 @@ const BannerPage = () => {
         sortKey={sortKey}
         sortDir={sortDir}
         onSortChange={handleSort}
-         onEdit={(row) => setEditModal(row)}
+        onEdit={(row) => setEditModal(row)}
       />
       <BannerEditModal
         open={!!editModal}

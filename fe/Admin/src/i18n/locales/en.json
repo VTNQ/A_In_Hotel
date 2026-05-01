@@ -6,16 +6,18 @@
     "close": "Close",
     "save": "save",
     "loading": "Loading...",
+    "discard": "Discard",
     "noImage": "No Image",
     "noChange": "No changes detected",
     "tip": "Tip",
+    "profile": "Profile",
     "edit": "Edit",
     "all": "All",
     "noData": "No data available",
     "filter": "Filter",
     "filtering": "Filtering...",
     "unKnown": "Unknown",
-     "back": "Back",
+    "back": "Back",
     "active": "Active",
     "deActivate": "Deactivate",
     "action": "action",
@@ -27,6 +29,38 @@
     "status": "Status",
     "updatedAt": "Updated At",
     "notePlaceholder": "Enter any additional notes"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "personalInfo": "Personal Information",
+    "active": "ACTIVE",
+    "inactive": "INACTIVE",
+    "avatarNote1": "JPG, GIF or PNG",
+    "avatarNote2": "Max size 2MB",
+    "staffCode": "Staff Code",
+    "email": "Email Address",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "birthday": "Birthday",
+    "gender": "Gender",
+    "update": "Update Profile",
+    "updating": "Updating...",
+    "security": "Security Settings",
+    "changePassword": "Change Password",
+    "loading": "Loading profile...",
+    "selectGender": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "securityDesc": "Ensure your account is using a long, random password to stay secure.",
+    "accountDetails": "Account Details",
+    "role": "Role",
+    "assignedHotel": "Assigned Hotel",
+    "createdDate": "Created Date",
+    "roleNote": "Role and Hotel assignments are managed by the Head Administrator and cannot be changed here.",
+    "twoFactor": "Two-Factor Authentication",
+    "notEnabled": "Not Enabled",
+    "twoFactorDesc": "Add an extra layer of security to your account.",
+    "enable2fa": "Enable 2FA"
   },
   "sideBar": {
     "DashBoard": "DashBoard",
@@ -49,12 +83,47 @@
     "setting": "Setting",
     "logout": "Logout"
   },
+  "staff": {
+    "title": "Staff Management",
+    "new": "+ Add Staff",
+    "validate": {
+      "fullNameRequired": "Please enter full name",
+      "emailRequired": "Please enter email",
+      "emailInvalid": "Invalid email format",
+      "phoneInvalid": "Invalid phone number",
+      "birthdayRequired": "Please select date of birth"
+    },
+    "create": {
+      "titleCreate": "Create New Staff",
+      "createSucess": "Staff created successfully!",
+      "createError": "Error creating staff",
+      "male": "Male",
+      "enterphone": "Enter phone number",
+      "selectDate": "Select date of birth",
+      "receiption": "Receptionist",
+      "female": "Female",
+      "enterFullName": "Enter full name"
+    },
+    "searchPlaceholder": "Search by staff code or name",
+    "code": "Staff Code",
+    "fullName": "Full Name",
+    "gender": "Gender",
+    "activeSuccess": "Staff activated successfully!",
+    "activeError": "Error activating staff",
+    "deActivateSuccess": "Staff deactivated successfully!",
+    "deActivateError": "Error deactivating staff",
+    "loadError": "Unable to load staff data!",
+    "dob": "Date of Birth",
+    "phone": "Phone Number",
+    "role": "Role",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At"
+  },
   "customer": {
-      "errorLoad": "Failed to load data",
-     "management": {
+    "errorLoad": "Failed to load data",
+    "management": {
       "title": "Customer Management"
     },
-
     "search": {
       "placeholder": "Search by customer ID, name, phone, email"
     },
@@ -71,7 +140,7 @@
     "email": "Email",
     "nationality": "Nationality",
     "customerId": "Customer ID",
-     "table": {
+    "table": {
       "customerId": "Customer ID",
       "fullName": "Full Name",
       "email": "Email",
@@ -125,6 +194,17 @@
     "title": "Amenities & Asset Tracking",
     "new": "+ New Asset",
     "code": "Asset ID",
+    "validate": {
+      "assetNameRequired": "Asset name is required",
+      "categoryRequired": "Please select a category",
+      "roomRequired": "Please select a room",
+      "priceRequired": "Price is required",
+      "priceInvalid": "Price must be a valid number and >= 0",
+      "quantityInvalid": "Quantity must be a valid number and >= 0",
+      "imageRequired": "Please select an image",
+      "imageTooLarge": "Image must be less than 5MB",
+      "imageInvalidType": "Only JPG, PNG, GIF are allowed"
+    },
     "loadError": "Failed to load asset information!",
     "icon": "Icon",
     "name": "Asset Name",
@@ -185,6 +265,15 @@
     "searchPlaceholder": "Search by name or ID",
     "icon": "Icon",
     "name": "Service Name",
+    "validate": {
+      "serviceNameRequired": "Service name is required",
+      "categoryRequired": "Please select a category",
+      "extraChargeRequired": "Extra charge is required",
+      "extraChargeInvalid": "Extra charge must be a valid number and >= 0",
+      "imageRequired": "Please select an image",
+      "imageTooLarge": "Image must be less than 5MB",
+      "imageInvalidType": "Only JPG, PNG, GIF are allowed"
+    },
     "createOrUpdate": {
       "icon": "Extra Service Icon",
       "namePlaceHolder": "Enter Service Name",
@@ -216,12 +305,37 @@
     "roomNumber": "Room Number",
     "new": "+ New Room",
     "price": "Price",
+    "validation": {
+      "roomNumberRequired": "Please enter room number",
+      "roomNameRequired": "Please enter room name",
+      "roomTypeRequired": "Please select room type",
+      "floorRequired": "Please enter floor",
+      "floorInvalid": "Floor must be greater than 0",
+      "areaRequired": "Please enter area",
+      "areaInvalid": "Area must be greater than 0",
+      "capacityRequired": "Please enter capacity",
+      "capacityInvalid": "Capacity must be greater than 0",
+      "basePriceRequired": "Please enter base price",
+      "basePriceInvalid": "Base price must be greater than 0",
+      "additionalPriceRequired": "Please enter additional hourly price",
+      "additionalPriceInvalid": "Additional hourly price must be greater than 0",
+      "overnightPriceRequired": "Please enter overnight price",
+      "overnightPriceInvalid": "Overnight price must be greater than 0",
+      "defaultRateRequired": "Please enter daily rate",
+      "defaultRateInvalid": "Daily rate must be greater than 0"
+    },
     "searchPlaceholder": "Search by room code, room name",
     "image": "Image",
     "first2Hours": "First 2 hours",
     "extraHour": "Extra hour",
     "overnight": "Overnight",
     "dayNight": "Day & night",
+    "activateSuccess": "Room activated successfully!",
+    "activateError": "Failed to activate room. Please try again",
+    "maintenanceSuccess": "Room moved to maintenance successfully!",
+    "maintenanceFail": "Failed to set room to maintenance. Please try again.",
+    "deactivateSuccess": "Room deactivated successfully!",
+    "deactivateFail": "Failed to deactivate room. Please try again.",
     "viewRoom": "view",
     "area": "Room Area",
     "view": {
@@ -237,6 +351,8 @@
     "createOrUpdate": {
       "titleCreate": "Create New Room",
       "titleEdit": "Edit Room",
+      "onlyImage": "Only image files are allowed",
+      "maxImages": "Maximum 5 images allowed",
       "updateSucess": "Room updated successfully!",
       "updateError": "Error updated room",
       "createSucess": "Room created successfully!",
@@ -292,6 +408,12 @@
     "new": "+ New Category",
     "searchPlaceholder": "Search by Category ID, Category Name",
     "type": "Type",
+    "validate": {
+      "nameRequired": "Please enter category name",
+      "nameMax": "Category name must be less than 100 characters",
+      "typeRequired": "Please select category type",
+      "descriptionMax": "Description must be less than 255 characters"
+    },
     "room": "Room",
     "service": "Extra Service",
     "loadError": "Failed to load category information!",
@@ -304,7 +426,9 @@
       "enterName": "Enter Category Name",
       "enterDescription": "Enter short description",
       "titleCreate": "Create Category",
+      "descriptionLimit": "Max 255 characters",
       "titleEdit": "Edit Category",
+      "nameLimit": "Maximum 120 characters",
       "selectType": "Select Type",
       "createSucess": "Category created successfully!",
       "updateSucess": "Category updated successfully!",
@@ -328,6 +452,14 @@
     "blogCode": "Blog Code",
     "status": "Status",
     "loading": "Loading...",
+    "validate": {
+      "titleRequired": "Please enter title",
+      "categoryRequired": "Please select a category",
+      "contentRequired": "Please enter content",
+      "imageRequired": "Please select an image",
+      "imageInvalid": "Invalid image format (JPG, PNG, GIF only)",
+      "imageTooLarge": "Image exceeds maximum size (2MB)"
+    },
     "statusMap": {
       "draft": "Draft",
       "published": "Published",
@@ -355,6 +487,7 @@
       "titleCreate": "Create New Blog",
       "titleEdit": "Edit Blog",
       "updateSucess": "Blog updated successfully!",
+      "uploadError": "Invalid file type. Please select a valid file.",
       "updateError": "Error updated blog",
       "enterTitle": "Enter blog Title",
       "enterDescription": "Enter description",
@@ -382,6 +515,15 @@
   "banner": {
     "title": "Banner Management",
     "new": "+ New Banner",
+    "validate": {
+      "nameRequired": "Please enter banner name",
+      "startDateRequired": "Please select start date",
+      "endDateRequired": "Please select end date",
+      "endDateInvalid": "End date must be after start date",
+      "imageRequired": "Please select image",
+      "imageInvalid": "Invalid image format",
+      "imageTooLarge": "Image must be under 2MB"
+    },
     "searchPlaceholder": "Search by id,name",
     "code": "Banner ID",
     "name": "Title",
@@ -524,6 +666,7 @@
   },
   "serviceSelection": {
     "title": "Enhance Your Stay",
+    "ofBooking": "of booking total",
     "subtitle": "Customize your experience with our exclusive add-ons.",
     "allServices": "All Services",
     "searchPlaceholder": "Search by service name",
@@ -552,6 +695,9 @@
   },
   "payment": {
     "title": "Record Payment",
+    "voucherCode": "Voucher Code",
+    "voucherPlaceholder": "Enter voucher code",
+    "apply": "Apply",
     "subtitle": "Enter the amount received from the guest.",
     "paidAmount": "Paid Amount",
     "paidAmountPlaceholder": "Enter amount paid",
@@ -702,6 +848,23 @@
     "new": "+ New Promotion",
     "code": "Promotion Code",
     "name": "Promotion Name",
+    "validation": {
+      "nameRequired": "Promotion name is required",
+      "nameMinLength": "Promotion name must be at least 3 characters",
+      "nameMaxLength": "Promotion name must not exceed 100 characters",
+      "priorityRequired": "Priority is required",
+      "priorityMin": "Priority must be greater than 0",
+      "valueRequired": "Discount value is required",
+      "valueMoneyPositive": "Discount amount must be greater than 0",
+      "valueMoneyTooLarge": "Discount amount is too large",
+      "valuePercentRange": "Discount percent must be between 1 and 100",
+      "startDateRequired": "Start date is required",
+      "endDateRequired": "End date is required",
+      "endDateAfterStart": "End date must be after start date",
+      "minNightsRequired": "Minimum nights is required",
+      "minNightsPositive": "Minimum nights must be greater than 0",
+      "minNightsTooLarge": "Minimum nights cannot exceed 30"
+    },
     "launch": "Launch Promotion",
     "promotionDetail": "Promotion Detail",
     "startDate": "Start Date",
@@ -812,6 +975,32 @@
   "voucher": {
     "title": "Voucher Management",
     "new": "+ New Voucher",
+    "validation": {
+      "nameRequired": "Voucher name is required",
+      "nameMinLength": "Voucher name must be at least 3 characters",
+      "nameMaxLength": "Voucher name must not exceed 100 characters",
+      "codeRequired": "Voucher code is required",
+      "codeMinLength": "Voucher code must be at least 3 characters",
+      "codeMaxLength": "Voucher code must not exceed 20 characters",
+      "typeRequired": "Please select a discount type",
+      "valueRequired": "Please enter discount value",
+      "valuePercentRange": "Discount percent must be between 1 and 100",
+      "valueMoneyPositive": "Discount amount must be greater than 0",
+      "valueMoneyMax": "Discount amount must not exceed 1,000,000,000",
+      "maxDiscountRequired": "Please enter maximum discount value",
+      "maxDiscountPositive": "Maximum discount must be greater than 0",
+      "startDateRequired": "Please select start date",
+      "endDateRequired": "Please select end date",
+      "endDateAfterStart": "End date must be after start date",
+      "minimumStayRequired": "Please enter minimum stay",
+      "minimumStayPositive": "Minimum stay must be greater than 0",
+      "minimumStayMax": "Minimum stay must not exceed 30 days",
+      "usageLimitRequired": "Please enter usage limit",
+      "usageLimitPositive": "Usage limit must be greater than 0",
+      "usagePerCustomerPositive": "Usage per customer must be greater than 0",
+      "bookingTypeRequired": "Please select booking type",
+      "roomTypeRequired": "Please select at least one room type"
+    },
     "errorLoad": "Failed to load data",
     "expired": "Expired",
     "usage": "Usage",
@@ -947,6 +1136,20 @@
     "usageType": {
       "oneTime": "One time",
       "multiTime": "Multi time"
+    }
+  },
+  "auth": {
+    "changePassword": {
+      "title": "Change Password",
+      "description": "To ensure your account’s safety, please provide your current password before setting a new one.",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "minLength": "Minimum 8 characters",
+      "ruleLength": "At least 8 characters long",
+      "ruleNumber": "Includes numbers or symbols",
+      "update": "Update Password",
+      "success": "Password changed successfully"
     }
   }
 }

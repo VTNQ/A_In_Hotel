@@ -16,6 +16,21 @@ export const GetAllBookings = async(options:GetAllOptions={})=>{
     });
     return resp.data.data;
 }
+export const GetAllBookingTop = async(options:GetAllOptions={})=>{
+    const {
+        page = 1,
+        size = 5,
+        sort = "id,desc",
+        filter,
+        searchField,
+        searchValue,
+        all = false,
+    } = options;
+    const resp= await Http.get("/api/bookings/top",{
+        params: { page, size, sort, filter, searchField, searchValue, all },
+    });
+    return resp.data.data;
+}
 
 export const createBooking =async(booking:any)=>{
     return await Http.post("/api/bookings",booking);

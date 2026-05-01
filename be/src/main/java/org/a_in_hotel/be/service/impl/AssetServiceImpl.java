@@ -13,7 +13,6 @@ import org.a_in_hotel.be.mapper.AssetMapper;
 import org.a_in_hotel.be.mapper.ImageMapper;
 import org.a_in_hotel.be.repository.AssetRepository;
 import org.a_in_hotel.be.repository.CategoryRepository;
-import org.a_in_hotel.be.repository.HotelRepository;
 import org.a_in_hotel.be.repository.ImageRepository;
 import org.a_in_hotel.be.service.HotelService;
 import org.a_in_hotel.be.util.GeneralService;
@@ -37,7 +36,6 @@ public class AssetServiceImpl implements org.a_in_hotel.be.service.AssetService 
     private final AssetRepository assetRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
-    private final HotelRepository hotelRepository;
     private final GeneralService generalService;
     private final HotelService hotelService;
     private final ImageMapper imageMapper;

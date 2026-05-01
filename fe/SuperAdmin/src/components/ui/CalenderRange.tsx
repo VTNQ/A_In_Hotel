@@ -37,22 +37,22 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   /* =======================
      SELECT DATE
   ======================= */
-   const handleSelect = (d: Date) => {
-     if (isBefore(d, startOfToday())) return;
+  const handleSelect = (d: Date) => {
+    if (isBefore(d, startOfToday())) return;
 
     const selected = toDateString(d);
 
-  if (!value.start || value.end) {
-    onChange({ start: selected, end: undefined });
-    return;
-  }
+    if (!value.start || value.end) {
+      onChange({ start: selected, end: undefined });
+      return;
+    }
 
-  if (selected < value.start) {
-    onChange({ start: selected, end: undefined });
-    return;
-  }
+    if (selected < value.start) {
+      onChange({ start: selected, end: undefined });
+      return;
+    }
 
-  onChange({ start: value.start, end: selected });
+    onChange({ start: value.start, end: selected });
   };
 
   /* =======================
@@ -72,85 +72,105 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
             (1000 * 60 * 60 * 24),
         )
       : 0;
-  return (
-    <div className="bg-white rounded-xl p-4">
-      <div className="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-        <h3 className="font-semibold">{t("bookingDateTime.selectDates")}</h3>
-        <div className="flex items-center gap-3">
-          {nights > 0 && (
-            <span className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-600">
-              {t("bookingDateTime.totalNights", { count: nights })}
-            </span>
-          )}
+ return (
+  <div className="bg-white rounded-xl p-3 sm:p-4">
+    {/* HEADER */}
+    <div className="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+      <h3 className="font-semibold">
+        {t("bookingDateTime.selectDates")}
+      </h3>
 
-          {(value.start || value.end) && (
-            <button
-              onClick={clearDates}
-              className="text-xs text-red-500 hover:underline"
-            >
-              {t("bookingDateTime.clear")}
-            </button>
-          )}
-        </div>
+      <div className="flex items-center gap-3">
+        {nights > 0 && (
+          <span className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-600">
+            {t("bookingDateTime.totalNights", { count: nights })}
+          </span>
+        )}
+
+        {(value.start || value.end) && (
+          <button
+            onClick={clearDates}
+            className="text-xs text-red-500 hover:underline"
+          >
+            {t("bookingDateTime.clear")}
+          </button>
+        )}
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <button
-          disabled={
-            baseMonth.getFullYear() === today.getFullYear() &&
-            baseMonth.getMonth() === today.getMonth()
-          }
-          onClick={() =>
-            setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
-            )
-          }
-          className="disabled:opacity-30"
-        >
-          <ChevronLeft />
-        </button>
+    </div>
 
-        <div className="flex gap-24 font-medium text-sm">
-          <span>
-            {baseMonth.toLocaleString("default", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          <span>
-            {new Date(
-              baseMonth.getFullYear(),
-              baseMonth.getMonth() + 1,
-            ).toLocaleString("default", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-        </div>
+    {/* MONTH NAVIGATION */}
+    <div className="flex justify-between items-center mb-4">
+      <button
+        disabled={
+          baseMonth.getFullYear() === today.getFullYear() &&
+          baseMonth.getMonth() === today.getMonth()
+        }
+        onClick={() =>
+          setBaseMonth(
+            new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
+          )
+        }
+        className="disabled:opacity-30"
+      >
+        <ChevronLeft />
+      </button>
 
-        <button
-          onClick={() =>
-            setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
-            )
-          }
-        >
-          <ChevronRight />
-        </button>
+      {/* MOBILE TITLE */}
+      <div className="sm:hidden text-sm font-medium text-center">
+        {baseMonth.toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        })}
       </div>
 
-      {/* Calendars */}
-      <div className="grid grid-cols-2 gap-10">
-        <Month
-          month={baseMonth}
-          value={value}
-          onSelect={handleSelect}
-          isSame={isSame}
-          isInRange={isInRange}
-          isDisabled={isBeforeToday}
-        />
+      {/* DESKTOP TITLES */}
+      <div className="hidden sm:flex gap-24 font-medium text-sm">
+        <span>
+          {baseMonth.toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </span>
+        <span>
+          {new Date(
+            baseMonth.getFullYear(),
+            baseMonth.getMonth() + 1,
+          ).toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </span>
+      </div>
 
+      <button
+        onClick={() =>
+          setBaseMonth(
+            new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
+          )
+        }
+      >
+        <ChevronRight />
+      </button>
+    </div>
+
+    {/* CALENDARS */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+      <Month
+        month={baseMonth}
+        value={value}
+        onSelect={handleSelect}
+        isSame={isSame}
+        isInRange={isInRange}
+        isDisabled={isBeforeToday}
+      />
+
+      {/* Desktop only second month */}
+      <div className="hidden sm:block">
         <Month
-          month={new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)}
+          month={new Date(
+            baseMonth.getFullYear(),
+            baseMonth.getMonth() + 1,
+          )}
           value={value}
           onSelect={handleSelect}
           isSame={isSame}
@@ -159,6 +179,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         />
       </div>
     </div>
-  );
+  </div>
+);
 };
 export default CalendarRange;

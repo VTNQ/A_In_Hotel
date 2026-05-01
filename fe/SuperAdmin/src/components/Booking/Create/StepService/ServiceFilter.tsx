@@ -29,7 +29,7 @@ const ServiceFilter = ({
   return (
     <div
       className="
-        grid grid-cols-[280px_1fr] gap-4 mt-4
+        grid grid-cols-1 sm:grid-cols-[280px_1fr] gap-4 mt-4
         rounded-2xl border p-4
         border-gray-200 bg-white
       "

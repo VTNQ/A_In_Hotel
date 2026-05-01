@@ -125,7 +125,6 @@ public class BannerServiceImpl implements BannerService {
             String searchField,
             String searchValue,
             boolean all) {
-        try {
             log.info("start to get list banner ");
             Specification<Banner> sortable = RSQLJPASupport.toSort(sort);
             Specification<Banner> filterable = RSQLJPASupport.toSpecification(filter);
@@ -134,11 +133,7 @@ public class BannerServiceImpl implements BannerService {
             return bannerRepository.
                     findAll(sortable.and(filterable).and(searchable),pageable)
                     .map(banner -> bannerMapper.toResponse(banner,bannerImageRepository));
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            return null;
-        }
+
     }
 
     @Override

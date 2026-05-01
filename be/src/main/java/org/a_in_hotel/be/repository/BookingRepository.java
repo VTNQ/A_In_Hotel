@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +72,31 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
             @Param("completedStatus") Integer completedStatus
     );
 
+    @Query("SELECT COUNT(b) from Booking b where b.createdAt BETWEEN :start and :end" +
+            " and (:hotelId IS NULL OR b.hotelId = :hotelId)")
+    Long countBookingBetween(OffsetDateTime start,OffsetDateTime end,Long hotelId);
+
+    @Query("select count(b) from Booking b where b.checkedInAt between :start and :end " +
+            "and (:hotelId IS NULL OR b.hotelId = :hotelId)")
+    Long countCheckInBetween(OffsetDateTime start,OffsetDateTime end,Long hotelId);
+
+    @Query("select count (b) from Booking b where b.checkedOutAt between :start and :end " +
+            "and (:hotelId IS NULL OR b.hotelId = :hotelId)")
+    Long countCheckOutBetween(OffsetDateTime start,OffsetDateTime end,Long hotelId);
+    @Query("select COALESCE(SUM(b.totalPrice),0) from Booking b where b.checkedOutAt BETWEEN :start and :end " +
+            "and (:hotelId IS NULL OR b.hotelId = :hotelId)")
+    BigDecimal sumRevenueBetween(OffsetDateTime start, OffsetDateTime end,Long hotelId);
+    @Query("SELECT FUNCTION('DATE',b.checkedOutAt),COALESCE(SUM(b.totalPrice),0) from Booking b" +
+            " where b.checkedOutAt >= :startDate GROUP BY function('DATE',b.checkedOutAt) " +
+            " order by function('DATE',b.checkedOutAt) ")
+    List<Object[]> getRevenueLast(OffsetDateTime startDate);
+    @Query("SELECT function('DATE',b.createdAt)," +
+            "SUM(CASE when b.status = 1 THEN 1 ELSE 0 END )," +
+            "SUM(CASE when b.status = 4 THEN 1 ELSE 0 END ) from Booking b " +
+            "WHERE b.createdAt >= :startDate and b.hotelId = :hotelId " +
+            "GROUP BY function('DATE',b.createdAt)" +
+            "ORDER BY function('DATE',b.createdAt) ")
+    List<Object[]> getReservation(OffsetDateTime startDate,Long hotelId);
 
 
 }

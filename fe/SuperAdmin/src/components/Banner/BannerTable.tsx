@@ -74,7 +74,7 @@ const BannerTable = ({
           <TableHead sortable sortKey="isActive" width={120}>
             {t("common.status")}
           </TableHead>
-          <TableHead>{t("common.action")}</TableHead>
+          <TableHead width={120}>{t("common.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -128,7 +128,7 @@ const BannerTable = ({
                           st === "ACTIVE" ? "bg-green-500" : "bg-red-500"
                         }`}
                       />
-                      {st === "ACTIVE" ? "Active" : "Inactive"}
+                      {st === "ACTIVE" ? t("status.active") : t("status.inactive")}
                     </div>
                   );
                 })()}

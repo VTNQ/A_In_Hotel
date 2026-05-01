@@ -21,7 +21,7 @@ const RoomFilterSideBar = ({
 }: RoomFilterSideBarProps) => {
   const { search, setSearch } = useBookingSearch();
   const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
-    null
+    null,
   );
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
 
@@ -58,7 +58,6 @@ const RoomFilterSideBar = ({
     fetchHotel();
   }, [search?.hotelId]);
   useEffect(() => {
-    console.log(search?.checkIn);
     setDateRange({
       checkIn: search?.checkIn || null,
       checkOut: search?.checkOut || null,
@@ -95,9 +94,9 @@ const RoomFilterSideBar = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full lg:w-[320px]">
       {/* TOP CARD */}
-      <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
         <div>
           <label className="text-sm font-medium text-gray-700">
             Destination
@@ -125,30 +124,31 @@ const RoomFilterSideBar = ({
 
         <button
           onClick={handleSearch}
-          className="w-full h-[44px] rounded-lg bg-[#9C7A55] text-white font-medium"
+          className="w-full h-[44px] rounded-xl bg-[#9C7A55] text-white font-medium
+          hover:bg-[#7c6247] transition-all"
         >
           Search
         </button>
       </div>
-      <div className="bg-white rounded-xl shadow-sm">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
           Thời gian thuê
         </div>
-        <div className="p-4">
+        <div className="p-4 space-y-3">
           {TIME_OPTIONS.map((p) => (
             <label
               key={p.value}
-              className="flex items-center justify-between text-sm mb-2"
+              className="flex items-center justify-between text-sm mb-2 cursor-pointer"
             >
               <span className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={priceRanges.includes(p.value)}
+                  checked={timeTypes.includes(p.value)}
                   onChange={() =>
                     setTimeTypes((prev) =>
                       prev.includes(p.value)
                         ? prev.filter((v) => v !== p.value)
-                        : [...prev, p.value]
+                        : [...prev, p.value],
                     )
                   }
                 />
@@ -160,36 +160,37 @@ const RoomFilterSideBar = ({
       </div>
 
       {/* PRICE FILTER */}
-      <div className="bg-white rounded-xl shadow-sm">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
           Filter results
         </div>
 
         <div className="p-4">
-          <h4 className="font-medium mb-3 text-sm">Price Range</h4>
-
-          {PRICE_OPTIONS.map((p) => (
-            <label
-              key={p.value}
-              className="flex items-center justify-between text-sm mb-2"
-            >
-              <span className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={priceRanges.includes(p.value)}
-                  onChange={() =>
-                    onPriceChange(
-                      priceRanges.includes(p.value)
-                        ? priceRanges.filter((v) => v !== p.value)
-                        : [...priceRanges, p.value]
-                    )
-                  }
-                />
-                {p.label}
-              </span>
-              <span className="text-xs text-gray-400">{p.count}</span>
-            </label>
-          ))}
+          <h4 className="font-medium mb-4 text-sm">Price Range</h4>
+          <div className="space-y-3">
+            {PRICE_OPTIONS.map((p) => (
+              <label
+                key={p.value}
+                className="flex items-center justify-between text-sm cursor-pointer mb-2"
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={priceRanges.includes(p.value)}
+                    onChange={() =>
+                      onPriceChange(
+                        priceRanges.includes(p.value)
+                          ? priceRanges.filter((v) => v !== p.value)
+                          : [...priceRanges, p.value],
+                      )
+                    }
+                  />
+                  {p.label}
+                </span>
+                <span className="text-xs text-gray-400">{p.count}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -1,238 +1,312 @@
 import { useState } from "react";
 import CommonModal from "../ui/CommonModal";
-import QuillEditor from "react-quill-new";
+import QuillEditor, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useAlert } from "../alert-context";
 import { createBlog } from "../../service/api/Blog";
 import { useTranslation } from "react-i18next";
+import BlotFormatter from "quill-blot-formatter";
+import { zodResolver } from "@hookform/resolvers/zod";
+Quill.register("modules/blotFormatter", BlotFormatter);
 import type { BlogFormModalProps } from "../../type/blog.types";
-const BlogFormModal = ({
-    isOpen,
-    onClose,
-    onSuccess,
-}: BlogFormModalProps) => {
-    const [loading, setLoading] = useState(false);
-    const { t } = useTranslation();
-    const [formData, setFormData] = useState({
-        title: "",
-        category: "",
-        description: "",
-        content: "",
-        status: "2",
-        image: null as File | null,
+import z from "zod";
+import { createImageBlogSchema } from "../../validation/image.validation";
+import { useForm } from "react-hook-form";
+const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
+  const { t } = useTranslation();
+  const blogSchema = z.object({
+    title: z.string().min(1, t("blog.validate.titleRequired")),
+    category: z.string().min(1, t("blog.validate.categoryRequired")),
+    description: z.string().optional(),
+    content: z
+      .string()
+      .refine((val) => val.replace(/<(.|\n)*?>/g, "").trim().length > 0, {
+        message: t("blog.validate.contentRequired"),
+      }),
+    status: z.string(),
+    image: createImageBlogSchema(t),
+  });
+  type FormData = z.infer<typeof blogSchema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onBlur",
+    defaultValues: {
+      title: "",
+      category: "",
+      description: "",
+      content: "",
+      status: "2",
+      image: null,
+    },
+  });
+  const { showAlert } = useAlert();
+  const categories = [
+    { id: "1", name: t("blog.blogCategories.newsUpdates") },
+    { id: "2", name: t("blog.blogCategories.offersPromotions") },
+    { id: "3", name: t("blog.blogCategories.travelGuides") },
+    { id: "4", name: t("blog.blogCategories.localFood") },
+    { id: "5", name: t("blog.blogCategories.bookingTips") },
+    { id: "6", name: t("blog.blogCategories.hotelServices") },
+    { id: "7", name: t("blog.blogCategories.eventsActivities") },
+    { id: "8", name: t("blog.blogCategories.nearbyAttractions") },
+    { id: "9", name: t("blog.blogCategories.travelTips") },
+    { id: "10", name: t("blog.blogCategories.guestExperiences") },
+  ];
 
+  const fullToolbar = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+
+      [{ header: 1 }, { header: 2 }],
+      [{ font: [] }],
+      [{ size: [] }],
+
+      [{ color: [] }, { background: [] }],
+
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+
+      ["link", "image"],
+
+      ["blockquote", "code-block"],
+
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      ["clean"],
+    ],
+    blotFormatter: {
+      overlay: {
+        style: {
+          border: "2px dashed #444",
+        },
+      },
+    },
+  };
+  const fullToolbarDescription = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+
+      [{ header: 1 }, { header: 2 }],
+      [{ font: [] }],
+      [{ size: [] }],
+
+      [{ color: [] }, { background: [] }],
+
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+
+      ["blockquote", "code-block"],
+
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      ["clean"],
+    ],
+  };
+
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setValue("image", file, {
+      shouldValidate: true,
     });
-    const { showAlert } = useAlert();
-    const categories = [
-        { id: "1", name: t("blog.blogCategories.newsUpdates") },
-        { id: "2", name: t("blog.blogCategories.offersPromotions") },
-        { id: "3", name: t("blog.blogCategories.travelGuides") },
-        { id: "4", name: t("blog.blogCategories.localFood") },
-        { id: "5", name: t("blog.blogCategories.bookingTips") },
-        { id: "6", name: t("blog.blogCategories.hotelServices") },
-        { id: "7", name: t("blog.blogCategories.eventsActivities") },
-        { id: "8", name: t("blog.blogCategories.nearbyAttractions") },
-        { id: "9", name: t("blog.blogCategories.travelTips") },
-        { id: "10", name: t("blog.blogCategories.guestExperiences") }
-    ];
-    const fullToolbar = {
-        toolbar: [
-            ["bold", "italic", "underline", "strike"],
-
-            [{ 'header': 1 }, { 'header': 2 }],
-            [{ 'font': [] }],
-            [{ 'size': [] }],
-
-            [{ 'color': [] }, { 'background': [] }],
-
-            [{ 'align': [] }],
-
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-
-            ["link", "image"],
-
-            ["blockquote", "code-block"],
-
-            [{ 'indent': '-1' }, { 'indent': '+1' }],
-
-            ["clean"],
-        ]
-    };
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-    const [preview, setPreview] = useState<string | null>(null);
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setPreview(URL.createObjectURL(file));
-            setFormData((prev) => ({ ...prev, image: file }));
-        }
-    };
-    const handleCancel = () => {
-        setFormData({
-            title: "",
-            category: "",
-            description: "",
-            status: "2",
-            content: "",
-            image: null,
-        });
-        onClose();
-    };
-    const handleSave = async () => {
-        setLoading(true);
-        try {
-            const cleanedData = Object.fromEntries(
-                Object.entries({
-                    title: formData.title,
-                    category: formData.category,
-                    description: formData.description,
-                    content: formData.content,
-                    status: formData.status,
-                    image: formData.image,
-                }).map(([key, value]) => [
-                    key,
-                    value?.toString().trim() === "" ? null : value,
-                ])
-            );
-            const response = await createBlog(cleanedData);
-
-            showAlert({
-                title: response?.data?.message || t("blog.createOrUpdate.createSucess"),
-                type: "success",
-                autoClose: 3000
-            });
-
-            onSuccess?.();
-            onClose();
-        } catch (err: any) {
-            console.error("Create error:", err);
-            showAlert({
-                title:
-                    err?.response?.data?.message ||
-                    t("blog.createOrUpdate.createError"),
-                type: "error",
-                autoClose: 4000,
-            });
-        } finally {
-            setLoading(false)
-        }
+    if (file) {
+      setPreview(URL.createObjectURL(file));
     }
-    return (
-        <CommonModal
-            isOpen={isOpen}
-            onClose={handleCancel}
-            onSave={handleSave}
-            title={t("blog.createOrUpdate.titleCreate")}
-            saveLabel={loading ? t("common.saving") : t("common.save")}
-            cancelLabel={t("common.cancelButton")}
-        >
-            <div className="grid grid-cols-1 gap-4">
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.name")} *</label>
-                    <input
-                        type="text"
-                        name="title"
-                        placeholder={t("blog.createOrUpdate.enterTitle")}
-                        value={formData.title}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-[#253150]">{t("blog.category")} *</label>
-                    <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
-                        required
-                    >
-                        <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
-                        {categories.map((c) => (
-                            <option key={c.id} value={c.id}>
-                                {c.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="font-medium">{t("common.status")} *</label>
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
-                    >
-                        <option value="1">{t("blog.draft")}</option>
-                        <option value="2">{t("blog.published")}</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="font-medium">{t("blog.description")}</label>
-                    <QuillEditor
-                        theme="snow"
-                        value={formData.description}
-                        onChange={(v) => setFormData((f) => ({ ...f, description: v }))}
-                        modules={fullToolbar}
-                    />
-                </div>
+  };
+  const handleCancel = () => {
+    reset();
+    setPreview(null);
+    onClose();
+  };
+  const onSubmit = async (data: FormData) => {
+    try {
+      const cleanedData = Object.fromEntries(
+        Object.entries({
+          title: data.title,
+          category: data.category,
+          description: data.description,
+          content: data.content,
+          status: data.status,
+          image: data.image,
+        }).map(([key, value]) => [
+          key,
+          value?.toString().trim() === "" ? null : value,
+        ]),
+      );
+      await createBlog(cleanedData);
 
-                <div>
-                    <label className="font-medium">{t("blog.content")}</label>
-                    <QuillEditor
-                        theme="snow"
-                        value={formData.content}
-                        onChange={(v) => setFormData((f) => ({ ...f, content: v }))}
-                        modules={fullToolbar}
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium text-[#253150]">
-                        {t("blog.thumbnail")} *
-                    </label>
+      showAlert({
+        title: t("blog.createOrUpdate.createSucess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      reset();
+      setPreview(null);
+      onSuccess?.();
+      onClose();
+    } catch (err: any) {
+      console.error("Create error:", err);
+      showAlert({
+        title:
+          err?.response?.data?.message || t("blog.createOrUpdate.createError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
+  return (
+    <CommonModal
+      isOpen={isOpen}
+      onsubmit={isSubmitting}
+      onClose={handleCancel}
+      onSave={handleSubmit(onSubmit)}
+      title={t("blog.createOrUpdate.titleCreate")}
+      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
+      cancelLabel={t("common.cancelButton")}
+      diabled={!isValid || isSubmitting}
+    >
+      <div className="grid grid-cols-1 gap-4">
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("blog.name")} *
+          </label>
+          <input
+            type="text"
+            {...register("title")}
+            placeholder={t("blog.createOrUpdate.enterTitle")}
+            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+          />
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("blog.category")} *
+          </label>
+          <select
+            {...register("category")}
+            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+          >
+            <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          {errors.category && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.category.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <label className="font-medium">{t("common.status")} *</label>
+          <select
+            {...register("status")}
+            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+          >
+            <option value="1">{t("blog.draft")}</option>
+            <option value="2">{t("blog.published")}</option>
+          </select>
+        </div>
+        <div>
+          <label className="font-medium">{t("blog.description")}</label>
+          <QuillEditor
+            theme="snow"
+            value={watch("description")}
+            onChange={(value) => {
+              setValue("description", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => {
+              trigger("description");
+            }}
+            modules={fullToolbarDescription}
+          />
+        </div>
 
-                    <div
-                        className="border-2 border-dashed border-[#AFC0E2] 
+        <div>
+          <label className="font-medium">{t("blog.content")}</label>
+          <QuillEditor
+            theme="snow"
+            value={watch("content")}
+            onChange={(value) => {
+              setValue("content", value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            modules={fullToolbar}
+          />
+          {errors.content && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.content.message}
+            </p>
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium text-[#253150]">
+            {t("blog.thumbnail")} *
+          </label>
+
+          <div
+            className="border-2 border-dashed border-[#AFC0E2] 
                         hover:border-[#4B62A0] transition rounded-xl bg-[#F6F8FC] cursor-pointer
                         flex flex-col items-center justify-center py-10 text-center"
-                        onClick={() => document.getElementById("thumbnailInput")?.click()}
-                    >
-                        {preview ? (
-                            <img
-                                src={preview}
-                                alt="Preview"
-                                className="w-40 h-40 object-cover rounded-lg shadow"
-                            />
-                        ) : (
-                            <>
-                                <div className="text-gray-400 flex flex-col items-center">
-                                    <img
-                                        src="/defaultImage.png"
-                                        className="w-[167px] h-[117px] opacity-60"
-                                        alt=""
-                                    />
-                                    <p className="text-gray-500 text-sm">{t("blog.createOrUpdate.clickSelectImages")}</p>
-                                </div>
-                            </>
-                        )}
-                    </div>
-
-                    <input
-                        id="thumbnailInput"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageChange}
-                    />
+            onClick={() => document.getElementById("thumbnailInput")?.click()}
+          >
+            {preview ? (
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-40 h-40 object-cover rounded-lg shadow"
+              />
+            ) : (
+              <>
+                <div className="text-gray-400 flex flex-col items-center">
+                  <img
+                    src="/defaultImage.png"
+                    className="w-[167px] h-[117px] opacity-60"
+                    alt=""
+                  />
+                  <p className="text-gray-500 text-sm">
+                    {t("blog.createOrUpdate.clickSelectImages")}
+                  </p>
                 </div>
+              </>
+            )}
+          </div>
 
-            </div>
-        </CommonModal>
-    )
-}
+          <input
+            id="thumbnailInput"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
+        </div>
+        {errors.image?.message && (
+          <p className="text-red-500 text-sm mt-1">
+            {String(errors.image.message)}
+          </p>
+        )}
+      </div>
+    </CommonModal>
+  );
+};
 export default BlogFormModal;

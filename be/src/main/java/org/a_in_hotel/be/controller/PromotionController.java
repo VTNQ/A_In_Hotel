@@ -20,13 +20,9 @@ public class PromotionController {
 
     @PostMapping("/create")
     public ResponseEntity<RequestResponse<Void>> create(@RequestBody PromotionRequest request){
-        try {
             service.save(request);
             return ResponseEntity.ok(RequestResponse.success("Thêm khuyến mãi thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping
     public ResponseEntity<RequestResponse<PageResponse<PromotionResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
@@ -36,44 +32,32 @@ public class PromotionController {
                                                                                    @RequestParam(required = false) String searchField,
                                                                                    @RequestParam(required = false) String searchValue,
                                                                                    @RequestParam(required = false) boolean all) {
-        try {
+
             PageResponse<PromotionResponse> pageResponse =
                     new PageResponse<>(service.getAll(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(
                     RequestResponse.success(pageResponse)
             );
-        }catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error("Get All Config: " + e.getMessage()));
-        }
+
     }
     @PatchMapping("/{id}/status")
     public ResponseEntity<RequestResponse<Void>> updateStatus(@PathVariable Long id,@RequestParam Boolean status){
-        try {
+
             service.updateStatus(id,status);
             return ResponseEntity.ok(RequestResponse.success("cập nhật trạng thái thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @PutMapping("/{id}")
     public ResponseEntity<RequestResponse<Void>>update(@PathVariable Long id,@RequestBody PromotionRequest request){
-        try {
+
             service.update(id,request);
             return ResponseEntity.ok(RequestResponse.success("Cập nhật khuyến mãi thành công"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RequestResponse.error(e.getMessage()));
-        }
+
     }
     @GetMapping("/{id}")
     public ResponseEntity<RequestResponse<PromotionResponse>>getPromotionById(@PathVariable Long id){
-        try {
+
             return ResponseEntity.ok(RequestResponse.success(service.findPromotionById(id)));
-        }catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(RequestResponse.error("Get promotion:"+e.getMessage()));
-        }
+
     }
 }

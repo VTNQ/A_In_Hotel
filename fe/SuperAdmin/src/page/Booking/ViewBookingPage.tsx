@@ -37,7 +37,9 @@ const ViewBookingPage = () => {
   );
   const [statusFilter, setStatusFilter] = useState<BookingStatusFilter>("ALL");
   const [viewModal, setViewModal] = useState<BookingResponse | null>(null);
-  const [switchRoomModal,setSwithRoomModal] = useState<BookingResponse | null>(null);
+  const [switchRoomModal, setSwithRoomModal] = useState<BookingResponse | null>(
+    null,
+  );
   const { showAlert } = useAlert();
   const [hotelFilter, setHotelFilter] = useState("");
   const handleCheckInConfirm = async (id: number) => {
@@ -141,18 +143,20 @@ const ViewBookingPage = () => {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h2 className="text-xl font-semibold">{t("booking.title")}</h2>
-          <BookingFilter
-            search={searchValue}
-            onSearchChange={setSearchValue}
-            hotelFilter={hotelFilter}
-            onHotelFilterChange={setHotelFilter}
-            statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
-            dateFilter={bookingDate}
-            onDateFilterChange={setBookingDate}
-          />
+          <div className="w-full lg:w-auto">
+            <BookingFilter
+              search={searchValue}
+              onSearchChange={setSearchValue}
+              hotelFilter={hotelFilter}
+              onHotelFilterChange={setHotelFilter}
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+              dateFilter={bookingDate}
+              onDateFilterChange={setBookingDate}
+            />
+          </div>
         </div>
         {error && <div className="text-sm text-red-600">{error}</div>}
         <BookingTable
@@ -166,7 +170,7 @@ const ViewBookingPage = () => {
           onCheckIn={(row) => setCheckInModal(row)}
           onCancel={(row) => handleCancelBooking(row)}
           onCheckOut={(row) => setCheckOutModal(row)}
-          onSwitchRoom={(row)=>setSwithRoomModal(row)}
+          onSwitchRoom={(row) => setSwithRoomModal(row)}
           onView={(row) => setViewModal(row)}
           sortDir={sortDir}
           onSortChange={handleSort}

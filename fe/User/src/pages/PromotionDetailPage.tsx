@@ -6,7 +6,7 @@ import { File_URL } from "../setting/constant/app";
 import { FiBookmark, FiHeart, FiShare2 } from "react-icons/fi";
 import { ArrowRight } from "lucide-react";
 
-const BlogDetailPage = () => {
+const PromotionDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [blog, setBlog] = useState<BlogResponse | null>(null);
@@ -153,10 +153,10 @@ const BlogDetailPage = () => {
               Related Articles
             </h3>
             <button
-              onClick={() => navigate("/blog")}
+              onClick={() => navigate("/promotion")}
               className="text-primary font-bold text-sm flex items-center gap-2 hover:underline"
             >
-              View All blog <ArrowRight />
+              View All Promotion <ArrowRight />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -201,4 +201,4 @@ const BlogDetailPage = () => {
     </main>
   );
 };
-export default BlogDetailPage;
+export default PromotionDetailPage;

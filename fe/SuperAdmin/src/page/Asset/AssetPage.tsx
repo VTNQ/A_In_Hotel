@@ -105,49 +105,67 @@ const AssetPage = () => {
   };
   return (
     <>
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">{t("asset.title")}</h2>
-          <AssetFilter
-            search={searchValue}
-            onSearchChange={setSearchValue}
-            hotelFilter={hotelFilter}
-            onHotelFilterChange={setHotelFilter}
-            categoryFilter={filterCategory}
-            onCategoryFilterChange={setFilterCategory}
-            statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
-          />
+      <div className="w-full">
+    <div className="mx-auto w-full max-w-[1400px] px-4 lg:px-6 py-4 space-y-4">
+      
+      <h2 className="text-xl font-semibold">
+        {t("asset.title")}
+      </h2>
+
+      {/* FILTER */}
+      <AssetFilter
+        search={searchValue}
+        onSearchChange={setSearchValue}
+        hotelFilter={hotelFilter}
+        onHotelFilterChange={setHotelFilter}
+        categoryFilter={filterCategory}
+        onCategoryFilterChange={setFilterCategory}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+      />
+
+      {error && (
+        <div className="text-sm text-red-600">
+          {error}
         </div>
-        {error && <div className="text-sm text-red-600">{error}</div>}
+      )}
+
+      {/* TABLE */}
+      <div className="w-full overflow-x-auto">
         <AssetTable
           rows={data}
           loading={loading}
           sortKey={sortKey}
+          sortDir={sortDir}
+          onSortChange={handleSort}
           onEdit={(row) => setEditModal(row)}
           onView={(row) => handleView(row)}
           onActivate={(row) => handleChangeStatus(row.id, 1)}
           onDeactivate={(row) => handleChangeStatus(row.id, 4)}
           onMaintenance={(row) => handleChangeStatus(row.id, 2)}
-          sortDir={sortDir}
-          onSortChange={handleSort}
           page={page}
           pageSize={10}
           total={total}
           onPageChange={setPage}
         />
-        <AssetEditModal
-          open={!!editModal}
-          assetId={editModal?.id ?? 0}
-          onClose={() => setEditModal(null)}
-          onSubmit={fetchAssets}
-        />
-        <AssetDetailModal
-          isOpen={showViewModal}
-          onClose={() => setShowViewModal(false)}
-          assetId={selectedRow}
-        />
       </div>
+
+      {/* MODALS */}
+      <AssetEditModal
+        open={!!editModal}
+        assetId={editModal?.id ?? 0}
+        onClose={() => setEditModal(null)}
+        onSubmit={fetchAssets}
+      />
+
+      <AssetDetailModal
+        isOpen={showViewModal}
+        onClose={() => setShowViewModal(false)}
+        assetId={selectedRow}
+      />
+
+    </div>
+  </div>
     </>
   );
 };

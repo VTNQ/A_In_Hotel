@@ -31,3 +31,6 @@ export const updateVoucher = async(id:number,data:any)=>{
 export const updateVoucherStatus = async(id:number,isActive:any)=>{
     return await Http.patch(`/api/vouchers/${id}/status?status=${isActive}`)
 }
+export const validateVoucher = async(data:any)=>{
+    return await Http.post("/api/vouchers/validate",data)
+}

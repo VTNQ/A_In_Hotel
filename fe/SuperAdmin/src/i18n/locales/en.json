@@ -45,6 +45,14 @@
     },
     "staff": {
         "title": "Staff Management",
+        "validate": {
+            "fullNameRequired": "Full name is required",
+            "hotelRequired": "Hotel is required",
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email format",
+            "phoneInvalid": "Phone number must contain 9 to 11 digits",
+            "birthdayRequired": "Date of birth is required"
+        },
         "new": "+ New Staff",
         "selectHotel": "Select Hotel",
         "selectStatus": "Select Status",
@@ -133,6 +141,8 @@
             "categoryPlaceholder": "Select category",
             "coverImage": "Cover Image",
             "note": "Note",
+            "upload": "Click to upload or drag and drop",
+            "imageHint": "PNG, JPG, GIF up to 10MB",
             "notePlaceholder": "Internal note (not shown to customer)"
         }
     },
@@ -232,7 +242,7 @@
         "dashboards": "Dashboard",
         "home": "Home",
         "coupon": "Coupon Management",
-         "user": "User Management",
+        "user": "User Management",
         "voucher": "Voucher Management",
         "promotion": "Promotion Management",
         "hotelManagement": "Hotel Management",
@@ -264,6 +274,20 @@
         "title": "Manager Promotion",
         "new": "+ New Promotion",
         "code": "Promotion Code",
+        "validation": {
+            "nameRequired": "Promotion name is required",
+            "nameMinLength": "Promotion name must be at least 3 characters",
+            "nameMaxLength": "Promotion name must not exceed 100 characters",
+            "valueRequired": "Promotion value is required",
+            "valueMoneyPositive": "Discount amount must be greater than 0",
+            "valueMoneyMax": "Discount amount must not exceed 100,000,000",
+            "valuePercentRange": "Discount percentage must be between 1 and 100",
+            "priorityRequired": "Priority is required",
+            "priorityMin": "Priority must be greater than or equal to 1",
+            "startDateRequired": "Start date is required",
+            "endDateRequired": "End date is required",
+            "minNightsRequired": "Minimum nights is required"
+        },
         "name": "Promotion Name",
         "launch": "Launch Promotion",
         "promotionDetail": "Promotion Detail",
@@ -375,6 +399,16 @@
     "hotel": {
         "listTitle": "Hotel List",
         "notUpdated": "Not updated",
+        "validation": {
+            "nameRequired": "Hotel name is required",
+            "addressRequired": "Hotel address is required",
+            "managerRequired": "Manager is required",
+            "phoneRequired": "Phone number is required",
+            "phoneInvalid": "Invalid phone number",
+            "imageRequired": "Hotel image is required",
+            "imageTooLarge": "Image size must not exceed 5MB",
+            "imageInvalidType": "Only JPG, PNG, or GIF files are allowed"
+        },
         "loadError": "Unable to load hotel data",
         "deleteSuccess": "Hotel deleted successfully",
         "deleteError": "Failed to delete hotel",
@@ -435,6 +469,12 @@
     },
     "category": {
         "title": "Category Service",
+        "validate": {
+            "nameRequired": "Category name is required",
+            "nameMaxLength": "Category name must not exceed 100 characters",
+            "typeRequired": "Category type is required",
+            "descriptionMax": "Description must not exceed 255 characters"
+        },
         "new": "+ New Category",
         "searchPlaceholder": "Search by Category ID, Category Name",
         "type": "Type",
@@ -475,6 +515,19 @@
     },
     "admin": {
         "title": "Admin List",
+        "validation": {
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email format",
+            "fullNameRequired": "Full name is required",
+            "phoneRequired": "Phone number is required",
+            "phoneInvalid": "Invalid phone number format",
+            "birthdayRequired": "Birthday is required",
+            "genderRequired": "Gender is required",
+            "imageRequired": "Avatar is required",
+            "imageInvalid": "Invalid image file",
+            "imageSize": "Image size must be less than 5MB",
+            "imageFormat": "Only JPG, JPEG, PNG files are allowed"
+        },
         "filterStatus": "Filter by status",
         "add": "Add account",
         "search": {
@@ -503,6 +556,19 @@
     "childSuperAdmin": {
         "listTitle": "Child SuperAdmin List",
         "add": "Add account",
+        "validation": {
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email format",
+            "fullNameRequired": "Full name is required",
+            "phoneRequired": "Phone number is required",
+            "phoneInvalid": "Invalid phone number format",
+            "birthdayRequired": "Birthday is required",
+            "genderRequired": "Gender is required",
+            "imageRequired": "Avatar is required",
+            "imageInvalid": "Invalid image file",
+            "imageSize": "Image size must be less than 5MB",
+            "imageFormat": "Only JPG, JPEG, PNG files are allowed"
+        },
         "search": {
             "default": "Search by",
             "fullName": "Search by name...",
@@ -554,6 +620,18 @@
         "aboutHotel": {
             "title": "About Hotel",
             "editTitle": "Edit Content",
+            "validate": {
+                "titleRequired": "Title is required",
+                "titleMinLength": "Title must be at least 3 characters",
+                "titleMaxLength": "Title must not exceed 150 characters",
+                "descriptionRequired": "Description is required",
+                "descriptionMinLength": "Description must be at least 10 characters",
+                "descriptionMaxLength": "Description must not exceed 2000 characters",
+                "ctaMaxLength": "CTA text must not exceed 100 characters",
+                "imageInvalid": "Invalid image file",
+                "imageTooLarge": "Image size must be less than 5MB",
+                "imageInvalidType": "Only JPG, PNG, and GIF files are allowed"
+            },
             "form": {
                 "sucess": "System Content updated successfully.",
                 "error": "Failed to update system content",
@@ -575,6 +653,17 @@
         "new": "+ New Extra Service",
         "searchPlaceholder": "Search by name or ID",
         "icon": "Icon",
+        "validate": {
+            "serviceNameRequired": "Service name is required",
+            "categoryRequired": "Category is required",
+            "hotelRequired": "Hotel is required",
+            "typeRequired": "Service type is required",
+            "extraChargeRequired": "Extra charge is required",
+            "extraChargeInvalid": "Extra charge must be a valid number and greater than or equal to 0",
+            "imageRequired": "Image is required",
+            "imageTooLarge": "Image size must be less than 5MB",
+            "imageInvalidType": "Only JPG, PNG, or GIF files are allowed"
+        },
         "hotel": "Hotel",
         "name": "Service Name",
         "status": {
@@ -612,6 +701,18 @@
     "asset": {
         "title": "Amenities & Asset Tracking",
         "new": "+ New Asset",
+        "validate": {
+            "assetNameRequired": "Asset name is required",
+            "categoryRequired": "Category is required",
+            "roomRequired": "Room is required",
+            "priceRequired": "Price is required",
+            "priceInvalid": "Price must be a valid number and greater than or equal to 0",
+            "hotelRequired": "Hotel is required",
+            "quantityInvalid": "Quantity must be a valid number and greater than or equal to 0",
+            "imageRequired": "Image is required",
+            "imageTooLarge": "Image size must be less than 5MB",
+            "imageInvalidType": "Only JPG, PNG, or GIF files are allowed"
+        },
         "code": "Asset ID",
         "loadError": "Failed to load asset information!",
         "icon": "Icon",
@@ -675,6 +776,28 @@
     "room": {
         "code": "Room Code",
         "title": "Room",
+        "validation": {
+            "roomNumberRequired": "Please enter room number",
+            "roomNameRequired": "Please enter room name",
+            "roomTypeRequired": "Please select room type",
+            "hotelRequired": "Please select hotel",
+            "floorRequired": "Please enter floor",
+            "floorInvalid": "Floor must be greater than 0",
+            "areaRequired": "Please enter area",
+            "areaInvalid": "Area must be greater than 0",
+            "capacityRequired": "Please enter capacity",
+            "capacityInvalid": "Capacity must be greater than 0",
+            "basePriceRequired": "Please enter base price",
+            "basePriceInvalid": "Base price must be greater than 0",
+            "additionalPriceRequired": "Please enter additional hourly price",
+            "additionalPriceInvalid": "Additional hourly price must be greater than 0",
+            "overnightPriceRequired": "Please enter overnight price",
+            "overnightPriceInvalid": "Overnight price must be greater than 0",
+            "defaultRateRequired": "Please enter full day price",
+            "defaultRateInvalid": "Full day price must be greater than 0",
+            "imageRequired": "Please select at least 1 image",
+            "maxImages": "Maximum 5 images can be uploaded"
+        },
         "roomNumber": "Room Number",
         "new": "+ New Room",
         "price": "Price",
@@ -758,6 +881,14 @@
         "new": "+ New Blog Post",
         "code": "Blog ID",
         "thumbnail": "Thumbnail",
+        "validate": {
+            "titleRequired": "Please enter blog title",
+            "categoryRequired": "Please select category",
+            "contentRequired": "Please enter blog content",
+            "imageRequired": "Please select a thumbnail image",
+            "imageTooLarge": "Uploaded image must not exceed 5MB",
+            "imageInvalidType": "Only JPG, PNG, or GIF image formats are supported"
+        },
         "name": "Title",
         "viewTitle": "View Blog",
         "blogCode": "Blog Code",
@@ -819,6 +950,14 @@
     },
     "banner": {
         "title": "Banner Management",
+        "validate": {
+            "nameRequired": "Banner name is required",
+            "startDateRequired": "Start date is required",
+            "endDateRequired": "End date is required",
+            "imageRequired": "Banner image is required",
+            "imageTooLarge": "Image size must not exceed 5MB",
+            "imageInvalidType": "Only JPG, PNG, or GIF files are allowed"
+        },
         "name": "Title",
         "startAt": "Start At",
         "endAt": "End At",
@@ -1056,6 +1195,10 @@
     },
     "payment": {
         "title": "Record Payment",
+        "apply": "Apply voucher",
+        "check": "Check voucher",
+        "voucherCode": "Voucher Code",
+        "voucherPlaceholder": "Enter voucher code",
         "subtitle": "Enter the amount received from the guest.",
         "paidAmount": "Paid Amount",
         "paidAmountPlaceholder": "Enter amount paid",
@@ -1086,6 +1229,7 @@
     },
     "serviceSelection": {
         "title": "Enhance Your Stay",
+        "ofBooking": "of booking total",
         "subtitle": "Customize your experience with our exclusive add-ons.",
         "allServices": "All Services",
         "searchPlaceholder": "Search by service name",
@@ -1130,6 +1274,32 @@
     "voucher": {
         "title": "Voucher Management",
         "new": "+ New Voucher",
+        "validation": {
+            "codeRequired": "Voucher code is required",
+            "codeMinLength": "Voucher code must be at least 3 characters",
+            "codeMaxLength": "Voucher code must not exceed 20 characters",
+            "nameRequired": "Voucher name is required",
+            "nameMinLength": "Voucher name must be at least 3 characters",
+            "nameMaxLength": "Voucher name must not exceed 100 characters",
+            "typeRequired": "Discount type is required",
+            "valueRequired": "Discount value is required",
+            "valuePercentRange": "Percentage discount must be between 1% and 100%",
+            "valueMoneyPositive": "Fixed discount amount must be greater than 0",
+            "valueMoneyMax": "Fixed discount amount must not exceed 1,000,000,000 VND",
+            "maxDiscountRequired": "Maximum discount value is required",
+            "maxDiscountPositive": "Maximum discount value must be greater than 0",
+            "bookingTypeRequired": "Booking type is required",
+            "minimumStayRequired": "Minimum stay is required",
+            "minimumStayPositive": "Minimum stay must be greater than 0",
+            "minimumStayMax": "Minimum stay must not exceed 30 days",
+            "usageLimitRequired": "Usage limit is required",
+            "usageLimitPositive": "Usage limit must be greater than 0",
+            "usagePerCustomerPositive": "Usage limit per customer must be greater than 0",
+            "startDateRequired": "Start date is required",
+            "endDateRequired": "End date is required",
+            "endDateAfterStart": "End date must be after start date",
+            "roomTypeRequired": "Please select at least one room type"
+        },
         "errorLoad": "Failed to load data",
         "expired": "Expired",
         "usage": "Usage",

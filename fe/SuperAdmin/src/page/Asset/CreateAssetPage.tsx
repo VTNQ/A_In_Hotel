@@ -8,23 +8,65 @@ import { createAsset } from "@/service/api/Asset";
 import { getAllCategories } from "@/service/api/Categories";
 import { getAllHotel } from "@/service/api/Hotel";
 import { getRoom } from "@/service/api/Room";
-import type { AssetForm } from "@/type/asset.types";
 import type { HotelRow } from "@/type/hotel.types";
+import { createImageAssetSchema } from "@/validation/image.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload, X } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import z from "zod";
 
 const CreateAssetPage = () => {
-  const [formData, setFormData] = useState<AssetForm>({
-    assetName: "",
-    categoryId: "",
-    hotelId: "",
-    roomId: "",
-    price: "",
-    quantity: "",
-    note: "",
-    image: null,
+  const { t } = useTranslation();
+  const assetSchema = z.object({
+    assetName: z.string().min(1, t("asset.validate.assetNameRequired")),
+    categoryId: z.string().min(1, t("asset.validate.categoryRequired")),
+    roomId: z.string().min(1, t("asset.validate.roomRequired")),
+    price: z
+      .string()
+      .min(1, t("asset.validate.priceRequired"))
+      .refine((value) => !isNaN(Number(value)) && Number(value) >= 0, {
+        message: t("asset.validate.priceInvalid"),
+      }),
+    hotelId: z.string().min(1, t("asset.validate.hotelRequired")),
+    quantity: z
+      .string()
+      .optional()
+      .refine(
+        (value) => !value || (!isNaN(Number(value)) && Number(value) >= 0),
+        {
+          message: t("asset.validate.quantityInvalid"),
+        },
+      ),
+
+    note: z.string().optional(),
+    image: createImageAssetSchema(t),
+  });
+  type FormData = z.infer<typeof assetSchema>;
+
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors,isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver:zodResolver(assetSchema),
+    mode: "onBlur",
+    defaultValues: {
+      assetName: "",
+      categoryId: "",
+      roomId: "",
+      price: "",
+      quantity: "",
+      hotelId: "",
+      note: "",
+      image: null,
+    },
   });
   const { showAlert } = useAlert();
   const [hotels, setHotels] = useState<HotelRow[]>([]);
@@ -74,20 +116,19 @@ const CreateAssetPage = () => {
     fetchHotels();
     fetchCategories();
   }, []);
-  const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async () => {
-    if (submitting) return;
+  const onSubmit = async (data: FormData) => {
+  
     try {
-      setSubmitting(true);
+    
       const payload = {
-        assetName: formData.assetName,
-        categoryId: formData.categoryId,
-        hotelId: formData.hotelId,
-        roomId: formData.roomId,
-        price: formData.price,
-        quantity: formData.quantity,
-        note: formData.note,
-        image: formData.image,
+        assetName: data.assetName,
+        categoryId: data.categoryId,
+        hotelId: data.hotelId,
+        roomId: data.roomId,
+        price: data.price,
+        quantity: data.quantity,
+        note: data.note,
+        image: data.image,
       };
       const response = await createAsset(payload);
       showAlert({
@@ -95,7 +136,7 @@ const CreateAssetPage = () => {
         type: "success",
         autoClose: 4000,
       });
-      setFormData({
+      reset({
         assetName: "",
         categoryId: "",
         hotelId: "",
@@ -112,23 +153,21 @@ const CreateAssetPage = () => {
         type: "error",
         autoClose: 4000,
       });
-    }finally{
-      setSubmitting(false);
     }
   };
   const navigate = useNavigate();
   useEffect(() => {
-    fetchRooms(String(formData.hotelId));
-    setFormData((prev) => ({ ...prev, roomId: "" }));
-  }, [formData.hotelId]);
-  const { t } = useTranslation();
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
+    fetchRooms(String(watch("hotelId")));
+    setValue("roomId","")
+  }, [watch("hotelId")]);
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setValue("image",null)
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
+  
   return (
     <div className="space-y-8">
       <div>
@@ -144,7 +183,7 @@ const CreateAssetPage = () => {
         />
       </div>
       <div className="rounded-xl border bg-white p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1  sm:grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-medium">
               {t("asset.name")} <span className="text-red-500">*</span>
@@ -152,10 +191,19 @@ const CreateAssetPage = () => {
             <Input
               name="assetName"
               placeholder={t("asset.createOrUpdate.namePlaceHolder")}
-              onChange={handleChange}
-              value={formData.assetName}
+              onChange={(e)=>{
+                setValue("assetName",e.target.value,{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("assetName")
+              }}
+              value={watch("assetName")}
               className="mt-1"
             />
+            {errors.assetName && (
+              <p className="text-red-600">{errors.assetName.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -163,13 +211,22 @@ const CreateAssetPage = () => {
             </label>
             <SelectField
               items={hotels}
-              value={formData.hotelId}
-              onChange={(v) => setFormData((prev) => ({ ...prev, hotelId: v }))}
+              value={watch("hotelId")}
+              onChange={(v) =>{
+                setValue("hotelId",String(v),{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("hotelId")
+              }}
               isRequired={true}
               placeholder={t("asset.createOrUpdate.hotelPlaceHolder")}
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.name}
             />
+            {errors.hotelId && (
+              <p className="text-red-600">{errors.hotelId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -177,13 +234,22 @@ const CreateAssetPage = () => {
             </label>
             <SelectField
               items={rooms}
-              value={formData.roomId}
-              onChange={(v) => setFormData((prev) => ({ ...prev, roomId: v }))}
+              value={watch("roomId")}
+              onChange={(v) => {
+                setValue("roomId",String(v),{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("roomId")
+              }}
               isRequired={true}
               placeholder={t("asset.createOrUpdate.roomPlaceHolder")}
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.roomNumber}
             />
+            {errors.roomId && (
+              <p className="text-red-600">{errors.roomId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -191,15 +257,23 @@ const CreateAssetPage = () => {
             </label>
             <SelectField
               items={categories}
-              value={formData.categoryId}
-              onChange={(v) =>
-                setFormData((prev) => ({ ...prev, categoryId: v }))
+              value={watch("categoryId")}
+              onChange={(v) =>{
+                setValue("categoryId",String(v),{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("categoryId")
+              }
               }
               isRequired={true}
               placeholder={t("asset.createOrUpdate.categoryPlaceHolder")}
               getValue={(i) => String(i.id)}
               getLabel={(i) => i.name}
             />
+            {errors.categoryId && (
+              <p className="text-red-600">{errors.categoryId.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -208,10 +282,19 @@ const CreateAssetPage = () => {
             <Input
               name="price"
               placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
-              onChange={handleChange}
-              value={formData.price}
+              onChange={(e)=>{
+                setValue("price",e.target.value,{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("price")
+              }}
+              value={watch("price")}
               className="mt-1"
             />
+            {errors.price && (
+              <p className="text-red-600">{errors.price.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">
@@ -220,10 +303,19 @@ const CreateAssetPage = () => {
             <Input
               name="quantity"
               placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
-              onChange={handleChange}
-              value={formData.quantity}
+              onChange={(e)=>{
+                setValue("quantity",e.target.value,{
+                  shouldValidate:true,
+                  shouldDirty:true
+                })
+                trigger("quantity")
+              }}
+              value={watch("quantity")}
               className="mt-1"
             />
+            {errors.quantity && (
+              <p className="text-red-600">{errors.quantity.message}</p>
+            )}
           </div>
         </div>
         <div>
@@ -232,101 +324,100 @@ const CreateAssetPage = () => {
           </label>
           <Textarea
             name="note"
-            value={formData.note}
-            onChange={handleChange}
+            value={watch("note")}
+            onChange={(e)=>{
+              setValue("note",e.target.value,{
+                shouldValidate:true,
+                shouldDirty:true
+              })
+              trigger("note")
+            }}
             placeholder={t("asset.createOrUpdate.notePlaceholder")}
             rows={3}
             className="mt-1"
           />
+          {errors.note && (
+            <p className="text-red-600">{errors.note.message}</p>
+          )}
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">{t("asset.icon")}</label>
 
-          <div className="relative w-48">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 z-10 cursor-pointer opacity-0"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
 
-                setFormData((prev) => ({
-                  ...prev,
-                  icon: file, // ✅ đúng field
-                }));
+              setValue("image",file,{
+                shouldValidate:true,
+                shouldDirty:true
+              });
+              trigger("image");
 
-                setImagePreview(URL.createObjectURL(file));
-              }}
-            />
 
-            <div className="flex min-h-[160px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 text-center hover:border-[#42578E]">
-              {!imagePreview ? (
-                <>
-                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200">
-                    <svg
-                      className="h-6 w-6 text-slate-500"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 16.5V7.5A2.25 2.25 0 015.25 5.25h13.5A2.25 2.25 0 0121 7.5v9a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 16.5z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 13.5l4.5-4.5a2.25 2.25 0 013.182 0L15 13.5"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-sm font-medium text-slate-600">
-                    {t("asset.createOrUpdate.uploadHint")}
-                  </p>
-                  <p className="text-xs text-slate-400">JPG, PNG</p>
-                </>
-              ) : (
-                <div className="relative w-full">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="h-40 w-full rounded-lg object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImagePreview(null);
-                      setFormData((prev) => ({
-                        ...prev,
-                        icon: null,
-                      }));
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = "";
-                      }
-                    }}
-                    className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
-                  >
-                    ✕
-                  </button>
+              setImagePreview(URL.createObjectURL(file));
+            }}
+          />
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => !imagePreview && fileInputRef.current?.click()}
+            className="
+                    relative overflow-hidden rounded-2xl border-2 border-dashed
+                    border-slate-200 bg-slate-50
+                    hover:border-slate-300 transition
+                    cursor-pointer
+                  "
+          >
+            {!imagePreview ? (
+              <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12">
+                <div className="rounded-full bg-white p-3 shadow-sm">
+                  <Upload className="h-5 w-5 text-slate-600" />
                 </div>
-              )}
-            </div>
+                <p className="text-sm font-medium text-slate-700">
+                  {t("asset.createOrUpdate.uploadHint")}
+                </p>
+                <p className="text-xs text-slate-500">JPG, PNG</p>
+              </div>
+            ) : (
+              <div className="relative">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-[220px] w-full object-cover sm:h-[280px]"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveImage();
+                  }}
+                  className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white hover:bg-black/70"
+                  aria-label="Remove image"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
+        {errors.image && (
+          <p className="text-red-600">{String(errors.image.message)}</p>
+        )}
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button variant="outline" onClick={() => navigate("/Home/asset")}>
             {t("common.cancel")}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={submitting}
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !isValid}
             className="min-w-[140px]"
           >
-            {submitting ? (
+            {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin"

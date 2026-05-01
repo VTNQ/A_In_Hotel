@@ -5,149 +5,168 @@ import type { RoomResponse } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
 
 interface Props {
-    roomGrid: RoomResponse[];
+  roomGrid: RoomResponse[];
 }
 
-const CARD_WIDTH = 260; // đúng như hình
+export default function ExploreOtherRooms({ roomGrid }: Props) {
+  const [rooms, setRooms] = useState<RoomResponse[]>([]);
+  const [cardsPerView, setCardsPerView] = useState(4);
+  const [currentPage, setCurrentPage] = useState(0);
 
-const ExploreOtherRooms = ({ roomGrid }: Props) => {
-    const [rooms, setRooms] = useState<RoomResponse[]>([]);
-    const [index, setIndex] = useState(0);
+  /* ================= RESPONSIVE ================= */
+  useEffect(() => {
+    const updateLayout = () => {
+      const w = window.innerWidth;
+      if (w < 640) setCardsPerView(1);
+      else if (w < 1024) setCardsPerView(2);
+      else if (w < 1280) setCardsPerView(3);
+      else setCardsPerView(4);
+    };
 
-    useEffect(() => {
-        const fetchAllRooms = async () => {
-            const res = await getRoom({
-                all:true,
-              
-                filter: "status==3",
-            });
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    return () => window.removeEventListener("resize", updateLayout);
+  }, []);
 
-            const allRooms: RoomResponse[] = res.data?.content || [];
-            const gridIds = roomGrid.map((r) => r.id);
-            console.log(gridIds);
-          
-            // ❌ loại room đã xuất hiện trong RoomGrid
-            const exploreRooms = allRooms.filter(
-                (r) => !gridIds.includes(r.id)
-            );
-            setRooms(exploreRooms);
-        };
+  /* ================= FETCH DATA ================= */
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const res = await getRoom({
+        all: true,
+        filter: "status==3",
+      });
 
-        fetchAllRooms();
-    }, [roomGrid]);
+      const allRooms: RoomResponse[] = res.data?.content || [];
+      const excludeIds = roomGrid.map((r) => r.id);
 
-    if (!rooms.length) return null;
+      const filtered = allRooms.filter(
+        (room) => !excludeIds.includes(room.id)
+      );
 
-    const maxIndex = Math.max(0, rooms.length - 4);
+      setRooms(filtered);
+      setCurrentPage(0); // reset page khi data thay đổi
+    };
 
-    return (
-        <div className="bg-[#E9DCCB] rounded-xl px-8 py-10">
-            <div className="flex gap-10 items-start">
+    fetchRooms();
+  }, [roomGrid]);
 
-                {/* ===== LEFT TEXT ===== */}
-                <div className="w-48 shrink-0">
-                    <h3 className="text-[40px] font-semibold text-[#7b5b3e] leading-tight">
-                        Explore
-                        <br />
-                        other
-                        <br />
-                        room
-                        <br />
-                        options
-                    </h3>
-                </div>
+  /* ================= CHIA PAGE ================= */
+  const pages: RoomResponse[][] = [];
 
-                {/* ===== SLIDER ===== */}
-                <div className="relative flex-1 overflow-hidden">
+  for (let i = 0; i < rooms.length; i += cardsPerView) {
+    pages.push(rooms.slice(i, i + cardsPerView));
+  }
 
-                    {/* TRACK */}
-                    <div
-                        className="flex gap-4 transition-transform duration-500 ease-in-out"
-                        style={{
-                            transform: `translateX(-${index * (CARD_WIDTH + 16)}px)`,
-                        }}
-                    >
-                        {rooms.map((room) => (
-                            <div
-                                key={room.id}
-                                className="relative w-[382px] h-[485px] rounded-xl overflow-hidden shadow-sm"
-                            >
-                                {/* IMAGE */}
-                                <img
-                                    src={File_URL + room.images[0]?.url}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
+  if (pages.length === 0) return null;
 
-                                {/* GRADIENT OVERLAY */}
-                                <div
-                                    className="absolute inset-0"
-                                    style={{
-                                        background:
-                                            "linear-gradient(to top, #F6F3F0 0%, rgba(255,255,255,0.3) 40%)",
-                                    }}
-                                />
+  const totalPages = pages.length;
+  const safePage = Math.min(currentPage, totalPages - 1);
 
-                                {/* CONTENT */}
-                                <div className="absolute bottom-0 left-0 right-0 p-4">
-                                    <h4 className="text-sm font-semibold uppercase leading-snug text-[#6b4e2e]">
-                                        {room.roomName}
-                                    </h4>
+  return (
+    <section className="bg-[#E9DCCB] py-16 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto">
 
-                                    <p className="text-xs text-gray-600 mb-3">
-                                        A IN RIVERSIDE
-                                    </p>
+        <div className="flex flex-col lg:flex-row gap-10">
 
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-green-600 cursor-pointer">
-                                            View room details
-                                        </span>
+          {/* LEFT TEXT */}
+          <div className="lg:w-60 shrink-0">
+            <h3 className="text-3xl sm:text-4xl font-semibold text-[#7b5b3e] leading-tight">
+              Explore <br className="hidden sm:block" />
+              other <br className="hidden sm:block" />
+              room options
+            </h3>
+          </div>
 
-                                        <button className="bg-[#b38a58] text-white text-xs px-4 py-1.5 rounded">
-                                            Booking
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+          {/* SLIDER */}
+          <div className="relative flex-1 overflow-hidden">
 
-                        ))}
+            {/* TRACK */}
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{
+                transform: `translateX(-${safePage * 100}%)`,
+              }}
+            >
+              {pages.map((group, pageIndex) => (
+                <div
+                  key={pageIndex}
+                  className="min-w-full flex gap-4"
+                >
+                  {group.map((room) => (
+                    <div key={room.id} className="flex-1">
+
+                      <div className="relative h-[360px] sm:h-[420px] rounded-xl overflow-hidden shadow-md group">
+
+                        <img
+                          src={File_URL + room.images[0]?.url}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#F6F3F0] via-transparent to-transparent" />
+
+                        <div className="absolute bottom-0 left-0 right-0 p-5">
+                          <h4 className="text-sm font-semibold uppercase text-[#6b4e2e]">
+                            {room.roomName}
+                          </h4>
+
+                          <p className="text-xs text-gray-600 mb-3">
+                            {room.hotelName}
+                          </p>
+
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-green-600 hover:underline cursor-pointer">
+                              View room details
+                            </span>
+
+                            <button className="bg-[#b38a58] hover:bg-[#9c7a55] text-white text-xs px-4 py-1.5 rounded transition">
+                              Booking
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+
                     </div>
-
-                    {/* ← BUTTON */}
-                    {index > 0 && (
-                        <button
-                            onClick={() => setIndex(index - 1)}
-                            className="absolute left-0 top-1/2 -translate-y-1/2
-                         bg-white/80 rounded-full p-2 shadow"
-                        >
-                            <ChevronLeft size={20} />
-                        </button>
-                    )}
-
-                    {/* → BUTTON */}
-                    {index < maxIndex && (
-                        <button
-                            onClick={() => setIndex(index + 1)}
-                            className="absolute right-0 top-1/2 -translate-y-1/2
-                         bg-white/80 rounded-full p-2 shadow"
-                        >
-                            <ChevronRight size={20} />
-                        </button>
-                    )}
-
-                    {/* DOTS */}
-                    <div className="flex justify-center gap-2 mt-6">
-                        {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-                            <span
-                                key={i}
-                                className={`w-2 h-2 rounded-full transition
-                  ${i === index ? "bg-[#7b5b3e]" : "bg-[#cbb9a3]"}`}
-                            />
-                        ))}
-                    </div>
+                  ))}
                 </div>
+              ))}
             </div>
-        </div>
-    );
-};
 
-export default ExploreOtherRooms;
+            {/* LEFT BUTTON */}
+            {safePage > 0 && (
+              <button
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
+              >
+                <ChevronLeft size={20} />
+              </button>
+            )}
+
+            {/* RIGHT BUTTON */}
+            {safePage < totalPages - 1 && (
+              <button
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
+              >
+                <ChevronRight size={20} />
+              </button>
+            )}
+
+            {/* DOTS */}
+            <div className="flex justify-center gap-2 mt-8">
+              {pages.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition
+                    ${i === safePage ? "bg-[#7b5b3e]" : "bg-[#cbb9a3]"}`}
+                />
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
