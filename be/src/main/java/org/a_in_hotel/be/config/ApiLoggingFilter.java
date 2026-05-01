@@ -34,54 +34,76 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         this.passwordEncoder = passwordEncoder;
     }
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        // ✅ BYPASS swagger + static
+        if (
+                path.startsWith("/v3/api-docs") ||
+                        path.startsWith("/swagger-ui") ||
+                        path.equals("/swagger-ui.html") ||
+                        path.startsWith("/actuator")
+        ) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        ContentCachingRequestWrapper requestWrapper =
+                new ContentCachingRequestWrapper(request);
+        ContentCachingResponseWrapper responseWrapper =
+                new ContentCachingResponseWrapper(response);
+
         long start = System.currentTimeMillis();
         filterChain.doFilter(requestWrapper, responseWrapper);
         long duration = System.currentTimeMillis() - start;
-        Map<String,Object> logMap = new HashMap<>();
+
+        Map<String, Object> logMap = new HashMap<>();
         logMap.put("method", request.getMethod());
-        logMap.put("url", request.getRequestURL());
-        logMap.put("status", response.getStatus());
+        logMap.put("path", path);
+        logMap.put("status", responseWrapper.getStatus());
         logMap.put("durationMs", duration);
-        String requestBody=new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8).trim();
-        if(!requestBody.isBlank()){
+
+        String requestBody = new String(
+                requestWrapper.getContentAsByteArray(),
+                StandardCharsets.UTF_8
+        ).trim();
+
+        if (!requestBody.isBlank() && requestBody.length() < 5_000) {
             logMap.put("requestBody", sanitizeBody(requestBody));
         }
-        String responseBody = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8).trim();
-        if (!responseBody.isBlank()) {
+
+
+        String responseBody = new String(
+                responseWrapper.getContentAsByteArray(),
+                StandardCharsets.UTF_8
+        ).trim();
+
+        if (!responseBody.isBlank() && responseBody.length() < 10_000) {
             try {
-                JsonNode responseJson = objectMapper.readTree(responseBody);
-                logMap.put("responseBody", responseJson); // giữ JSON object
+                logMap.put("responseBody", objectMapper.readTree(responseBody));
             } catch (Exception e) {
                 logMap.put("responseBody", responseBody);
             }
         }
-        responseWrapper.copyBodyToResponse();
 
-        // thông tin user (nếu đã xác thực)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null
-                && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null
+                && auth.isAuthenticated()
+                && !(auth instanceof AnonymousAuthenticationToken)
+                && !"anonymousUser".equals(auth.getPrincipal())) {
 
-            logMap.put("user", authentication.getName());
-
-            // token → mask 1 phần
-            String authHeader = request.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                String maskedToken = token.length() > 10
-                        ? token.substring(0, 10) + "****"
-                        : token;
-                logMap.put("token", maskedToken);
-            }
+            logMap.put("user", auth.getName());
         }
 
         log.info("[API]", kv("apiLog", logMap));
+        responseWrapper.copyBodyToResponse();
     }
+
     private JsonNode sanitizeBody(String body) {
         try {
             JsonNode root = objectMapper.readTree(body);
