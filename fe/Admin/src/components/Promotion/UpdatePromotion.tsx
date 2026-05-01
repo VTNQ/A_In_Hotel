@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   TABS,
-  type PromotionForm,
   type TabType,
   type UpdatePromotionModalProps,
 } from "../../type/promotion.types";
