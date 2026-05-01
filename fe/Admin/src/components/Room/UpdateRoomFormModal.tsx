@@ -108,7 +108,7 @@ const UpdateRoomFormModal = ({
     watch,
     reset,
     trigger,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(roomSchema),
     mode: "onChange",
