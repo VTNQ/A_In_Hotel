@@ -1,3 +1,5 @@
+import { Moon, Sun, Timer } from "lucide-react";
+
 export interface DateRange {
   checkIn: string | null;
   checkOut: string | null;
@@ -14,7 +16,12 @@ export interface DateRangeProps {
   value?: DateRange;
   onChange?: (value: DateRange) => void;
 }
-
+export const BookingSteps = [
+  "Guest Info",
+  "Schedule",
+  "Services",
+  "Payment",
+];
 export const statusLabel = (status: BookingStatus) => {
   switch (status) {
     case BookingStatus.BOOKED:
@@ -69,5 +76,20 @@ export interface BookingSearchContextValue {
   setSearch: (s: BookingSearch) => void;
   clearSearch: () => void;
 }
+export const BookingPackages = [
+  {
+    id: "2h",
+    title: "First 2 Hours",
+    desc: "Short stay / Transit",
+    icon: Timer,
+  },
+  {
+    id: "overnight",
+    title: "Overnight",
+    desc: "Perfect for restful sleep",
+    icon: Moon,
+  },
+  { id: "fullday", title: "Full Day", desc: "Complete flexibility", icon: Sun },
+];
 
 export type PriceType = "HOURLY" | "OVERNIGHT" | "DAILY";
