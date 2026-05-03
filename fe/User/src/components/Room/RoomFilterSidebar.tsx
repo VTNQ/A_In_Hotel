@@ -36,9 +36,9 @@ const RoomFilterSideBar = ({
     children: 0,
   });
   const TIME_OPTIONS = [
-    { label: "2 Giờ đầu", value: "HOURLY" },
-    { label: "Qua đêm", value: "OVERNIGHT" },
-    { label: "Ngày đêm", value: "DAILY" },
+    { label: "2 Giờ đầu", value: "1" },
+    { label: "Qua đêm", value: "2" },
+    { label: "Ngày đêm", value: "3" },
   ];
   const [timeTypes, setTimeTypes] = useState<string[]>([]);
   useEffect(() => {

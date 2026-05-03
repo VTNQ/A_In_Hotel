@@ -16,12 +16,15 @@ export interface DateRangeProps {
   value?: DateRange;
   onChange?: (value: DateRange) => void;
 }
-export const BookingSteps = [
-  "Guest Info",
-  "Schedule",
-  "Services",
-  "Payment",
-];
+export interface Booking {
+  step: number;
+  guest: any;
+  selectDate: any;
+  services: any;
+   countdown?: any;
+  payment: any;
+}
+export const BookingSteps = ["Guest Info", "Schedule", "Services", "Payment"];
 export const statusLabel = (status: BookingStatus) => {
   switch (status) {
     case BookingStatus.BOOKED:
@@ -78,18 +81,27 @@ export interface BookingSearchContextValue {
 }
 export const BookingPackages = [
   {
-    id: "2h",
+    id: "1",
     title: "First 2 Hours",
     desc: "Short stay / Transit",
     icon: Timer,
   },
   {
-    id: "overnight",
+    id: "2",
     title: "Overnight",
     desc: "Perfect for restful sleep",
     icon: Moon,
   },
-  { id: "fullday", title: "Full Day", desc: "Complete flexibility", icon: Sun },
+  { id: "3", title: "Full Day", desc: "Complete flexibility", icon: Sun },
 ];
-
-export type PriceType = "HOURLY" | "OVERNIGHT" | "DAILY";
+export const TIME_MAP: any = {
+  "2": {
+    checkIn: "22:00",
+    checkOut: "12:00",
+  },
+  "3": {
+    checkIn: "14:00",
+    checkOut: "12:00",
+  },
+};
+export type PriceType = "1" | "2" | "3";

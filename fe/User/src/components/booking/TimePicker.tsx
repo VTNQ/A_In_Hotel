@@ -1,10 +1,13 @@
 import { Check } from "lucide-react";
 
-const times = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+const times = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00","18:00","19:00","20:00","21:00","22:00"];
 
-const TimePicker = ({ title, value, onChange }:any) => {
+const TimePicker = ({ title, value, onChange, form}:any) => {
+
+   const isAutoTimePackage =form.package === "2" || form.package === "3";
   return (
-    <div className="bg-white border border-outline-variant rounded-xl p-6 space-y-4">
+    <div className={`bg-white border border-outline-variant rounded-xl p-6 space-y-4
+      ${isAutoTimePackage ? "opacity-50 pointer-events-none":""}`}>
 
       <label className="text-xs uppercase tracking-[0.1em] text-gray-400">
         {title}
@@ -17,7 +20,8 @@ const TimePicker = ({ title, value, onChange }:any) => {
           return (
             <button
               key={t}
-              onClick={() => onChange(t)}
+              disabled={isAutoTimePackage}
+              onClick={() =>!isAutoTimePackage && onChange(t)}
               className={`py-3 px-4 rounded-lg flex justify-between items-center text-sm transition
               ${
                 active

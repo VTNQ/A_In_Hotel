@@ -18,10 +18,8 @@ const months = [
   "December",
 ];
 
-const ScheduleCalendar = () => {
+const ScheduleCalendar = ({ checkInDate, checkOutDate, onSelectDate }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
-
   const [openMonth, setOpenMonth] = useState(false);
   const [openYear, setOpenYear] = useState(false);
   const monthRef = useRef<HTMLDivElement | null>(null);
@@ -61,7 +59,18 @@ const ScheduleCalendar = () => {
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
 
   const years = Array.from({ length: 12 }, (_, i) => year - 6 + i);
+  const handleSelect = (day: number) => {
+    if (!day) return;
+    const selected = new Date(year, month, day);
+    onSelectDate(selected);
+  };
+  const isSameDay = (d1: Date, d2: Date) =>
+    d1.toDateString() === d2.toDateString();
 
+  const isInRange = (date: Date) => {
+    if (!checkInDate || !checkOutDate) return false;
+    return date > new Date(checkInDate) && date < new Date(checkOutDate);
+  };
   return (
     <div className="bg-white border border-outline-variant rounded-xl p-6 space-y-4">
       {/* HEADER */}
@@ -154,18 +163,29 @@ const ScheduleCalendar = () => {
       {/* GRID */}
       <div className="grid grid-cols-7 gap-2">
         {calendarDays.map((day, index) => {
-          const isSelected = selectedDate === day;
+          if (!day) return <div key={index} className="invisible h-12" />;
+
+          const date = new Date(year, month, day);
+
+          const isCheckIn =
+            checkInDate && isSameDay(new Date(checkInDate), date);
+
+          const isCheckOut =
+            checkOutDate && isSameDay(new Date(checkOutDate), date);
+
+          const inRange = isInRange(date);
 
           return (
             <div
               key={index}
-              onClick={() => day && setSelectedDate(day)}
-              className={`h-12 flex items-center justify-center rounded-lg text-sm
-                ${!day && "invisible"}
+              onClick={() => handleSelect(day)}
+              className={`h-12 flex items-center justify-center rounded-lg text-sm cursor-pointer transition
                 ${
-                  isSelected
+                  isCheckIn || isCheckOut
                     ? "bg-black text-white font-semibold"
-                    : "hover:bg-gray-100 cursor-pointer"
+                    : inRange
+                      ? "bg-blue-100"
+                      : "hover:bg-gray-100"
                 }
               `}
             >

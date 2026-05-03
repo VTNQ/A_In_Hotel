@@ -1,6 +1,43 @@
 import { MapPin, ShieldCheck } from "lucide-react";
+import { useBookingSearch } from "../../context/booking/BookingSearchContext";
+import { useEffect, useState } from "react";
+import { getRoomById } from "../../service/api/Room";
+import { formatBookingDateRange } from "../../util/formatDate";
 
-const BookingSummarySchedule = () => {
+const BookingSummarySchedule = ({ data,nights }: any) => {
+  const { search } = useBookingSearch();
+  const [room, setRoom] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    if (!search?.roomId) return; // ✅ tránh gọi API sai
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getRoomById(search.roomId || 0);
+        setRoom(response?.data?.data || null);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [search?.roomId]);
+  if (loading) {
+    return (
+      <aside className="lg:col-span-5">
+        <div className="bg-white border rounded-xl p-6 animate-pulse">
+          <div className="h-40 bg-gray-200 rounded mb-4" />
+          <div className="h-4 bg-gray-200 w-1/2 mb-2" />
+          <div className="h-4 bg-gray-200 w-1/3" />
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className="lg:col-span-5">
       <div className=" top-24 space-y-6">
@@ -18,7 +55,7 @@ const BookingSummarySchedule = () => {
           <div className="p-6 space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-on-surface">
-                Executive Panorama Suite
+                     {room?.roomName || "Loading..."}
               </h3>
               <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
                 <MapPin size={16} />
@@ -31,7 +68,11 @@ const BookingSummarySchedule = () => {
                   Dates
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                  Nov 06 - Nov 09
+                  {formatBookingDateRange(
+                    data?.checkInDate,
+                    data?.checkOutDate,
+                    nights,
+                  )}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -39,7 +80,7 @@ const BookingSummarySchedule = () => {
                   Guests
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                  2 Adults
+                  {search?.adults} Adults
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -47,7 +88,7 @@ const BookingSummarySchedule = () => {
                   Duration
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                  3 Nights
+                  {nights} Nights
                 </span>
               </div>
               <div className="bg-blue-50 p-4 rounded-lg space-y-2">
@@ -56,26 +97,29 @@ const BookingSummarySchedule = () => {
                     Room Rate
                   </span>
                   <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                    $840.00
+                    ${search?.totalPrice}
                   </span>
                 </div>
-                
-             <div className="border-t pt-2 flex justify-between font-semibold">
-                <span>Total</span>
-                <span className="text-lg">$885.00</span>
-              </div>
+
+                <div className="border-t pt-2 flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span className="text-lg">
+                    ${(search?.totalPrice || 0 * nights).toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-         <div className="bg-blue-50 border border-outline-variant rounded-xl p-4 flex gap-3">
+        <div className="bg-blue-50 border border-outline-variant rounded-xl p-4 flex gap-3">
           <ShieldCheck size={20} />
           <div>
             <p className="text-xs font-semibold uppercase">
               Best Price Guaranteed
             </p>
             <p className="text-sm text-gray-500">
-              Found a better price? We'll match it and give you an extra 10% off.
+              Found a better price? We'll match it and give you an extra 10%
+              off.
             </p>
           </div>
         </div>

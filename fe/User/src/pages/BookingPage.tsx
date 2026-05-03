@@ -1,27 +1,296 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookingSteps } from "../type/booking.types";
 import GuestInfo from "../components/booking/GuestInfo";
 import { ArrowRight, X } from "lucide-react";
 import ScheduleTab from "../components/booking/ScheduleTab";
 import BookingServiceStep from "../components/booking/BookingServiceStep";
 import BookingPaymentStep from "../components/booking/BookingPaymentStep";
+import useBooking from "../hook/useBooking";
+import { useAlert } from "../components/alert-context";
+import { useNavigate } from "react-router-dom";
+import { useBookingSearch } from "../context/booking/BookingSearchContext";
+import { createBooking } from "../service/api/bookings";
 
 const BookingPage = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(15 * 60);
-  const formatTime = (seconds: any) => {
+  const { booking, updateBooking, clearBooking } = useBooking();
+
+  const { search, clearSearch } = useBookingSearch();
+  const [loading, setLoading] = useState(false);
+  const [guest, setGuest] = useState(booking.guest || {});
+  const [payment, setPayment] = useState(booking.payment || {});
+  const currentStep = booking.step || 0;
+  const expiredAt = Number(booking?.countdown?.expiredAt);
+
+  const getInitialTime = () => {
+    if (!Number.isFinite(expiredAt)) return 15 * 60;
+
+    const diff = expiredAt - Date.now();
+    return Math.max(0, Math.floor(diff / 1000));
+  };
+
+  const [timeLeft, setTimeLeft] = useState(getInitialTime);
+
+  // ========================
+  // AUTO EXPIRE BOOKING
+  // ========================
+  useEffect(() => {
+    if (!Number.isFinite(expiredAt)) return;
+
+    const timer = setInterval(() => {
+      const remaining = Math.max(
+        0,
+        Math.floor((expiredAt - Date.now()) / 1000),
+      );
+
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        clearBooking();
+        clearSearch();
+        navigate("/");
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [expiredAt]);
+  const formatTime = (seconds: number) => {
+    if (!Number.isFinite(seconds) || seconds < 0) return "15:00";
+
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
+
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
-  const nextStep = () => {
-    if (currentStep < BookingSteps.length - 1) setCurrentStep(currentStep + 1);
-  };
+  // 👉 schedule (controlled)
+  const [schedule, setSchedule] = useState({
+    checkInDate: search?.checkIn,
+    checkOutDate: search?.checkOut,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+    package: search?.priceType,
+  });
+  const [services, setServices] = useState([]);
+  const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
+   const handleCancel = () => {
+     showAlert({
+    type: "warning",
+    title: "Cancel booking?",
+    description: "Your current booking progress will be lost if you continue.",
+
+    primaryAction: {
+      label: "Yes, cancel",
+      onClick: () => {
+        clearBooking();
+        clearSearch();
+        navigate("/");
+      },
+    },
+
+    secondaryAction: {
+      label: "No, keep booking",
+      onClick: () => {},
+    },
+  });
+  };
+  const nextStep = async () => {
+    const isValid = validateStep();
+    if (!isValid) return;
+
+    updateBooking({
+      guest,
+      selectDate: schedule,
+      services,
+      payment,
+    });
+
+    if (currentStep < BookingSteps.length - 1) {
+      updateBooking({
+        step: currentStep + 1,
+      });
+      return;
+    }
+
+    await handleSubmit();
+  };
+  const isNextDisabled = () => {
+    if (currentStep === 0) {
+      return (
+        !guest?.firstName ||
+        !guest?.lastName ||
+        !guest?.phone ||
+        !guest?.email ||
+        !guest?.idNumber
+      );
+    }
+    if (currentStep === 1) {
+      return !schedule?.checkInDate || !schedule?.checkOutDate;
+    }
+    return false;
+  };
   const prevStep = () => {
-    if (currentStep > 0) setCurrentStep(currentStep - 1);
+    if (currentStep > 0) updateBooking({ step: currentStep - 1 });
   };
 
+  const handleSubmit = async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      const payload = buildBookingPayload();
+      const response = await createBooking(payload);
+
+      showAlert({
+        title: response?.data?.message || "Booking created successfully.",
+        type: "success",
+        autoClose: 3000,
+      });
+
+      clearBooking();
+      clearSearch();
+      navigate("/");
+    } catch (err: any) {
+      console.log(err);
+
+      showAlert({
+        title: err?.response?.data?.message || "Booking failed.",
+        type: "error",
+        autoClose: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const buildBookingPayload = () => {
+    // ===== NIGHTS =====
+
+    // ===== BASE PRICE =====
+    const basePrice = Number(search?.totalPrice || 0);
+    console.log(basePrice);
+    // ===== ROOM DETAILS =====
+    const roomDetails = search?.roomId
+      ? [
+          {
+            roomId: search.roomId,
+            price: basePrice,
+          },
+        ]
+      : [];
+
+    // ===== SERVICE DETAILS =====
+    const serviceDetails = (services || []).map((s: any) => {
+      const percent = Number(s.extraCharge || 0);
+      const price = (basePrice * percent) / 100;
+
+      return {
+        extraServiceId: s.id,
+        price: Number(price.toFixed(2)),
+      };
+    });
+
+    // ===== SERVICES TOTAL =====
+    const servicesTotal = serviceDetails.reduce(
+      (sum: number, s: any) => sum + Number(s.price || 0),
+      0,
+    );
+
+    // ===== TOTAL =====
+    const originalTotal = Number((basePrice + servicesTotal).toFixed(2));
+
+    // ===== PAID AMOUNT (50%) =====
+    const paidAmount = Number((originalTotal * 0.5).toFixed(2));
+
+    // ===== RETURN PAYLOAD =====
+    return {
+      // ===== GUEST =====
+      guestName: guest?.firstName,
+      surname: guest?.lastName,
+      email: guest?.email,
+      phoneNumber: guest?.phone,
+
+      guestType: guest?.guestType ?? 1,
+      numberOfGuests: guest?.adults ?? 1,
+      note: guest?.note,
+      idNumber: guest?.idNumber,
+
+      // ===== AMOUNT =====
+      originalAmount: originalTotal,
+      totalPrice: Math.max(0, originalTotal),
+
+      // ===== PAYMENT =====
+      payment: {
+        paidAmount,
+        paymentMethod: payment?.method || "card",
+        paymentType: 1,
+        notes: payment?.note || "",
+      },
+
+      // ===== DATE =====
+      checkInDate: schedule?.checkInDate,
+      checkInTime: schedule?.checkInTime,
+      checkOutDate: schedule?.checkOutDate,
+      checkOutTime: schedule?.checkOutTime,
+
+      // ===== PACKAGE =====
+      bookingPackage: schedule?.package,
+
+      // ===== DETAILS =====
+      bookingDetail: [...roomDetails, ...serviceDetails],
+    };
+  };
+  const validateStep = () => {
+    switch (currentStep) {
+      case 0: // Guest
+        if (
+          !guest?.firstName ||
+          !guest?.lastName ||
+          !guest?.phone ||
+          !guest?.email ||
+          !guest?.idNumber
+        ) {
+          showAlert({
+            type: "error",
+            title: "Vui lòng nhập đầy đủ thông tin khách",
+          });
+          return false;
+        }
+        return true;
+
+      case 1: // Schedule
+        if (!schedule?.checkInDate || !schedule?.checkOutDate) {
+          showAlert({
+            type: "error",
+            title: "Vui lòng chọn ngày nhận và trả phòng",
+          });
+          return false;
+        }
+        if (!schedule?.checkInTime || !schedule?.checkOutTime) {
+          showAlert({
+            type: "error",
+            title: "Vui lòng chọn giờ nhận và trả phòng",
+          });
+          return false;
+        }
+        return true;
+
+      case 2: // Services (optional thì cho qua)
+        return true;
+
+      case 3: // Payment (tuỳ bạn validate thêm)
+        return true;
+
+      default:
+        return true;
+    }
+  };
+  const getStepStatus = (i: number, currentStep: number) => {
+    if (i < currentStep) return "done";
+    if (i === currentStep) return "active";
+    return "todo";
+  };
   return (
     <>
       <div className="min-h-screen bg-[#FBF7F2] p-6">
@@ -30,25 +299,39 @@ const BookingPage = () => {
             <div className="flex justify-between items-center text-sm">
               {BookingSteps.map((step, i) => (
                 <div
-                  key={i}
+                  key={step}
                   className="flex items-center justify-center flex-1"
                 >
                   {/* STEP */}
                   <div className="flex flex-col items-center min-w-[70px]">
-                    <div
-                      className={`w-9 h-9 flex items-center justify-center rounded-full border-2 font-bold shadow
-      ${
-        i === currentStep
-          ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
-          : "text-gray-500 border-outline-variant"
-      }`}
-                    >
-                      {i + 1}
-                    </div>
+                    {(() => {
+                      const status = getStepStatus(i, currentStep);
+
+                      return (
+                        <div
+                          className={`w-9 h-9 flex items-center justify-center rounded-full border-2 font-bold shadow transition
+        ${
+          status === "active"
+            ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
+            : status === "done"
+              ? "bg-green-500 text-white border-green-500"
+              : "text-gray-400 border-outline-variant"
+        }`}
+                        >
+                          {status === "done" ? "✓" : i + 1}
+                        </div>
+                      );
+                    })()}
 
                     <span
                       className={`mt-2 text-[12px] uppercase leading-none tracking-[0.02em] font-medium text-center whitespace-nowrap
-  ${i === currentStep ? "text-on-surface font-semibold" : "text-gray-400"}`}
+    ${
+      i < currentStep
+        ? "text-green-600 font-semibold"
+        : i === currentStep
+          ? "text-on-surface font-semibold"
+          : "text-gray-400"
+    }`}
                     >
                       {step}
                     </span>
@@ -74,11 +357,28 @@ const BookingPage = () => {
             <strong className="font-semibold">{formatTime(timeLeft)}</strong>
           </div>
           <div className=" p-6">
-            {currentStep === 0 && <GuestInfo />}
-            {currentStep === 1 && <ScheduleTab/>}
-            {currentStep === 2 && <BookingServiceStep />}
-            {currentStep ===3 && <BookingPaymentStep/>}
-            </div>
+            {currentStep === 0 && (
+              <GuestInfo data={guest} onChange={setGuest} />
+            )}
+            {currentStep === 1 && (
+              <ScheduleTab data={schedule} onChange={setSchedule} />
+            )}
+            {currentStep === 2 && (
+              <BookingServiceStep
+                data={services}
+                onChange={setServices}
+                booking={schedule}
+              />
+            )}
+            {currentStep === 3 && (
+              <BookingPaymentStep
+                data={payment}
+                onChange={setPayment}
+                schedule={schedule}
+                services={services}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div
@@ -86,6 +386,7 @@ const BookingPage = () => {
         z-40 fixed bottom-0 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]"
       >
         <button
+          onClick={handleCancel}
           className="flex items-center gap-2 px-6 py-3 rounded-lg border border-outline-variant 
              text-secondary font-button text-button hover:bg-surface-container transition-colors active:scale-95 duration-150"
         >
@@ -93,6 +394,15 @@ const BookingPage = () => {
           Hủy đặt phòng
         </button>
         <div className="flex items-center gap-6">
+          {currentStep > 0 && (
+            <button
+              onClick={prevStep}
+              className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300
+        text-gray-600 font-medium hover:bg-gray-100 transition-colors active:scale-95"
+            >
+              Back
+            </button>
+          )}
           <div className="hidden lg:flex gap-4 text-gray-400 dark:text-gray-500 font-sans text-sm font-medium">
             {BookingSteps.map((step, i) => (
               <>
@@ -110,13 +420,20 @@ const BookingPage = () => {
           </div>
           <button
             onClick={nextStep}
-            className="flex items-center gap-2 px-8 py-3 rounded-lg  text-[#181c20] text-[14px]
-                line-clamp-1 font-semibold font-sans  transition-colors
-                active:scale-90 duration-150 shadow-md bg-[#f9f6f2] border border-[#717786]
-              "
+            disabled={isNextDisabled() || loading}
+            className={`flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition
+    ${
+      isNextDisabled() || loading
+        ? "opacity-50 cursor-not-allowed bg-gray-200"
+        : "bg-[#f9f6f2] border border-[#717786] active:scale-90 shadow-md"
+    }`}
           >
-            {currentStep === BookingSteps.length - 1 ? "Finish" : "Next"}
-            <ArrowRight size={18} />
+            {loading
+              ? "Processing..."
+              : currentStep === BookingSteps.length - 1
+                ? "Finish"
+                : "Next"}
+            <ArrowRight size={18} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
       </div>

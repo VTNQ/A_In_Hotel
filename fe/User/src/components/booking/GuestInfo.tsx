@@ -1,6 +1,11 @@
 import { Mail, User } from "lucide-react";
 
-const GuestInfo = () => {
+
+const GuestInfo = ({ data,onChange }: any) => {
+  
+  const update = (key: string, value: string) => {
+    onChange((prev: any) => ({ ...prev, [key]: value }));
+  };
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
@@ -27,6 +32,10 @@ const GuestInfo = () => {
             </label>
             <input
               type="text"
+              value={data.firstName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("firstName", e.target.value)
+              }
               placeholder="e.g. Anh"
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
@@ -38,6 +47,10 @@ const GuestInfo = () => {
             </label>
             <input
               type="text"
+              value={data.lastName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("lastName", e.target.value)
+              }
               placeholder="e.g. Nguyễn"
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
@@ -50,6 +63,10 @@ const GuestInfo = () => {
             <input
               type="text"
               placeholder="0123456789"
+              value={data.idNumber}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("idNumber", e.target.value)
+              }
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
             />
@@ -59,12 +76,16 @@ const GuestInfo = () => {
               Guest Type (Loại khách)
             </label>
             <select
+              value={data.guestType}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                update("guestType", e.target.value)
+              }
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
             >
-              <option>Standard Guest (Khách thông thường)</option>
-              <option>VIP Guest (Khách hàng thân thiết)</option>
-              <option>Corporate Guest (Khách doanh nghiệp)</option>
+              <option value={1}>Standard Guest (Khách thông thường)</option>
+              <option value={3}>VIP Guest (Khách hàng thân thiết)</option>
+              <option value={2}>Corporate Guest (Khách doanh nghiệp)</option>
             </select>
           </div>
         </div>
@@ -86,6 +107,10 @@ const GuestInfo = () => {
             <input
               type="email"
               placeholder="email@example.com"
+              value={data.email}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("email", e.target.value)
+              }
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
             />
@@ -97,6 +122,10 @@ const GuestInfo = () => {
             <input
               type="tel"
               placeholder="+84 000 000 000"
+              value={data.phone}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("phone", e.target.value)
+              }
               className="w-full h-11 px-4 rounded-lg border border-[rgb(193,198,215)] focus:border-[rgb(0,89,187)]
                   focus:ring-1 focus:ring-[rgb(0,89,187)] outline-none transition-all text-[14px] line-clamp-1 font-normal font-sans"
             />
@@ -106,6 +135,10 @@ const GuestInfo = () => {
               Special Requests (Ghi chú & yêu cầu đặc biệt)
             </label>
             <textarea
+              value={data.note}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                update("note", e.target.value)
+              }
               placeholder="Ví dụ: Phòng không hút thuốc, hỗ trợ nhận phòng sớm..."
               className="w-full px-4 py-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md resize-none"
               rows={4}
