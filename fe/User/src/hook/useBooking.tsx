@@ -10,7 +10,7 @@ const createDefaultBooking = (): Booking => {
   const now = Date.now();
 
   return {
-    step: 1,
+    step: 0,
     guest: {},
     selectDate: {},
     services: [],

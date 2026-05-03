@@ -53,19 +53,7 @@ const BookingPage = () => {
 
       if (remaining <= 0) {
         clearInterval(timer);
-        clearBooking();
-        clearSearch();
-        setGuest({});
-        setPayment({});
-        setSchedule({
-          checkInDate: "",
-          checkOutDate: "",
-          checkInTime: "14:00",
-          checkOutTime: "12:00",
-          package:"1"
-        })
-        setTimeLeft(getInitialTime());
-        setCurrentStep(0);
+          resetAllState();
         navigate("/");
       }
     }, 1000);
@@ -85,7 +73,25 @@ const BookingPage = () => {
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
+const resetAllState = () => {
+  clearBooking();
+  clearSearch();
 
+  setGuest({});
+  setPayment({});
+  setServices([]);
+
+  setSchedule({
+    checkInDate: "",
+    checkOutDate: "",
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+    package: "1",
+  });
+
+  setCurrentStep(0);
+  setTimeLeft(15 * 60);
+};
    const handleCancel = () => {
      showAlert({
     type: "warning",
@@ -95,19 +101,7 @@ const BookingPage = () => {
     primaryAction: {
       label: "Yes, cancel",
       onClick: () => {
-        clearBooking();
-        clearSearch();
-        setGuest({});
-        setPayment({});
-        setSchedule({
-          checkInDate: "",
-          checkOutDate: "",
-          checkInTime: "14:00",
-          checkOutTime: "12:00",
-          package:"1"
-        })
-        setTimeLeft(getInitialTime());
-        setCurrentStep(0);
+        resetAllState();
         navigate("/");
       },
     },
