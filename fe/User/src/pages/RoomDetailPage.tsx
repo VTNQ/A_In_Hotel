@@ -131,16 +131,16 @@ const RoomDetailPage = () => {
     }
     let basePrice = 0;
 
-    if (PriceType === "HOURLY") {
+    if (PriceType === "1") {
       basePrice =
         roomv2.hourlyBasePrice + extraHours * roomv2.hourlyAdditionalPrice;
     }
 
-    if (PriceType === "OVERNIGHT") {
+    if (PriceType === "2") {
       basePrice = roomv2.overnightPrice;
     }
 
-    if (PriceType == "DAILY") {
+    if (PriceType == "3") {
       basePrice = roomv2.defaultRate * Math.max(1, nights);
     }
     const serviceFee = basePrice * 0.1;
@@ -170,7 +170,7 @@ const RoomDetailPage = () => {
       totalPrice: priceResult.total,
     });
 
-    navigate("/confirmBooking");
+    navigate("/booking");
   };
 
   return (
@@ -387,10 +387,10 @@ const RoomDetailPage = () => {
                       type="radio"
                       name="price"
                       disabled={isMultiDay}
-                      checked={PriceType === "HOURLY"}
+                      checked={PriceType === "1"}
                       className="accent-[#b38a58]"
                       onChange={() => {
-                        setPriceType("HOURLY");
+                        setPriceType("1");
                         setExtraHours(0);
                       }}
                     />
@@ -414,9 +414,9 @@ const RoomDetailPage = () => {
                       type="radio"
                       name="price"
                       disabled={isMultiDay}
-                      checked={PriceType === "OVERNIGHT"}
+                      checked={PriceType === "2"}
                       onChange={() => {
-                        setPriceType("OVERNIGHT");
+                        setPriceType("2");
                         setExtraHours(0);
                       }}
                       className="accent-[#b38a58]"
@@ -433,9 +433,9 @@ const RoomDetailPage = () => {
                     <input
                       type="radio"
                       name="price"
-                      checked={PriceType === "DAILY"}
+                      checked={PriceType === "3"}
                       onChange={() => {
-                        setPriceType("DAILY");
+                        setPriceType("3");
                         setExtraHours(0);
                       }}
                       className="accent-[#b38a58]"
@@ -455,7 +455,7 @@ const RoomDetailPage = () => {
                 <div
                   className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm
                                         ${
-                                          PriceType !== "HOURLY"
+                                          PriceType !== "1"
                                             ? "opacity-50 pointer-events-none bg-gray-100"
                                             : "bg-gray-50"
                                         }`}
