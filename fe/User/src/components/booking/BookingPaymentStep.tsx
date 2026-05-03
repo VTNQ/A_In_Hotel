@@ -1,4 +1,4 @@
-import { Calendar, CreditCard, HandCoins, Landmark, Lock } from "lucide-react";
+import { Calendar, CreditCard, HandCoins, Landmark } from "lucide-react";
 import { MdKingBed } from "react-icons/md";
 import BookingPaymentSummary from "./BookingPaymentSummary";
 import { useEffect, useMemo, useState } from "react";
