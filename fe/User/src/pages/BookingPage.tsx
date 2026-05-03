@@ -16,9 +16,16 @@ const BookingPage = () => {
 
   const { search, clearSearch } = useBookingSearch();
   const [loading, setLoading] = useState(false);
+  const [schedule, setSchedule] = useState({
+    checkInDate: search?.checkIn,
+    checkOutDate: search?.checkOut,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+    package: search?.priceType,
+  });
   const [guest, setGuest] = useState(booking.guest || {});
   const [payment, setPayment] = useState(booking.payment || {});
-  const currentStep = booking.step || 0;
+  const [currentStep,setCurrentStep] = useState(booking.step || 0);
   const expiredAt = Number(booking?.countdown?.expiredAt);
 
   const getInitialTime = () => {
@@ -48,6 +55,17 @@ const BookingPage = () => {
         clearInterval(timer);
         clearBooking();
         clearSearch();
+        setGuest({});
+        setPayment({});
+        setSchedule({
+          checkInDate: "",
+          checkOutDate: "",
+          checkInTime: "14:00",
+          checkOutTime: "12:00",
+          package:"1"
+        })
+        setTimeLeft(getInitialTime());
+        setCurrentStep(0);
         navigate("/");
       }
     }, 1000);
@@ -63,13 +81,7 @@ const BookingPage = () => {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
   // 👉 schedule (controlled)
-  const [schedule, setSchedule] = useState({
-    checkInDate: search?.checkIn,
-    checkOutDate: search?.checkOut,
-    checkInTime: "14:00",
-    checkOutTime: "12:00",
-    package: search?.priceType,
-  });
+  
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
@@ -85,6 +97,17 @@ const BookingPage = () => {
       onClick: () => {
         clearBooking();
         clearSearch();
+        setGuest({});
+        setPayment({});
+        setSchedule({
+          checkInDate: "",
+          checkOutDate: "",
+          checkInTime: "14:00",
+          checkOutTime: "12:00",
+          package:"1"
+        })
+        setTimeLeft(getInitialTime());
+        setCurrentStep(0);
         navigate("/");
       },
     },
