@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { BookingSteps } from "../type/booking.types";
 import GuestInfo from "../components/booking/GuestInfo";
 import { ArrowRight, X } from "lucide-react";
