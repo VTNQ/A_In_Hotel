@@ -25,9 +25,9 @@ const BookingPage = () => {
   });
   const [guest, setGuest] = useState(booking.guest || {});
   const [payment, setPayment] = useState(booking.payment || {});
-  const [currentStep,setCurrentStep] = useState(booking.step || 0);
+  const [currentStep, setCurrentStep] = useState(booking.step || 0);
   const expiredAt = Number(booking?.countdown?.expiredAt);
-
+  
   const getInitialTime = () => {
     if (!Number.isFinite(expiredAt)) return 15 * 60;
 
@@ -40,6 +40,7 @@ const BookingPage = () => {
   // ========================
   // AUTO EXPIRE BOOKING
   // ========================
+  
   useEffect(() => {
     if (!Number.isFinite(expiredAt)) return;
 
@@ -53,7 +54,7 @@ const BookingPage = () => {
 
       if (remaining <= 0) {
         clearInterval(timer);
-          resetAllState();
+        resetAllState();
         navigate("/");
       }
     }, 1000);
@@ -69,52 +70,52 @@ const BookingPage = () => {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
   // 👉 schedule (controlled)
-  
+
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-const resetAllState = () => {
-  clearBooking();
-  clearSearch();
+  const resetAllState = () => {
+    clearBooking();
+    clearSearch();
 
-  setGuest({});
-  setPayment({});
-  setServices([]);
+    setGuest({});
+    setPayment({});
+    setServices([]);
 
-  setSchedule({
-    checkInDate: "",
-    checkOutDate: "",
-    checkInTime: "14:00",
-    checkOutTime: "12:00",
-    package: "1",
-  });
+    setSchedule({
+      checkInDate: "",
+      checkOutDate: "",
+      checkInTime: "14:00",
+      checkOutTime: "12:00",
+      package: "1",
+    });
 
-  setCurrentStep(0);
-  setTimeLeft(15 * 60);
-};
-   const handleCancel = () => {
-     showAlert({
-    type: "warning",
-    title: "Cancel booking?",
-    description: "Your current booking progress will be lost if you continue.",
+    setCurrentStep(0);
+    setTimeLeft(15 * 60);
+  };
+  const handleCancel = () => {
+    showAlert({
+      type: "warning",
+      title: "Cancel booking?",
+      description:
+        "Your current booking progress will be lost if you continue.",
 
-    primaryAction: {
-      label: "Yes, cancel",
-      onClick: () => {
-        resetAllState();
-        navigate("/");
+      primaryAction: {
+        label: "Yes, cancel",
+        onClick: () => {
+          resetAllState();
+          navigate("/");
+        },
       },
-    },
 
-    secondaryAction: {
-      label: "No, keep booking",
-      onClick: () => {},
-    },
-  });
+      secondaryAction: {
+        label: "No, keep booking",
+        onClick: () => {},
+      },
+    });
   };
   const nextStep = async () => {
-    const isValid = validateStep();
-    if (!isValid) return;
+    if (!validateStep()) return;
 
     updateBooking({
       guest,
@@ -123,14 +124,18 @@ const resetAllState = () => {
       payment,
     });
 
-    if (currentStep < BookingSteps.length - 1) {
-      updateBooking({
-        step: currentStep + 1,
-      });
-      return;
-    }
+    setCurrentStep((prev) => {
+      const next = prev + 1;
 
-    await handleSubmit();
+      updateBooking({
+        step: next,
+      });
+
+      return next;
+    });
+    if (currentStep === BookingSteps.length - 1) {
+      await handleSubmit();
+    }
   };
   const isNextDisabled = () => {
     if (currentStep === 0) {
@@ -148,7 +153,11 @@ const resetAllState = () => {
     return false;
   };
   const prevStep = () => {
-    if (currentStep > 0) updateBooking({ step: currentStep - 1 });
+    setCurrentStep((prev) => {
+      const next = Math.max(prev - 1, 0);
+      updateBooking({ step: next });
+      return next;
+    });
   };
 
   const handleSubmit = async () => {
@@ -308,6 +317,7 @@ const resetAllState = () => {
     if (i === currentStep) return "active";
     return "todo";
   };
+
   return (
     <>
       <div className="min-h-screen bg-[#FBF7F2] p-6">
@@ -331,7 +341,7 @@ const resetAllState = () => {
           status === "active"
             ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
             : status === "done"
-              ? "bg-green-500 text-white border-green-500"
+              ? "bg-[rgb(24,28,32)] text-white border-white"
               : "text-gray-400 border-outline-variant"
         }`}
                         >
@@ -344,7 +354,7 @@ const resetAllState = () => {
                       className={`mt-2 text-[12px] uppercase leading-none tracking-[0.02em] font-medium text-center whitespace-nowrap
     ${
       i < currentStep
-        ? "text-green-600 font-semibold"
+        ? "text-on-surface  font-semibold"
         : i === currentStep
           ? "text-on-surface font-semibold"
           : "text-gray-400"

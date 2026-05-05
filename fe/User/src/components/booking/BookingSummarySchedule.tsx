@@ -3,12 +3,12 @@ import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import { useEffect, useState } from "react";
 import { getRoomById } from "../../service/api/Room";
 import { formatBookingDateRange } from "../../util/formatDate";
-
 const BookingSummarySchedule = ({ data,nights }: any) => {
   const { search } = useBookingSearch();
   const [room, setRoom] = useState<any>(null);
+
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     if (!search?.roomId) return; // ✅ tránh gọi API sai
 
@@ -44,7 +44,7 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
         <div className="bg-white border border-outline-variant rounded-xl overflow-hidden">
           <div className="h-48 w-full relative">
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2iBSVkCjjNe6zg2pIvfZ5bhBQxGR6uTNnExcDlgnb5P1gv7xNQgYHBX87pZTHPLdAVBfisRCLCKbCnoskRQRGbbqhtBKImJdgq-UJA3YUVQmzhxqRGYakQFewUdjDqpE_NiOTK33ZnBINAAnBDgRNRn3UeFAK-CNe6Zg77uU5uUWMIxNNF37UiVAgLPIamIr5l6Vm3uyaCMAgGxAE0HKrvZUp6AF32JKZfOuONBdHjphPX19yqc6E7gnCn99CxPuQFH5sXV4Vl7FV"
+              src={`${room?.images[0]?.url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD2iBSVkCjjNe6zg2pIvfZ5bhBQxGR6uTNnExcDlgnb5P1gv7xNQgYHBX87pZTHPLdAVBfisRCLCKbCnoskRQRGbbqhtBKImJdgq-UJA3YUVQmzhxqRGYakQFewUdjDqpE_NiOTK33ZnBINAAnBDgRNRn3UeFAK-CNe6Zg77uU5uUWMIxNNF37UiVAgLPIamIr5l6Vm3uyaCMAgGxAE0HKrvZUp6AF32JKZfOuONBdHjphPX19yqc6E7gnCn99CxPuQFH5sXV4Vl7FV"}`}
               alt="Room"
               className="w-full h-full object-cover"
             />
