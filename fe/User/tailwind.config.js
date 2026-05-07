@@ -8,6 +8,7 @@ export default {
         montserrat: ["Montserrat", "sans-serif"],
         display: ['"Playfair Display"', "serif"],
         sans: ["Inter", "sans-serif"],
+        headline: ['"Noto Serif"', "serif"],
       },
       colors: {
         "outline-variant": "rgb(193 198 215)",

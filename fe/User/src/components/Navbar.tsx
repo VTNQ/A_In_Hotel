@@ -39,7 +39,7 @@ export default function Navbar() {
   const rightItems = [
     { label: "AIR BNB", path: "/airbnb" },
     { label: "CAMPING", path: "/camping" },
-    { label: "OUR PRODUCT", path: "/product" },
+    { label: "OUR PRODUCT", path: "/franchise" },
   ];
 
   /* Scroll effect */
