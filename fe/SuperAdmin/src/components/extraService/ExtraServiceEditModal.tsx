@@ -1,6 +1,4 @@
-import {
-  type ExtraServiceEditProps,
-} from "@/type/extraService.types";
+import { type ExtraServiceEditProps } from "@/type/extraService.types";
 import { useAlert } from "../alert-context";
 import { useEffect, useRef, useState } from "react";
 import { getAllHotel } from "@/service/api/Hotel";
@@ -40,7 +38,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
 
   const extraServiceSchema = z
     .object({
-      id: z.string(),
+      id: z.string().optional(),
       serviceName: z
         .string()
         .min(1, t("extraService.validate.serviceNameRequired")),
@@ -52,7 +50,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
       description: z.string().optional(),
       hotelId: z.string().min(1, t("extraService.validate.hotelRequired")),
       note: z.string().optional(),
-      type: z.string().min(1, t("extraService.validate.typeRequired")),
+  
       extraCharge: z
         .string()
         .min(1, t("extraService.validate.extraChargeRequired"))
@@ -81,7 +79,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
     });
   type FormData = z.infer<typeof extraServiceSchema>;
   const {
-    
     handleSubmit,
     reset,
     setValue,
@@ -95,8 +92,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
       id: "",
       serviceName: "",
       categoryId: "",
-      
-      type: "",
       hotelId: "",
       description: "",
       note: "",
@@ -118,10 +113,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         reset({
           serviceName: res.serviceName ?? "",
           description: res.description ?? "",
-          categoryId: res.categoryId ?? null,
-          type: "",
-          hotelId: res.hotelId ?? null,
-          extraCharge: res.extraCharge ?? "",
+          categoryId: String(res.categoryId ?? ""),
+          hotelId: String(res.hotelId ?? ""),
+          extraCharge: String(res.extraCharge ?? ""),
           icon: null,
           note: res.note ?? "",
         });
@@ -153,7 +147,6 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
     loadHotels();
   }, [open, extraServiceId]);
 
-
   const onSubmitForm = async (data: FormData) => {
     try {
       const payload = {
@@ -184,7 +177,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         description: err?.response?.data?.message || t("common.tryAgain"),
         type: "error",
       });
-    } 
+    }
   };
 
   if (!open || !extraServiceId) return null;
@@ -216,17 +209,19 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 </label>
                 <Input
                   value={watch("serviceName")}
-                  onChange={(e)=>{
-                    setValue("serviceName",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("serviceName")
+                  onChange={(e) => {
+                    setValue("serviceName", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("serviceName");
                   }}
                   className="h-11"
                 />
                 {errors.serviceName && (
-                  <span className="text-red-600">{errors.serviceName.message}</span>
+                  <span className="text-red-600">
+                    {errors.serviceName.message}
+                  </span>
                 )}
               </div>
 
@@ -238,17 +233,19 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 <Input
                   name="description"
                   value={watch("description")}
-                  onChange={(e)=>{
-                    setValue("description",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("description")
+                  onChange={(e) => {
+                    setValue("description", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("description");
                   }}
                   className="h-11"
                 />
                 {errors.description && (
-                  <span className="text-red-600">{errors.description.message}</span>
+                  <span className="text-red-600">
+                    {errors.description.message}
+                  </span>
                 )}
               </div>
 
@@ -257,21 +254,24 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 <SelectField
                   label={t("extraService.category")}
                   items={categories}
-                  value={watch("categoryId")}
-                  onChange={(v) =>{
-                    setValue("categoryId",String(v),{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("categoryId")
-                  
+                  value={String(watch("categoryId") || "")}
+                  onChange={(v) => {
+                    setValue("categoryId", String(v || ""), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+
+                    trigger("categoryId");
                   }}
                   isRequired
-                  getValue={(i) => i.id}
+                  getValue={(i) => String(i.id)}
                   getLabel={(i) => i.name}
+                  error={errors.categoryId?.message}
                 />
                 {errors.categoryId && (
-                  <span className="text-red-600">{errors.categoryId.message}</span>
+                  <span className="text-red-600">
+                    {errors.categoryId.message}
+                  </span>
                 )}
               </div>
               {/* EXTRA CHARGE */}
@@ -282,17 +282,19 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 <Input
                   name="extraCharge"
                   value={watch("extraCharge")}
-                  onChange={(e)=>{
-                    setValue("extraCharge",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("extraCharge")
+                  onChange={(e) => {
+                    setValue("extraCharge", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("extraCharge");
                   }}
                   className="h-11"
                 />
                 {errors.extraCharge && (
-                  <span className="text-red-600">{errors.extraCharge.message}</span>
+                  <span className="text-red-600">
+                    {errors.extraCharge.message}
+                  </span>
                 )}
               </div>
 
@@ -300,17 +302,18 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
               <SelectField
                 label={t("extraService.hotel")}
                 items={hotels}
-                value={watch("hotelId")}
-                onChange={(v) =>{
-                  setValue("hotelId",String(v),{
-                    shouldValidate:true,
-                    shouldDirty:true
-                  })
-                  trigger("hotelId")
-                }
-                }
-                isRequired
-                getValue={(i) => i.id}
+                value={String(watch("hotelId") || "")}
+                onChange={(v) => {
+                  setValue("hotelId", String(v), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+
+                  trigger("hotelId");
+                }}
+                isRequired={true}
+                placeholder={t("extraService.createOrUpdate.hotelPlaceHolder")}
+                getValue={(i) => String(i.id)}
                 getLabel={(i) => i.name}
               />
               {errors.hotelId && (
@@ -324,13 +327,13 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 <Textarea
                   name="note"
                   value={watch("note")}
-                  onChange={(e)=>{
-                    setValue("note",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    
-                    trigger("note")
+                  onChange={(e) => {
+                    setValue("note", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+
+                    trigger("note");
                   }}
                   rows={3}
                 />
@@ -354,7 +357,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      setValue("icon",file)
+                      setValue("icon", file);
                       setImagePreview(URL.createObjectURL(file));
                     }}
                   />
@@ -374,7 +377,9 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
                 </div>
               </div>
               {errors.icon && (
-                <span className="text-red-600">{String(errors.icon.message)}</span>
+                <span className="text-red-600">
+                  {String(errors.icon.message)}
+                </span>
               )}
             </div>
 
@@ -383,7 +388,10 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
               <Button variant="outline" onClick={onClose}>
                 {t("common.cancel")}
               </Button>
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+              <Button
+                onClick={handleSubmit(onSubmitForm)}
+                disabled={isSubmitting || !isValid }
+              >
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>

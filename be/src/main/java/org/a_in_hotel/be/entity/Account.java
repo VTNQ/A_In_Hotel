@@ -48,7 +48,7 @@ public class Account implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private Staff staff;
     @OneToOne(mappedBy = "account",fetch = FetchType.LAZY)
     private Customer customer;

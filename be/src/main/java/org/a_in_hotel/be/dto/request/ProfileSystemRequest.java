@@ -13,5 +13,6 @@ public class ProfileSystemRequest {
     private String fullName;
     private String phone;
     private LocalDate birthday;
+    private String email;
     private Integer gender;
 }

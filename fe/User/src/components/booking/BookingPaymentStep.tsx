@@ -6,6 +6,7 @@ import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import { formatBookingDateRange } from "../../util/formatDate";
 import { getRoomById } from "../../service/api/Room";
 import { estimateServicePrice } from "../../util/estimateServicePrice";
+import { validateVoucher } from "../../service/api/Voucher";
 
 const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
   const nights = useMemo(() => {
@@ -17,9 +18,53 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
       Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)),
     );
   }, [schedule.checkInDate, schedule.checkOutDate]);
+  const [isCheckVoucher, setIsCheckingVoucher] = useState(false);
+  const [voucherError, setVoucherError] = useState("");
+  const [voucherSuccess, setVoucherSuccess] = useState("");
   const { search } = useBookingSearch();
   const [loading, setLoading] = useState(false);
   const [room, setRoom] = useState<any>(null);
+  const handleApplyVoucher = async () => {
+    if (!data.voucherCode) {
+      setVoucherError("Vui lòng nhập mã voucher");
+      setVoucherSuccess("");
+      return;
+    }
+    try {
+      setIsCheckingVoucher(true);
+      setVoucherError("");
+      setVoucherSuccess("");
+      const res = await validateVoucher({
+        voucherCode: data.voucherCode,
+        totalAmount: total,
+        nights: nights,
+        roomTypeIds: [room?.categoryId],
+      });
+      const discountAmount = res.data?.data?.discountAmount || 0;
+
+      onChange((prev: any) => ({
+        ...prev,
+        discountAmount: discountAmount,
+      }));
+      setVoucherSuccess("Voucher applied successfully");
+    } catch (err: any) {
+      onChange((prev: any) => ({
+        ...prev,
+        discountAmount: 0,
+      }));
+
+      setVoucherSuccess("");
+      onChange((prev: any) => ({
+        ...prev,
+        voucherCode: "",
+      }));
+      setVoucherError(
+        err?.response?.data?.message || "Invalid or expired voucher",
+      );
+    }finally {
+      setIsCheckingVoucher(false);
+    }
+  };
   useEffect(() => {
     if (!search?.roomId) return; // ✅ tránh gọi API sai
 
@@ -46,25 +91,30 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
     (sum: number, s: any) => sum + s.estimated,
     0,
   );
-  const total = search?.totalPrice + servicesTotal;
+  const total = Math.max(
+    0,
+    Number(search?.totalPrice || 0) +
+      Number(servicesTotal || 0) -
+      Number(data?.discountAmount || 0),
+  );
   const paidAmount = Number(total * 0.5);
   const outstanding = Math.max(0, Number(total) - paidAmount);
-if (loading) {
-  return (
-    <div className="grid lg:grid-cols-12 gap-8 animate-pulse">
-      {/* LEFT */}
-      <div className="lg:col-span-7 space-y-6">
-        <div className="h-40 bg-gray-200 rounded-xl" />
-        <div className="h-60 bg-gray-200 rounded-xl" />
-      </div>
+  if (loading) {
+    return (
+      <div className="grid lg:grid-cols-12 gap-8 animate-pulse">
+        {/* LEFT */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="h-40 bg-gray-200 rounded-xl" />
+          <div className="h-60 bg-gray-200 rounded-xl" />
+        </div>
 
-      {/* RIGHT */}
-      <div className="lg:col-span-5 space-y-4">
-        <div className="h-80 bg-gray-200 rounded-xl" />
+        {/* RIGHT */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="h-80 bg-gray-200 rounded-xl" />
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
   return (
     <div className="grid lg:grid-cols-12 gap-8">
       <div className="lg:col-span-7 space-y-8">
@@ -124,6 +174,64 @@ if (loading) {
           <h2 className="font-sans text-[20px] line-clamp-1 font-semibold mb-[16px] text-on-surface">
             Payment Method
           </h2>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-on-surface mb-2">
+              Voucher Code
+            </label>
+
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={data.voucherCode || ""}
+                  onChange={(e) =>
+                    onChange((prev: any) => ({
+                      ...prev,
+                      voucherCode: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter voucher code"
+                  className="flex-1 h-[44px] px-4 border border-outline-variant rounded-lg
+                   outline-none transition-all text-sm
+                   focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+
+                <button
+                  type="button"
+                  disabled={isCheckVoucher}
+                  onClick={handleApplyVoucher}
+                  className={`min-w-[110px] h-[44px] px-5 rounded-lg text-sm font-medium
+                    transition-all flex items-center justify-center
+                    ${
+                      isCheckVoucher
+                        ? "bg-gray-400 text-white cursor-not-allowed opacity-70"
+                        : "bg-on-surface text-white hover:opacity-90"
+                    }`}
+                >
+                  {isCheckVoucher ? "Checking..." : "Apply"}
+                </button>
+              </div>
+
+              {voucherError && (
+                <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-200">
+                  <p className="text-sm text-red-500">{voucherError}</p>
+                </div>
+              )}
+
+              {voucherSuccess && (
+                <div className="px-3 py-2 rounded-lg bg-green-50 border border-green-200">
+                  <p className="text-sm text-green-600 font-medium">
+                    {voucherSuccess}
+                  </p>
+
+                  <p className="text-sm text-green-500 mt-1">
+                    Discount: -$
+                    {Number(data?.discountAmount || 0).toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
           <div className="space-y-7">
             <label className="block relative cursor-pointer group">
               <input
@@ -293,7 +401,14 @@ if (loading) {
           </div> */}
         </div>
       </div>
-      <BookingPaymentSummary room={room} search={search} nights={nights} services={services} total={total} />
+      <BookingPaymentSummary
+        room={room}
+        search={search}
+        nights={nights}
+        discountAmount={data.discountAmount}
+        services={services}
+        total={total}
+      />
     </div>
   );
 };

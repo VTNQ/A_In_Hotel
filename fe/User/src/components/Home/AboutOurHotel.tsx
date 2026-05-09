@@ -30,8 +30,8 @@ const AboutOurHotel = () => {
     <section className="relative w-full min-h-[600px] sm:min-h-[700px] lg:h-[800px] overflow-hidden">
       {/* Background */}
       <img
-        src={File_URL + settingContent.backgroundImage.url}
-        alt={settingContent.backgroundImage.altText}
+        src={File_URL + settingContent.backgroundImage?.url}
+        alt={settingContent.backgroundImage?.altText}
         className="absolute inset-0 w-full h-full object-cover"
       />
 

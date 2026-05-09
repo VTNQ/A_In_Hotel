@@ -27,7 +27,7 @@ const BookingPage = () => {
   const [payment, setPayment] = useState(booking.payment || {});
   const [currentStep, setCurrentStep] = useState(booking.step || 0);
   const expiredAt = Number(booking?.countdown?.expiredAt);
-  
+
   const getInitialTime = () => {
     if (!Number.isFinite(expiredAt)) return 15 * 60;
 
@@ -40,7 +40,7 @@ const BookingPage = () => {
   // ========================
   // AUTO EXPIRE BOOKING
   // ========================
-  
+
   useEffect(() => {
     if (!Number.isFinite(expiredAt)) return;
 
@@ -116,7 +116,10 @@ const BookingPage = () => {
   };
   const nextStep = async () => {
     if (!validateStep()) return;
-
+    if (currentStep === BookingSteps.length - 1) {
+      await handleSubmit();
+      return;
+    }
     updateBooking({
       guest,
       selectDate: schedule,
@@ -133,9 +136,6 @@ const BookingPage = () => {
 
       return next;
     });
-    if (currentStep === BookingSteps.length - 1) {
-      await handleSubmit();
-    }
   };
   const isNextDisabled = () => {
     if (currentStep === 0) {
@@ -195,7 +195,7 @@ const BookingPage = () => {
 
     // ===== BASE PRICE =====
     const basePrice = Number(search?.totalPrice || 0);
-    console.log(basePrice);
+
     // ===== ROOM DETAILS =====
     const roomDetails = search?.roomId
       ? [
@@ -244,7 +244,9 @@ const BookingPage = () => {
 
       // ===== AMOUNT =====
       originalAmount: originalTotal,
-      totalPrice: Math.max(0, originalTotal),
+      voucherCode: payment?.voucherCode || "",
+      discountAmount: payment?.discountAmount || 0,
+      totalPrice: Math.max(0, originalTotal - (payment?.discountAmount || 0)),
 
       // ===== PAYMENT =====
       payment: {

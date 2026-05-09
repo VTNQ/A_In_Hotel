@@ -1,12 +1,23 @@
 import { Navigate } from "react-router-dom";
-import { useBookingSearch } from "../context/booking/BookingSearchContext"
+import { useBookingSearch } from "../context/booking/BookingSearchContext";
 
-const BookingGuard = ({Children}:any)=>{
-    const {search} = useBookingSearch();
-    if(search === undefined) return null;
-    if(!search?.hotelId || !search?.roomId || !search.checkIn || !search?.checkOut){
-        return <Navigate to="/" replace/>
+const BookingGuard = ({ children }: any) => {
+    const { search } = useBookingSearch();
+
+    console.log(search);
+
+    if (search === undefined) return null;
+
+    if (
+        !search?.hotelId ||
+        !search?.roomId ||
+        !search?.checkIn ||
+        !search?.checkOut
+    ) {
+        return <Navigate to="/" replace />;
     }
-    return Children;
-}
+
+    return children;
+};
+
 export default BookingGuard;

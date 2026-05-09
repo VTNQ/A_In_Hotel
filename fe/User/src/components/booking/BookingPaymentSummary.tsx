@@ -1,6 +1,13 @@
 import { ArrowRight, Verified } from "lucide-react";
 
-const BookingPaymentSummary = ({ room, search, nights, services,total }: any) => {
+const BookingPaymentSummary = ({
+  room,
+  search,
+  nights,
+  services,
+  total,
+  discountAmount = 0,
+}: any) => {
   return (
     <div className="lg:col-span-5">
       <div className="bg-white border border-outline-variant rounded-xl p-[24px] top-24 shadow-sm">
@@ -16,6 +23,15 @@ const BookingPaymentSummary = ({ room, search, nights, services,total }: any) =>
               ${search.totalPrice.toLocaleString()}
             </span>
           </div>
+           {discountAmount > 0 && (
+            <div className="flex justify-between items-center text-[14px]">
+              <span className="text-green-600">Voucher Discount</span>
+
+              <span className="font-semibold text-green-600">
+                -${Number(discountAmount).toLocaleString()}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between items-center text-[14px] line-clamp-1 font-normal">
             <span className="text-on-surface">Spa & Wellness Package</span>
             <span className="font-semibold">$150.00</span>

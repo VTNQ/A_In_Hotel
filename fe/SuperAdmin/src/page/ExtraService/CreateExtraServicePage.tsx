@@ -10,15 +10,15 @@ import { addExtraService } from "@/service/api/facilities";
 import { getAllHotel } from "@/service/api/Hotel";
 import { createImageExtraServiceSchema } from "@/validation/image.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
 
 const CreateExtraServicePage = () => {
-   const { t } = useTranslation();
-   const extraServiceSchema = z.object({
+  const { t } = useTranslation();
+  const extraServiceSchema = z.object({
     serviceName: z
       .string()
       .min(1, t("extraService.validate.serviceNameRequired")),
@@ -26,7 +26,6 @@ const CreateExtraServicePage = () => {
     categoryId: z.string().min(1, t("extraService.validate.categoryRequired")),
 
     description: z.string().optional(),
-   
 
     note: z.string().optional(),
     hotelId: z.string().min(1, t("extraService.validate.hotelRequired")),
@@ -42,7 +41,6 @@ const CreateExtraServicePage = () => {
   });
   type FormData = z.infer<typeof extraServiceSchema>;
   const {
-
     handleSubmit,
     reset,
     watch,
@@ -86,7 +84,7 @@ const CreateExtraServicePage = () => {
         all: true,
         filter: "status==1",
       });
-      console.log(res)
+      console.log(res);
       setHotels(res?.data?.content || []);
     } catch (error) {
       console.error(error);
@@ -97,13 +95,9 @@ const CreateExtraServicePage = () => {
     fetchCategories();
     fetchHotels();
   }, []);
- 
- 
 
   const onSubmit = async (data: FormData) => {
-  
     try {
-     
       const payload = {
         serviceName: data.serviceName.trim(),
         categoryId: Number(data.categoryId),
@@ -131,7 +125,7 @@ const CreateExtraServicePage = () => {
         hotelId: "",
         icon: null,
       });
-      setImagePreview(null)
+      setImagePreview(null);
     } catch (err: any) {
       showAlert({
         title:
@@ -140,7 +134,7 @@ const CreateExtraServicePage = () => {
         type: "error",
         autoClose: 4000,
       });
-    } 
+    }
   };
   return (
     <div className="space-y-8">
@@ -164,12 +158,12 @@ const CreateExtraServicePage = () => {
             </label>
             <Input
               placeholder={t("extraService.createOrUpdate.namePlaceHolder")}
-              onChange={(e)=>{
-                setValue("serviceName",e.target.value,{
-                  shouldValidate:true,
-                  shouldDirty:true
-                })
-                trigger("serviceName")
+              onChange={(e) => {
+                setValue("serviceName", e.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("serviceName");
               }}
               value={watch("serviceName")}
               className="mt-1"
@@ -189,12 +183,12 @@ const CreateExtraServicePage = () => {
               placeholder={t(
                 "extraService.createOrUpdate.descriptionPlaceHolder",
               )}
-              onChange={(e)=>{
-                setValue("description",e.target.value,{
-                  shouldValidate:true,
-                  shouldDirty:true
-                })
-                trigger("description")
+              onChange={(e) => {
+                setValue("description", e.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("description");
               }}
               value={watch("description")}
               className="mt-1"
@@ -209,25 +203,24 @@ const CreateExtraServicePage = () => {
             label={t("extraService.category")}
             items={categories}
             value={watch("categoryId")}
-            onChange={(v) =>{
-              setValue("categoryId",String(v),{
-                shouldValidate:true,
-                shouldDirty:true
-              })
-              trigger("categoryId")
-            }
-            }
+            onChange={(v) => {
+              setValue("categoryId", String(v), {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("categoryId");
+            }}
             isRequired={true}
             placeholder={t("facility.form.categoryPlaceholder")}
             getValue={(i) => i.id}
             getLabel={(i) => i.name}
           />
-        {errors.categoryId && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.categoryId.message}
-              </p>
-        )}
-      
+          {errors.categoryId && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.categoryId.message}
+            </p>
+          )}
+
           <div>
             <label className="text-sm font-medium">
               {t("extraService.extraCharge")}{" "}
@@ -236,12 +229,12 @@ const CreateExtraServicePage = () => {
             <Input
               name="extraCharge"
               placeholder="Enter extra charge"
-              onChange={(e)=>{
-                setValue("extraCharge",e.target.value,{
-                  shouldValidate:true,
-                  shouldDirty:true
-                })
-                trigger("extraCharge")
+              onChange={(e) => {
+                setValue("extraCharge", e.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                trigger("extraCharge");
               }}
               value={watch("extraCharge")}
               className="mt-1"
@@ -259,23 +252,25 @@ const CreateExtraServicePage = () => {
           </label>
           <SelectField
             items={hotels}
-            value={watch("hotelId")}
-            onChange={(v) =>{
-              setValue("hotelId",String(v),{
-                shouldValidate:true,
-                shouldDirty:true
-              })
-              trigger("hotelId")
+            value={String(watch("hotelId") || "")}
+            onChange={(v) => {
+              setValue("hotelId", String(v), {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+
+              trigger("hotelId");
             }}
             isRequired={true}
             placeholder={t("extraService.createOrUpdate.hotelPlaceHolder")}
-            getValue={(i) => i.id}
+            getValue={(i) => String(i.id)}
             getLabel={(i) => i.name}
+       
           />
           {errors.hotelId && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.hotelId.message}
-              </p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.hotelId.message}
+            </p>
           )}
         </div>
         <div>
@@ -285,21 +280,19 @@ const CreateExtraServicePage = () => {
           <Textarea
             name="note"
             value={watch("note")}
-            onChange={(e)=>{
-              setValue("note",e.target.value,{
-                shouldValidate:true,
-                shouldDirty:true
-              })
-              trigger("note")
+            onChange={(e) => {
+              setValue("note", e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              trigger("note");
             }}
             placeholder={t("common.notePlaceholder")}
             rows={3}
             className="mt-1"
           />
           {errors.note && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.note.message}
-              </p>
+            <p className="text-red-500 text-sm mt-1">{errors.note.message}</p>
           )}
         </div>
         <div className="space-y-2">
@@ -364,7 +357,7 @@ const CreateExtraServicePage = () => {
                     type="button"
                     onClick={() => {
                       setImagePreview(null);
-                      setValue("icon",null);
+                      setValue("icon", null);
 
                       if (fileInputRef.current) {
                         fileInputRef.current.value = "";
@@ -379,9 +372,9 @@ const CreateExtraServicePage = () => {
             </div>
           </div>
           {errors.icon && (
-              <p className="text-red-500 text-sm mt-1">
-                {String(errors.icon.message)}
-              </p>
+            <p className="text-red-500 text-sm mt-1">
+              {String(errors.icon.message)}
+            </p>
           )}
         </div>
         <div className="flex justify-end gap-3 border-t pt-4">
