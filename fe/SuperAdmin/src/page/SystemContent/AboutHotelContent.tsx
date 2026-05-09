@@ -5,7 +5,7 @@ import {
 } from "@/service/api/SystemContent";
 import { File_URL } from "@/setting/constant/app";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import z from "zod";
@@ -60,8 +60,7 @@ const AboutHotelContent = () => {
     handleSubmit,
     reset,
     setValue,
-    watch,
-    formState: { errors },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<AboutHotelContentForm>({
     resolver: zodResolver(aboutHotelSchema),
     mode: "onBlur",
@@ -73,18 +72,25 @@ const AboutHotelContent = () => {
       image: null,
     },
   });
+  const [preview, setPreview] = useState<string>("");
   const { showAlert } = useAlert();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getSystemContentByKey(1);
+        const data = response.data.data;
+
         reset({
-          id: response.data.data.id,
-          description: response.data.data.description || "",
-          ctaText: response.data.data.ctaText,
-          title: response.data.data.title,
-          image: File_URL + response.data.data.backgroundImage?.url || "",
+          id: String(data.id),
+          description: data.description || "",
+          ctaText: data.ctaText || "",
+          title: data.title || "",
+          image: null,
         });
+
+        setPreview(
+          data.backgroundImage?.url ? File_URL + data.backgroundImage.url : "",
+        );
       } catch (err: any) {
         console.log(err);
       }
@@ -93,11 +99,17 @@ const AboutHotelContent = () => {
   }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setValue("image", e.target.files[0]);
+    const file = e.target.files?.[0] ?? null;
+
+    setValue("image", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    if (file) {
+      setPreview(URL.createObjectURL(file));
     }
   };
-
   const onSubmit = async (data: AboutHotelContentForm) => {
     try {
       const payload = {
@@ -125,12 +137,7 @@ const AboutHotelContent = () => {
       });
     }
   };
- const imageValue = watch("image");
-
-const previewImage =
-  imageValue instanceof File
-    ? URL.createObjectURL(imageValue)
-    : imageValue || "";
+  console.log(errors)
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -224,7 +231,7 @@ const previewImage =
               </label>
               <input
                 type="text"
-               {...register("ctaText")}
+                {...register("ctaText")}
                 placeholder={t("systemContent.aboutHotel.form.ctaPlaceholder")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -244,10 +251,10 @@ const previewImage =
 
               <div className="flex gap-4 items-start">
                 {/* Preview Image */}
-                {previewImage && (
+                {preview && (
                   <div className="w-[140px] h-[140px] rounded-md overflow-hidden border">
                     <img
-                      src={previewImage}
+                      src={preview}
                       alt="Preview"
                       className="w-full h-full object-cover"
                     />
@@ -280,9 +287,17 @@ const previewImage =
             </button>
             <button
               onClick={handleSubmit(onSubmit)}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              disabled={isSubmitting || !isValid}
+              className={`
+    px-4 py-2 rounded-md text-white transition
+    ${
+      isSubmitting || !isValid
+        ? "bg-gray-400 cursor-not-allowed opacity-70"
+        : "bg-blue-600 hover:bg-blue-700"
+    }
+  `}
             >
-              {t("common.saveChanges")}
+              {isSubmitting ? t("common.saving") : t("common.saveChanges")}
             </button>
           </div>
         </div>

@@ -146,8 +146,18 @@ const EditBlog: React.FC<BlogEditProps> = ({
     fetchData();
   }, [open, blogId]);
 
-  const handleBannerImage = (files: File[] | null) =>
-    setValue("image", files?.[0] ?? null);
+const handleBannerImage = (files: File[] | null) => {
+  const file = files?.[0] ?? null;
+
+  setValue("image", file, {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
+
+  if (file) {
+    setDefaultPreview(URL.createObjectURL(file));
+  }
+};
   const onSubmitForm = async (data: FormData) => {
     try {
       const cleanedData = Object.fromEntries(
