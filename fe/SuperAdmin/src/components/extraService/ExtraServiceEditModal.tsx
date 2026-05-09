@@ -181,7 +181,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
   };
 
   if (!open || !extraServiceId) return null;
-  console.log(errors)
+
   /* ================= UI ================= */
 
   return (
