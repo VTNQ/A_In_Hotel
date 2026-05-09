@@ -200,7 +200,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
               <Button
                 variant="outline"
                 onClick={handleClose}
-                disabled={isSubmitting || !isValid}
+
               >
                 {t("common.cancel")}
               </Button>
