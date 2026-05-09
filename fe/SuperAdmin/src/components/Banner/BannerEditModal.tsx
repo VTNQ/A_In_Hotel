@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import z from "zod";
 import { createImageBannerSchema } from "@/validation/image.validation";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const BannerEditModal: React.FC<BannerEditProps> = ({
   open,
   bannerId,
@@ -36,7 +37,7 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
   );
   const bannerSchema = z
     .object({
-      id: z.string(),
+      id: z.string().optional(),
       name: z.string().min(1, t("banner.validate.nameRequired")),
 
       startDate: z.date({
@@ -78,6 +79,7 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
     trigger,
     formState: { errors, isValid, isSubmitting },
   } = useForm<BannerForm>({
+    resolver: zodResolver(bannerSchema),
     mode: "onChange",
     defaultValues: {
       id: "",
@@ -142,10 +144,9 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
       minutes
     );
   };
+  console.log(errors)
   const onSubmitForm = async (data: BannerForm) => {
-    
     try {
-   
       const cleanedData = Object.fromEntries(
         Object.entries({
           name: data.name,
@@ -182,7 +183,7 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } 
+    }
   };
 
   const fullToolbar = {
@@ -219,8 +220,19 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
     });
     onClose();
   };
-  const handleBannerImage = (files: File[] | null) =>
-    setValue("bannerImage", files?.[0] ?? null);
+  const handleBannerImage = (files: File[] | null) => {
+    const file = files?.[0] ?? null;
+
+    setValue("bannerImage", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    // update preview khi chọn ảnh mới
+    if (file) {
+      setDefaultPreview(URL.createObjectURL(file));
+    }
+  };
   if (!open || !bannerId) return <></>;
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
@@ -387,7 +399,10 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+              <Button
+                onClick={handleSubmit(onSubmitForm)}
+                disabled={isSubmitting || !isValid}
+              >
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>

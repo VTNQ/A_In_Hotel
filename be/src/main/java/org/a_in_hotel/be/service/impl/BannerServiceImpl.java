@@ -101,7 +101,7 @@ public class BannerServiceImpl implements BannerService {
                     throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,"Lỗi upload file: " + e.getMessage());
                 }
                 Image newImage = bannerImageMapper.toBannerImage(meta);
-                newImage.setEntityType("Asset");
+                newImage.setEntityType("banner");
                 newImage.setEntityId(banner.getId());
                 bannerImageRepository.save(newImage);
             }

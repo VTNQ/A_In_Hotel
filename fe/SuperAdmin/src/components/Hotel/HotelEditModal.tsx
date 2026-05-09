@@ -218,7 +218,7 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
       });
     } 
   };
-
+  console.log(errors)
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent

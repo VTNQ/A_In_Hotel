@@ -259,21 +259,24 @@ const UpdateVoucher = ({
         reset({
           voucherCode: voucher.voucherCode,
           voucherName: voucher.voucherName,
-          type: voucher.type,
+          type: String(voucher.type),
           description: voucher.description,
-          value: voucher.value,
-          maxDiscountValue: voucher.maxDiscountValue,
-          bookingType: voucher.bookingType,
-          minimumStay: voucher.minimumStay,
+          value: String(voucher.value),
+          maxDiscountValue: String(voucher.maxDiscountValue),
+          bookingType: String(voucher.bookingType),
+          minimumStay: String(voucher.minimumStay),
           customerType: voucher.customerType,
           usageType: voucher.usageType,
-          usageLimit: voucher.usageLimit,
-          usagePerCustomer: voucher.usagePerCustomer,
-          startDate: voucher.startDate,
-          endDate: voucher.endDate,
+          usageLimit: String(voucher.usageLimit),
+          usagePerCustomer: String(voucher.usagePerCustomer),
+          startDate: voucher.startDate
+            ? new Date(voucher.startDate)
+            : undefined,
+
+          endDate: voucher.endDate ? new Date(voucher.endDate) : undefined,
           stackWithPromotion: voucher.stackWithPromotion,
           stackWithOtherVoucher: voucher.stackWithOtherVoucher,
-          priority: voucher.priority,
+          priority: String(voucher.priority),
 
           // 3. Map roomTypes theo voucher
           roomTypes: categories.map((room: any) => {
@@ -439,6 +442,7 @@ const UpdateVoucher = ({
     }
   };
   if (!isOpen) return <></>;
+ 
   return (
     <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
@@ -737,7 +741,7 @@ const UpdateVoucher = ({
                       }}
                       size="sm"
                       fullWidth={true}
-                      getValue={(i) => i.value}
+                      getValue={(i) => String(i.value)}
                       getLabel={(i) => i.label}
                     />
                   </div>
@@ -1038,7 +1042,7 @@ const UpdateVoucher = ({
               </Button>
               <Button
                 onClick={handleSubmit(onSubmit)}
-                disabled={loading || isSubmitting || !isValid}
+                disabled={loading || isSubmitting  || !isValid}
                 className="w-full sm:w-auto min-w-[140px]"
               >
                 {isSubmitting ? t("common.saving") : t("common.save")}
