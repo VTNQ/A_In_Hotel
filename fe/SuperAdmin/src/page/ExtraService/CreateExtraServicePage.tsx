@@ -212,7 +212,7 @@ const CreateExtraServicePage = () => {
             }}
             isRequired={true}
             placeholder={t("facility.form.categoryPlaceholder")}
-            getValue={(i) => i.id}
+            getValue={(i) => String(i.id)}
             getLabel={(i) => i.name}
           />
           {errors.categoryId && (
@@ -265,7 +265,6 @@ const CreateExtraServicePage = () => {
             placeholder={t("extraService.createOrUpdate.hotelPlaceHolder")}
             getValue={(i) => String(i.id)}
             getLabel={(i) => i.name}
-       
           />
           {errors.hotelId && (
             <p className="text-red-500 text-sm mt-1">
