@@ -21,6 +21,7 @@ public interface AccountMapper extends CommonMapper {
     @Mapping(target = "staff.phone",source = "dto.phone")
     @Mapping(target = "staff.birthday",source = "dto.birthday")
     @Mapping(target = "staff.gender",source = "dto.gender")
+    @Mapping(target = "email", source = "dto.email")
     @Mapping(target = "updatedBy", source = "userId")
     void toProfileEntity(@MappingTarget Account account,ProfileSystemRequest dto,Long userId);
 

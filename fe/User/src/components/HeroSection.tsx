@@ -55,7 +55,7 @@ const HeroSlider = () => {
           key={current}
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${File_URL + banners[current].image.url})`,
+            backgroundImage: `url(${File_URL + banners[current].image?.url})`,
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

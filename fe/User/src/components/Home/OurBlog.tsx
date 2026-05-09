@@ -34,8 +34,8 @@ const OurBlog = () => {
             >
               <div className="overflow-hidden">
                 <img
-                  src={File_URL + blog.image.url}
-                  alt={blog.image.altText}
+                  src={File_URL + blog.image?.url}
+                  alt={blog.image?.altText}
                   className="
                     w-full
                     h-[260px]

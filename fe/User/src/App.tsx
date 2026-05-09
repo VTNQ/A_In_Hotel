@@ -18,6 +18,7 @@ import BookingPage from "./pages/BookingPage";
 import BookingGuard from "./guards/BookingGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import FranchiseLandingPage from "./pages/FranchiseLandingPage";
+import ProfilePage from "./pages/ProfilePage";
 function App() {
   return (
     <Routes>
@@ -35,6 +36,7 @@ function App() {
             </BookingGuard>
           }
         />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/my-booking/:id" element={<BookingDetailPage />} />
         <Route path="/Room/:id" element={<RoomDetailPage />} />

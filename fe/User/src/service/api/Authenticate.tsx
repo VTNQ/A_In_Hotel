@@ -19,6 +19,20 @@ export const register = async (data:any)=>{
 }
 
 export const getProfile = async () => {
-  const response = await Http.get("/api/account/user/profile");
+  const response = await Http.get("/api/account/me/profile");
   return response.data;
-};
+};  
+export const updateProfile = async (data:any)=>{
+  const formData = new FormData();
+  Object.entries(data).forEach(([key, value]) => {
+    if (key !== "image" && value !== undefined && value !== null) {
+      formData.append(key, value.toString());
+    }
+  });
+  if (data.image) {
+    formData.append("image", data.image);
+  }
+  return await Http.patch("/api/account/me", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+}

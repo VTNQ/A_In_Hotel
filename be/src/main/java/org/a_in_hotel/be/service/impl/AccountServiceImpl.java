@@ -199,38 +199,79 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public void updateProfileSystem(ProfileSystemRequest request, MultipartFile image) {
-        Account account = accountRepository.findById(securityUtils.getCurrentUserId())
-                .orElseThrow(()->new IllegalArgumentException("account not found"));
-        Image oldImage = imageRepository.findFirstByEntityIdAndEntityType(account.getId(),
-                "avatar").orElse(null);
+
+        Account account = accountRepository
+                .findById(securityUtils.getCurrentUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        // tạo staff nếu chưa có
         if (account.getStaff() == null) {
             Staff staff = new Staff();
             staff.setAccount(account);
             account.setStaff(staff);
         }
-        accountMapper.toProfileEntity(account,request,securityUtils.getCurrentUserId());
-        if(image!=null && !image.isEmpty()){
-            if(oldImage!=null){
+
+        // update profile
+        accountMapper.toProfileEntity(
+                account,
+                request,
+               securityUtils.getCurrentUserId()
+        );
+
+        // save account trước
+        accountRepository.save(account);
+
+        /* ================= AVATAR ================= */
+
+        if (image != null && !image.isEmpty()) {
+
+            Image oldImage = imageRepository
+                    .findFirstByEntityIdAndEntityType(
+                            account.getId(),
+                            "avatar"
+                    )
+                    .orElse(null);
+
+            // xóa ảnh cũ
+            if (oldImage != null) {
+
                 try {
                     generalService.deleFile(oldImage.getUrl());
-                }catch (Exception e) {
-                    log.warn("⚠️ Không thể xóa ảnh cũ {}: {}", oldImage.getUrl(), e.getMessage());
+                } catch (Exception e) {
+                    log.warn(
+                            "⚠️ Không thể xóa ảnh cũ {}: {}",
+                            oldImage.getUrl(),
+                            e.getMessage()
+                    );
                 }
+
                 imageRepository.delete(oldImage);
             }
+
+            // upload ảnh mới
             FileUploadMeta meta;
+
             try {
                 meta = generalService.saveFile(image, "avatar");
-            }catch (IOException e) {
-                throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR,"Lỗi upload file: " + e.getMessage());
+            } catch (IOException e) {
+                throw new ErrorHandler(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Lỗi upload file: " + e.getMessage()
+                );
             }
+
             Image newImage = imageMapper.toBannerImage(meta);
+
             newImage.setEntityType("avatar");
             newImage.setEntityId(account.getId());
+
             imageRepository.save(newImage);
+
+            // set transient image
+            account.setImage(newImage);
         }
-        accountRepository.save(account);
     }
 
     @Override
