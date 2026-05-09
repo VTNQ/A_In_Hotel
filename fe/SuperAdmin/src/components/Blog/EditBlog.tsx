@@ -106,7 +106,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
     setValue,
     watch,
     trigger,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting ,isValid },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
     mode: "onChange",
@@ -359,7 +359,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting}>
+              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
