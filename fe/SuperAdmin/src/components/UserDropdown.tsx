@@ -33,7 +33,7 @@ export default function UserDropdown({
     }, []);
 
     return (
-        <div className="relative" ref={ref}>
+        <div className="" ref={ref}>
             {/* Avatar */}
             <button
                 onClick={() => setOpen(v => !v)}

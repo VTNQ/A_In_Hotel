@@ -1,10 +1,7 @@
 package org.a_in_hotel.be.mapper;
 
 import org.a_in_hotel.be.Enum.Gender;
-import org.a_in_hotel.be.dto.request.AccountDTO;
-import org.a_in_hotel.be.dto.request.ProfileSystemRequest;
-import org.a_in_hotel.be.dto.request.StaffRequest;
-import org.a_in_hotel.be.dto.request.UserDTO;
+import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.AccountResponse;
 import org.a_in_hotel.be.dto.response.ProfileSystemResponse;
 import org.a_in_hotel.be.entity.Account;
@@ -24,6 +21,13 @@ public interface AccountMapper extends CommonMapper {
     @Mapping(target = "email", source = "dto.email")
     @Mapping(target = "updatedBy", source = "userId")
     void toProfileEntity(@MappingTarget Account account,ProfileSystemRequest dto,Long userId);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "customer.firstName",source = "dto.firstName")
+    @Mapping(target = "customer.lastName",source = "dto.lastName")
+    @Mapping(target = "customer.phoneNumber",source = "dto.phoneNumber")
+    @Mapping(target = "email", source = "dto.email")
+    @Mapping(target = "updatedBy", source = "userId")
+    void toProfileCustomerEntity(@MappingTarget Account account, CustomerUpdateProfileDTO dto,Long userId);
 
     Account toEntityUser(UserDTO dto);
     @Mapping(target = "role",source = "dto.idRole",qualifiedByName = "mapRoleFromId")

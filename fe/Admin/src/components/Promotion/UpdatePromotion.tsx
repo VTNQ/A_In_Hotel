@@ -173,13 +173,13 @@ const UpdatePromotion = ({
           id: data.id.toString() || "",
           name: data.name ?? "",
           description: data.description ?? "",
-          type: String(data.type ?? "2"),
-          value: data.value ? String(data.value) : "",
-          priority: data.priority ? String(data.priority) : "",
+          type: String(data.type),
+          value: String(data.value),
+          priority:String(data.priority),
           startDate: data.startDate ?? "",
           endDate: data.endDate ?? "",
           bookingType: data.bookingType ?? 1,
-          minNights: data.minNights ? String(data.minNights) : "",
+          minNights: String(data.minNights),
           customerType: data.customerType ? String(data.customerType) : "0",
 
           // 🔥 QUAN TRỌNG NHẤT
@@ -246,6 +246,7 @@ const UpdatePromotion = ({
     onClose();
   };
   if (!isOpen || !promotionId) return <></>;
+  console.log(errors)
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
@@ -376,7 +377,7 @@ const UpdatePromotion = ({
               {!isFirstTab && (
                 <button
                   onClick={handleBack}
-                  disabled={loading || isSubmitting || !isValid}
+                  disabled={loading || isSubmitting }
                   className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
                 >
                   {t("promotion.back")}
@@ -387,7 +388,7 @@ const UpdatePromotion = ({
               {!isLastTab ? (
                 <button
                   onClick={handleNext}
-                  disabled={loading || isSubmitting || !isValid}
+                  disabled={loading || isSubmitting}
                   className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -396,13 +397,13 @@ const UpdatePromotion = ({
               ) : (
                 <button
                   onClick={handleSubmit(onSubmit)}
-                  disabled={loading || isSubmitting || !isValid}
+                  disabled={loading || isSubmitting || !isValid }
                   className="flex items-center justify-center gap-2 px-8 h-12 rounded-lg
                    bg-[#42578E] text-white font-semibold
                    hover:bg-[#536DB2]
                    disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {loading || isSubmitting || !isValid? (
+                  {loading || isSubmitting ? (
                     <>
                       <svg
                         className="animate-spin h-4 w-4 text-white"

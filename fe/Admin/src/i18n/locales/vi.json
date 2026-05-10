@@ -65,11 +65,13 @@
     "auth": {
         "changePassword": {
             "title": "Đổi mật khẩu",
+            "passwordNotMatch": "Mật khẩu xác nhận không khớp",
             "description": "Để đảm bảo an toàn cho tài khoản, vui lòng nhập mật khẩu hiện tại trước khi đặt mật khẩu mới.",
             "currentPassword": "Mật khẩu hiện tại",
             "newPassword": "Mật khẩu mới",
             "confirmPassword": "Xác nhận mật khẩu mới",
             "minLength": "Tối thiểu 8 ký tự",
+            "newPasswordRequired": "Vui lòng nhập mật khẩu mới",
             "ruleLength": "Ít nhất 8 ký tự",
             "ruleNumber": "Bao gồm số hoặc ký tự đặc biệt",
             "update": "Cập nhật mật khẩu",

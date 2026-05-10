@@ -609,6 +609,58 @@
             "genderPlaceholder": "Select gender"
         }
     },
+    "auth": {
+        "changePassword": {
+            "title": "Change Password",
+            "description": "To ensure your account’s safety, please provide your current password before setting a new one.",
+            "currentPassword": "Current Password",
+            "newPassword": "New Password",
+            "newPasswordRequired": "Please enter a new password",
+            "confirmPassword": "Confirm New Password",
+            "passwordNotMatch": "Passwords do not match",
+            "minLength": "Minimum 8 characters",
+            "ruleLength": "At least 8 characters long",
+            "ruleNumber": "Includes numbers or symbols",
+            "update": "Update Password",
+            "success": "Password changed successfully"
+        }
+    },
+    "profile": {
+        "validation": {
+            "fullNameRequired": "Please enter your full name",
+            "phoneRequired": "Please enter your phone number"
+        },
+        "title": "Profile Settings",
+        "personalInfo": "Personal Information",
+        "active": "ACTIVE",
+        "inactive": "INACTIVE",
+        "avatarNote1": "JPG, GIF or PNG",
+        "avatarNote2": "Max size 2MB",
+        "staffCode": "Staff Code",
+        "email": "Email Address",
+        "fullName": "Full Name",
+        "phone": "Phone Number",
+        "birthday": "Birthday",
+        "gender": "Gender",
+        "update": "Update Profile",
+        "updating": "Updating...",
+        "security": "Security Settings",
+        "changePassword": "Change Password",
+        "loading": "Loading profile...",
+        "selectGender": "Select gender",
+        "male": "Male",
+        "female": "Female",
+        "securityDesc": "Ensure your account is using a long, random password to stay secure.",
+        "accountDetails": "Account Details",
+        "role": "Role",
+        "assignedHotel": "Assigned Hotel",
+        "createdDate": "Created Date",
+        "roleNote": "Role and Hotel assignments are managed by the Head Administrator and cannot be changed here.",
+        "twoFactor": "Two-Factor Authentication",
+        "notEnabled": "Not Enabled",
+        "twoFactorDesc": "Add an extra layer of security to your account.",
+        "enable2fa": "Enable 2FA"
+    },
     "systemContent": {
         "breadcrumb": {
             "systemManagement": "System Management",

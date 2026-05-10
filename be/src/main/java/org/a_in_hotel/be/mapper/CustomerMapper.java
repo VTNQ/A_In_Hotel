@@ -25,6 +25,7 @@ public interface CustomerMapper {
     Customer toEntityUser(UserDTO userDTO);
 
     @Mapping(target = "email",source = "account.email")
+    @Mapping(target = "image", source = "account.image")
     CustomerProfileResponse toProfile(Customer customer);
 
     @Mapping(target = "fullName",

@@ -6,22 +6,23 @@ import jakarta.persistence.criteria.Expression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BookingStatus;
-import org.a_in_hotel.be.dto.response.BookingSummaryResponse;
-import org.a_in_hotel.be.dto.response.CustomerAggregateDTO;
-import org.a_in_hotel.be.dto.response.CustomerResponse;
-import org.a_in_hotel.be.dto.response.DetailCustomerResponse;
+import org.a_in_hotel.be.dto.request.CustomerUpdateProfileDTO;
+import org.a_in_hotel.be.dto.response.*;
+import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Customer;
 import org.a_in_hotel.be.entity.CustomerStats;
+import org.a_in_hotel.be.entity.Image;
 import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
+import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.mapper.CustomerDetailMapper;
 import org.a_in_hotel.be.mapper.CustomerMapper;
-import org.a_in_hotel.be.repository.BookingRepository;
-import org.a_in_hotel.be.repository.CustomerRepository;
-import org.a_in_hotel.be.repository.CustomerStatsRepository;
-import org.a_in_hotel.be.repository.RewardTransactionRepository;
+import org.a_in_hotel.be.mapper.ImageMapper;
+import org.a_in_hotel.be.repository.*;
 import org.a_in_hotel.be.service.CustomerService;
+import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
+import org.a_in_hotel.be.util.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,12 @@ public class CustomerServiceImpl implements CustomerService {
     private final RewardTransactionRepository rewardTransactionRepository;
     private final CustomerDetailMapper customerDetailMapper;
     private final CustomerMapper mapper;
+    private final GeneralService generalService;
+    private final ImageRepository imageRepository;
+    private final ImageMapper imageMapper;
+    private final AccountRepository accountRepository;
+    private final SecurityUtils securityUtils;
+    private final AccountMapper accountMapper;
     private static final List<String> SEARCH_FIELDS =
             List.of("customerCode", "firstName", "lastName", "phoneNumber", "account.email");
 
@@ -181,5 +190,67 @@ public class CustomerServiceImpl implements CustomerService {
                 nightsStayed,
                 totalRevenue
         );
+    }
+
+    @Override
+    public void updateCustomerProfile(CustomerUpdateProfileDTO request, MultipartFile file) {
+        Account account = accountRepository
+                .findById(securityUtils.getCurrentUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        if(account.getCustomer() == null){
+            Customer customer = new Customer();
+           customer.setAccount(account);
+           account.setCustomer(customer);
+        }
+        accountMapper.toProfileCustomerEntity(
+                account,request,securityUtils.getCurrentUserId());
+        accountRepository.save(account);
+        if (file != null && !file.isEmpty()) {
+
+            Image oldImage = imageRepository
+                    .findFirstByEntityIdAndEntityType(
+                            account.getId(),
+                            "avatar"
+                    )
+                    .orElse(null);
+
+            // xóa ảnh cũ
+            if (oldImage != null) {
+
+                try {
+                    generalService.deleFile(oldImage.getUrl());
+                } catch (Exception e) {
+                    log.warn(
+                            "⚠️ Không thể xóa ảnh cũ {}: {}",
+                            oldImage.getUrl(),
+                            e.getMessage()
+                    );
+                }
+
+                imageRepository.delete(oldImage);
+            }
+
+            // upload ảnh mới
+            FileUploadMeta meta;
+
+            try {
+                meta = generalService.saveFile(file, "avatar");
+            } catch (IOException e) {
+                throw new ErrorHandler(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Lỗi upload file: " + e.getMessage()
+                );
+            }
+
+            Image newImage = imageMapper.toBannerImage(meta);
+
+            newImage.setEntityType("avatar");
+            newImage.setEntityId(account.getId());
+
+            imageRepository.save(newImage);
+
+            // set transient image
+            account.setImage(newImage);
+        }
     }
 }

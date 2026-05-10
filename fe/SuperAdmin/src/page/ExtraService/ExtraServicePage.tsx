@@ -2,7 +2,10 @@ import { useAlert } from "@/components/alert-context";
 import ExtraServiceEditModal from "@/components/extraService/ExtraServiceEditModal";
 import ExtraServiceFilter from "@/components/extraService/ExtraServiceFilter";
 import ExtraServiceTable from "@/components/extraService/ExtraServiceTable";
-import { getExtraService, updateStatusFacilities } from "@/service/api/facilities";
+import {
+  getExtraService,
+  updateStatusFacilities,
+} from "@/service/api/facilities";
 import type { SortDir } from "@/type/common";
 import type { ExtraService } from "@/type/extraService.types";
 import type { StatusFilter } from "@/type/hotel.types";
@@ -15,14 +18,14 @@ const ExtraServicePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const {showAlert} = useAlert();
+  const { showAlert } = useAlert();
   const [total, setTotal] = useState(0);
   const pageSize = 5;
   const [extraService, setExtraService] = useState<ExtraService[]>([]);
   const [sortKey, setSortKey] = useState<keyof ExtraService | null>("id");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
-  const [hotelFilter,setHotelFilter]= useState("");
-  const [editModal,setEditModal] = useState<ExtraService | null>(null);
+  const [hotelFilter, setHotelFilter] = useState("");
+  const [editModal, setEditModal] = useState<ExtraService | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [filterCategory, setFilterCategory] = useState("");
   const buildParams = () => {
@@ -36,8 +39,8 @@ const ExtraServicePage = () => {
       filters.push(`category.id==${filterCategory}`);
     }
 
-    if(hotelFilter){
-      filters.push(`hotelId==${hotelFilter}`)
+    if (hotelFilter) {
+      filters.push(`hotelId==${hotelFilter}`);
     }
 
     const filterQuery = filters.join(" and ");
@@ -64,7 +67,15 @@ const ExtraServicePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, sortKey, sortDir, searchValue, filterCategory, statusFilter,hotelFilter]);
+  }, [
+    page,
+    sortKey,
+    sortDir,
+    searchValue,
+    filterCategory,
+    statusFilter,
+    hotelFilter,
+  ]);
   const handleSort = (key: keyof ExtraService) => {
     setPage(1);
 
@@ -78,25 +89,25 @@ const ExtraServicePage = () => {
     setSortKey(key);
   };
   const handleChangeStatus = async (id: number, next: any) => {
-    try{
+    try {
       setLoading(true);
-      await updateStatusFacilities(id,next);
+      await updateStatusFacilities(id, next);
       showAlert({
-                title: t("extraService.status.updateSuccess"),
-                type: "success",
-            });
-            fetchExtraService();
-    }catch(err:any){
+        title: t("extraService.status.updateSuccess"),
+        type: "success",
+      });
+      fetchExtraService();
+    } catch (err: any) {
       showAlert({
         title:
           err?.response?.data?.message ||
           "Failed to change status of service. Please try again.",
         type: "error",
       });
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
-  }
+  };
   useEffect(() => {
     fetchExtraService();
   }, [fetchExtraService]);
@@ -105,7 +116,6 @@ const ExtraServicePage = () => {
       <div className="space-y-4">
         <h1 className="text-xl font-semibold">{t("extraService.title")}</h1>
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
-          
           <ExtraServiceFilter
             search={searchValue}
             onSearchChange={setSearchValue}
@@ -124,10 +134,9 @@ const ExtraServicePage = () => {
           sortKey={sortKey}
           sortDir={sortDir}
           onSortChange={handleSort}
-          onActivate={(row) => handleChangeStatus(row.id,true)}
-          onDeactivate={(row) => handleChangeStatus(row.id,false)}
+          onActivate={(row) => handleChangeStatus(row.id, true)}
+          onDeactivate={(row) => handleChangeStatus(row.id, false)}
           onEdit={(row) => setEditModal(row)}
-
           page={page}
           pageSize={pageSize}
           total={total}

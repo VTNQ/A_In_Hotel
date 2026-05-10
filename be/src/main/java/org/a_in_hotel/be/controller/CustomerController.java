@@ -2,6 +2,7 @@ package org.a_in_hotel.be.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
+import org.a_in_hotel.be.dto.request.CustomerUpdateProfileDTO;
 import org.a_in_hotel.be.dto.response.BookingSummaryResponse;
 import org.a_in_hotel.be.dto.response.CustomerResponse;
 import org.a_in_hotel.be.dto.response.DetailCustomerResponse;
@@ -10,6 +11,7 @@ import org.a_in_hotel.be.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -32,6 +34,14 @@ public class CustomerController {
                     new PageResponse<>(service.getListCustomer(page,size,sort,filter,searchField,searchValue,all));
             return ResponseEntity.ok(RequestResponse.success(pageResponse));
 
+    }
+    @PatchMapping("/me")
+    public ResponseEntity<RequestResponse<Void>> updateProfile(
+            @ModelAttribute CustomerUpdateProfileDTO request,
+            @RequestParam(value = "image", required = false) MultipartFile file
+    ){
+        service.updateCustomerProfile(request,file);
+        return ResponseEntity.ok(RequestResponse.success("update profile successfully"));
     }
     @GetMapping("/{id}")
     public ResponseEntity<DetailCustomerResponse> getDetailCustomer(

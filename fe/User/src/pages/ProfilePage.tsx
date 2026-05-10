@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { getProfile, updateProfile } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
 import { File_URL } from "../setting/constant/app";
+import { clearTokens } from "../util/auth";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,8 @@ const ProfilePage = () => {
   } = useForm<accountProfile & { avatar: FileList }>({
     mode: "onBlur",
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phone: "",
     },
@@ -32,11 +35,12 @@ const ProfilePage = () => {
         setLoading(true);
         const profile = await getProfile();
         reset({
-          fullName: profile?.data?.fullName || "",
+          firstName: profile?.data?.firstName || "",
+          lastName: profile?.data?.lastName || "",
           email: profile?.data?.email || "",
-          phone: profile?.data?.phone || "",
+          phone: profile?.data?.phoneNumber || "",
         });
-        setAvatarPreview(File_URL+profile?.data?.image?.url || "");
+        setAvatarPreview(File_URL + profile?.data?.image?.url || "");
       } catch (err) {
         console.log(err);
       } finally {
@@ -45,6 +49,7 @@ const ProfilePage = () => {
     };
     fetchProfile();
   }, [reset]);
+  const navigate = useNavigate();
   const avatarRegister = register("avatar", {
     validate: {
       fileSize: (files) => {
@@ -76,7 +81,8 @@ const ProfilePage = () => {
   const onSubmit = async (data: accountProfile & { avatar: FileList }) => {
     try {
       const payload = {
-        fullName: data.fullName,
+        firstName: data.firstName,
+        lastName: data.lastName,
         phone: data.phone,
         email: data.email,
         image: data.avatar[0],
@@ -146,7 +152,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <h2 className="text-[24px] leading-6 font-headline font-normal text-[rgb(1,38,31)]">
-                  {values.fullName?.split(" ")[0]}
+                  {values.firstName?.split(" ")[0]}
                 </h2>
                 <span className="font-serif text-[rgb(149,72,36)] uppercase tracking-widest">
                   Village Member
@@ -178,12 +184,16 @@ const ProfilePage = () => {
                   Settings
                 </a>
                 <div className="pt-8 mt-8 border-t border-[rgb(113,121,118)]/10">
-                  <a
+                  <button
+                    onClick={()=>{
+                      clearTokens();
+                      navigate("/");
+                    }}
                     className="px-6 py-4 text-[rgb(186,26,26)] font-serif tracking-widest
                     hover:opacity-70 transition-all flex items-center gap-2 "
                   >
                     <LogOut /> Logout
-                  </a>
+                  </button>
                 </div>
               </nav>
             </div>
@@ -194,7 +204,7 @@ const ProfilePage = () => {
                 className="text-[48px] leading-3 font-normal text-[rgb(1,38,31)]"
                 style={{ letterSpacing: "-0.02em" }}
               >
-                Welcome back, {values.fullName?.split(" ")[0]}.
+                Welcome back, {values.firstName}.
               </h1>
               <p className="font-serif text-[rgb(65,72,70)] max-w-2xl">
                 You have been part of our village community since 2022. Explore
@@ -258,43 +268,81 @@ const ProfilePage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
                 {/* Full Name */}
+                {/* First Name */}
                 <div
                   className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl
-      p-6 shadow-sm"
+  p-6 shadow-sm"
                 >
                   <label
                     className="block text-[12px] tracking-[0.2em] uppercase
-        text-[rgb(65,72,70)] mb-3"
+    text-[rgb(65,72,70)] mb-3"
                   >
-                    Full Name
+                    First Name
                   </label>
 
                   {editing ? (
                     <>
                       <input
                         type="text"
-                        {...register("fullName", {
-                          required: "Full name is required",
+                        {...register("firstName", {
+                          required: "First name is required",
                         })}
                         className="w-full h-12 px-4 rounded-xl border
-            border-[rgb(113,121,118)]/20 bg-[#faf8f6]
-            outline-none focus:border-[rgb(149,72,36)]
-            transition-all"
+        border-[rgb(113,121,118)]/20 bg-[#faf8f6]
+        outline-none focus:border-[rgb(149,72,36)]
+        transition-all"
                       />
 
-                      {errors.fullName && (
+                      {errors.firstName && (
                         <p className="text-sm text-red-500 mt-2">
-                          {errors.fullName.message}
+                          {errors.firstName.message}
                         </p>
                       )}
                     </>
                   ) : (
                     <p className="text-[18px] text-[rgb(30,27,24)] font-medium">
-                      {values.fullName}
+                      {values.firstName}
                     </p>
                   )}
                 </div>
 
+                {/* Last Name */}
+                <div
+                  className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl
+  p-6 shadow-sm"
+                >
+                  <label
+                    className="block text-[12px] tracking-[0.2em] uppercase
+    text-[rgb(65,72,70)] mb-3"
+                  >
+                    Last Name
+                  </label>
+
+                  {editing ? (
+                    <>
+                      <input
+                        type="text"
+                        {...register("lastName", {
+                          required: "Last name is required",
+                        })}
+                        className="w-full h-12 px-4 rounded-xl border
+        border-[rgb(113,121,118)]/20 bg-[#faf8f6]
+        outline-none focus:border-[rgb(149,72,36)]
+        transition-all"
+                      />
+
+                      {errors.lastName && (
+                        <p className="text-sm text-red-500 mt-2">
+                          {errors.lastName.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-[18px] text-[rgb(30,27,24)] font-medium">
+                      {values.lastName}
+                    </p>
+                  )}
+                </div>
                 {/* Email */}
                 <div
                   className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl
@@ -339,7 +387,7 @@ const ProfilePage = () => {
 
                 {/* Phone */}
                 <div
-                  className="md:col-span-2 bg-white border border-[rgb(113,121,118)]/10
+                  className=" bg-white border border-[rgb(113,121,118)]/10
       rounded-2xl p-6 shadow-sm"
                 >
                   <label

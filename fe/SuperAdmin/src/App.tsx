@@ -34,6 +34,7 @@ import ViewVoucherPage from './page/Voucher/ViewVoucherPage'
 import CreateVoucherPage from './page/Voucher/CreateVoucherPage'
 import ViewCustomerPage from './page/Customer/ViewCustomerPage'
 import CustomerDetailPage from './page/Customer/CustomerDetailPage'
+import EditProfilePage from './page/EditProfilePage'
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
           <Route path='system-content/about-hotel' element={<AboutHotelContent/>}/>
           <Route path='ChildSuperAdmin/create' element={<CreateChildSuperAdminPage />} />
           <Route path='Admin' element={<ListAdminPage/>}/>
+          <Route path='profile' element={<EditProfilePage/>}/>
           <Route path='ChildSuperAdmin' element={<ListSuperAdminPage/>}/>
           <Route path='category' element={<ViewCategoryPage/>}/>
           <Route path='category/create' element={<CreateCategoryPage/>}/>

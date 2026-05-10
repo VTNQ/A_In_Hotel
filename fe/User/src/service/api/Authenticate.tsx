@@ -19,7 +19,7 @@ export const register = async (data:any)=>{
 }
 
 export const getProfile = async () => {
-  const response = await Http.get("/api/account/me/profile");
+  const response = await Http.get("/api/account/user/profile");
   return response.data;
 };  
 export const updateProfile = async (data:any)=>{
@@ -32,7 +32,7 @@ export const updateProfile = async (data:any)=>{
   if (data.image) {
     formData.append("image", data.image);
   }
-  return await Http.patch("/api/account/me", data, {
+  return await Http.patch("/api/customers/me", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }

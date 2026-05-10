@@ -10,12 +10,32 @@ export const login = async (username: string, password: string) => {
   );
   return response.data;
 }
+export const getProfile = async () => {
+  return await Http.get("/api/account/me/profile");
+};
+export const updateProfile = async (data: any) => {
+  const formData = new FormData();
+  Object.entries(data).forEach(([key, value]) => {
+    if (key !== "image" && value !== undefined && value !== null) {
+      formData.append(key, value.toString());
+    }
+  });
+  if (data.image) {
+    formData.append("image", data.image);
+  }
+  return await Http.patch("/api/account/me", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 export const refresh = async () => {
   return await Http.post(
     '/api/account/refresh',
     { refreshToken: getTokens()?.refreshToken },
     { skipAuth: true, withCredentials: true }
   );
+}
+export const changePassword = async (data:any)=>{
+  return await Http.put("/api/account/me/password",data)
 }
 export const getAll = async (options: GetAllOptions = {}) => {
   const {
