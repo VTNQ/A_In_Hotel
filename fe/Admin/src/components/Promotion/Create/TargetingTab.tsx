@@ -105,6 +105,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
+                  trigger("customerType")
                 }}
                 className="h-12 rounded-lg border px-4 bg-white border-[#4B62A0] outline-none"
               >
