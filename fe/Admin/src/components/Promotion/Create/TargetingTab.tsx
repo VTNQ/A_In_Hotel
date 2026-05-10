@@ -18,28 +18,30 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
       try {
         setLoading(true);
         setError(null);
+
         const response = await getAllCategory({
           all: true,
           filter: "isActive==1 and type==1",
         });
+
         const data = response.content || [];
+
         setCategories(data);
 
-        if (!roomTypes.length) {
-          setValue(
-            "roomTypes",
-            data.map((room: any) => ({
-              id: room.id,
-              excluded: false,
-            })),
-            {
-              shouldValidate: true,
-              shouldDirty: true,
-            },
-          );
-        }
-      } catch (err: any) {
+        // init roomTypes
+        setValue(
+          "roomTypes",
+          data.map((room: any) => ({
+            id: room.id,
+            excluded: false,
+          })),
+          {
+            shouldValidate: true,
+          },
+        );
+      } catch (err) {
         console.error(err);
+
         setError(
           t("promotion.loadErrorRoomType") || "Failed to load room types",
         );
@@ -47,26 +49,32 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
         setLoading(false);
       }
     };
+
     fetchData();
-  }, []);
+  }, [setValue, t]);
+
   const toggleRoomType = (roomId: number) => {
-    const updated = roomTypes.map((r: any) =>
-      r.id === roomId ? { ...r, excluded: !r.excluded } : r,
+    const updated = roomTypes.map((room: any) =>
+      room.id === roomId
+        ? {
+            ...room,
+            excluded: !room.excluded,
+          }
+        : room,
     );
 
     setValue("roomTypes", updated, {
       shouldValidate: true,
       shouldDirty: true,
     });
-
-    trigger("roomTypes");
   };
+
   const isAllSelected =
-    roomTypes.length > 0 && roomTypes.every((r: any) => r.excluded === true);
+    roomTypes.length > 0 && roomTypes.every((room: any) => room.excluded);
 
   const toggleSelectAll = () => {
-    const updated = roomTypes.map((r: any) => ({
-      ...r,
+    const updated = roomTypes.map((room: any) => ({
+      ...room,
       excluded: !isAllSelected,
     }));
 
@@ -74,10 +82,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
       shouldValidate: true,
       shouldDirty: true,
     });
-
-    trigger("roomTypes");
   };
-
   return (
     <div className="flex-1 overflow-y-auto px-10 py-8">
       <div className="mx-auto space-y-16">
@@ -127,6 +132,8 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
               <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
                 {t("promotion.targeting.roomTypes")}
               </label>
+
+              {/* Loading */}
               {loading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {Array.from({ length: 6 }).map((_, i) => (
@@ -144,16 +151,18 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                   {error}
                 </div>
               )}
+
+              {/* Content */}
               {!loading && !error && (
                 <div className="space-y-4">
-                  {/* Select All – luôn full width */}
+                  {/* Select all */}
                   <label
-                    className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all sm:col-span-2
-      ${
-        isAllSelected
-          ? "border-[#42578E] bg-[#42578E]/10"
-          : "border-dashed border-gray-300 bg-white"
-      }`}
+                    className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all
+        ${
+          isAllSelected
+            ? "border-[#42578E] bg-[#42578E]/10"
+            : "border-dashed border-gray-300 bg-white"
+        }`}
                   >
                     <input
                       type="checkbox"
@@ -161,27 +170,30 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                       onChange={toggleSelectAll}
                       className="w-5 h-5 text-[#42578E]"
                     />
+
                     <span className="text-sm font-bold text-[#253150]">
                       {t("promotion.targeting.selectAllRoomTypes")}
                     </span>
                   </label>
 
-                  {/* Room list */}
+                  {/* Room types */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {categories.map((room) => {
-                      const checked =
-                        watch("roomTypes").find((r: any) => r.id === room.id)
-                          ?.excluded === true;
+                    {categories.map((room: any) => {
+                      const selectedRoom = roomTypes.find(
+                        (r: any) => r.id === room.id,
+                      );
+
+                      const checked = selectedRoom?.excluded === true;
 
                       return (
                         <label
                           key={room.id}
                           className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all
-            ${
-              checked
-                ? "border-[#42578E] bg-[#42578E]/5"
-                : "border-gray-200 bg-white"
-            }`}
+              ${
+                checked
+                  ? "border-[#42578E] bg-[#42578E]/5"
+                  : "border-gray-200 bg-white hover:border-[#42578E]/40"
+              }`}
                         >
                           <input
                             type="checkbox"
@@ -189,6 +201,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                             onChange={() => toggleRoomType(room.id)}
                             className="w-5 h-5 text-[#42578E]"
                           />
+
                           <span className="text-sm font-semibold text-[#253150]">
                             {room.name}
                           </span>
@@ -211,19 +224,19 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                   return (
                     <label
                       key={type.value}
-                      className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all
-          ${
-            checked
-              ? "border-[#42578E] bg-[#42578E]/10"
-              : "border border-gray-200 bg-white hover:border-[#42578E]/40"
-          }`}
+                      className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all border
+      ${
+        checked
+          ? "border-[#42578E] bg-[#42578E]/10"
+          : "border-gray-200 bg-white hover:border-[#42578E]/40"
+      }`}
                     >
                       <input
                         type="radio"
-                        name="bookingType"
+                        value={type.value}
                         checked={checked}
                         onChange={() =>
-                          setValue("minNights", type.value, {
+                          setValue("bookingType", type.value, {
                             shouldValidate: true,
                             shouldDirty: true,
                           })

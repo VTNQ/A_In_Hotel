@@ -158,6 +158,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public CustomerProfileResponse getAccountUserProfile() {
         Account account = accountRepository.getReferenceById(securityUtils.getCurrentUserId());
+        imageRepository.findFirstByEntityIdAndEntityType(account.getId(), "avatar")
+                .ifPresent(account::setImage);
         return customerMapper.toProfile(account.getCustomer());
     }
 

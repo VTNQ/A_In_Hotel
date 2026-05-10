@@ -1,5 +1,6 @@
 export interface accountProfile {
-    fullName:string;
+    firstName:string;
+    lastName:string;
     email:string;
     phone:string;
 }

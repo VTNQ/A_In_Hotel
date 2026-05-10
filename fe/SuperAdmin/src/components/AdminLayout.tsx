@@ -234,6 +234,7 @@ export default function AdminLayout() {
             <UserDropdown
               name="Admin"
               email="admin@email.com"
+              onProfile={()=>navigate("/Home/profile")}
               avatarUrl="https://i.pravatar.cc/40?img=5"
               onLogout={() => {
                 clearTokens();

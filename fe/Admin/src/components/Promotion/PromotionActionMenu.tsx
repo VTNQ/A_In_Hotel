@@ -32,7 +32,7 @@ const PromotionActionMenu: React.FC<PromotionActionMenuProps> = ({
       ]
     : [
         {
-          label: t("promotion.view"),
+          label: t("common.view"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(promotion),
         },

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import {
-  type ChangePasswordForm,
-  type ChangePasswordProps,
-} from "../../type/authentication.types";
-import CommonModal from "../ui/CommonModal";
+
 import { Eye, EyeOff } from "lucide-react";
-import { changePassword } from "../../service/api/Authenticate";
 import { useAlert } from "../alert-context";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import type { ChangePasswordForm, ChangePasswordProps } from "@/type/Account/SuperAdmin/authentication.types";
+import { changePassword } from "@/service/api/Authenticate";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 const ChangePasswordModal = ({
   open,
@@ -29,7 +29,7 @@ const ChangePasswordModal = ({
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting,isValid },
   } = useForm<ChangePasswordForm>({
     mode: "onChange",
     defaultValues: {
@@ -74,31 +74,38 @@ const ChangePasswordModal = ({
     }
   };
   return (
-    <CommonModal
-      isOpen={open}
-      onClose={handleCancel}
-      title={t("auth.changePassword.title")}
-      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
-      cancelLabel={t("common.cancelButton")}
-      onSave={handleSubmit(onSubmitForm)}
-      width="w-[95vw] sm:w-[90vw] lg:w-[700px]"
-      diabled={isSubmitting}
-    >
-      <div className="px-6 py-5 space-y-5">
-        <p className="text-sm text-gray-500">
-          {t("auth.changePassword.description")}
-        </p>
-        <div>
+    <Dialog open={!!open} onOpenChange={(o) => !o && handleCancel()}>
+      <DialogContent
+        className="
+          p-0
+          w-[calc(100vw-20px)] sm:w-full
+          max-w-[96vw] sm:max-w-xl lg:max-w-3xl
+          max-h-[90vh]
+          overflow-y-auto
+          custom-scrollbar"
+      >
+        <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              {t("auth.changePassword.title")}
+            </DialogTitle>
+          </DialogHeader>
+        </div>
+        <div className="px-6 py-5 space-y-5">
+          <p className="text-sm text-gray-500">
+            {t("auth.changePassword.description")}
+          </p>
+           <div>
           <label className="text-sm font-medium text-gray-700">
             {t("auth.changePassword.currentPassword")}
           </label>
           <div className="relative mt-1">
-            <input
+            <Input
               type={show.current ? "text" : "password"}
               {...register("currentPassword", {
                 required: t("auth.changePassword.currentPasswordRequired"),
               })}
-              className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+              
             />
             <button
               type="button"
@@ -118,7 +125,7 @@ const ChangePasswordModal = ({
             {t("auth.changePassword.newPassword")}
           </label>
           <div className="relative mt-1">
-            <input
+            <Input
               type={show.new ? "text" : "password"}
               {...register("newPassword", {
                 required: t("auth.changePassword.newPasswordRequired"),
@@ -131,7 +138,7 @@ const ChangePasswordModal = ({
                   t("auth.changePassword.ruleNumber"),
               })}
               placeholder={t("auth.changePassword.minLength")}
-              className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+             
             />
             <button
               type="button"
@@ -165,17 +172,17 @@ const ChangePasswordModal = ({
             </p>
           </div>
         </div>
-        <div>
+           <div>
           <label className="text-sm font-medium text-gray-700">
             {t("auth.changePassword.confirmPassword")}
           </label>
           <div className="relative mt-1">
-          <input
+          <Input
               type={show.confirm ? "text" : "password"}
               className={`w-full rounded-lg p-2 outline-none border ${
                 confirmPassword && !isMatch
                   ? "border-red-400"
-                  : "border-[#4B62A0]"
+                  : "border-input"
               }`}
               {...register("confirmPassword", {
                 required: t(
@@ -204,8 +211,28 @@ const ChangePasswordModal = ({
             </p>
           )}
         </div>
-      </div>
-    </CommonModal>
+        </div>
+            <div className="border-t bg-white px-6 py-4">
+          <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+              className="w-full sm:w-auto"
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={handleSubmit(onSubmitForm)}
+              disabled={isSubmitting || !isValid}
+              className="w-full sm:w-auto"
+            >
+              {isSubmitting ? t("common.saving") : t("common.save")}
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 export default ChangePasswordModal;

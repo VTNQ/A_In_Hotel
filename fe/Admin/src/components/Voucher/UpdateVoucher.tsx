@@ -237,25 +237,25 @@ const UpdateVoucher = ({
         const voucher = voucherRes?.data?.data;
 
         reset({
+          id: String(voucher.id),
           voucherCode: voucher.voucherCode,
           voucherName: voucher.voucherName,
-          type: voucher.type,
+          type: String(voucher.type),
           description: voucher.description,
-          value: voucher.value,
-          maxDiscountValue: voucher.maxDiscountValue,
-          bookingType: voucher.bookingType,
-          minimumStay: voucher.minimumStay,
+          value: String(voucher.value),
+          maxDiscountValue: String(voucher.maxDiscountValue),
+          bookingType: String(voucher.bookingType),
+          minimumStay: String(voucher.minimumStay),
           customerType: voucher.customerType,
           usageType: voucher.usageType,
-          usageLimit: voucher.usageLimit,
-          usagePerCustomer: voucher.usagePerCustomer,
-          startDate: voucher.startDate,
-          endDate: voucher.endDate,
+          usageLimit: String(voucher.usageLimit),
+          usagePerCustomer: String(voucher.usagePerCustomer),
+          startDate: String(voucher.startDate),
+          endDate: String(voucher.endDate),
           stackWithPromotion: voucher.stackWithPromotion,
           stackWithOtherVoucher: voucher.stackWithOtherVoucher,
-          priority: voucher.priority,
+          priority: String(voucher.priority),
 
-          // 3. Map roomTypes theo voucher
           roomTypes: categories.map((room: any) => {
             const matched = (voucher.roomTypes || []).find(
               (v: any) => v.roomTypeId === room.id,
@@ -384,6 +384,7 @@ const UpdateVoucher = ({
     }
   };
   if (!isOpen) return <></>;
+  console.log(errors);
   return (
     <CommonModal
       isOpen={isOpen}
@@ -393,7 +394,7 @@ const UpdateVoucher = ({
       saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
       cancelLabel={t("common.cancelButton")}
       width="w-[95vw] sm:w-[90vw] lg:w-[1000px]"
-      diabled={!isValid || isSubmitting}
+      diabled={isSubmitting || !isValid}
     >
       {loading ? (
         <div className="flex justify-center items-center py-20">
@@ -615,7 +616,6 @@ const UpdateVoucher = ({
                         checked={checked}
                         onChange={() => {
                           toggleRoomType(room.id);
-                          
                         }}
                         className="hidden"
                       />
@@ -767,7 +767,9 @@ const UpdateVoucher = ({
                       </option>
                     </select>
                     {errors.bookingType && (
-                      <span className="text-red-500">{errors.bookingType.message}</span>
+                      <span className="text-red-500">
+                        {errors.bookingType.message}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -777,13 +779,15 @@ const UpdateVoucher = ({
                     {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <input
-                  {...register("minimumStay")}
+                    {...register("minimumStay")}
                     type="number"
                     placeholder="2"
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
                   {errors.minimumStay && (
-                    <span className="text-red-500">{errors.minimumStay.message}</span>
+                    <span className="text-red-500">
+                      {errors.minimumStay.message}
+                    </span>
                   )}
                 </div>
               </div>
@@ -810,7 +814,7 @@ const UpdateVoucher = ({
                         <input
                           type="checkbox"
                           checked={checked}
-                         onChange={() => {
+                          onChange={() => {
                             setValue("customerType", type.value, {
                               shouldValidate: true,
                               shouldDirty: true,
@@ -901,14 +905,16 @@ const UpdateVoucher = ({
                     className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                   />
                   {errors.usageLimit && (
-                    <span className="text-red-500">{errors.usageLimit.message}</span>
+                    <span className="text-red-500">
+                      {errors.usageLimit.message}
+                    </span>
                   )}
                 </div>
 
                 <Toggle
                   label={t("voucher.createOrUpdate.usagePerCustomer")}
                   description={t("voucher.createOrUpdate.usagePerCustomerDesc")}
-                   checked={watch("usagePerCustomer") !== ""}
+                  checked={watch("usagePerCustomer") !== ""}
                   onChange={(checked) => {
                     setValue("usagePerCustomer", checked ? "1" : "", {
                       shouldValidate: true,
@@ -918,7 +924,7 @@ const UpdateVoucher = ({
                     trigger("usagePerCustomer");
                   }}
                 />
-                {watch("usagePerCustomer")  !== "" && (
+                {watch("usagePerCustomer") !== "" && (
                   <div>
                     <label className="block mb-1 font-medium text-[#253150]">
                       {t("voucher.createOrUpdate.usageLimitPerCustomer")}
@@ -930,7 +936,7 @@ const UpdateVoucher = ({
                       placeholder="e.g. 1"
                       className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
                     />
-                     {errors.usagePerCustomer && (
+                    {errors.usagePerCustomer && (
                       <span className="text-red-500">
                         {errors.usagePerCustomer.message}
                       </span>
