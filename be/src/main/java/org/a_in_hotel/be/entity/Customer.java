@@ -36,8 +36,6 @@ public class Customer {
     private Account account;
 
 
-    @Column(name = "hotel_id")
-    private Long hotelId;
 
     @CreationTimestamp
     private OffsetDateTime createdAt;

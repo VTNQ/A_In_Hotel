@@ -5,6 +5,7 @@ export type GetAllOptions = {
   sort?: string;
   filter?: string;
   searchField?: string;
+  hotelId?: number;
   searchValue?: string;
   all?: boolean;
 };

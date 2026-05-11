@@ -3,10 +3,7 @@ package org.a_in_hotel.be.controller;
 import lombok.RequiredArgsConstructor;
 import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.CustomerUpdateProfileDTO;
-import org.a_in_hotel.be.dto.response.BookingSummaryResponse;
-import org.a_in_hotel.be.dto.response.CustomerResponse;
-import org.a_in_hotel.be.dto.response.DetailCustomerResponse;
-import org.a_in_hotel.be.dto.response.RequestResponse;
+import org.a_in_hotel.be.dto.response.*;
 import org.a_in_hotel.be.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +53,22 @@ public class CustomerController {
         return ResponseEntity.ok(RequestResponse.success(
                 service.getCustomerBookingSummary(customerId)
         ));
+    }
+    @GetMapping("/my-hotel")
+    public ResponseEntity<RequestResponse<PageResponse<CustomerResponse>>> getMyHotel(
+            @RequestParam Long hotelId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String searchField,
+            @RequestParam(required = false) String searchValue,
+            @RequestParam(required = false) boolean all
+    ){
+        PageResponse<CustomerResponse> pageResponse =
+                new PageResponse<>(service.getListCustomerByHotelId(hotelId,
+                        page,size,sort,filter,searchField,searchValue,all));
+        return ResponseEntity.ok(RequestResponse.success(pageResponse));
     }
     @PatchMapping("/{id}/status")
     public ResponseEntity<RequestResponse<Void>> updateStatus(

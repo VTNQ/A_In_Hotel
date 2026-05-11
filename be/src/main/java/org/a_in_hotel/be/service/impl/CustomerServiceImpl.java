@@ -3,15 +3,14 @@ package org.a_in_hotel.be.service.impl;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.dto.request.CustomerUpdateProfileDTO;
 import org.a_in_hotel.be.dto.response.*;
-import org.a_in_hotel.be.entity.Account;
-import org.a_in_hotel.be.entity.Customer;
-import org.a_in_hotel.be.entity.CustomerStats;
-import org.a_in_hotel.be.entity.Image;
+import org.a_in_hotel.be.entity.*;
 import org.a_in_hotel.be.exception.ErrorHandler;
 import org.a_in_hotel.be.exception.NotFoundException;
 import org.a_in_hotel.be.mapper.AccountMapper;
@@ -36,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -142,16 +142,141 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Page<CustomerResponse> getListCustomerByHotelId(Long hotelId,
+                                                           Integer page,
+                                                           Integer size,
+                                                           String sort,
+                                                           String filter,
+                                                           String searchField,
+                                                           String searchValue,
+                                                           boolean all) {
+        try {
+            Specification<Customer> spec = Specification
+                    .<Customer>where(RSQLJPASupport.toSort(sort))
+                    .and(RSQLJPASupport.toSpecification(filter))
+                    .and(SearchHelper.buildSearchSpec(
+                            searchField,
+                            searchValue,
+                            SEARCH_FIELDS
+                    ))
+                    .and(buildFullNameSpec(searchValue))
+                    .and(byHotelId(hotelId));
+            Pageable pageable = all
+                    ? Pageable.unpaged()
+                    : PageRequest.of(page - 1, size);
+            Page<Customer> customerPage =
+                    repository.findAll(spec, pageable);
+            Map<Long, CustomerStats> statsMap =
+                    customerStatsRepository.findByCustomerIdIn(
+                                    customerPage.getContent()
+                                            .stream()
+                                            .map(Customer::getId)
+                                            .toList()
+                            )
+                            .stream()
+                            .collect(Collectors.toMap(
+                                    CustomerStats::getCustomerId,
+                                    Function.identity()
+                            ));
+            return customerPage.map(customer -> {
+
+                CustomerStats stats = statsMap.get(customer.getId());
+
+                CustomerAggregateDTO aggregate = new CustomerAggregateDTO(
+                        customer.getId(),
+                        customer.getCustomerCode(),
+                        customer.getAccount() != null
+                                ? customer.getAccount().getEmail()
+                                : null,
+                        customer.getFirstName(),
+                        customer.getLastName(),
+                        customer.getPhoneNumber(),
+                        stats != null ? stats.getTotalCompletedBookings() : 0,
+                        stats != null ? stats.getRewardBalance() : BigDecimal.ZERO,
+                        customer.getBlocked(),
+                        stats != null ? stats.getLastBookingAt() : null
+                );
+
+                return mapper.toResponse(aggregate);
+            });
+        } catch (Exception e) {
+            log.error("get list customer by hotel id error", e);
+            return Page.empty();
+        }
+    }
+
+    private Specification<Customer> byHotelId(Long hotelId) {
+        if(hotelId == null) {
+            return null;
+        }
+        return (root, query, cb) -> {
+            Subquery<Long> subquery =
+                    query.subquery(Long.class);
+            Root<Booking> booking =
+                    subquery.from(Booking.class);
+            subquery.select(
+                    booking.get("customer").get("id")
+            );
+            subquery.where(
+                    cb.equal(
+                            booking.get("hotelId"),
+                            hotelId
+                    )
+            );
+            return root.get("id").in(subquery);
+        };
+    }
+
+    private Specification<Customer> buildFullNameSpec(
+            String searchValue
+    ) {
+
+        if (StringUtils.isBlank(searchValue)
+                || !searchValue.trim().contains(" ")) {
+            return null;
+        }
+
+        String keyword =
+                "%" + searchValue.trim().toLowerCase() + "%";
+
+        return (root, query, cb) -> {
+
+            Expression<String> firstLast =
+                    cb.concat(
+                            cb.concat(
+                                    cb.lower(root.get("firstName")),
+                                    " "
+                            ),
+                            cb.lower(root.get("lastName"))
+                    );
+
+            Expression<String> lastFirst =
+                    cb.concat(
+                            cb.concat(
+                                    cb.lower(root.get("lastName")),
+                                    " "
+                            ),
+                            cb.lower(root.get("firstName"))
+                    );
+
+            return cb.or(
+                    cb.like(firstLast, keyword),
+                    cb.like(lastFirst, keyword)
+            );
+        };
+    }
+
+    @Override
     public void updateStatus(Long id, Boolean blocked) {
         try {
             log.info("start update customer status");
             Customer customer = repository.getReferenceById(id);
             customer.setBlocked(blocked);
             repository.save(customer);
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             log.warn(" customer with id {} not found: {}", id, e.getMessage());
             throw new ErrorHandler(HttpStatus.NOT_FOUND, "Không tìm thấy customer có ID: " + id);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
@@ -197,13 +322,13 @@ public class CustomerServiceImpl implements CustomerService {
         Account account = accountRepository
                 .findById(securityUtils.getCurrentUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
-        if(account.getCustomer() == null){
+        if (account.getCustomer() == null) {
             Customer customer = new Customer();
-           customer.setAccount(account);
-           account.setCustomer(customer);
+            customer.setAccount(account);
+            account.setCustomer(customer);
         }
         accountMapper.toProfileCustomerEntity(
-                account,request,securityUtils.getCurrentUserId());
+                account, request, securityUtils.getCurrentUserId());
         accountRepository.save(account);
         if (file != null && !file.isEmpty()) {
 

@@ -29,7 +29,7 @@ const ViewCustomerPage = () => {
         size: 10,
         sort: `${sortKey},${sortOrder}`,
         searchValue,
-        filter: `hotelId==${getTokens()?.hotelId}`,
+        hotelId: getTokens()?.hotelId,
       };
 
       const res = await getCustomer(params);

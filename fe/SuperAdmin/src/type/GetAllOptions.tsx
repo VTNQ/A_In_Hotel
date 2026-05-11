@@ -1,9 +1,10 @@
 export type GetAllOptions = {
-  page?:number;
-    size?:number;
-    sort?:string;
-    filter?:string;
-    searchField?:string;
-    searchValue?:string
-    all?:boolean;
+  page?: number;
+  size?: number;
+  sort?: string;
+  filter?: string;
+  searchField?: string;
+  searchValue?: string;
+  all?: boolean;
+  hotelId?: number;
 };

@@ -17,6 +17,16 @@ public interface CustomerService {
             String searchValue,
             boolean all
     );
+    Page<CustomerResponse> getListCustomerByHotelId(
+            Long hotelId,
+            Integer page,
+            Integer size,
+            String sort,
+            String filter,
+            String searchField,
+            String searchValue,
+            boolean all
+    );
     void updateStatus(Long id,Boolean blocked);
     DetailCustomerResponse getCustomerDetail(Long customerId);
 

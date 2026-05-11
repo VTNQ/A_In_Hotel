@@ -16,10 +16,9 @@ public interface CustomerMapper {
     @Mapping(target = "firstName",source = "request.guestName")
     @Mapping(target = "lastName",source = "request.surname")
     @Mapping(target = "phoneNumber",source = "request.phoneNumber")
-    @Mapping(target = "hotelId",source = "hotelId")
     @Mapping(target = "createdBy", source = "userId")
     @Mapping(target = "updatedBy", source = "userId")
-    Customer toEntity(BookingRequest request,Long hotelId,Long userId);
+    Customer toEntity(BookingRequest request,Long userId);
 
     @Mapping(target = "phoneNumber",source = "phone")
     Customer toEntityUser(UserDTO userDTO);

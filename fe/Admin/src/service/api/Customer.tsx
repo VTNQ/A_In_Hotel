@@ -6,13 +6,14 @@ export const getCustomer = async(options:GetAllOptions={})=>{
         page = 1,
         size = 5,
         sort = "id,desc",
+        hotelId,
         filter,
         searchField,
         searchValue,
         all = false,
     } = options;
-    const resp = await Http.get("/api/customers",{
-        params: { page, size, sort, filter, searchField, searchValue, all },
+    const resp = await Http.get("/api/customers/my-hotel",{
+        params: { page, size, sort, filter, searchField, searchValue, all,hotelId},
     });
     return resp.data?.data;
 }

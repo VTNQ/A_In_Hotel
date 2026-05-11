@@ -117,7 +117,7 @@ const CustomerDetailPage = () => {
         getCustomerDetail(Number(id)),
         BookingSummary(Number(id)),
       ]);
-      setSummary(bookingSummary);
+      setSummary(bookingSummary?.data);
       setCustomer(detailRes);
     } finally {
       setLoading(false);
