@@ -9,6 +9,7 @@ import org.a_in_hotel.be.Enum.BookingPackage;
 import org.a_in_hotel.be.Enum.BookingStatus;
 import org.a_in_hotel.be.Enum.PaymentType;
 import org.a_in_hotel.be.Enum.RoomStatus;
+import org.a_in_hotel.be.async.event.BookingCreatedEvent;
 import org.a_in_hotel.be.dto.request.*;
 import org.a_in_hotel.be.dto.response.BookingListTopResponse;
 import org.a_in_hotel.be.dto.response.BookingResponse;
@@ -19,6 +20,7 @@ import org.a_in_hotel.be.service.BookingService;
 import org.a_in_hotel.be.util.GeneralService;
 import org.a_in_hotel.be.util.SearchHelper;
 import org.a_in_hotel.be.util.SecurityUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookingVoucherRepository bookingVoucherRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     private final RoleRepository roleRepository;
 
@@ -109,7 +113,9 @@ public class BookingServiceImpl implements BookingService {
 
         markRoomReserved(booking);
 
-
+        eventPublisher.publishEvent(
+                new BookingCreatedEvent(booking.getId())
+        );
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }

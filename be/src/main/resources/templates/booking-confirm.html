@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Booking Confirmation</title>
+</head>
+
+<body style="
+    margin:0;
+    padding:0;
+    background:#f5f3ef;
+    font-family:Arial,sans-serif;
+    color:#1e1e1e;
+">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td align="center" style="padding:40px 16px;">
+
+            <table width="640" cellpadding="0" cellspacing="0" border="0"
+                   style="
+                       background:#ffffff;
+                       border-radius:20px;
+                       overflow:hidden;
+                       box-shadow:0 4px 20px rgba(0,0,0,0.06);
+                   ">
+
+                <!-- HEADER -->
+                <tr>
+                    <td style="
+                        background:#01261f;
+                        padding:32px;
+                        text-align:center;
+                    ">
+                        <h1 style="
+                            margin:0;
+                            color:#ffffff;
+                            font-size:32px;
+                            font-weight:600;
+                            letter-spacing:1px;
+                        ">
+                            A-IN HOTEL
+                        </h1>
+
+                        <p style="
+                            margin-top:12px;
+                            color:rgba(255,255,255,0.8);
+                            font-size:14px;
+                            letter-spacing:2px;
+                            text-transform:uppercase;
+                        ">
+                            Booking Confirmation
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- BODY -->
+                <tr>
+                    <td style="padding:40px;">
+
+                        <h2 style="
+                            margin-top:0;
+                            color:#01261f;
+                            font-size:28px;
+                            font-weight:500;
+                        ">
+                            Hello <span th:text="${fullName}">Guest</span>,
+                        </h2>
+
+                        <p style="
+                            font-size:16px;
+                            line-height:28px;
+                            color:#4b4b4b;
+                        ">
+                            Thank you for choosing A-IN HOTEL.
+                            Your booking has been successfully confirmed.
+                        </p>
+
+                        <!-- BOOKING INFO -->
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                               style="
+                                   margin-top:32px;
+                                   border-collapse:collapse;
+                                   background:#faf8f5;
+                                   border-radius:16px;
+                                   overflow:hidden;
+                               ">
+
+                            <tr>
+                                <td colspan="2"
+                                    style="
+                                        background:#f2ece6;
+                                        padding:18px 24px;
+                                        font-size:18px;
+                                        font-weight:600;
+                                        color:#01261f;
+                                    ">
+                                    Booking Information
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:18px 24px;color:#777;">
+                                    Booking Code
+                                </td>
+
+                                <td style="
+                                    padding:18px 24px;
+                                    font-weight:600;
+                                    color:#01261f;
+                                "
+                                    th:text="${bookingCode}">
+                                    BK001
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:18px 24px;color:#777;">
+                                    Hotel
+                                </td>
+
+                                <td style="
+                                    padding:18px 24px;
+                                    font-weight:600;
+                                "
+                                    th:text="${hotelName}">
+                                    A-IN HOTEL
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:18px 24px;color:#777;">
+                                    Check-in
+                                </td>
+
+                                <td style="padding:18px 24px;font-weight:600;"
+                                    th:text="${checkIn}">
+                                    2025-08-01
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:18px 24px;color:#777;">
+                                    Check-out
+                                </td>
+
+                                <td style="padding:18px 24px;font-weight:600;"
+                                    th:text="${checkOut}">
+                                    2025-08-03
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:18px 24px;color:#777;">
+                                    Total Amount
+                                </td>
+
+                                <td style="
+                                    padding:18px 24px;
+                                    font-weight:700;
+                                    color:#954824;
+                                    font-size:18px;
+                                "
+                                    th:text="${totalAmount}">
+                                    $320
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <!-- CTA -->
+                        <div style="margin-top:40px;text-align:center;">
+
+                            <a th:href="${bookingUrl}"
+                               style="
+                                   display:inline-block;
+                                   background:#01261f;
+                                   color:#ffffff;
+                                   text-decoration:none;
+                                   padding:16px 32px;
+                                   border-radius:14px;
+                                   font-weight:600;
+                                   letter-spacing:0.5px;
+                               ">
+                                View Booking
+                            </a>
+
+                        </div>
+
+                        <p style="
+                            margin-top:40px;
+                            font-size:15px;
+                            line-height:28px;
+                            color:#666;
+                        ">
+                            If you have any questions, please contact our support team.
+                            We look forward to welcoming you soon.
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr>
+                    <td style="
+                        background:#faf8f5;
+                        padding:28px;
+                        text-align:center;
+                        color:#888;
+                        font-size:13px;
+                        line-height:24px;
+                    ">
+
+                        <strong style="color:#01261f;">
+                            A-IN HOTEL
+                        </strong>
+
+                        <br/>
+
+                        Luxury Hospitality Experience
+
+                        <br/><br/>
+
+                        © 2025 A-IN HOTEL. All rights reserved.
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
