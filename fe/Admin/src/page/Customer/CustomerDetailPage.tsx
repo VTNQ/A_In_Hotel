@@ -70,7 +70,7 @@ const CustomerDetailPage = () => {
       ]);
 
       setCustomer(detailRes);
-      setSummary(summaryRes);
+      setSummary(summaryRes?.data);
 
       await fetchBookings(1);
       await fetchRewardTransaction(1);

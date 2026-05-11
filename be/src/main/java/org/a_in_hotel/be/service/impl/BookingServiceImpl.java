@@ -134,7 +134,6 @@ public class BookingServiceImpl implements BookingService {
                 .orElseGet(() -> {
                     Customer customer = customerMapper.toEntity(
                             request,
-                            securityUtils.getHotelId(),
                            securityUtils.getCurrentUserId()
                     );
                     return customerRepository.save(customer);
