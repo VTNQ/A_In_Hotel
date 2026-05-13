@@ -1,6 +1,6 @@
 // src/pages/LoginPage.tsx
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { saveTokens } from "../util/auth";
 import { login } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
@@ -77,6 +77,7 @@ export default function LoginPage() {
 
   const isFilled = email.trim() !== "" && password.trim() !== "";
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
   const handleLogin = async (e: React.FormEvent) => {
@@ -102,7 +103,8 @@ export default function LoginPage() {
           type: "success",
           autoClose: 3000,
         });
-        navigate("/");
+        const from = (location.state as any)?.from?.pathname || "/";
+        navigate(from, { replace: true });
       } else {
         showAlert({
           title: "Bạn không có quyền truy cập hệ thống.",
@@ -249,9 +251,9 @@ export default function LoginPage() {
                   />
                   <span className="text-gray-700">Remember me</span>
                 </label>
-                <a href="#" className="text-gray-500 hover:underline">
+                <button onClick={()=>navigate("/forgot-password")} className="text-gray-500 hover:underline">
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <div className="mt-3 flex items-center justify-center gap-4">

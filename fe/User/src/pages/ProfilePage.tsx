@@ -1,8 +1,8 @@
-import { LogOut, Pencil, Save, X } from "lucide-react";
+import { Eye, EyeOff, Lock, LogOut, Pencil, Save, Shield, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import type { accountProfile } from "../type/user.type";
+import type { accountProfile, ChangePasswordFormValues } from "../type/user.type";
 import { useEffect, useState } from "react";
-import { getProfile, updateProfile } from "../service/api/Authenticate";
+import { getProfile, updateProfile, changePassword } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
 import { File_URL } from "../setting/constant/app";
 import { clearTokens } from "../util/auth";
@@ -11,6 +11,10 @@ import { useNavigate } from "react-router-dom";
 const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { showAlert } = useAlert();
   const {
     register,
@@ -27,6 +31,22 @@ const ProfilePage = () => {
       phone: "",
     },
   });
+
+  const {
+    register: registerPassword,
+    handleSubmit: handlePasswordSubmit,
+    reset: resetPasswordForm,
+    watch: watchPassword,
+    formState: { errors: passwordErrors, isSubmitting: isPasswordSubmitting },
+  } = useForm<ChangePasswordFormValues>({
+    mode: "onBlur",
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword:""
+    },
+  });
+
   const [avatarPreview, setAvatarPreview] = useState("");
   const values = watch();
   useEffect(() => {
@@ -96,6 +116,30 @@ const ProfilePage = () => {
       });
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const onChangePasswordSubmit = async (data: any) => {
+    try {
+      await changePassword({
+        currentPassword: data.oldPassword,
+        newPassword: data.newPassword,
+        confirmPassword: data.confirmPassword,
+      });
+      showAlert({
+        title: "Đổi mật khẩu thành công!",
+        type: "success",
+        autoClose: 3000,
+      });
+      setIsChangingPassword(false);
+      resetPasswordForm();
+    } catch (err: any) {
+      showAlert({
+        title: "Đổi mật khẩu thất bại!",
+        description: err.response?.data?.message || "Mật khẩu cũ không chính xác.",
+        type: "error",
+        autoClose: 3000,
+      });
     }
   };
   return (
@@ -424,6 +468,145 @@ const ProfilePage = () => {
                 </div>
               </div>
             </form>
+
+            {/* Security Section */}
+            <div className="py-10 border-t border-[rgb(113,121,118)]/10">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-[rgb(113,121,118)]/20 pb-6">
+                <div>
+                  <h3 className="text-[rgb(1,38,31)] text-[28px] font-normal">Security</h3>
+                  <p className="text-[rgb(65,72,70)] font-serif mt-2">
+                    Update your password to keep your account secure.
+                  </p>
+                </div>
+
+                {!isChangingPassword ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsChangingPassword(true)}
+                    className="h-11 px-5 border border-[rgb(1,38,31)] text-[rgb(1,38,31)] rounded-xl
+                    hover:bg-[rgb(1,38,31)] hover:text-white transition-all flex items-center gap-2 shadow-sm"
+                  >
+                    <Lock size={16} />
+                    Change Password
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsChangingPassword(false);
+                        resetPasswordForm();
+                      }}
+                      className="h-11 px-5 border border-[rgb(113,121,118)]/20 rounded-xl
+                      bg-white hover:bg-gray-50 transition-all flex items-center gap-2"
+                    >
+                      <X size={16} />
+                      Cancel
+                    </button>
+
+                    <button
+                      form="password-form"
+                      type="submit"
+                      disabled={isPasswordSubmitting}
+                      className="h-11 px-5 bg-[rgb(1,38,31)] text-white rounded-xl
+                      hover:opacity-90 transition-all flex items-center gap-2
+                      disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    >
+                      <Save size={16} />
+                      {isPasswordSubmitting ? "Updating..." : "Update Password"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {isChangingPassword && (
+                <form id="password-form" onSubmit={handlePasswordSubmit(onChangePasswordSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
+                  {/* Old Password */}
+                  <div className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl p-6 shadow-sm">
+                    <label className="block text-[12px] tracking-[0.2em] uppercase text-[rgb(65,72,70)] mb-3">
+                      Current Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showOldPassword ? "text" : "password"}
+                        {...registerPassword("oldPassword", {
+                          required: "Current password is required",
+                        })}
+                        className="w-full h-12 px-4 rounded-xl border border-[rgb(113,121,118)]/20 bg-[#faf8f6] outline-none focus:border-[rgb(149,72,36)] transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowOldPassword(!showOldPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showOldPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {passwordErrors.oldPassword && (
+                      <p className="text-sm text-red-500 mt-2">{String(passwordErrors.oldPassword.message)}</p>
+                    )}
+                  </div>
+
+                  {/* New Password */}
+                  <div className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl p-6 shadow-sm">
+                    <label className="block text-[12px] tracking-[0.2em] uppercase text-[rgb(65,72,70)] mb-3">
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        {...registerPassword("newPassword", {
+                          required: "New password is required",
+                          minLength: { value: 6, message: "Password must be at least 6 characters" },
+                        })}
+                        className="w-full h-12 px-4 rounded-xl border border-[rgb(113,121,118)]/20 bg-[#faf8f6] outline-none focus:border-[rgb(149,72,36)] transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {passwordErrors.newPassword && (
+                      <p className="text-sm text-red-500 mt-2">{String(passwordErrors.newPassword.message)}</p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div className="bg-white border border-[rgb(113,121,118)]/10 rounded-2xl p-6 shadow-sm">
+                    <label className="block text-[12px] tracking-[0.2em] uppercase text-[rgb(65,72,70)] mb-3">
+                      Confirm New Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        {...registerPassword("confirmPassword", {
+                          required: "Please confirm your new password",
+                          validate: (val: string) => {
+                            if (watchPassword("newPassword") !== val) {
+                              return "Your passwords do no match";
+                            }
+                          },
+                        })}
+                        className="w-full h-12 px-4 rounded-xl border border-[rgb(113,121,118)]/20 bg-[#faf8f6] outline-none focus:border-[rgb(149,72,36)] transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {passwordErrors.confirmPassword && (
+                      <p className="text-sm text-red-500 mt-2">{String(passwordErrors.confirmPassword.message)}</p>
+                    )}
+                  </div>
+                </form>
+              )}
+            </div>
           </section>
         </div>
       </div>
