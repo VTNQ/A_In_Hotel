@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Lock, LogOut, Pencil, Save, Shield, X } from "lucide-react";
+import { Eye, EyeOff, Lock, LogOut, Pencil, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { accountProfile, ChangePasswordFormValues } from "../type/user.type";
 import { useEffect, useState } from "react";
