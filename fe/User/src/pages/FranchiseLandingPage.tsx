@@ -268,18 +268,91 @@ const FranchiseLandingPage = () => {
             invite you to be part of our urban sanctuary.
           </p>
           <form className="space-y-8 text-left bg-[rgb(255,248,245)] p-12 shadow-sm">
+            <div className="border-b border-[rgb(1,38,31)] py-2">
+              <label
+                className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                style={{ letterSpacing: "0.08em" }}
+              >
+                Họ tên
+              </label>
+              <input
+                className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                        placeholder:text-outline-variant font-serif"
+                placeholder="Họ tên Quý khách"
+                type="text"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="border-b border-[rgb(1,38,31)] py-2">
                 <label
                   className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
                   style={{ letterSpacing: "0.08em" }}
                 >
-                  Full Name
+                  Email
                 </label>
                 <input
                   className="w-full bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
-                  placeholder="John Doe"
+                  placeholder="abc@gmail.com"
+                  type="email"
+                />
+              </div>
+              <div className="border-b border-[rgb(1,38,31)] py-2">
+                <label
+                  className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                  style={{ letterSpacing: "0.08em" }}
+                >
+                  Số điện thoại
+                </label>
+                <input
+                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                          placeholder:text-outline-variant font-serif"
+                  placeholder="+84 123 456 789"
+                  type="tel"
+                />
+              </div>
+            </div>
+
+            <div className="border-b border-[rgb(1,38,31)] py-2">
+              <label
+                className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                style={{ letterSpacing: "0.08em" }}
+              >
+                Khu vực
+              </label>
+              <select className="w-full bg-transparent border-none focus:ring-0 text-on-surface font-serif">
+                <option value="">Tỉnh/thành phố (trước sát nhập)</option>
+              </select>
+            </div>
+
+            <div className="border-b border-[rgb(1,38,31)] py-2">
+              <label
+                className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                style={{ letterSpacing: "0.08em" }}
+              >
+                Vị trí bất động sản
+              </label>
+              <input
+                className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                        placeholder:text-outline-variant font-serif"
+                placeholder="Vui lòng nhập địa chỉ cụ thể bất động sản"
+                type="text"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="border-b border-[rgb(1,38,31)] py-2">
+                <label
+                  className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                  style={{ letterSpacing: "0.08em" }}
+                >
+                  Tổng diện tích đất (m²)
+                </label>
+                <input
+                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                          placeholder:text-outline-variant font-serif"
+                  placeholder="Tối thiểu 250 m²"
                   type="text"
                 />
               </div>
@@ -288,29 +361,20 @@ const FranchiseLandingPage = () => {
                   className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
                   style={{ letterSpacing: "0.08em" }}
                 >
-                  Email Address
+                  Số phòng
                 </label>
                 <input
                   className="w-full bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
-                  placeholder="john@example.com"
+                  placeholder="Tối thiểu 30 phòng"
                   type="text"
                 />
               </div>
             </div>
-            <div className="border-b border-[rgb(1,38,31)] py-2">
-              <label className="block font-label-sm text-label-sm text-[rgb(1,38,31)] uppercase mb-1">
-                Interest
-              </label>
-              <select className="w-full bg-transparent border-none focus:ring-0 text-on-surface font-body-md">
-                <option>Partner/Investor</option>
-                <option>Resident</option>
-                <option>Career</option>
-              </select>
-            </div>
+
             <div className="border-b border-[rgb(1,38,31)] py-2">
               <label
-                className="block font-sans text-[12px] leading-3 font-semibold text-[rgb(1,38,31)]  uppercase mb-1"
+                className="block font-sans text-[12px] leading-3 font-semibold text-[rgb(1,38,31)] uppercase mb-1"
                 style={{ letterSpacing: "0.08rem" }}
               >
                 Message
@@ -322,7 +386,7 @@ const FranchiseLandingPage = () => {
               ></textarea>
             </div>
             <button className="w-full bg-[rgb(149,72,36)] text-white py-5 font-serif text tracking-widest uppercase hover:bg-on-secondary-container transition-all">
-              Submit Inquiry
+              Gửi thông tin
             </button>
           </form>
         </div>
