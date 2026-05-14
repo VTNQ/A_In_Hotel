@@ -270,13 +270,13 @@ const FranchiseLandingPage = () => {
           <form className="space-y-8 text-left bg-[rgb(255,248,245)] p-12 shadow-sm">
             <div className="border-b border-[rgb(1,38,31)] py-2">
               <label
-                className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                className="block  font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
                 style={{ letterSpacing: "0.08em" }}
               >
                 Họ tên
               </label>
               <input
-                className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                         placeholder:text-outline-variant font-serif"
                 placeholder="Họ tên Quý khách"
                 type="text"
@@ -292,7 +292,7 @@ const FranchiseLandingPage = () => {
                   Email
                 </label>
                 <input
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                  className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="abc@gmail.com"
                   type="email"
@@ -306,7 +306,7 @@ const FranchiseLandingPage = () => {
                   Số điện thoại
                 </label>
                 <input
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                  className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="+84 123 456 789"
                   type="tel"
@@ -321,7 +321,7 @@ const FranchiseLandingPage = () => {
               >
                 Khu vực
               </label>
-              <select className="w-full bg-transparent border-none focus:ring-0 text-on-surface font-serif">
+              <select className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface font-serif">
                 <option value="">Tỉnh/thành phố (trước sát nhập)</option>
               </select>
             </div>
@@ -334,7 +334,7 @@ const FranchiseLandingPage = () => {
                 Vị trí bất động sản
               </label>
               <input
-                className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                         placeholder:text-outline-variant font-serif"
                 placeholder="Vui lòng nhập địa chỉ cụ thể bất động sản"
                 type="text"
@@ -350,7 +350,7 @@ const FranchiseLandingPage = () => {
                   Tổng diện tích đất (m²)
                 </label>
                 <input
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                  className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="Tối thiểu 250 m²"
                   type="text"
@@ -364,7 +364,7 @@ const FranchiseLandingPage = () => {
                   Số phòng
                 </label>
                 <input
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface
+                  className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="Tối thiểu 30 phòng"
                   type="text"
