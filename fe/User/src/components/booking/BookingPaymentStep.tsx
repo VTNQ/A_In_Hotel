@@ -1,4 +1,4 @@
-import { Calendar, CreditCard, HandCoins, Landmark } from "lucide-react";
+import { Calendar, CreditCard, HandCoins, Info, Landmark, ShieldCheck } from "lucide-react";
 import { MdKingBed } from "react-icons/md";
 import BookingPaymentSummary from "./BookingPaymentSummary";
 import { useEffect, useMemo, useState } from "react";
@@ -34,9 +34,10 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
       setIsCheckingVoucher(true);
       setVoucherError("");
       setVoucherSuccess("");
+      const subtotal = Number(search?.totalPrice || 0) + Number(servicesTotal || 0);
       const res = await validateVoucher({
         voucherCode: data.voucherCode,
-        totalAmount: total,
+        totalAmount: subtotal,
         nights: nights,
         roomTypeIds: [room?.categoryId],
       });
@@ -61,7 +62,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
       setVoucherError(
         err?.response?.data?.message || "Invalid or expired voucher",
       );
-    }finally {
+    } finally {
       setIsCheckingVoucher(false);
     }
   };
@@ -91,12 +92,8 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
     (sum: number, s: any) => sum + s.estimated,
     0,
   );
-  const total = Math.max(
-    0,
-    Number(search?.totalPrice || 0) +
-      Number(servicesTotal || 0) -
-      Number(data?.discountAmount || 0),
-  );
+  const subtotal = Number(search?.totalPrice || 0) + Number(servicesTotal || 0);
+  const total = Math.max(0, subtotal - Number(data?.discountAmount || 0));
   const paidAmount = Number(total * 0.5);
   const outstanding = Math.max(0, Number(total) - paidAmount);
   if (loading) {
@@ -399,6 +396,45 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               </div>
             </div>
           </div> */}
+        </div>
+        <div className="bg-white border border-outline-variant rounded-xl p-[24px]">
+          <div className="flex items-center gap-2 mb-4">
+            <ShieldCheck size={20} className="text-green-600" />
+            <h2 className="font-sans text-[20px] font-semibold text-on-surface">
+              Chính sách hủy phòng
+            </h2>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="flex gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
+              <Info size={18} className="text-green-600 shrink-0 mt-0.5" />
+              <div className="text-sm text-green-800">
+                <p className="font-semibold mb-1">Hủy miễn phí</p>
+                <p>Bạn có thể hủy phòng miễn phí trước 48 giờ tính từ thời điểm nhận phòng.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
+                <div className="w-2 h-2 rounded-full bg-orange-400 mt-1.5 shrink-0" />
+                <div className="flex-1">
+                  <span className="font-medium text-on-surface">Hủy trong vòng 24-48 giờ:</span>
+                  <span className="ml-2 text-secondary">Phí hủy là 50% tổng tiền đặt phòng.</span>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
+                <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                <div className="flex-1">
+                  <span className="font-medium text-on-surface">Hủy dưới 24 giờ hoặc Vắng mặt:</span>
+                  <span className="ml-2 text-secondary">Không hoàn lại tiền đặt trước.</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[12px] text-gray-500 italic mt-2">
+              * Thời gian được tính theo giờ địa phương của khách sạn. Việc hoàn tiền sẽ được xử lý trong vòng 3-5 ngày làm việc.
+            </p>
+          </div>
         </div>
       </div>
       <BookingPaymentSummary

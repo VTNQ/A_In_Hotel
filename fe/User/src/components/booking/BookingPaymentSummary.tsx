@@ -19,23 +19,20 @@ const BookingPaymentSummary = ({
             <span className="text-on-surface">
               {room?.roomName} ({nights} nights)
             </span>
+
             <span className="font-semibold">
-              ${search.totalPrice.toLocaleString()}
+              {search.totalPrice.toLocaleString()}₫
             </span>
           </div>
-           {discountAmount > 0 && (
+          {discountAmount > 0 && (
             <div className="flex justify-between items-center text-[14px]">
               <span className="text-green-600">Voucher Discount</span>
 
               <span className="font-semibold text-green-600">
-                -${Number(discountAmount).toLocaleString()}
+                -{Number(discountAmount).toLocaleString()}₫
               </span>
             </div>
           )}
-          <div className="flex justify-between items-center text-[14px] line-clamp-1 font-normal">
-            <span className="text-on-surface">Spa & Wellness Package</span>
-            <span className="font-semibold">$150.00</span>
-          </div>
           {services.map((service: any) => (
             <div
               key={service.id}
@@ -49,11 +46,11 @@ const BookingPaymentSummary = ({
         <div className="py-[24px]">
           <div className="flex justify-between items-end">
             <div>
-              <p className="font-sans text-on-surface uppercase tracking-wider">
+              <p className="font-sans text-[12px] text-gray-500 uppercase tracking-widest font-semibold mb-1">
                 Total Cost
               </p>
-              <p className="text-[32px] font-extrabold text-on-surface leading-tight">
-                ${total}
+              <p className="text-[28px] font-extrabold text-on-surface leading-tight">
+                {Number(total).toLocaleString()}₫
               </p>
             </div>
           </div>
