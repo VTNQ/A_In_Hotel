@@ -15,16 +15,16 @@ const RoomGrid = ({
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const { search } = useBookingSearch();
-const buildPriceFilter = (ranges: string[]) => {
-  if (!ranges.length) return "";
+  const buildPriceFilter = (ranges: string[]) => {
+    if (!ranges.length) return "";
 
-  return ranges
-    .map(r => {
-      const [min, max] = r.split("-").map(Number);
-      return `(basePrice>=${min};basePrice<=${max})`;
-    })
-    .join(",");
-};
+    return ranges
+      .map(r => {
+        const [min, max] = r.split("-").map(Number);
+        return `(basePrice>=${min};basePrice<=${max})`;
+      })
+      .join(",");
+  };
   useEffect(() => {
     if (!search) return;
 
@@ -36,12 +36,12 @@ const buildPriceFilter = (ranges: string[]) => {
         setRooms([]);
 
         const totalGuests = (search?.adults ?? 0) + (search?.children ?? 0);
-        let filter =
-         `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`;
-         const priceFilter = buildPriceFilter(priceRange);
-         if(priceFilter){
-          filter+= `;(${priceFilter})`
-         }
+        let filter = `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`;
+
+        const priceFilter = buildPriceFilter(priceRange);
+        if (priceFilter) {
+          filter += `;(${priceFilter})`;
+        }
         const res = await getRoom({
           page,
           size: 5,
@@ -69,7 +69,7 @@ const buildPriceFilter = (ranges: string[]) => {
     return () => {
       mounted = false;
     };
-  }, [search, page,priceRange]);
+  }, [search, page, priceRange]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
