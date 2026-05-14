@@ -64,6 +64,23 @@ public class EmailService {
 
         mailSender.send(message);
     }
+    public void sendResetPasswordByOTP(String to,String otp) {
+            try {
+                Context context = new Context();
+                context.setVariable("otp",otp);
+                String html = templateEngine.process(
+                        "reset-password", context
+                );
+                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"UTF-8");
+                helper.setTo(to);
+                helper.setSubject("Reset Password OTP");
+                helper.setText(html, true);
+                mailSender.send(mimeMessage);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+    }
     public void sendBookingConfirmationEmail(
             String to,
             Booking booking

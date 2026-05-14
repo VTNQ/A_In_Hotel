@@ -36,3 +36,21 @@ export const updateProfile = async (data:any)=>{
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+export const forgotPassword = async (data:any)=>{
+  return await Http.post("/api/account/forgot-password", data, {
+    skipAuth: true,
+    withCredentials: true,
+  });
+}
+
+export const resetPassword = async (data: any) => {
+  return await Http.post("/api/account/reset-password", data, {
+    skipAuth: true,
+    withCredentials: true,
+  });
+};
+
+export const changePassword = async (data: any) => {
+  return await Http.put("/api/account/me/password", data);
+};
+

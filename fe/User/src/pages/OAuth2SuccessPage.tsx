@@ -35,11 +35,7 @@ export default function OAuth2Success() {
 
       navigate("/");
     } else {
-      showAlert({
-        title: "Đăng nhập Google thất bại",
-        type: "error",
-      });
-      navigate("/login");
+      navigate("/oauth2/failure?error=Không tìm thấy thông tin đăng nhập từ Google/Facebook.");
     }
   }, [navigate, showAlert]);
 

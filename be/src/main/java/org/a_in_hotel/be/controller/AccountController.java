@@ -12,6 +12,7 @@ import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.Hotel;
 import org.a_in_hotel.be.mapper.AccountMapper;
 import org.a_in_hotel.be.service.AccountService;
+import org.a_in_hotel.be.service.ForgotPasswordService;
 import org.a_in_hotel.be.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,8 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
+    private ForgotPasswordService forgotPasswordService;
+    @Autowired
     private AccountMapper accountMapper;
     @Autowired
     private HotelService hotelService;
@@ -49,6 +52,11 @@ public class AccountController {
                                                         @RequestParam(value = "image", required = false) MultipartFile image) {
         accountService.save(accountDTO, image);
         return ResponseEntity.ok(RequestResponse.success("Đăng ký tài khoản thành công"));
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<RequestResponse<Void>> forgotPassword(@RequestBody ForgotPasswordRequest request){
+        forgotPasswordService.sendOtp(request.getEmail());
+        return ResponseEntity.ok(RequestResponse.success("OTP sent successfully"));
     }
 
     @PostMapping(value = "/register/user")
@@ -79,7 +87,11 @@ public class AccountController {
         return ResponseEntity.ok(RequestResponse.success(
                 accountService.getAccountUserProfile()));
     }
-
+    @PostMapping("/reset-password")
+    public ResponseEntity<RequestResponse<Void>> resetPassword(@RequestBody ResetPasswordRequest request){
+        forgotPasswordService.resendPassword(request.getEmail(),request.getOtp(),request.getNewPassword());
+        return ResponseEntity.ok(RequestResponse.success("Reset password successfully"));
+    }
     @GetMapping("/getAll")
     public ResponseEntity<RequestResponse<PageResponse<AccountResponse>>> getAll(@RequestParam(defaultValue = "1") int page,
                                                                                  @RequestParam(defaultValue = "5") int size,
@@ -214,7 +226,5 @@ public class AccountController {
         );
 
         return ResponseEntity.ok(RequestResponse.success(tokenResponse));
-
-
     }
 }
