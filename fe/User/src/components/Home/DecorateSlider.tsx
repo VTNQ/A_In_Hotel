@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const images = [
   "/image/681c2aef645b1d29de59b460ef0aab4e841d4b59.png",
@@ -17,6 +18,7 @@ const DecorateSlider = () => {
   const [current, setCurrent] = useState(OFFSET + 2);
   const autoTimer = useRef<number | null>(null);
   const isHovering = useRef(false);
+  const {t} = useTranslation();
 
   const startAuto = () => {
     if (autoTimer.current !== null) return;
@@ -66,7 +68,7 @@ const DecorateSlider = () => {
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-[#fff7f0] overflow-hidden">
       <h2 className="text-center text-3xl md:text-4xl font-dmserif font-medium text-[#4B3F30] mb-12">
-        Decorate
+        {t("home.decorate")}
       </h2>
 
       {/* SLIDER */}

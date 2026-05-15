@@ -1,34 +1,39 @@
-import { BedDouble, Calendar, DoorOpen, User, Users } from "lucide-react";
+import { BedDouble, Calendar, DoorOpen, User, Users, ChevronRight, Inbox, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   BookingStatus,
   statusLabel,
   statusStyle,
-  type BookingStatusTab,
+  type TabKey,
 } from "../type/booking.types";
 import { cancelBook, getBookings } from "../service/api/bookings";
 import InfoBooking from "../components/booking/InfoBooking";
 import { useNavigate } from "react-router-dom";
 import BookingCardSkeleton from "../components/booking/BookingCardSkeleton";
 import { useAlert } from "../components/alert-context";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
+
 const MyBookingsPage = () => {
-  const [activeTab, setActiveTab] = useState<BookingStatusTab>("BOOKED");
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<TabKey>("UPCOMING");
   const [bookings, setBookings] = useState<any[]>([]);
   const [cancelLoadingId, setCancelLoadingId] = useState<number | null>(null);
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const fetchData = async () => {
     setLoading(true);
     try {
       const resp = await getBookings({
         all: true,
       });
-      setBookings(resp.data.content || []);
+      setBookings(resp.data?.content || resp.content || []);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       showAlert({
-        title: "Load bookings failed",
+        title: t("booking.alerts.loadFailed"),
         type: "error",
         autoClose: 3000,
       });
@@ -36,30 +41,32 @@ const MyBookingsPage = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  const BOOKING_TABS: BookingStatusTab[] = [
-    "BOOKED",
-    "CHECKIN",
-    "CHECKOUT",
-    "CANCELLED",
-  ];
+  const TABS = [
+    { key: "UPCOMING", label: t("booking.tabs.upcoming"), icon: Clock },
+    { key: "COMPLETED", label: t("booking.tabs.completed"), icon: CheckCircle2 },
+    { key: "CANCELLED", label: t("booking.tabs.cancelled"), icon: XCircle },
+  ] as const;
+
   const cancelBooking = async (id: number) => {
+    if (!window.confirm(t("booking.card.cancelConfirm"))) return;
     try {
       setCancelLoadingId(id);
       await cancelBook(id);
       showAlert({
-        title: "Cancel booking success",
+        title: t("booking.alerts.cancelSuccess"),
         type: "success",
         autoClose: 3000,
       });
       fetchData();
     } catch (err) {
-      console.log(err);
+      console.error(err);
       showAlert({
-        title: "Cancel booking failed",
+        title: t("booking.alerts.cancelFailed"),
         type: "error",
         autoClose: 3000,
       });
@@ -67,196 +74,253 @@ const MyBookingsPage = () => {
       setCancelLoadingId(null);
     }
   };
+
   const filteredBookings = useMemo(() => {
     switch (activeTab) {
-      case "BOOKED":
-        return bookings.filter((b) => b.status === BookingStatus.BOOKED);
-
-      case "CHECKIN":
-        return bookings.filter((b) => b.status === BookingStatus.CHECKIN);
-
-      case "CHECKOUT":
+      case "UPCOMING":
+        return bookings.filter(
+          (b) => b.status === BookingStatus.BOOKED || b.status === BookingStatus.CHECKIN
+        );
+      case "COMPLETED":
         return bookings.filter((b) => b.status === BookingStatus.CHECKOUT);
       case "CANCELLED":
         return bookings.filter((b) => b.status === BookingStatus.CANCELLED);
-
       default:
         return bookings;
     }
   }, [bookings, activeTab]);
 
-  return (
-    <div
-      className="min-h-screen bg-[#fdfbf7] dark:bg-[#121212] text-slate-800
-  dark:text-slate-100 transition-colors duration-300"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
-        <div className="mb-10">
-          <h1 className="text-4xl font-black tracking-tight">
-            My Reservations
-          </h1>
-          <p className="text-slate-500 text-lg">
-            Manage your luxury stays and booking history effortlessly.
-          </p>
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("vi-VN").format(price);
+  };
 
-          <div className="flex border-b border-primary/10 mb-8 gap-8 text-sm font-bold mt-5">
-            {BOOKING_TABS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-3 border-b-2 transition-colors ${
-                  activeTab === tab
-                    ? "border-primary text-primary"
-                    : "border-transparent text-slate-400 hover:text-primary"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+  return (
+    <div className="min-h-screen bg-[#fdfbf7] dark:bg-[#121212] text-slate-800 dark:text-slate-100 transition-colors duration-300">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+        <div className="mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <h1 className="text-4xl font-black tracking-tight mb-3">
+              {t("booking.title")}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-lg">
+              {t("booking.subtitle")}
+            </p>
+          </motion.div>
+
+          {/* Tabs */}
+          <div className="flex border-b border-slate-200 dark:border-white/10 mb-10 overflow-x-auto no-scrollbar">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`relative pb-4 px-6 text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                    isActive
+                      ? "text-primary"
+                      : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {tab.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTabIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <div className="flex flex-col gap-6">
+
+          {/* Content */}
+          <div className="flex flex-col gap-8">
             {loading ? (
-              <>
+              <div className="flex flex-col gap-6">
                 {[1, 2, 3].map((i) => (
                   <BookingCardSkeleton key={i} />
                 ))}
-              </>
-            ) : filteredBookings.length === 0 ? (
-              <div className="rounded-xl border bg-white dark:bg-slate-800/40 p-10 text-center shadow-sm">
-                <p className="text-lg font-bold">No reservations found</p>
-
-                <p className="text-slate-500 mt-1">
-                  Try switching tabs or create a new booking.
-                </p>
               </div>
             ) : (
-              filteredBookings.map((b) => (
-                <div
-                  key={b.id}
-                  className={`rounded-xl border shadow-sm overflow-hidden ${
-                    b.status === BookingStatus.CANCELLED
-                      ? "opacity-70 grayscale bg-white dark:bg-slate-800/40"
-                      : "bg-white dark:bg-slate-800/40"
-                  }`}
-                >
-                  <div className="flex justify-between px-6 py-4 bg-primary/5 border-b border-gray-200">
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs uppercase text-slate-400 font-bold">
-                        Booking Code
-                      </span>
-
-                      <span className="text-lg font-extrabold">{b.code}</span>
-
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${statusStyle(
-                          b.status,
-                        )}`}
+              <AnimatePresence mode="wait">
+                {filteredBookings.length === 0 ? (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/20 p-16 text-center shadow-sm"
+                  >
+                    <div className="bg-slate-100 dark:bg-slate-800 size-20 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
+                      <Inbox size={40} />
+                    </div>
+                    <p className="text-xl font-bold mb-2">{t("booking.empty.title")}</p>
+                    <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto">
+                      {t("booking.empty.description")}
+                    </p>
+                    <button
+                      onClick={() => navigate("/Room")}
+                      className="bg-primary text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                    >
+                      {t("booking.empty.button")}
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="list"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col gap-6"
+                  >
+                    {filteredBookings.map((b) => (
+                      <motion.div
+                        layout
+                        key={b.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`group rounded-2xl border transition-all duration-300 overflow-hidden hover:shadow-xl hover:shadow-primary/5 ${
+                          b.status === BookingStatus.CANCELLED
+                            ? "bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-white/5 opacity-80"
+                            : "bg-white dark:bg-slate-800/40 border-slate-200 dark:border-white/10"
+                        }`}
                       >
-                        {statusLabel(b.status)}
-                      </span>
-                    </div>
-
-                    <div className="text-right">
-                      <span className="text-xs uppercase text-slate-400 font-bold block">
-                        Total Price
-                      </span>
-
-                      <span className="text-xl font-black text-primary">
-                        {b.totalPrice} VND
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-6 grid md:grid-cols-3 gap-8">
-                    <div className="md:col-span-2 grid grid-cols-2 gap-y-6">
-                      <InfoBooking
-                        icon={<Calendar size={14} />}
-                        label="Check-in"
-                        value={`${b.checkInDate} • ${b.checkInTime?.slice(0, 5)}`}
-                      />
-
-                      <InfoBooking
-                        icon={<Calendar size={14} />}
-                        label="Check-out"
-                        value={`${b.checkOutDate} • ${b.checkOutTime?.slice(0, 5)}`}
-                      />
-
-                      <InfoBooking
-                        icon={<User size={14} />}
-                        label="Guest Name"
-                        value={b.guestName}
-                      />
-
-                      <InfoBooking
-                        icon={<Users size={14} />}
-                        label="Guests"
-                        value={b.numberOfGuests}
-                      />
-                    </div>
-
-                    <div className="bg-[#f7f7f6] dark:bg-slate-900/50 rounded-lg p-4 border">
-                      <p className="text-xs uppercase text-slate-400 font-bold mb-3">
-                        Room Details
-                      </p>
-
-                      {b.details
-                        ?.filter((d: any) => d.roomId != null)
-                        .map((room: any, i: number) => (
-                          <div key={i} className="flex gap-3 mb-3">
-                            <div className="size-9 rounded-lg bg-primary/20 text-primary flex items-center justify-center">
-                              {i === 0 ? (
-                                <BedDouble size={16} />
-                              ) : (
-                                <DoorOpen size={16} />
-                              )}
+                        {/* Header */}
+                        <div className="flex flex-col sm:flex-row justify-between p-6 bg-slate-50/50 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 gap-4">
+                          <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex flex-col">
+                              <span className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">
+                                {t("booking.card.code")}
+                              </span>
+                              <span className="text-lg font-black font-mono">#{b.code}</span>
                             </div>
+                            
+                            <div className="h-8 w-px bg-slate-200 dark:bg-white/10 hidden sm:block mx-2" />
 
-                            <div>
-                              <p className="text-sm font-bold">
-                                {room.roomName}
+                            <span
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${statusStyle(
+                                b.status
+                              )}`}
+                            >
+                              {t(`booking.status.${statusLabel(b.status).toLowerCase().replace(/\s/g, '')}`)}
+                            </span>
+                          </div>
+
+                          <div className="sm:text-right flex flex-col justify-center">
+                            <span className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">
+                              {t("booking.card.total")}
+                            </span>
+                            <span className="text-2xl font-black text-primary">
+                              {formatPrice(b.totalPrice)} <span className="text-sm font-normal">{t("common.vnd")}</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-6 grid lg:grid-cols-12 gap-8">
+                          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <InfoBooking
+                              icon={<Calendar className="text-primary" size={16} />}
+                              label={t("booking.card.checkin")}
+                              value={`${b.checkInDate} • ${b.checkInTime?.slice(0, 5)}`}
+                            />
+
+                            <InfoBooking
+                              icon={<Calendar className="text-primary" size={16} />}
+                              label={t("booking.card.checkout")}
+                              value={`${b.checkOutDate} • ${b.checkOutTime?.slice(0, 5)}`}
+                            />
+
+                            <InfoBooking
+                              icon={<User className="text-primary" size={16} />}
+                              label={t("booking.card.guest")}
+                              value={b.guestName}
+                            />
+
+                            <InfoBooking
+                              icon={<Users className="text-primary" size={16} />}
+                              label={t("booking.card.guests")}
+                              value={`${b.numberOfGuests} ${t("booking.card.person")}`}
+                            />
+                          </div>
+
+                          <div className="lg:col-span-4">
+                            <div className="bg-slate-50 dark:bg-slate-900/80 rounded-2xl p-5 border border-slate-200 dark:border-white/5 h-full">
+                              <p className="text-[10px] uppercase text-slate-400 font-bold mb-4 tracking-wider">
+                                {t("booking.card.details")}
                               </p>
 
-                              <p className="text-xs text-primary font-medium">
-                                {room.roomNumber}
-                              </p>
+                              <div className="space-y-4">
+                                {b.details
+                                  ?.filter((d: any) => d.roomId != null)
+                                  .map((room: any, i: number) => (
+                                    <div key={i} className="flex items-center gap-4">
+                                      <div className="size-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary border border-slate-100 dark:border-white/5">
+                                        {i === 0 ? (
+                                          <BedDouble size={20} />
+                                        ) : (
+                                          <DoorOpen size={20} />
+                                        )}
+                                      </div>
+
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-bold truncate">
+                                          {room.roomName}
+                                        </p>
+                                        <p className="text-xs text-slate-500 font-medium">
+                                          {t("booking.card.room")}: {room.roomNumber}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                              </div>
                             </div>
                           </div>
-                        ))}
-                    </div>
-                  </div>
+                        </div>
 
-                  <div className="px-6 py-4 border-t flex justify-end gap-3">
-                    {b.status === BookingStatus.BOOKED && (
-                      <button
-                        onClick={() => cancelBooking(b.id)}
-                        disabled={cancelLoadingId === b.id}
-                        className={`px-6 h-10 rounded-lg border text-sm font-bold transition flex items-center justify-center gap-2
-              ${
-                cancelLoadingId === b.id
-                  ? "border-red-200 text-red-400 bg-red-50 cursor-not-allowed"
-                  : "border-red-200 text-red-600 hover:bg-red-50"
-              }`}
-                      >
-                        {cancelLoadingId === b.id ? (
-                          <>
-                            <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></span>
-                            Cancelling...
-                          </>
-                        ) : (
-                          "Cancel Booking"
-                        )}
-                      </button>
-                    )}
+                        {/* Footer */}
+                        <div className="px-6 py-4 bg-slate-50/30 dark:bg-white/5 border-t border-slate-200 dark:border-white/10 flex flex-wrap justify-end gap-3">
+                          {b.status === BookingStatus.BOOKED && (
+                            <button
+                              onClick={() => cancelBooking(b.id)}
+                              disabled={cancelLoadingId === b.id}
+                              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 border
+                                ${
+                                  cancelLoadingId === b.id
+                                    ? "bg-red-50 dark:bg-red-900/10 border-red-200 text-red-400 cursor-allowed"
+                                    : "bg-white dark:bg-slate-800 border-red-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                }`}
+                            >
+                              {cancelLoadingId === b.id ? (
+                                <>
+                                  <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></span>
+                                  {t("booking.card.cancelling")}
+                                </>
+                              ) : (
+                                t("booking.card.cancel")
+                              )}
+                            </button>
+                          )}
 
-                    <button
-                      onClick={() => navigate(`/my-booking/${b.id}`)}
-                      className="px-6 h-10 rounded-lg bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ))
+                          <button
+                            onClick={() => navigate(`/my-booking/${b.id}`)}
+                            className="px-8 py-2 rounded-xl bg-slate-800 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                          >
+                            {t("booking.card.viewDetails")}
+                            <ChevronRight size={16} />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             )}
           </div>
         </div>
@@ -264,4 +328,5 @@ const MyBookingsPage = () => {
     </div>
   );
 };
+
 export default MyBookingsPage;

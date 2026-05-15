@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { getRoomById } from "../../service/api/Room";
 import { formatBookingDateRange } from "../../util/formatDate";
 import { estimateServicePrice } from "../../util/estimateServicePrice";
+import { useTranslation } from "react-i18next";
 
 const BookingSummaryService = ({ data, nights, services }: any) => {
+  const { t } = useTranslation();
   const { search } = useBookingSearch();
   const [room, setRoom] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -56,15 +58,15 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
       <div className="bg-white border border-[#dee2e6] rounded-xl p-6">
         <h2 className="font-sans text-on-surface mb-6 flex items-center gap-2">
           <ReceiptText size={20} className="text-primary" />
-          Booking Summary
+          {t("booking.staySummary.title")}
         </h2>
         <div className="space-y-4 border-b border-outline-variant pb-6 mb-6">
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">Loại phòng</span>
+            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.roomType")}</span>
             <span className="font-bold">{room?.roomTypeName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">Ngày lưu trú</span>
+            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.stayDates")}</span>
             <span className="font-bold">
               {" "}
               {formatBookingDateRange(
@@ -75,18 +77,18 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">Số khách</span>
+            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.guests")}</span>
             <span className="font-bold">
-              {search?.adults} Người lớn, {search?.children} Trẻ em
+              {search?.adults} {t("booking.staySummary.adults")}, {search?.children} {t("booking.staySummary.children")}
             </span>
           </div>
         </div>
         <div className="space-y-3 mb-6">
           <div className="flex justify-between items-center text-[14px] line-clamp-1 font-normal">
             <span className="text-[rgb(87,95,103)]">
-              Tiền phòng ({nights} đêm)
+              {t("booking.staySummary.roomPrice")} ({nights} {t("booking.staySummary.nights")})
             </span>
-            <span>{search?.totalPrice}₫</span>
+            <span>{search?.totalPrice?.toLocaleString()} {t("common.vnd")}</span>
           </div>
           {services.map((service: any) => (
             <div
@@ -101,9 +103,9 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
           ))}
         </div>
         <div className="flex justify-between items-center pt-6 border-t border-[rgb(193,198,215)]">
-          <span className="font-sans text-on-surface">Tổng tiền</span>
+          <span className="font-sans text-on-surface">{t("booking.staySummary.total")}</span>
           <span className="text-[28px] line-clamp-1 font-semibold text-primary">
-            {total.toLocaleString()}₫
+            {total.toLocaleString()} {t("common.vnd")}
           </span>
         </div>
       </div>
@@ -111,10 +113,10 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
         <ShieldCheck size={20} />
         <div>
           <p className="text-xs font-semibold uppercase">
-            Best Price Guaranteed
+            {t("booking.staySummary.bestPriceTitle")}
           </p>
           <p className="text-sm text-gray-500">
-            No hidden fees or surprise charges at check-out.
+            {t("booking.staySummary.noHiddenFees")}
           </p>
         </div>
       </div>

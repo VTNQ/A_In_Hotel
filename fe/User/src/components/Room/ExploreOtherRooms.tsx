@@ -3,12 +3,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getRoom } from "../../service/api/Room";
 import type { RoomResponse } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   roomGrid: RoomResponse[];
 }
 
 export default function ExploreOtherRooms({ roomGrid }: Props) {
+  const { t } = useTranslation();
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const [cardsPerView, setCardsPerView] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
@@ -71,9 +73,7 @@ export default function ExploreOtherRooms({ roomGrid }: Props) {
           {/* LEFT TEXT */}
           <div className="lg:w-60 shrink-0">
             <h3 className="text-3xl sm:text-4xl font-semibold text-[#7b5b3e] leading-tight">
-              Explore <br className="hidden sm:block" />
-              other <br className="hidden sm:block" />
-              room options
+              {t("room.explore.title")}
             </h3>
           </div>
 
@@ -115,11 +115,11 @@ export default function ExploreOtherRooms({ roomGrid }: Props) {
 
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-green-600 hover:underline cursor-pointer">
-                              View room details
+                              {t("room.explore.viewDetails")}
                             </span>
 
                             <button className="bg-[#b38a58] hover:bg-[#9c7a55] text-white text-xs px-4 py-1.5 rounded transition">
-                              Booking
+                              {t("room.explore.booking")}
                             </button>
                           </div>
                         </div>

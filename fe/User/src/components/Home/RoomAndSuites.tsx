@@ -3,8 +3,10 @@ import { type RoomResponse } from "../../type/room.types";
 import { getRepresentativeRoomsOfHotels } from "../../service/api/Room";
 import { File_URL } from "../../setting/constant/app";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const RoomAndSuites = () => {
+  const {t} = useTranslation();
   const [roomData, setRoomData] = useState<RoomResponse[]>([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -22,7 +24,7 @@ const RoomAndSuites = () => {
     <section className="w-full py-20 ">
       <div className="mx-auto max-w-7xl px-6">
         <h2 className="text-center text-3xl md:text-4xl font-dmserif font-medium text-[#4B3F30] mb-12">
-          Room And Suites
+          {t("home.roomAndSuites")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {roomData.map((room) => (

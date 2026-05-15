@@ -1,14 +1,16 @@
 import { CheckCircle } from "lucide-react";
 import { useBookingSearch } from "../context/booking/BookingSearchContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function BookingSuccess() {
+  const { t } = useTranslation();
   const { search, clearSearch } = useBookingSearch();
   const navigate = useNavigate();
 
   const handleBackHome = () => {
-    clearSearch();            // ✅ clear context + localStorage
-    navigate("/");            // ✅ về home
+    clearSearch();
+    navigate("/");
   };
 
   return (
@@ -22,37 +24,36 @@ export default function BookingSuccess() {
 
         {/* TITLE */}
         <h1 className="text-2xl font-semibold text-gray-800">
-          Booking Successful 🎉
+          {t("booking.success.title")}
         </h1>
 
         <p className="text-gray-500 text-sm">
-          Your reservation has been confirmed.  
-          A confirmation email will be sent shortly.
+          {t("booking.success.subtitle")}
         </p>
 
         {/* SUMMARY */}
         <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Guest</span>
+            <span className="text-gray-500">{t("booking.success.guest")}</span>
             <span className="font-medium">
-              {search?.guestName ?? "Guest"}
+              {search?.guestName ?? t("booking.success.guest")}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Check-in</span>
+            <span className="text-gray-500">{t("booking.success.checkIn")}</span>
             <span className="font-medium">{search?.checkIn}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Check-out</span>
+            <span className="text-gray-500">{t("booking.success.checkOut")}</span>
             <span className="font-medium">{search?.checkOut}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Total paid</span>
+            <span className="text-gray-500">{t("booking.success.totalPaid")}</span>
             <span className="font-semibold text-[#b38a58]">
-              {search?.totalPrice?.toLocaleString()} vnd
+              {search?.totalPrice?.toLocaleString()} {t("common.vnd")}
             </span>
           </div>
         </div>
@@ -62,7 +63,7 @@ export default function BookingSuccess() {
           onClick={handleBackHome}
           className="w-full bg-[#b38a58] text-white rounded-lg py-3 font-semibold hover:bg-[#9a7748]"
         >
-          Back to Home
+          {t("booking.success.backHome")}
         </button>
 
       </div>

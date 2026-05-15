@@ -1,0 +1,475 @@
+{
+  "navbar": {
+    "home": "HOME",
+    "rooms": "ROOM & SUITE",
+    "promotion": "PROMOTION",
+    "airbnb": "AIR BNB",
+    "camping": "CAMPING",
+    "franchise": "OUR PRODUCT",
+    "login": "Log in",
+    "signup": "Sign up",
+    "profile": "My profile",
+    "myBooking": "My booking",
+    "logout": "Logout",
+    "menu": "Menu"
+  },
+  "common": {
+    "vnd": "VND",
+    "from": "from",
+    "until": "until",
+    "fullName": "Full Name",
+    "phoneNumber": "Phone Number",
+    "emailAddress": "Email Address"
+  },
+  "booking": {
+    "title": "Booking History",
+    "subtitle": "Manage your luxury stays and booking history effortlessly.",
+    "tabs": {
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "card": {
+      "code": "Booking Code",
+      "total": "Total",
+      "checkin": "Check-in Date",
+      "checkout": "Check-out Date",
+      "guest": "Guest Name",
+      "guests": "Guests",
+      "details": "Room Details",
+      "room": "Room",
+      "person": "person",
+      "viewDetails": "View Details",
+      "cancel": "Cancel Booking",
+      "cancelling": "Cancelling...",
+      "cancelConfirm": "Are you sure you want to cancel this booking?"
+    },
+    "empty": {
+      "title": "No reservations found",
+      "description": "You don't have any bookings in this category. Explore our amazing rooms now!",
+      "button": "Book Now"
+    },
+    "alerts": {
+      "loadFailed": "Load bookings failed",
+      "cancelSuccess": "Cancel booking success",
+      "cancelFailed": "Cancel booking failed",
+      "success": "Booking created successfully",
+      "failed": "Booking failed",
+      "fillGuestInfo": "Please fill in all guest information",
+      "selectDates": "Please select check-in and check-out dates",
+      "selectTimes": "Please select check-in and check-out times"
+    },
+    "status": {
+      "booked": "Booked",
+      "checkin": "In House",
+      "checkout": "Completed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "detail": {
+      "back": "Back to Bookings",
+      "invoice": "Download Invoice",
+      "print": "Print Summary",
+      "stayInfo": "Stay Information",
+      "roomInfo": "Room Details",
+      "guestInfo": "Guest Information",
+      "paymentSummary": "Payment Summary",
+      "accommodation": "Accommodation",
+      "nights": "nights",
+      "grandTotal": "Grand Total",
+      "taxIncluded": "Tax & Fees included",
+      "paid": "Paid in Full",
+      "securePayment": "Secure and private transaction",
+      "notFound": "Booking information not found"
+    },
+    "steps": {
+      "guest": "Guest Info",
+      "schedule": "Schedule",
+      "services": "Services",
+      "payment": "Payment"
+    },
+    "heldMessage": "Your booking is held for:",
+    "cancelAlert": {
+      "title": "Cancel booking?",
+      "description": "Your current booking progress will be lost if you continue.",
+      "confirm": "Yes, cancel",
+      "keep": "No, keep booking"
+    },
+    "actions": {
+      "cancel": "Cancel booking",
+      "back": "Back",
+      "next": "Next",
+      "finish": "Finish",
+      "processing": "Processing..."
+    },
+    "guestInfo": {
+      "title": "Guest Information",
+      "subtitle": "Please fill in the information accurately so we can serve you best.",
+      "identityTitle": "Identity Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "idNumber": "ID Number/Passport",
+      "guestType": "Guest Type",
+      "types": {
+        "standard": "Standard Guest",
+        "vip": "VIP Guest",
+        "corporate": "Corporate Guest"
+      },
+      "contactTitle": "Contact Information",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "specialRequests": "Special Requests",
+      "placeholderNote": "e.g. Non-smoking room, early check-in support..."
+    },
+    "schedule": {
+      "title": "Select Your Stay",
+      "subtitle": "Choose the dates and times for your reservation.",
+      "checkIn": "Check-in Time",
+      "checkOut": "Check-out Time",
+      "packageTitle": "Booking Package",
+      "packages": {
+        "twoHours": {
+          "title": "First 2 Hours",
+          "desc": "Short stay / Transit"
+        },
+        "overnight": {
+          "title": "Overnight",
+          "desc": "Perfect for restful sleep"
+        },
+        "daily": {
+          "title": "Full Day",
+          "desc": "Complete flexibility"
+        }
+      }
+    },
+    "services": {
+      "title": "Enhance Your Stay",
+      "subtitle": "Personalize your experience with our premium add-on services.",
+      "noServices": "No services available"
+    },
+    "payment": {
+      "title": "Review Booking Details",
+      "methodTitle": "Payment Method",
+      "checkInOut": "Check-in / Check-out",
+      "selectedRoom": "Selected Room",
+      "nights": "Nights",
+      "adults": "Adults",
+      "children": "Children",
+      "voucher": {
+        "label": "Voucher Code",
+        "placeholder": "Enter voucher code",
+        "apply": "Apply",
+        "checking": "Checking...",
+        "success": "Voucher applied successfully",
+        "error": "Invalid or expired voucher",
+        "missing": "Please enter voucher code",
+        "discount": "Discount"
+      },
+      "methods": {
+        "card": "Credit Card",
+        "cardDesc": "Visa, Mastercard, AMEX",
+        "bank": "Bank Transfer",
+        "bankDesc": "Local and International Wire",
+        "cash": "Pay at Hotel",
+        "cashDesc": "Secure your booking, pay on arrival"
+      },
+      "summary": {
+        "prepaid": "Prepaid amount",
+        "outstanding": "Outstanding amount",
+        "note": "Note",
+        "notePlaceholder": "Special requests (if any)...",
+        "cashInfo": "* You will pay the remaining amount when checking in at the hotel."
+      },
+      "cancellation": {
+        "title": "Cancellation Policy",
+        "free": "Free Cancellation",
+        "freeDesc": "You can cancel for free 48 hours before check-in time.",
+        "within48": "Cancellation within 24-48 hours:",
+        "within48Desc": "Cancellation fee is 50% of total booking.",
+        "under24": "Cancellation under 24 hours or No-show:",
+        "under24Desc": "Prepayment is non-refundable.",
+        "footer": "* Time is calculated according to the local time of the hotel. Refunds will be processed within 3-5 business days."
+      }
+    },
+    "staySummary": {
+      "selected": "Selected",
+      "dates": "Dates",
+      "guests": "Guests",
+      "duration": "Duration",
+      "roomRate": "Room Rate",
+      "total": "Total",
+      "bestPriceTitle": "Best Price Guaranteed",
+      "bestPriceDesc": "Found a better price? We'll match it and give you an extra 10% off.",
+      "adults": "Adults",
+      "children": "Children",
+      "nights": "Nights",
+      "loading": "Loading...",
+      "floorInfo": "Floor 24, South Tower",
+      "title": "Booking Summary",
+      "roomType": "Room Type",
+      "stayDates": "Stay Dates",
+      "guestCount": "Number of guests",
+      "roomPrice": "Room Price",
+      "noHiddenFees": "No hidden fees or surprise charges at check-out.",
+      "paymentTitle": "Payment Summary",
+      "voucherDiscount": "Voucher Discount",
+      "totalCost": "Total Cost",
+      "confirmBooking": "Confirm Booking",
+      "securePayment": "SSL Secure & Encrypted Payment"
+    },
+    "success": {
+      "title": "Booking Successful 🎉",
+      "subtitle": "Your reservation has been confirmed. A confirmation email will be sent shortly.",
+      "guest": "Guest",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "totalPaid": "Total paid",
+      "backHome": "Back to Home"
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email address and we'll send you an OTP code to reset your password.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email address",
+    "sendOtp": "Send Verification Code",
+    "sendingOtp": "Sending OTP...",
+    "backToLogin": "Back to Login",
+    "resetTitle": "Reset Password",
+    "resetSubtitle": "We've sent a code to",
+    "resetSubtitle2": "Enter the code and your new password below.",
+    "otpLabel": "Verification Code",
+    "passwordLabel": "New Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "passwordPlaceholder": "••••••••",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsNotMatch": "Passwords do not match",
+    "resetButton": "Reset Password",
+    "resetting": "Resetting Password...",
+    "noCode": "Didn't receive the code?",
+    "resendOtp": "Resend OTP",
+    "changeEmail": "Change email address",
+    "alerts": {
+      "sendSuccess": "OTP Sent Successfully!",
+      "sendSuccessDesc": "Please check your email for the verification code.",
+      "sendFailed": "Failed to send OTP!",
+      "sendFailedDesc": "Email does not exist or an error occurred.",
+      "verifyFailed": "Please enter the full OTP code.",
+      "resetSuccess": "Success!",
+      "resetSuccessDesc": "Your password has been changed.",
+      "invalidOtp": "Invalid or expired OTP code.",
+      "resendSuccess": "Code Resent!",
+      "resendSuccessDesc": "Please check your email.",
+      "resendFailed": "Error!",
+      "resendFailedDesc": "Could not resend the code at this time."
+    }
+  },
+  "login": {
+    "title": "Login",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Sign in",
+    "signingIn": "Signing in...",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don’t have an account?",
+    "signUp": "Sign up",
+    "socialSignIn": "Sign in with {{provider}}",
+    "alerts": {
+      "success": "Login successful!",
+      "noPermission": "You do not have permission to access the system.",
+      "failed": "Login failed. Please try again."
+    }
+  },
+  "home": {
+    "blog": {
+      "title": "Our Blog",
+      "loadFailed": "Failed to load blog list"
+    },
+    "roomAndSuites": "Rooms & Suites",
+    "decorate": "Decorate",
+    "facilities": {
+      "title": "Facilities & services",
+      "loading": "Loading facilities...",
+      "testimonial": "Customer’s Testimonial"
+    },
+    "bookAppointment": {
+      "subtitle": "Book appointment",
+      "titleLine1": "Relaxation and luxury",
+      "titleLine2": "during your stay",
+      "description": "Because a place can change everything, especially the moment you spend there. Make an appointment with what's essential.",
+      "name": "Name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "privacyPolicy": "I agree with the site's privacy policy",
+      "submit": "Get in touch"
+    },
+    "roomShowcase": {
+      "title": "Popular Rooms & Suites",
+      "bookNow": "Book Now",
+      "perNight": "/night"
+    }
+  },
+  "footer": {
+    "destination": "Destination",
+    "contact": "contact"
+  },
+  "search": {
+    "destination": "Destination",
+    "selectHotel": "Select hotel",
+    "selectDate": "Select date",
+    "selectRoomsGuests": "Select rooms and guests",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "room": "Room",
+    "adult": "Adult",
+    "child": "Child",
+    "guest": "Guest",
+    "search": "Search",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "placeholder": {
+      "hotel": "Select hotel",
+      "date": "Check-in → Check-out"
+    },
+    "alerts": {
+      "selectHotel": "Please select hotel",
+      "selectDate": "Please select check-in & check-out date",
+      "loadFailed": "Failed to load hotel list",
+      "selectBothDates": "Please select both Check-in and Check-out"
+    }
+  },
+  "calendar": {
+    "month": "Month",
+    "days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ]
+  },
+  "room": {
+    "hero": {
+      "title": "Rooms & Suites"
+    },
+    "filter": {
+      "rentalTime": "Rental Time",
+      "results": "Filter results",
+      "priceRange": "Price Range",
+      "options": {
+        "twoHours": "First 2 hours",
+        "overnight": "Overnight",
+        "daily": "Daily"
+      }
+    },
+    "grid": {
+      "noRooms": "No rooms found"
+    },
+    "card": {
+      "doubleBed": "Double bed",
+      "guest": "guest",
+      "price": "Price"
+    },
+    "detail": {
+      "extraHour": "extra hour",
+      "explore": "Details & explore",
+      "facilities": {
+        "area": "Square area",
+        "doubleBed": "Double bed",
+        "minibar": "Minibar drinks",
+        "airConditioning": "Air conditioning",
+        "netflix": "Netflix",
+        "bathroom": "Bathrooms with shower",
+        "more": "More facilities"
+      }
+    },
+    "explore": {
+      "title": "Explore other room options",
+      "viewDetails": "View room details",
+      "booking": "Booking"
+    }
+  },
+  "register": {
+    "title": "Register",
+    "fullName": "Full name",
+    "phoneNumber": "Phone number",
+    "emailAddress": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account...",
+    "forgotPassword": "Forgot password?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "success": "Registration successful!",
+    "failed": "Registration failed. Please try again.",
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "phoneRequired": "Phone number is required",
+      "invalidPhone": "Invalid phone number",
+      "emailRequired": "Email is required",
+      "invalidEmail": "Invalid email address",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 6 characters",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "placeholder": {
+      "fullName": "Nguyen Van A",
+      "phone": "+84123456789",
+      "email": "you@example.com",
+      "password": "••••••••"
+    }
+  },
+  "roomDetail": {
+    "overview": "Overview",
+    "amenities": "Amenities",
+    "policies": {
+      "title": "Property Policies",
+      "description": "Extra bed policies vary by room type. Please check the room details for more information. All children are welcome.",
+      "infants": "Infants (0–1 year old, including babies)",
+      "infantsStay": "Stay free of charge when using existing beds.",
+      "children": "Children (2–6 years old, including toddlers)",
+      "childrenStay": "Stay free of charge when using existing beds.",
+      "guests7": "Guests aged 7 years and above",
+      "guests7AsAdult": "Considered as adults.",
+      "extraBed": "Extra beds are available upon request and will incur an additional charge.",
+      "moreThan5Rooms": "For bookings of more than 5 rooms, additional policies may apply."
+    },
+    "booking": {
+      "adult": "Adult",
+      "children": "Children",
+      "doubleBed": "Double bed",
+      "extraBed": "Extra bed",
+      "checkIn": "Check in",
+      "checkOut": "Check out",
+      "priceOptions": {
+        "twoHours": "First 2 hours",
+        "overnight": "Overnight (after 22h)",
+        "daily": "Daily rate"
+      },
+      "extraHours": "Extra hours",
+      "hour": "hour",
+      "night": "night",
+      "totalCost": "Total Cost",
+      "button": "Booking",
+      "alerts": {
+        "selectPriceType": "Please select price type",
+        "missingSearchInfo": "Missing booking search info"
+      }
+    },
+    "rooms": "Rooms",
+    "seeMore": "See More Rooms",
+    "detailsExplore": "Details & explore"
+  }
+}

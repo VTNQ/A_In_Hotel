@@ -3,9 +3,11 @@ import TimePicker from "./TimePicker";
 import ScheduleCalendar from "../ui/ScheduleCalendar";
 import BookingPackage from "./BookingPackage";
 import BookingSummarySchedule from "./BookingSummarySchedule";
+import { useTranslation } from "react-i18next";
 import { TIME_MAP } from "../../type/booking.types";
 
 const ScheduleTab = ({ data,onChange }: any) => {
+  const { t } = useTranslation();
   const nights = useMemo(() => {
     if (!data.checkInDate || !data.checkOutDate) return 0;
     const start = new Date(data.checkInDate);
@@ -38,10 +40,10 @@ const ScheduleTab = ({ data,onChange }: any) => {
         {/* HEADER */}
         <div>
           <h2 className="text-xl font-semibold text-on-surface">
-            Select Your Stay
+            {t("booking.schedule.title")}
           </h2>
           <p className="text-gray-500 text-sm">
-            Choose the dates and times for your reservation.
+            {t("booking.schedule.subtitle")}
           </p>
         </div>
 
@@ -85,7 +87,7 @@ const ScheduleTab = ({ data,onChange }: any) => {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Check-in */}
           <TimePicker
-            title="Check-in Time"
+            title={t("booking.schedule.checkIn")}
             value={data.checkInTime}
             onChange={(t: string) =>
               onChange((prev: any) => ({
@@ -98,7 +100,7 @@ const ScheduleTab = ({ data,onChange }: any) => {
 
           {/* Check-out */}
           <TimePicker
-            title="Check-out Time"
+            title={t("booking.schedule.checkOut")}
             value={data.checkOutTime}
             onChange={(t: string) =>
               onChange((prev: any) => ({

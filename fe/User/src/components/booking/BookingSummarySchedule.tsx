@@ -3,7 +3,9 @@ import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import { useEffect, useState } from "react";
 import { getRoomById } from "../../service/api/Room";
 import { formatBookingDateRange } from "../../util/formatDate";
+import { useTranslation } from "react-i18next";
 const BookingSummarySchedule = ({ data,nights }: any) => {
+  const { t } = useTranslation();
   const { search } = useBookingSearch();
   const [room, setRoom] = useState<any>(null);
 
@@ -49,23 +51,23 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
               className="w-full h-full object-cover"
             />
             <div className="absolute top-4 right-4 bg-[rgb(249,246,242)] text-[rgb(24,28,32)] font-medium px-3 py-1 rounded-full text-xs shadow">
-              Selected
+              {t("booking.staySummary.selected")}
             </div>
           </div>
           <div className="p-6 space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-on-surface">
-                     {room?.roomName || "Loading..."}
+                     {room?.roomName || t("booking.staySummary.loading")}
               </h3>
               <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
                 <MapPin size={16} />
-                <span>Floor 24, South Tower</span>
+                <span>{t("booking.staySummary.floorInfo")}</span>
               </div>
             </div>
             <div className="border-t pt-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-[rgb(87,95,103)] text-[14px] line-clamp-1 font-normal font-sans">
-                  Dates
+                  {t("booking.staySummary.dates")}
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
                   {formatBookingDateRange(
@@ -77,34 +79,34 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[rgb(87,95,103)] text-[14px] line-clamp-1 font-normal font-sans">
-                  Guests
+                  {t("booking.staySummary.guests")}
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                  {search?.adults} Adults
+                  {search?.adults} {t("booking.staySummary.adults")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[rgb(87,95,103)] text-[14px] line-clamp-1 font-normal font-sans">
-                  Duration
+                  {t("booking.staySummary.duration")}
                 </span>
                 <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                  {nights} Nights
+                  {nights} {t("booking.staySummary.nights")}
                 </span>
               </div>
               <div className="bg-blue-50 p-4 rounded-lg space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-[rgb(87,95,103)] text-[14px] line-clamp-1 font-normal font-sans">
-                    Room Rate
+                    {t("booking.staySummary.roomRate")}
                   </span>
                   <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                    ${search?.totalPrice}
+                    {search?.totalPrice?.toLocaleString()} {t("common.vnd")}
                   </span>
                 </div>
 
                 <div className="border-t pt-2 flex justify-between font-semibold">
-                  <span>Total</span>
+                  <span>{t("booking.staySummary.total")}</span>
                   <span className="text-lg">
-                    ${(search?.totalPrice || 0 * nights).toFixed(2)}
+                    {((search?.totalPrice || 0) * nights).toLocaleString()} {t("common.vnd")}
                   </span>
                 </div>
               </div>
@@ -115,11 +117,10 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
           <ShieldCheck size={20} />
           <div>
             <p className="text-xs font-semibold uppercase">
-              Best Price Guaranteed
+              {t("booking.staySummary.bestPriceTitle")}
             </p>
             <p className="text-sm text-gray-500">
-              Found a better price? We'll match it and give you an extra 10%
-              off.
+              {t("booking.staySummary.bestPriceDesc")}
             </p>
           </div>
         </div>

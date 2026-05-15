@@ -7,8 +7,10 @@ import RoomGuestsSelect from "./Home/RoomsGuestsSelect";
 
 import { useBookingSearch } from "../context/booking/BookingSearchContext";
 import { useClickOutside } from "../hook/useClickOutside";
+import { useTranslation } from "react-i18next";
 
 export default function SearchBar() {
+  const { t } = useTranslation();
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
   const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
     null,
@@ -44,7 +46,7 @@ export default function SearchBar() {
         setSelectedHotel(list[0]);
       }
     } catch (error: any) {
-      console.error("failed to load hotel list");
+      console.error(t("search.alerts.loadFailed"));
     }
   };
   useEffect(() => {
@@ -52,12 +54,12 @@ export default function SearchBar() {
   }, []);
   const handleSearch = () => {
     if (!selectedHotel) {
-      alert("Please select hotel");
+      alert(t("search.alerts.selectHotel"));
       return;
     }
 
     if (!dateRange.checkIn || !dateRange.checkOut) {
-      alert("Please select check-in & check-out date");
+      alert(t("search.alerts.selectDate"));
       return;
     }
 
@@ -78,7 +80,7 @@ export default function SearchBar() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
           <div className="flex-1 relative z-[100]" ref={selectRef}>
             <label className="text-xs text-gray-500 mb-1 block">
-              Destination
+              {t("search.destination")}
             </label>
             <button
               onClick={() => setOpenHotel(!openHotel)}
@@ -88,7 +90,7 @@ export default function SearchBar() {
               <div className="flex items-center gap-3 min-w-0">
                 <MapPin size={18} className="text-gray-500 shrink-0" />
                 <span className="truncate text-sm font-medium">
-                  {selectedHotel?.name ?? "Select hotel"}
+                  {selectedHotel?.name ?? t("search.placeholder.hotel")}
                 </span>
               </div>
               <ChevronDown
@@ -140,7 +142,7 @@ export default function SearchBar() {
       shadow-md
     "
             >
-              Search
+              {t("search.search")}
             </button>
           </div>
         </div>

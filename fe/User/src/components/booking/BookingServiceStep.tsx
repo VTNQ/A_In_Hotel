@@ -4,8 +4,10 @@ import BookingServiceCard from "./BookingServiceCard";
 import BookingSummaryService from "./BookingSummaryService";
 import { getExtraService } from "../../service/api/ExtraService";
 import ServiceBookingSkeleton from "../ui/ServiceBookingSkeleton";
+import { useTranslation } from "react-i18next";
 
 const BookingServiceStep = ({ data, onChange,booking }: any) => {
+  const { t } = useTranslation();
   const { search } = useBookingSearch();
   const [services, setServices] = useState<any[]>([]);
     const nights = useMemo(() => {
@@ -62,10 +64,10 @@ const BookingServiceStep = ({ data, onChange,booking }: any) => {
       <div className="lg:col-span-7 space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-on-surface">
-            Enhance Your Stay
+            {t("booking.services.title")}
           </h2>
           <p className="text-gray-500 text-sm">
-            Personalize your experience with our premium add-on services.
+            {t("booking.services.subtitle")}
           </p>
         </div>
         <div className="space-y-4">
@@ -77,7 +79,7 @@ const BookingServiceStep = ({ data, onChange,booking }: any) => {
             </>
           ) : services.length === 0 ? (
             <div className="text-center text-gray-400 py-10">
-              Không có dịch vụ nào
+              {t("booking.services.noServices")}
             </div>
           ) : (
             services.map((service) => {

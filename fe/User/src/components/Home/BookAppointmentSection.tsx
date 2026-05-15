@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const BookAppointmentSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="w-full bg-[#9c8266] py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 px-4 sm:px-6 lg:px-8 items-center">
@@ -22,17 +25,17 @@ const BookAppointmentSection = () => {
         {/* RIGHT FORM */}
         <div className="text-white flex flex-col justify-center">
           <span className="uppercase text-xs tracking-[0.3em] mb-3 block text-white/80">
-            Book appointment
+            {t("home.bookAppointment.title")}
           </span>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-dmserif leading-tight mb-4">
-            Relaxation and luxury <br className="hidden sm:block" /> during your
-            stay
+            {t("home.bookAppointment.titleLine1")}
+            <br className="hidden sm:block" />
+            {t("home.bookAppointment.titleLine2")}
           </h2>
 
           <p className="text-sm sm:text-base text-white/80 mb-8 max-w-md">
-            Because a place can change everything, especially the moment you
-            spend there. Make an appointment with what's essential.
+            {t("home.bookAppointment.description")}
           </p>
 
           <form className="space-y-6">
@@ -40,12 +43,12 @@ const BookAppointmentSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <input
                 type="text"
-                placeholder="Name"
+                placeholder={t("home.bookAppointment.name")}
                 className="bg-transparent border-b border-white/50 focus:outline-none py-2 text-white placeholder-white/70 transition"
               />
               <input
                 type="text"
-                placeholder="Last name"
+                placeholder={t("home.bookAppointment.lastName")}
                 className="bg-transparent border-b border-white/50 focus:outline-none py-2 text-white placeholder-white/70 transition"
               />
             </div>
@@ -54,19 +57,19 @@ const BookAppointmentSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t("home.bookAppointment.email")}
                 className="bg-transparent border-b border-white/50 focus:outline-none py-2 text-white placeholder-white/70 transition"
               />
               <input
                 type="text"
-                placeholder="Phone"
+                placeholder={t("home.bookAppointment.phone")}
                 className="bg-transparent border-b border-white/50 focus:outline-none py-2 text-white placeholder-white/70 transition"
               />
             </div>
 
             {/* Message */}
             <textarea
-              placeholder="Message"
+              placeholder={t("home.bookAppointment.message")}
               rows={3}
               className="w-full bg-transparent border-b border-white/50 focus:border-white focus:outline-none py-2 text-white placeholder-white/70 resize-none transition"
             />
@@ -101,14 +104,14 @@ const BookAppointmentSection = () => {
                 </svg>
               </div>
 
-              <span>I agree with the site's privacy policy</span>
+              <span>{t("home.bookAppointment.privacyPolicy")}</span>
             </label>
             {/* Button */}
             <button
               type="submit"
               className="mt-4 w-full rounded-md bg-[#bfa383] py-3 text-center text-sm font-medium text-white hover:bg-[#c9ad8c] transition"
             >
-              Get in touch
+              {t("home.bookAppointment.submit")}
             </button>
           </form>
         </div>

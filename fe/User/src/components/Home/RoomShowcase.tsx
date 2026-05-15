@@ -1,8 +1,10 @@
 "use client";
 
 import { MapPin, Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function RoomShowcase() {
+  const { t } = useTranslation();
   const rooms = [
     {
       id: 1,
@@ -10,7 +12,7 @@ export default function RoomShowcase() {
       location: "A IN RIVERSIDE",
       address: "188 - 189 Bến Vân Đồn, P. Khánh Hội, TP.HCM ",
       oldPrice: "540.647 ₫",
-      price: "2.050.000 ₫/đêm",
+      price: "2.050.000 ₫",
       rating: 5.0,
       image: "/image/cab5707e-b985-445e-a7b1-6e7431a4b2a3.png",
     },
@@ -20,7 +22,7 @@ export default function RoomShowcase() {
       location: "A IN ATISTAR",
       address: "30 Đường số 14, P. An Nhơn, TP.HCM ",
       oldPrice: "540.647 ₫",
-      price: " 1.100.000 ₫/đêm",
+      price: " 1.100.000 ₫",
       rating: 5.0,
       image: "/image/z7147491494347_a3127731f513980714c416cbf4b49917.jpg",
     },
@@ -30,7 +32,7 @@ export default function RoomShowcase() {
       location: "A IN GLAMOUR",
       address: "63/1 - 63/3 Đường số 19, P. An Khánh, TP.HCM",
       oldPrice: "540.647 ₫",
-      price: "1.600.000 ₫/đêm",
+      price: "1.600.000 ₫",
       rating: 5.0,
       image: "/image/z7147496142673_d0fa54bc2d9afa1d93bcb066edd6256c.jpg", // ảnh bạn thêm sau, để tượng trưng
     },
@@ -40,7 +42,7 @@ export default function RoomShowcase() {
     <section className="relative z-0 py-14 sm:py-16 lg:py-20 px-4">
       {/* Title */}
       <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2b3a67] mb-10 sm:mb-12">
-        Popular Room And Suites
+        {t("home.roomShowcase.title")}
       </h2>
 
       {/* Card grid */}
@@ -85,6 +87,7 @@ export default function RoomShowcase() {
                 </p>
                 <p className="text-base sm:text-lg font-semibold text-[#b38a58]">
                   {room.price}
+                  {t("home.roomShowcase.perNight")}
                 </p>
               </div>
 
@@ -101,9 +104,8 @@ export default function RoomShowcase() {
                 <span className="text-gray-600 ml-2">{room.rating}</span>
               </div>
 
-              <button 
-              className="mt-5 w-full bg-[#b38a58] text-white py-2 rounded-md font-medium hover:bg-[#3A3125] transition">
-                Book now
+              <button className="mt-5 w-full bg-[#b38a58] text-white py-2 rounded-md font-medium hover:bg-[#3A3125] transition">
+                {t("home.roomShowcase.bookNow")}
               </button>
             </div>
           </div>

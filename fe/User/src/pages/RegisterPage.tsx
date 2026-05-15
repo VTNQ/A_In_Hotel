@@ -2,6 +2,7 @@ import { useState } from "react";
 import { register } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
 import { BASE_API } from "../setting/constant/app";
+import { useTranslation } from "react-i18next";
 const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // chỉnh đường dẫn nếu bạn đặt logo nơi khác
 const BG_URL =
   "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg";
@@ -69,6 +70,7 @@ function SocialButton({
 
 export default function RegisterPage() {
   const { showAlert } = useAlert();
+    const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -89,28 +91,28 @@ export default function RegisterPage() {
 
     switch (name) {
       case "fullName":
-        if (!value.trim()) error = "Full name is required";
+        if (!value.trim())  error = t("register.validation.fullNameRequired");
         break;
 
       case "phone":
-        if (!value.trim()) error = "Phone number is required";
-        else if (!/^\+?\d{9,12}$/.test(value)) error = "Invalid phone number";
+        if (!value.trim()) error = t("register.validation.phoneRequired");
+        else if (!/^\+?\d{9,12}$/.test(value)) error = t("register.validation.invalidPhone");
         break;
 
       case "email":
-        if (!value.trim()) error = "Email is required";
+        if (!value.trim()) error = t("register.validation.emailRequired");
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          error = "Invalid email address";
+          error = t("register.validation.invalidEmail");
         break;
 
       case "password":
-        if (!value) error = "Password is required";
+        if (!value) error = t("register.validation.passwordRequired");
         else if (value.length < 6)
-          error = "Password must be at least 6 characters";
+          error = t("register.validation.passwordLength");
         break;
 
       case "confirmPassword":
-        if (value !== formData.password) error = "Passwords do not match";
+        if (value !== formData.password) error = t("register.validation.passwordsDoNotMatch");
         break;
     }
 
@@ -141,7 +143,7 @@ export default function RegisterPage() {
       };
       await register(payload);
       showAlert({
-        title: "Đăng ký thành công!",
+        title: t("register.alerts.success"),
         type: "success",
         autoClose: 3000,
       });
@@ -154,7 +156,7 @@ export default function RegisterPage() {
       });
     } catch (err: any) {
       showAlert({
-        title: "Đăng ký thất bại. Vui lòng thử lại.",
+        title: t("register.alerts.failed"),
         type: "error",
         autoClose: 3000,
       });
@@ -202,13 +204,13 @@ export default function RegisterPage() {
           {/* Form right */}
           <div className="lg:col-span-7">
             <h1 className="mb-6 text-2xl font-semibold text-gray-900">
-              Register
+              {t("register.title")}
             </h1>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Fullname
+                  {t("register.fullName")}
                 </span>
                 <input
                   type="text"
@@ -227,7 +229,7 @@ export default function RegisterPage() {
               </label>
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Phone number
+                  {t("register.phoneNumber")}
                 </span>
                 <input
                   type="text"
@@ -249,7 +251,7 @@ export default function RegisterPage() {
 
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Email address
+                  {t("register.phoneNumber")}
                 </span>
                 <input
                   type="email"
@@ -271,7 +273,7 @@ export default function RegisterPage() {
 
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Password
+                  {t("register.password")}
                 </span>
                 <input
                   type="password"
@@ -293,7 +295,7 @@ export default function RegisterPage() {
 
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Confirm password
+                  {t("register.confirmPassword")}
                 </span>
                 <input
                   type="password"
@@ -353,10 +355,10 @@ export default function RegisterPage() {
                         d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
                       />
                     </svg>
-                    <span>Creating account...</span>
+                    <span>{t("register.creatingAccount")}</span>
                   </>
                 ) : (
-                  <span>Create account</span>
+                  <span>{t("register.createAccount")}</span>
                 )}
               </button>
 
@@ -372,7 +374,7 @@ export default function RegisterPage() {
                   <span className="text-gray-700">Remember me</span> */}
                 </label>
                 <a href="#" className="text-gray-500 hover:underline">
-                  Forgot password?
+                  {t("register.forgotPassword")}
                 </a>
               </div>
 
@@ -382,13 +384,13 @@ export default function RegisterPage() {
               </div>
 
               <p className="mt-6 text-center text-sm text-gray-600">
-                Already have an account?{" "}
+                {t("register.alreadyHaveAccount")}{" "}
                 <a
                   href="/Login"
                   className="font-medium"
                   style={{ color: BRAND }}
                 >
-                  Sign in
+                  {t("register.signIn")}
                 </a>
               </p>
             </form>

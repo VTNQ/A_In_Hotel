@@ -4,6 +4,7 @@ import { getRoom } from "../../service/api/Room";
 import type { RoomGridProps, RoomResponse } from "../../type/room.types";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import RoomCardSkeleton from "./RoomCardSkeleton";
+import { useTranslation } from "react-i18next";
 const RoomGrid = ({
   page,
   onPageInfo,
@@ -12,6 +13,7 @@ const RoomGrid = ({
   selectedRoomId,
   priceRange,
 }: RoomGridProps) => {
+  const { t } = useTranslation();
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const { search } = useBookingSearch();
@@ -77,7 +79,7 @@ const RoomGrid = ({
         Array.from({ length: 5 }).map((_, i) => <RoomCardSkeleton key={i} />)}
       {!loading && rooms.length === 0 && (
         <div className="py-10 text-center text-sm text-gray-500">
-          No rooms found
+          {t("room.grid.noRooms")}
         </div>
       )}
       {!loading &&

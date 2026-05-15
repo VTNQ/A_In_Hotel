@@ -1,4 +1,5 @@
 import { ArrowRight, Verified } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const BookingPaymentSummary = ({
   room,
@@ -8,28 +9,29 @@ const BookingPaymentSummary = ({
   total,
   discountAmount = 0,
 }: any) => {
+  const { t } = useTranslation();
   return (
     <div className="lg:col-span-5">
       <div className="bg-white border border-outline-variant rounded-xl p-[24px] top-24 shadow-sm">
         <h2 className="text-[20px] line-clamp-1 font-semibold font-sans text-on-surface mb-[24px]">
-          Payment Summary
+          {t("booking.staySummary.paymentTitle")}
         </h2>
         <div className="space-y-8 pb-[24px] border-b border-outline-variant">
           <div className="flex justify-between items-center text-[14px] line-clamp-1 font-normal">
             <span className="text-on-surface">
-              {room?.roomName} ({nights} nights)
+              {room?.roomName} ({nights} {t("booking.staySummary.nights")})
             </span>
 
             <span className="font-semibold">
-              {search.totalPrice.toLocaleString()}₫
+              {search.totalPrice.toLocaleString()} {t("common.vnd")}
             </span>
           </div>
           {discountAmount > 0 && (
             <div className="flex justify-between items-center text-[14px]">
-              <span className="text-green-600">Voucher Discount</span>
+              <span className="text-green-600">{t("booking.staySummary.voucherDiscount")}</span>
 
               <span className="font-semibold text-green-600">
-                -{Number(discountAmount).toLocaleString()}₫
+                -{Number(discountAmount).toLocaleString()} {t("common.vnd")}
               </span>
             </div>
           )}
@@ -47,10 +49,10 @@ const BookingPaymentSummary = ({
           <div className="flex justify-between items-end">
             <div>
               <p className="font-sans text-[12px] text-gray-500 uppercase tracking-widest font-semibold mb-1">
-                Total Cost
+                {t("booking.staySummary.totalCost")}
               </p>
               <p className="text-[28px] font-extrabold text-on-surface leading-tight">
-                {Number(total).toLocaleString()}₫
+                {Number(total).toLocaleString()} {t("common.vnd")}
               </p>
             </div>
           </div>
@@ -60,12 +62,12 @@ const BookingPaymentSummary = ({
          shadow-lg shadow-black/5 border 
          border-outline-variant hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-[16px]"
         >
-          Confirm Booking
+          {t("booking.staySummary.confirmBooking")}
           <ArrowRight size={20} />
         </button>
         <p className="text-center font-sans text-on-surface mt-[16px] flex items-center justify-center gap-[4px]">
           <Verified size={20} className="text-[14px]" />
-          SSL Secure & Encrypted Payment
+          {t("booking.staySummary.securePayment")}
         </p>
       </div>
     </div>

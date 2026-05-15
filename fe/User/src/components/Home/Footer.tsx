@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { type HotelResponse } from "../../type/hotel.types";
 import { getHotel } from "../../service/api/Hotel";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
-
+  const {t} = useTranslation();
   useEffect(() => {
     const fetchHotels = async () => {
       try {
@@ -40,7 +41,7 @@ export default function Footer() {
           {/* DESTINATION */}
           <div className="lg:col-span-3">
             <p className="font-semibold tracking-[0.2em] mb-6 text-xs text-[#866F56]">
-              DESTINATION
+              {t("footer.destination")}
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-8 text-sm text-[#2B2B2B]">
@@ -84,7 +85,7 @@ export default function Footer() {
   flex flex-col items-center lg:items-start gap-6"
           >
             <p className="font-semibold tracking-[0.2em] text-xs text-[#866F56]">
-              CONTACT
+             {t("footer.contact")}
             </p>
 
             <div className="flex gap-4">
