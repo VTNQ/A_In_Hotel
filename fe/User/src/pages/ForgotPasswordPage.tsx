@@ -4,8 +4,10 @@ import { useAlert } from "../components/alert-context";
 import { forgotPassword, resetPassword } from "../service/api/Authenticate";
 import { Eye, EyeOff, Lock, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ForgotPasswordPage = () => {
+  const { t } = useTranslation();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -47,16 +49,16 @@ const ForgotPasswordPage = () => {
       await forgotPassword(data);
       setEmail(data.email);
       showAlert({
-        title: "Gửi OTP thành công!",
-        description: "Vui lòng kiểm tra email để lấy mã xác thực.",
+        title: t("forgotPassword.alerts.sendSuccess"),
+        description: t("forgotPassword.alerts.sendSuccessDesc"),
         type: "success",
         autoClose: 3000,
       });
       setStep("otp");
     } catch (err) {
       showAlert({
-        title: "Gửi OTP thất bại!",
-        description: "Email không tồn tại hoặc đã có lỗi xảy ra.",
+        title: t("forgotPassword.alerts.sendFailed"),
+        description: t("forgotPassword.alerts.sendFailedDesc"),
         type: "error",
         autoClose: 3000,
       });
@@ -87,8 +89,8 @@ const ForgotPasswordPage = () => {
     const otpValue = otp.join("");
     if (otpValue.length < 6) {
       showAlert({
-        title: "Lỗi!",
-        description: "Vui lòng nhập đầy đủ mã OTP.",
+        title: t("forgotPassword.alerts.resendFailed"),
+        description: t("forgotPassword.alerts.verifyFailed"),
         type: "error",
       });
       return;
@@ -101,16 +103,16 @@ const ForgotPasswordPage = () => {
         newPassword: data.password,
       });
       showAlert({
-        title: "Thành công!",
-        description: "Mật khẩu của bạn đã được thay đổi.",
+        title: t("forgotPassword.alerts.resetSuccess"),
+        description: t("forgotPassword.alerts.resetSuccessDesc"),
         type: "success",
         autoClose: 3000,
       });
       navigate("/login");
     } catch (err: any) {
       showAlert({
-        title: "Lỗi!",
-        description: err.response?.data?.message || "Mã OTP không hợp lệ hoặc đã hết hạn.",
+        title: t("forgotPassword.alerts.resendFailed"),
+        description: err.response?.data?.message || t("forgotPassword.alerts.invalidOtp"),
         type: "error",
         autoClose: 3000,
       });
@@ -121,14 +123,14 @@ const ForgotPasswordPage = () => {
     try {
       await forgotPassword({ email });
       showAlert({
-        title: "Đã gửi lại mã!",
-        description: "Vui lòng kiểm tra email của bạn.",
+        title: t("forgotPassword.alerts.resendSuccess"),
+        description: t("forgotPassword.alerts.resendSuccessDesc"),
         type: "success",
       });
     } catch (err) {
       showAlert({
-        title: "Lỗi!",
-        description: "Không thể gửi lại mã vào lúc này.",
+        title: t("forgotPassword.alerts.resendFailed"),
+        description: t("forgotPassword.alerts.resendFailedDesc"),
         type: "error",
       });
     }
@@ -159,27 +161,27 @@ const ForgotPasswordPage = () => {
             {step === "email" ? (
               <>
                 <h1 className="mb-6 text-2xl sm:text-3xl font-semibold text-gray-900 text-center lg:text-left">
-                  Forgot Password
+                  {t("forgotPassword.title")}
                 </h1>
                 <p className="mb-8 text-gray-600 text-center lg:text-left">
-                  Enter your email address and we'll send you an OTP code to reset your password.
+                  {t("forgotPassword.subtitle")}
                 </p>
                 <form onSubmit={handleEmailSubmit(onEmailSubmit)} className="space-y-6">
                   <label className="block">
                     <span className="mb-2 block text-sm font-medium text-gray-700">
-                      Email address
+                      {t("forgotPassword.emailLabel")}
                     </span>
                     <input
                       type="email"
                       {...registerEmail("email", {
-                        required: "Email is required",
+                        required: t("forgotPassword.emailRequired"),
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Invalid email address",
+                          message: t("forgotPassword.emailInvalid"),
                         },
                       })}
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#b08a66] focus:ring-2 focus:ring-[#b08a66]/20 outline-none transition"
-                      placeholder="you@example.com"
+                      placeholder={t("forgotPassword.emailPlaceholder")}
                     />
                     {emailErrors.email && (
                       <span className="text-sm text-red-500 mt-2 block">
@@ -202,10 +204,10 @@ const ForgotPasswordPage = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
-                        <span>Sending OTP...</span>
+                        <span>{t("forgotPassword.sendingOtp")}</span>
                       </span>
                     ) : (
-                      "Send Verification Code"
+                      t("forgotPassword.sendOtp")
                     )}
                   </button>
                   <div className="text-center">
@@ -214,7 +216,7 @@ const ForgotPasswordPage = () => {
                       onClick={() => navigate("/login")}
                       className="text-sm font-medium text-[#b08a66] hover:underline"
                     >
-                      Back to Login
+                      {t("forgotPassword.backToLogin")}
                     </button>
                   </div>
                 </form>
@@ -222,11 +224,11 @@ const ForgotPasswordPage = () => {
             ) : (
               <>
                 <h1 className="mb-6 text-2xl sm:text-3xl font-semibold text-gray-900 text-center lg:text-left">
-                  Reset Password
+                  {t("forgotPassword.resetTitle")}
                 </h1>
                 <p className="mb-8 text-gray-600 text-center lg:text-left">
-                  We've sent a code to <span className="font-semibold text-gray-900">{email}</span>. <br />
-                  Enter the code and your new password below.
+                  {t("forgotPassword.resetSubtitle")} <span className="font-semibold text-gray-900">{email}</span>. <br />
+                  {t("forgotPassword.resetSubtitle2")}
                 </p>
 
                 <form onSubmit={handleResetSubmit(onVerifyAndReset)} className="space-y-6">
@@ -234,7 +236,7 @@ const ForgotPasswordPage = () => {
                   <div className="space-y-3">
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                       <ShieldCheck className="w-4 h-4 text-[#b08a66]" />
-                      Verification Code
+                      {t("forgotPassword.otpLabel")}
                     </label>
                     <div className="flex justify-between gap-2">
                       {otp.map((digit, idx) => (
@@ -259,17 +261,17 @@ const ForgotPasswordPage = () => {
                     <div className="space-y-2">
                       <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                         <Lock className="w-4 h-4 text-[#b08a66]" />
-                        New Password
+                        {t("forgotPassword.passwordLabel")}
                       </label>
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
                           {...registerReset("password", {
-                            required: "Password is required",
-                            minLength: { value: 6, message: "Password must be at least 6 characters" },
+                            required: t("forgotPassword.passwordRequired"),
+                            minLength: { value: 6, message: t("forgotPassword.passwordMinLength") },
                           })}
                           className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-[#b08a66] outline-none transition"
-                          placeholder="••••••••"
+                          placeholder={t("forgotPassword.passwordPlaceholder")}
                         />
                         <button
                           type="button"
@@ -287,17 +289,17 @@ const ForgotPasswordPage = () => {
                     <div className="space-y-2">
                       <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                         <Lock className="w-4 h-4 text-[#b08a66]" />
-                        Confirm Password
+                        {t("forgotPassword.confirmPasswordLabel")}
                       </label>
                       <div className="relative">
                         <input
                           type={showConfirmPassword ? "text" : "password"}
                           {...registerReset("confirmPassword", {
-                            required: "Please confirm your password",
-                            validate: (value) => value === password || "Passwords do not match",
+                            required: t("forgotPassword.confirmPasswordRequired"),
+                            validate: (value) => value === password || t("forgotPassword.passwordsNotMatch"),
                           })}
                           className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-[#b08a66] outline-none transition"
-                          placeholder="••••••••"
+                          placeholder={t("forgotPassword.passwordPlaceholder")}
                         />
                         <button
                           type="button"
@@ -322,18 +324,18 @@ const ForgotPasswordPage = () => {
                         : "bg-[#b08a66] hover:bg-[#9a7858] active:scale-[0.98]"
                       }`}
                   >
-                    {isResetSubmitting ? "Resetting Password..." : "Reset Password"}
+                    {isResetSubmitting ? t("forgotPassword.resetting") : t("forgotPassword.resetButton")}
                   </button>
 
                   <div className="text-center space-y-4 pt-2">
                     <p className="text-sm text-gray-500">
-                      Didn't receive the code?{" "}
+                      {t("forgotPassword.noCode")}{" "}
                       <button
                         type="button"
                         onClick={resendOtp}
                         className="font-semibold text-[#b08a66] hover:underline"
                       >
-                        Resend OTP
+                        {t("forgotPassword.resendOtp")}
                       </button>
                     </p>
                     <button
@@ -341,7 +343,7 @@ const ForgotPasswordPage = () => {
                       onClick={() => setStep("email")}
                       className="text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                      Change email address
+                      {t("forgotPassword.changeEmail")}
                     </button>
                   </div>
                 </form>

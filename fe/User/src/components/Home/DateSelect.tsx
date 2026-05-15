@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DateRangeProps } from "../../type/booking.types";
 import CalendarUI from "../ui/CalenderUI";
+import { useTranslation } from "react-i18next";
 
 export default function DateSelect({ value, onChange }: DateRangeProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
 
   const apply = () => {
     if (!checkIn || !checkOut) {
-      alert("Please select both Check-in and Check-out");
+      alert(t("search.alerts.selectBothDates"));
       return;
     }
     onChange?.({ checkIn, checkOut });
@@ -92,7 +94,7 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
-      <label className="text-xs text-gray-500 mb-1 block">Select date</label>
+      <label className="text-xs text-gray-500 mb-1 block">{t("search.selectDate")}</label>
 
       <button
         type="button"
@@ -103,7 +105,7 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
         <span className="text-sm">
           {checkIn && checkOut
             ? `${checkIn} → ${checkOut}`
-            : "Check-in → Check-out"}
+            : t("search.placeholder.date")}
         </span>
       </button>
 
@@ -117,16 +119,16 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
             {/* HEADER */}
             <div className="flex justify-between mb-4 text-sm font-medium">
               <div className={checkOut ? "text-gray-400" : "text-[#b38a58]"}>
-                Check-in
+                {t("search.checkIn")}
                 <div className="text-xs text-gray-500">
-                  {checkIn ?? "Select date"}
+                  {checkIn ?? t("search.selectDate")}
                 </div>
               </div>
 
               <div className={!checkIn ? "text-gray-400" : "text-[#b38a58]"}>
-                Check-out
+                {t("search.checkOut")}
                 <div className="text-xs text-gray-500">
-                  {checkOut ?? "Select date"}
+                  {checkOut ?? t("search.selectDate")}
                 </div>
               </div>
             </div>
@@ -141,13 +143,13 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
                 onClick={() => setOpen(false)}
                 className="text-sm text-gray-500"
               >
-                Cancel
+                {t("search.cancel")}
               </button>
               <button
                 onClick={apply}
                 className="px-4 py-2 bg-[#b38a58] text-white rounded-lg text-sm font-medium hover:bg-[#9a7748]"
               >
-                Apply
+                {t("search.apply")}
               </button>
             </div>
           </div>,

@@ -10,8 +10,10 @@ import { useAlert } from "../components/alert-context";
 import { useNavigate } from "react-router-dom";
 import { useBookingSearch } from "../context/booking/BookingSearchContext";
 import { createBooking } from "../service/api/bookings";
+import { useTranslation } from "react-i18next";
 
 const BookingPage = () => {
+  const { t } = useTranslation();
   const { booking, updateBooking, clearBooking } = useBooking();
 
   const { search, clearSearch } = useBookingSearch();
@@ -96,12 +98,11 @@ const BookingPage = () => {
   const handleCancel = () => {
     showAlert({
       type: "warning",
-      title: "Cancel booking?",
-      description:
-        "Your current booking progress will be lost if you continue.",
+      title: t("booking.cancelAlert.title"),
+      description: t("booking.cancelAlert.description"),
 
       primaryAction: {
-        label: "Yes, cancel",
+        label: t("booking.cancelAlert.confirm"),
         onClick: () => {
           resetAllState();
           navigate("/");
@@ -109,8 +110,8 @@ const BookingPage = () => {
       },
 
       secondaryAction: {
-        label: "No, keep booking",
-        onClick: () => {},
+        label: t("booking.cancelAlert.keep"),
+        onClick: () => { },
       },
     });
   };
@@ -170,7 +171,7 @@ const BookingPage = () => {
       const response = await createBooking(payload);
 
       showAlert({
-        title: response?.data?.message || "Booking created successfully.",
+        title: response?.data?.message || t("booking.alerts.success"),
         type: "success",
         autoClose: 3000,
       });
@@ -182,7 +183,7 @@ const BookingPage = () => {
       console.log(err);
 
       showAlert({
-        title: err?.response?.data?.message || "Booking failed.",
+        title: err?.response?.data?.message || t("booking.alerts.failed"),
         type: "error",
         autoClose: 3000,
       });
@@ -199,11 +200,11 @@ const BookingPage = () => {
     // ===== ROOM DETAILS =====
     const roomDetails = search?.roomId
       ? [
-          {
-            roomId: search.roomId,
-            price: basePrice,
-          },
-        ]
+        {
+          roomId: search.roomId,
+          price: basePrice,
+        },
+      ]
       : [];
 
     // ===== SERVICE DETAILS =====
@@ -281,7 +282,7 @@ const BookingPage = () => {
         ) {
           showAlert({
             type: "error",
-            title: "Vui lòng nhập đầy đủ thông tin khách",
+            title: t("booking.alerts.fillGuestInfo"),
           });
           return false;
         }
@@ -291,14 +292,14 @@ const BookingPage = () => {
         if (!schedule?.checkInDate || !schedule?.checkOutDate) {
           showAlert({
             type: "error",
-            title: "Vui lòng chọn ngày nhận và trả phòng",
+            title: t("booking.alerts.selectDates"),
           });
           return false;
         }
         if (!schedule?.checkInTime || !schedule?.checkOutTime) {
           showAlert({
             type: "error",
-            title: "Vui lòng chọn giờ nhận và trả phòng",
+            title: t("booking.alerts.selectTimes"),
           });
           return false;
         }
@@ -326,63 +327,64 @@ const BookingPage = () => {
         <div className="flex-grow pt-24 pb-32 px-4 md:px-8 max-w-5xl mx-auto w-full">
           <div className="mb-12">
             <div className="flex justify-between items-center text-sm">
-              {BookingSteps.map((step, i) => (
-                <div
-                  key={step}
-                  className="flex items-center justify-center flex-1"
-                >
-                  {/* STEP */}
-                  <div className="flex flex-col items-center min-w-[70px]">
-                    {(() => {
-                      const status = getStepStatus(i, currentStep);
+              {BookingSteps.map((step, i) => {
+                const stepKeys = ["guest", "schedule", "services", "payment"];
+                const translatedStep = t(`booking.steps.${stepKeys[i]}`);
+                return (
+                  <div
+                    key={step}
+                    className="flex items-center justify-center flex-1"
+                  >
+                    {/* STEP */}
+                    <div className="flex flex-col items-center min-w-[70px]">
+                      {(() => {
+                        const status = getStepStatus(i, currentStep);
 
-                      return (
-                        <div
-                          className={`w-9 h-9 flex items-center justify-center rounded-full border-2 font-bold shadow transition
-        ${
-          status === "active"
-            ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
-            : status === "done"
-              ? "bg-[rgb(24,28,32)] text-white border-white"
-              : "text-gray-400 border-outline-variant"
-        }`}
-                        >
-                          {status === "done" ? "✓" : i + 1}
-                        </div>
-                      );
-                    })()}
+                        return (
+                          <div
+                            className={`w-9 h-9 flex items-center justify-center rounded-full border-2 font-bold shadow transition
+        ${status === "active"
+                                ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
+                                : status === "done"
+                                  ? "bg-[rgb(24,28,32)] text-white border-white"
+                                  : "text-gray-400 border-outline-variant"
+                              }`}
+                          >
+                            {status === "done" ? "✓" : i + 1}
+                          </div>
+                        );
+                      })()}
 
-                    <span
-                      className={`mt-2 text-[12px] uppercase leading-none tracking-[0.02em] font-medium text-center whitespace-nowrap
-    ${
-      i < currentStep
-        ? "text-on-surface  font-semibold"
-        : i === currentStep
-          ? "text-on-surface font-semibold"
-          : "text-gray-400"
-    }`}
-                    >
-                      {step}
-                    </span>
-                  </div>
-                  {i !== BookingSteps.length - 1 && (
-                    <div
-                      className={`relative ${
-                        i === BookingSteps.length - 2 ? "flex-[2]" : "flex-1"
-                      }`}
-                    >
-                      <div
-                        className={`absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-gray-300 ${i === BookingSteps.length - 2 ? "w-[150%]" : ""}`}
-                      />
+                      <span
+                        className={`mt-2 text-[12px] uppercase leading-none tracking-[0.02em] font-medium text-center whitespace-nowrap
+    ${i < currentStep
+                            ? "text-on-surface  font-semibold"
+                            : i === currentStep
+                              ? "text-on-surface font-semibold"
+                              : "text-gray-400"
+                          }`}
+                      >
+                        {translatedStep}
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
+                    {i !== BookingSteps.length - 1 && (
+                      <div
+                        className={`relative ${i === BookingSteps.length - 2 ? "flex-[2]" : "flex-1"
+                          }`}
+                      >
+                        <div
+                          className={`absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-gray-300 ${i === BookingSteps.length - 2 ? "w-[150%]" : ""}`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div className="mb-8 flex w-[94%] items-center justify-center gap-3 py-3 px-6 rounded-xl border border-outline-variant bg-[#f9f6f2] shadow-sm">
-            <span>Your booking is held for:</span>
+            <span>{t("booking.heldMessage")}</span>
             <strong className="font-semibold">{formatTime(timeLeft)}</strong>
           </div>
           <div className=" p-6">
@@ -417,10 +419,10 @@ const BookingPage = () => {
         <button
           onClick={handleCancel}
           className="flex items-center gap-2 px-6 py-3 rounded-lg border border-outline-variant 
-             text-secondary font-button text-button hover:bg-surface-container transition-colors active:scale-95 duration-150"
+              text-secondary font-button text-button hover:bg-surface-container transition-colors active:scale-95 duration-150"
         >
           <X size={18} />
-          Hủy đặt phòng
+          {t("booking.actions.cancel")}
         </button>
         <div className="flex items-center gap-6">
           {currentStep > 0 && (
@@ -429,39 +431,42 @@ const BookingPage = () => {
               className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300
         text-gray-600 font-medium hover:bg-gray-100 transition-colors active:scale-95"
             >
-              Back
+              {t("booking.actions.back")}
             </button>
           )}
           <div className="hidden lg:flex gap-4 text-gray-400 dark:text-gray-500 font-sans text-sm font-medium">
-            {BookingSteps.map((step, i) => (
-              <>
-                <span
-                  className={
-                    i === currentStep
-                      ? "text-on-surface dark:text-white font-bold"
-                      : ""
-                  }
-                >
-                  {step}
-                </span>
-              </>
-            ))}
+            {BookingSteps.map((step, i) => {
+              const stepKeys = ["guest", "schedule", "services", "payment"];
+              const translatedStep = t(`booking.steps.${stepKeys[i]}`);
+              return (
+                <>
+                  <span
+                    className={
+                      i === currentStep
+                        ? "text-on-surface dark:text-white font-bold"
+                        : ""
+                    }
+                  >
+                    {translatedStep}
+                  </span>
+                </>
+              );
+            })}
           </div>
           <button
             onClick={nextStep}
             disabled={isNextDisabled() || loading}
             className={`flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition
-    ${
-      isNextDisabled() || loading
-        ? "opacity-50 cursor-not-allowed bg-gray-200"
-        : "bg-[#f9f6f2] border border-[#717786] active:scale-90 shadow-md"
-    }`}
+    ${isNextDisabled() || loading
+                ? "opacity-50 cursor-not-allowed bg-gray-200"
+                : "bg-[#f9f6f2] border border-[#717786] active:scale-90 shadow-md"
+              }`}
           >
             {loading
-              ? "Processing..."
+              ? t("booking.actions.processing")
               : currentStep === BookingSteps.length - 1
-                ? "Finish"
-                : "Next"}
+                ? t("booking.actions.finish")
+                : t("booking.actions.next")}
             <ArrowRight size={18} className={loading ? "animate-spin" : ""} />
           </button>
         </div>

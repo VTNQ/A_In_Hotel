@@ -13,7 +13,9 @@ import RoomGallerySkeleton from "../components/RoomDetail/RoomGallerySkeleton";
 import RoomHeaderSkeleton from "../components/RoomDetail/RoomHeaderSkeleton";
 import AmenitiesSkeleton from "../components/RoomDetail/AmenitiesSkeleton";
 import BookingBoxSkeleton from "../components/RoomDetail/BookingBoxSkeleton";
+import { useTranslation } from "react-i18next";
 const RoomDetailPage = () => {
+  const { t } = useTranslation();
   const [openGallery, setOpenGallery] = useState(false);
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [loadingRoomDetail, setLoadingRoomDetail] = useState(true);
@@ -154,12 +156,12 @@ const RoomDetailPage = () => {
   const priceResult = calculateTotal();
   const handleBooking = () => {
     if (!roomv2 || !PriceType) {
-      alert("Please select price type");
+      alert(t("roomDetail.booking.alerts.selectPriceType"));
       return;
     }
 
     if (!search) {
-      alert("Missing booking search info");
+      alert(t("roomDetail.booking.alerts.missingSearchInfo"));
       return;
     }
 
@@ -250,7 +252,7 @@ const RoomDetailPage = () => {
 
               {/* ===== OVERVIEW ===== */}
               <div className="space-y-3">
-                <h4 className="font-semibold">Overview</h4>
+                <h4 className="font-semibold">{t("roomDetail.overview")}</h4>
 
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {roomv2?.note}
@@ -261,7 +263,7 @@ const RoomDetailPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 {/* AMENITIES */}
                 <div className="bg-transparent border border-[#2B2B2B] rounded-xl p-5 h-fit">
-                  <h4 className="font-semibold mb-4">Amenities</h4>
+                  <h4 className="font-semibold mb-4">{t("roomDetail.amenities")}</h4>
                   {loadingRoomDetail ? (
                     <AmenitiesSkeleton />
                   ) : (
@@ -282,42 +284,39 @@ const RoomDetailPage = () => {
 
                 {/* POLICIES */}
                 <div className="bg-transparent border border-[#2B2B2B] rounded-xl p-5 max-h-[326px] overflow-y-auto">
-                  <h4 className="font-semibold mb-4">Property Policies</h4>
+                  <h4 className="font-semibold mb-4">{t("roomDetail.policies.title")}</h4>
 
                   <p className="text-xs text-gray-500 mb-3">
-                    Extra bed policies vary by room type. Please check the room
-                    details for more information. All children are welcome.
+                    {t("roomDetail.policies.description")}
                   </p>
 
                   <ul className="space-y-2 text-sm text-gray-700 list-disc list-inside">
                     <li>
-                      <strong>Infants (0–1 year old, including babies)</strong>
+                      <strong>{t("roomDetail.policies.infants")}</strong>
                       <br />
-                      Stay free of charge when using existing beds.
+                      {t("roomDetail.policies.infantsStay")}
                     </li>
 
                     <li>
                       <strong>
-                        Children (2–6 years old, including toddlers)
+                        {t("roomDetail.policies.children")}
                       </strong>
                       <br />
-                      Stay free of charge when using existing beds.
+                      {t("roomDetail.policies.childrenStay")}
                     </li>
 
                     <li>
-                      <strong>Guests aged 7 years and above</strong>
+                      <strong>{t("roomDetail.policies.guests7")}</strong>
                       <br />
-                      Considered as adults.
+                      {t("roomDetail.policies.guests7AsAdult")}
                     </li>
 
                     <li>
-                      Extra beds are available upon request and will incur an
-                      additional charge.
+                      {t("roomDetail.policies.extraBed")}
                     </li>
 
                     <li>
-                      For bookings of more than 5 rooms, additional policies may
-                      apply.
+                      {t("roomDetail.policies.moreThan5Rooms")}
                     </li>
                   </ul>
                 </div>
@@ -335,22 +334,22 @@ const RoomDetailPage = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <User size={16} />
-                      <span>Adult: {adults}</span>
+                      <span>{t("roomDetail.booking.adult")}: {adults}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Baby size={16} />
-                      <span>Children: {children}</span>
+                      <span>{t("roomDetail.booking.children")}: {children}</span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <BedDouble size={16} />
-                      <span>Double bed</span>
+                      <span>{t("roomDetail.booking.doubleBed")}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <BedDouble size={16} />
-                      <span>Extra bed</span>
+                      <span>{t("roomDetail.booking.extraBed")}</span>
                     </div>
                   </div>
                 </div>
@@ -358,13 +357,13 @@ const RoomDetailPage = () => {
                 {/* ===== DATE ===== */}
                 <div className="text-sm text-gray-700 space-y-2">
                   <div className="flex justify-between items-center">
-                    <span>Check in</span>
+                    <span>{t("roomDetail.booking.checkIn")}</span>
                     <span className="flex items-center gap-1">
                       <Calendar size={14} /> {formatDate(checkIn)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>Check out</span>
+                    <span>{t("roomDetail.booking.checkOut")}</span>
                     <span className="flex items-center gap-1">
                       <Calendar size={14} /> {formatDate(checkOut)}
                     </span>
@@ -395,7 +394,7 @@ const RoomDetailPage = () => {
                       }}
                     />
                     <div>
-                      <p className="text-xs text-gray-500">2 giờ đầu</p>
+                      <p className="text-xs text-gray-500">{t("roomDetail.booking.priceOptions.twoHours")}</p>
                       <p className="font-semibold text-[#b38a58]">
                         {roomv2?.hourlyBasePrice} đ
                       </p>
@@ -422,7 +421,7 @@ const RoomDetailPage = () => {
                       className="accent-[#b38a58]"
                     />
                     <div>
-                      <p className="text-xs text-gray-500">Qua đêm (sau 22h)</p>
+                      <p className="text-xs text-gray-500">{t("roomDetail.booking.priceOptions.overnight")}</p>
                       <p className="font-semibold text-[#b38a58]">
                         {roomv2?.overnightPrice} đ
                       </p>
@@ -442,7 +441,7 @@ const RoomDetailPage = () => {
                     />
                     <div>
                       <p className="text-xs text-gray-500">
-                        Giá phòng ngày đêm
+                        {t("roomDetail.booking.priceOptions.daily")}
                       </p>
                       <p className="font-semibold text-[#b38a58]">
                         {roomv2?.defaultRate} đ
@@ -460,7 +459,7 @@ const RoomDetailPage = () => {
                                             : "bg-gray-50"
                                         }`}
                 >
-                  <span>Thêm giờ nghỉ +{roomv2?.hourlyAdditionalPrice}/h</span>
+                  <span>{t("roomDetail.booking.extraHours")} +{roomv2?.hourlyAdditionalPrice}/{t("roomDetail.booking.hour")}</span>
 
                   <div className="flex items-center gap-2">
                     <button
@@ -476,14 +475,14 @@ const RoomDetailPage = () => {
                     >
                       <Plus size={14} />
                     </button>
-                    <span className="ml-1">giờ</span>
+                    <span className="ml-1">{t("roomDetail.booking.hour")}</span>
                   </div>
                 </div>
 
                 {/* ===== TOTAL ===== */}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>{nights} night</span>
+                    <span>{nights} {t("roomDetail.booking.night")}</span>
                     <span>{priceResult.base.toLocaleString()} vnd</span>
                   </div>
                   {/* <div className="flex justify-between">
@@ -493,7 +492,7 @@ const RoomDetailPage = () => {
                 </div>
 
                 <div className="flex justify-between font-semibold border-t pt-3">
-                  <span>Total Cost</span>
+                  <span>{t("roomDetail.booking.totalCost")}</span>
                   <span>{priceResult.total.toLocaleString()} vnd</span>
                 </div>
 
@@ -502,7 +501,7 @@ const RoomDetailPage = () => {
                   onClick={handleBooking}
                   className="w-full bg-[#b38a58] text-white py-2 rounded-lg"
                 >
-                  Booking
+                  {t("roomDetail.booking.button")}
                 </button>
               </div>
               )}
@@ -523,7 +522,7 @@ const RoomDetailPage = () => {
         <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden bg-[#fdfcf9] py-14">
           <div className="w-screen">
             <div className="max-w-7xl mx-auto px-4">
-              <h4 className="font-semibold mb-8">Rooms</h4>
+              <h4 className="font-semibold mb-8">{t("roomDetail.rooms")}</h4>
 
               <div className="bg-[#F2F2F2] rounded-xl shadow-sm p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -542,7 +541,7 @@ const RoomDetailPage = () => {
                             image={room.images?.[0]?.url}
                             size={room.area}
                             guests={room.capacity}
-                            bed="Double bed"
+                            bed={t("roomDetail.booking.doubleBed")}
                             description={room.note}
                           />
                         ))}
@@ -552,7 +551,7 @@ const RoomDetailPage = () => {
                     ↓
                   </div>
                   <span className="mt-2 text-sm text-[#1A1A1A] font-medium group-hover:text-gray-800">
-                    See More Rooms
+                    {t("roomDetail.seeMore")}
                   </span>
                 </div>
               </div>

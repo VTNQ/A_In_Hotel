@@ -6,6 +6,7 @@ import DateSelect from "../Home/DateSelect";
 import RoomGuestsSelect from "../Home/RoomsGuestsSelect";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import type { RoomFilterSideBarProps } from "../../type/common";
+import { useTranslation } from "react-i18next";
 
 const PRICE_OPTIONS = [
   { label: "$0 - $200", value: "0-200", count: 200 },
@@ -19,6 +20,7 @@ const RoomFilterSideBar = ({
   priceRanges,
   onPriceChange,
 }: RoomFilterSideBarProps) => {
+  const { t } = useTranslation();
   const { search, setSearch } = useBookingSearch();
   const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
     null,
@@ -36,9 +38,9 @@ const RoomFilterSideBar = ({
     children: 0,
   });
   const TIME_OPTIONS = [
-    { label: "2 Giờ đầu", value: "1" },
-    { label: "Qua đêm", value: "2" },
-    { label: "Ngày đêm", value: "3" },
+    { label: t("room.filter.options.twoHours"), value: "1" },
+    { label: t("room.filter.options.overnight"), value: "2" },
+    { label: t("room.filter.options.daily"), value: "3" },
   ];
   const [timeTypes, setTimeTypes] = useState<string[]>([]);
   useEffect(() => {
@@ -52,7 +54,7 @@ const RoomFilterSideBar = ({
           setSelectedHotel(found || null);
         }
       } catch {
-        console.error("failed to load hotel list");
+        console.error(t("search.alerts.loadFailed"));
       }
     };
     fetchHotel();
@@ -72,12 +74,12 @@ const RoomFilterSideBar = ({
   }, [search?.rooms, search?.adults, search?.children]);
   const handleSearch = () => {
     if (!selectedHotel) {
-      alert("Please select hotel");
+      alert(t("search.alerts.selectHotel"));
       return;
     }
 
     if (!dateRange.checkIn || !dateRange.checkOut) {
-      alert("Please select check-in & check-out date");
+      alert(t("search.alerts.selectDate"));
       return;
     }
 
@@ -99,7 +101,7 @@ const RoomFilterSideBar = ({
       <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Destination
+            {t("search.destination")}
           </label>
           <SelectHotelButton
             hotels={hotels}
@@ -110,14 +112,14 @@ const RoomFilterSideBar = ({
 
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Select date
+            {t("search.selectDate")}
           </label>
           <DateSelect value={dateRange} onChange={setDateRange} />
         </div>
 
         <div>
           <label className="text-sm font-medium text-gray-700">
-            Select rooms and guests
+            {t("search.selectRoomsGuests")}
           </label>
           <RoomGuestsSelect value={guests} onChange={setGuests} />
         </div>
@@ -127,12 +129,12 @@ const RoomFilterSideBar = ({
           className="w-full h-[44px] rounded-xl bg-[#9C7A55] text-white font-medium
           hover:bg-[#7c6247] transition-all"
         >
-          Search
+          {t("search.search")}
         </button>
       </div>
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
-          Thời gian thuê
+          {t("room.filter.rentalTime")}
         </div>
         <div className="p-4 space-y-3">
           {TIME_OPTIONS.map((p) => (
@@ -162,11 +164,11 @@ const RoomFilterSideBar = ({
       {/* PRICE FILTER */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
-          Filter results
+          {t("room.filter.results")}
         </div>
 
         <div className="p-4">
-          <h4 className="font-medium mb-4 text-sm">Price Range</h4>
+          <h4 className="font-medium mb-4 text-sm">{t("room.filter.priceRange")}</h4>
           <div className="space-y-3">
             {PRICE_OPTIONS.map((p) => (
               <label

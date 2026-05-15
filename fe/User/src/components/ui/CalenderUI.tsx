@@ -3,8 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CalendarUIProps } from "../../type/common";
+import { useTranslation } from "react-i18next";
 
-const WEEK_DAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+
 
 function formatDate(date: Date) {
   return date.toISOString().slice(0, 10);
@@ -31,6 +32,8 @@ export default function CalendarUI({
   disabledDates = [],
   onSelect,
 }: CalendarUIProps) {
+  const { t } = useTranslation();
+  const weekDays = t("calendar.days", { returnObjects: true }) as string[];
   const [current, setCurrent] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -60,11 +63,11 @@ export default function CalendarUI({
     return (
       <div className="flex-1">
         <h3 className="text-center font-medium mb-3 text-sm sm:text-base">
-          Tháng {month + 1} {year}
+          {t("calendar.month")} {month + 1} {year}
         </h3>
 
         <div className="grid grid-cols-7 text-[11px] sm:text-xs text-gray-500 mb-2">
-          {WEEK_DAYS.map((d) => (
+          {weekDays.map((d) => (
             <div key={d} className="text-center">
               {d}
             </div>

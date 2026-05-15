@@ -4,6 +4,7 @@ export interface DateRange {
   checkIn: string | null;
   checkOut: string | null;
 }
+export type TabKey = "UPCOMING" | "COMPLETED" | "CANCELLED";
 export const BookingStatus = {
   BOOKED: 1,
   CHECKIN: 2,
@@ -28,13 +29,15 @@ export const BookingSteps = ["Guest Info", "Schedule", "Services", "Payment"];
 export const statusLabel = (status: BookingStatus) => {
   switch (status) {
     case BookingStatus.BOOKED:
-      return "BOOKED";
+      return "Đã đặt";
     case BookingStatus.CHECKIN:
-      return "CHECKED IN";
+      return "Đang ở";
     case BookingStatus.CHECKOUT:
-      return "CHECKED OUT";
+      return "Hoàn tất";
     case BookingStatus.CANCELLED:
-      return "CANCELLED";
+      return "Đã hủy";
+    default:
+      return "Không xác định";
   }
 };
 export const statusStyle = (status: BookingStatus) => {

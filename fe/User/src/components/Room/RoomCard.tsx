@@ -1,8 +1,10 @@
 import { BedDouble, Users, Maximize } from "lucide-react";
 import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
+import { useTranslation } from "react-i18next";
 
 const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
+  const { t } = useTranslation();
   return (
     <div
       onClick={onClick}
@@ -50,12 +52,12 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
 
             <div className="flex items-center gap-1">
               <BedDouble size={16} />
-              <span>double bed</span>
+              <span>{t("room.card.doubleBed")}</span>
             </div>
 
             <div className="flex items-center gap-1">
               <Users size={16} />
-              <span>{room.capacity} guest</span>
+              <span>{room.capacity} {t("room.card.guest")}</span>
             </div>
           </div>
 
@@ -71,7 +73,7 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
           <div />
 
           <div className="text-right">
-            <div className="text-xs text-gray-400">Price</div>
+            <div className="text-xs text-gray-400">{t("room.card.price")}</div>
             <div className="text-base sm:text-lg font-semibold text-[#b38a58]">
               {room.defaultRate.toLocaleString()} ₫
             </div>

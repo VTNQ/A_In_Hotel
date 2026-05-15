@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { Menu, X, User, ChevronDown } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { clearTokens, getTokens, isAccessExpired } from "../util/auth";
+import { useTranslation } from "react-i18next";
 
-type LangKey = "en" | "vi" | "kr" | "jp" | "cn";
+type LangKey = "en" | "vi";
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,28 +20,26 @@ export default function Navbar() {
   const [isUserOpen, setIsUserOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [lang, setLang] = useState<LangKey>("en");
+  
+  const currentLang = (i18n.language?.split('-')[0] || 'vi') as LangKey;
 
   const isHome = location.pathname === "/";
 
   const flagMap: Record<LangKey, string> = {
     en: "https://flagcdn.com/w20/gb.png",
     vi: "https://flagcdn.com/w20/vn.png",
-    kr: "https://flagcdn.com/w20/kr.png",
-    jp: "https://flagcdn.com/w20/jp.png",
-    cn: "https://flagcdn.com/w20/cn.png",
   };
 
   const leftItems = [
-    { label: "A-IN-HOTEL", path: "/" },
-    { label: "ROOM & SUITE", path: "/rooms" },
-    { label: "PROMOTION", path: "/promotion" },
+    { label: t("navbar.home"), path: "/" },
+    { label: t("navbar.rooms"), path: "/rooms" },
+    { label: t("navbar.promotion"), path: "/promotion" },
   ];
 
   const rightItems = [
-    { label: "AIR BNB", path: "/airbnb" },
-    { label: "CAMPING", path: "/camping" },
-    { label: "OUR PRODUCT", path: "/franchise" },
+    { label: t("navbar.airbnb"), path: "/airbnb" },
+    { label: t("navbar.camping"), path: "/camping" },
+    { label: t("navbar.franchise"), path: "/franchise" },
   ];
 
   /* Scroll effect */
@@ -60,6 +60,11 @@ export default function Navbar() {
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
   }, [isMenuOpen]);
+
+  const changeLanguage = (lng: LangKey) => {
+    i18n.changeLanguage(lng);
+    setIsLangOpen(false);
+  };
 
   const navColor = isHome && !isScrolled ? "text-white" : "text-[#3A3125]";
 
@@ -125,13 +130,13 @@ export default function Navbar() {
                   onClick={() => navigate("/login")}
                   className={`${navColor} hover:text-[#B38A58]`}
                 >
-                  Log in
+                  {t("navbar.login")}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
                   className="px-5 py-2 bg-[#B38A58] text-white rounded-full"
                 >
-                  Sign up
+                  {t("navbar.signup")}
                 </button>
               </>
             ) : (
@@ -141,27 +146,34 @@ export default function Navbar() {
                 </button>
 
                 {isUserOpen && (
-                  <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-md">
+                  <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-md overflow-hidden text-[#3A3125]">
                     <button
-                      onClick={() => navigate("/profile")}
+                      onClick={() => {
+                        navigate("/profile");
+                        setIsUserOpen(false);
+                      }}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      My profile
+                      {t("navbar.profile")}
                     </button>
                     <button
-                      onClick={() => navigate("/my-booking")}
+                      onClick={() => {
+                        navigate("/my-booking");
+                        setIsUserOpen(false);
+                      }}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      My booking
+                      {t("navbar.myBooking")}
                     </button>
                     <button
                       onClick={() => {
                         clearTokens();
                         navigate("/login");
+                        setIsUserOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 border-t"
                     >
-                      Logout
+                      {t("navbar.logout")}
                     </button>
                   </div>
                 )}
@@ -172,25 +184,24 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-2 border px-2 py-1 rounded-md"
+                className={`flex items-center gap-2 border px-2 py-1 rounded-md transition ${
+                  isHome && !isScrolled ? "border-white/30" : "border-gray-200"
+                }`}
               >
-                <img src={flagMap[lang]} className="w-5 h-4" />
-                <ChevronDown size={14} />
+                <img src={flagMap[currentLang]} className="w-5 h-3.5 object-cover rounded-sm" />
+                <ChevronDown size={14} className={navColor} />
               </button>
 
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-28">
+                <div className="absolute right-0 mt-2 bg-white shadow-xl rounded-lg w-32 py-1 border overflow-hidden text-[#3A3125]">
                   {(Object.keys(flagMap) as LangKey[]).map((code) => (
                     <button
                       key={code}
-                      onClick={() => {
-                        setLang(code);
-                        setIsLangOpen(false);
-                      }}
-                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                      onClick={() => changeLanguage(code)}
+                      className="flex items-center w-full px-3 py-2.5 hover:bg-gray-50 transition"
                     >
-                      <img src={flagMap[code]} className="w-5 h-4 mr-2" />
-                      {code.toUpperCase()}
+                      <img src={flagMap[code]} className="w-5 h-3.5 mr-3 object-cover rounded-sm" />
+                      <span className="text-xs font-bold">{code === 'vi' ? 'Tiếng Việt' : 'English'}</span>
                     </button>
                   ))}
                 </div>
@@ -229,66 +240,94 @@ export default function Navbar() {
           }`}
         >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold">Menu</h2>
+            <h2 className="text-lg font-semibold">{t("Menu")}</h2>
             <button onClick={() => setIsMenuOpen(false)}>
               <X />
             </button>
           </div>
 
-          {[...leftItems, ...rightItems].map((item) => (
-            <button
-              key={item.label}
-              onClick={() => {
-                navigate(item.path);
-                setIsMenuOpen(false);
-              }}
-              className="block w-full text-left py-3 border-b"
-            >
-              {item.label}
-            </button>
-          ))}
+          <div className="flex flex-col gap-1">
+            {[...leftItems, ...rightItems].map((item) => (
+              <button
+                key={item.label}
+                onClick={() => {
+                  navigate(item.path);
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left py-3 border-b text-sm font-medium"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
 
           <div className="mt-6 space-y-3">
             {!isLoggedIn ? (
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full py-2 border rounded-md"
+                  className="w-full py-2.5 border rounded-xl text-sm font-bold"
                 >
-                  Log in
+                  {t("navbar.login")}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="w-full py-2 bg-[#B38A58] text-white rounded-md"
+                  className="w-full py-2.5 bg-[#B38A58] text-white rounded-xl text-sm font-bold"
                 >
-                  Sign up
+                  {t("navbar.signup")}
                 </button>
               </>
             ) : (
-              <>
+              <div className="flex flex-col gap-2">
                 <button
-                  onClick={() => navigate("/profile")}
-                  className="block py-2"
+                  onClick={() => {
+                    navigate("/profile");
+                    setIsMenuOpen(false);
+                  }}
+                  className="block py-2 text-sm font-medium"
                 >
-                  My profile
+                  {t("navbar.profile")}
                 </button>
                 <button
-                  onClick={() => navigate("/booking")}
-                  className="block py-2"
+                  onClick={() => {
+                    navigate("/my-booking");
+                    setIsMenuOpen(false);
+                  }}
+                  className="block py-2 text-sm font-medium"
                 >
-                  My booking
+                  {t("navbar.myBooking")}
                 </button>
                 <button
                   onClick={() => {
                     clearTokens();
                     navigate("/login");
+                    setIsMenuOpen(false);
                   }}
-                  className="block py-2 text-red-500"
+                  className="block py-2 text-red-500 text-sm font-medium"
                 >
-                  Logout
+                  {t("navbar.logout")}
                 </button>
-              </>
+              </div>
             )}
+
+            {/* Mobile Lang */}
+            <div className="pt-6 border-t mt-6">
+              <p className="text-[10px] font-bold uppercase text-gray-400 mb-3 tracking-widest">Language</p>
+              <div className="flex gap-4">
+                {(Object.keys(flagMap) as LangKey[]).map((code) => (
+                  <button
+                    key={code}
+                    onClick={() => changeLanguage(code)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition ${
+                      currentLang === code ? "border-primary bg-primary/5" : "border-gray-200"
+                    }`}
+                  >
+                    <img src={flagMap[code]} className="w-5 h-3.5 object-cover rounded-sm" />
+                    <span className="text-xs font-bold uppercase">{code}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

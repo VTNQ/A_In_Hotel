@@ -1,0 +1,475 @@
+{
+  "navbar": {
+    "home": "TRANG CHỦ",
+    "rooms": "PHÒNG & PHÒNG VIP",
+    "promotion": "ƯU ĐÃI",
+    "airbnb": "AIR BNB",
+    "camping": "CẮM TRẠI",
+    "franchise": "SẢN PHẨM",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "profile": "Hồ sơ của tôi",
+    "myBooking": "Đặt phòng của tôi",
+    "logout": "Đăng xuất",
+    "menu": "Menu"
+  },
+  "common": {
+    "vnd": "VND",
+    "from": "Từ",
+    "until": "Trước",
+    "fullName": "Họ và tên",
+    "phoneNumber": "Số điện thoại",
+    "emailAddress": "Địa chỉ Email"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "emailLabel": "Địa chỉ Email",
+    "passwordLabel": "Mật khẩu",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Đăng nhập",
+    "signingIn": "Đang đăng nhập...",
+    "rememberMe": "Ghi nhớ tôi",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "signUp": "Đăng ký",
+    "socialSignIn": "Đăng nhập bằng {{provider}}",
+    "alerts": {
+      "success": "Đăng nhập thành công!",
+      "noPermission": "Bạn không có quyền truy cập hệ thống.",
+      "failed": "Đăng nhập thất bại. Vui lòng thử lại."
+    }
+  },
+  "booking": {
+    "title": "Lịch sử đặt phòng",
+    "subtitle": "Quản lý các kỳ nghỉ tuyệt vời và lịch sử đặt phòng của bạn.",
+    "tabs": {
+      "upcoming": "Sắp tới",
+      "completed": "Đã xong",
+      "cancelled": "Đã hủy"
+    },
+    "card": {
+      "code": "Mã đặt phòng",
+      "total": "Tổng cộng",
+      "checkin": "Ngày nhận phòng",
+      "checkout": "Ngày trả phòng",
+      "guest": "Người đặt",
+      "guests": "Số lượng khách",
+      "details": "Chi tiết phòng",
+      "room": "Phòng",
+      "person": "người",
+      "viewDetails": "Xem chi tiết",
+      "cancel": "Hủy đặt phòng",
+      "cancelling": "Đang hủy...",
+      "cancelConfirm": "Bạn có chắc chắn muốn hủy đặt phòng này không?"
+    },
+    "empty": {
+      "title": "Không tìm thấy yêu cầu đặt phòng nào",
+      "description": "Bạn chưa có đơn đặt phòng nào trong mục này. Hãy khám phá các phòng tuyệt vời của chúng tôi ngay!",
+      "button": "Đặt phòng ngay"
+    },
+    "alerts": {
+      "loadFailed": "Tải danh sách đặt phòng thất bại",
+      "cancelSuccess": "Hủy đặt phòng thành công",
+      "cancelFailed": "Hủy đặt phòng thất bại",
+      "success": "Đặt phòng thành công",
+      "failed": "Đặt phòng thất bại",
+      "fillGuestInfo": "Vui lòng nhập đầy đủ thông tin khách",
+      "selectDates": "Vui lòng chọn ngày nhận và trả phòng",
+      "selectTimes": "Vui lòng chọn giờ nhận và trả phòng"
+    },
+    "status": {
+      "booked": "Đã đặt",
+      "checkin": "Đang ở",
+      "checkout": "Hoàn tất",
+      "cancelled": "Đã hủy",
+      "unknown": "Không xác định"
+    },
+    "detail": {
+      "back": "Quay lại danh sách đặt phòng",
+      "invoice": "Tải hóa đơn",
+      "print": "In tóm tắt",
+      "stayInfo": "Thông tin lưu trú",
+      "roomInfo": "Chi tiết phòng",
+      "guestInfo": "Thông tin khách hàng",
+      "paymentSummary": "Tóm tắt thanh toán",
+      "accommodation": "Tiền phòng",
+      "nights": "đêm",
+      "grandTotal": "Tổng cộng",
+      "taxIncluded": "Đã bao gồm phí & thuế",
+      "paid": "Đã thanh toán",
+      "securePayment": "Giao dịch an toàn và bảo mật",
+      "notFound": "Không tìm thấy thông tin đặt phòng"
+    },
+    "steps": {
+      "guest": "Thông tin khách",
+      "schedule": "Lịch đặt",
+      "services": "Dịch vụ",
+      "payment": "Thanh toán"
+    },
+    "heldMessage": "Đơn đặt phòng của bạn được giữ trong:",
+    "cancelAlert": {
+      "title": "Hủy đặt phòng?",
+      "description": "Tiến trình đặt phòng hiện tại của bạn sẽ bị mất nếu bạn tiếp tục.",
+      "confirm": "Có, hủy",
+      "keep": "Không, tiếp tục đặt"
+    },
+    "actions": {
+      "cancel": "Hủy đặt phòng",
+      "back": "Quay lại",
+      "next": "Tiếp theo",
+      "finish": "Hoàn tất",
+      "processing": "Đang xử lý..."
+    },
+    "guestInfo": {
+      "title": "Thông tin khách lưu trú",
+      "subtitle": "Vui lòng điền chính xác thông tin để chúng tôi phục vụ bạn tốt nhất.",
+      "identityTitle": "Thông tin định danh",
+      "firstName": "Tên",
+      "lastName": "Họ & Tên đệm",
+      "idNumber": "CCCD/Hộ chiếu",
+      "guestType": "Loại khách",
+      "types": {
+        "standard": "Khách thông thường",
+        "vip": "Khách hàng thân thiết",
+        "corporate": "Khách doanh nghiệp"
+      },
+      "contactTitle": "Thông tin liên hệ",
+      "email": "Hòm thư điện tử",
+      "phone": "Số điện thoại",
+      "specialRequests": "Ghi chú & yêu cầu đặc biệt",
+      "placeholderNote": "Ví dụ: Phòng không hút thuốc, hỗ trợ nhận phòng sớm..."
+    },
+    "schedule": {
+      "title": "Chọn thời gian lưu trú",
+      "subtitle": "Chọn ngày và giờ cho đơn đặt phòng của bạn.",
+      "checkIn": "Giờ nhận phòng",
+      "checkOut": "Giờ trả phòng",
+      "packageTitle": "Gói đặt phòng",
+      "packages": {
+        "twoHours": {
+          "title": "2 giờ đầu",
+          "desc": "Nghỉ ngắn / Quá cảnh"
+        },
+        "overnight": {
+          "title": "Qua đêm",
+          "desc": "Hoàn hảo cho giấc ngủ ngon"
+        },
+        "daily": {
+          "title": "Ngày đêm",
+          "desc": "Linh hoạt tối đa"
+        }
+      }
+    },
+    "services": {
+      "title": "Nâng tầm kỳ nghỉ",
+      "subtitle": "Cá nhân hóa trải nghiệm của bạn với các dịch vụ bổ sung cao cấp.",
+      "noServices": "Không có dịch vụ nào"
+    },
+    "payment": {
+      "title": "Kiểm tra chi tiết đặt phòng",
+      "methodTitle": "Phương thức thanh toán",
+      "checkInOut": "Nhận phòng / Trả phòng",
+      "selectedRoom": "Phòng đã chọn",
+      "nights": "Đêm",
+      "adults": "Người lớn",
+      "children": "Trẻ em",
+      "voucher": {
+        "label": "Mã giảm giá (Voucher)",
+        "placeholder": "Nhập mã voucher",
+        "apply": "Áp dụng",
+        "checking": "Đang kiểm tra...",
+        "success": "Áp dụng voucher thành công",
+        "error": "Mã voucher không hợp lệ hoặc đã hết hạn",
+        "missing": "Vui lòng nhập mã voucher",
+        "discount": "Giảm giá"
+      },
+      "methods": {
+        "card": "Thẻ tín dụng/Ghi nợ",
+        "cardDesc": "Visa, Mastercard, AMEX",
+        "bank": "Chuyển khoản ngân hàng",
+        "bankDesc": "Chuyển khoản nội địa và quốc tế",
+        "cash": "Thanh toán tại khách sạn",
+        "cashDesc": "Đảm bảo đặt phòng, thanh toán khi đến nơi"
+      },
+      "summary": {
+        "prepaid": "Tiền cần trả trước",
+        "outstanding": "Số tiền còn lại",
+        "note": "Ghi chú",
+        "notePlaceholder": "Yêu cầu đặc biệt (nếu có)...",
+        "cashInfo": "* Bạn sẽ thanh toán phần còn lại khi nhận phòng tại khách sạn."
+      },
+      "cancellation": {
+        "title": "Chính sách hủy phòng",
+        "free": "Hủy miễn phí",
+        "freeDesc": "Bạn có thể hủy phòng miễn phí trước 48 giờ tính từ thời điểm nhận phòng.",
+        "within48": "Hủy trong vòng 24-48 giờ:",
+        "within48Desc": "Phí hủy là 50% tổng tiền đặt phòng.",
+        "under24": "Hủy dưới 24 giờ hoặc Vắng mặt:",
+        "under24Desc": "Không hoàn lại tiền đặt trước.",
+        "footer": "* Thời gian được tính theo giờ địa phương của khách sạn. Việc hoàn tiền sẽ được xử lý trong vòng 3-5 ngày làm việc."
+      }
+    },
+    "staySummary": {
+      "selected": "Đã chọn",
+      "dates": "Ngày",
+      "guests": "Khách",
+      "duration": "Thời gian",
+      "roomRate": "Giá phòng",
+      "total": "Tổng cộng",
+      "bestPriceTitle": "Đảm bảo giá tốt nhất",
+      "bestPriceDesc": "Tìm thấy giá tốt hơn? Chúng tôi sẽ khớp giá và giảm thêm 10%.",
+      "adults": "Người lớn",
+      "children": "Trẻ em",
+      "nights": "Đêm",
+      "loading": "Đang tải...",
+      "floorInfo": "Tầng 24, Tòa Nam",
+      "title": "Tóm tắt đặt phòng",
+      "roomType": "Loại phòng",
+      "stayDates": "Ngày lưu trú",
+      "guestCount": "Số khách",
+      "roomPrice": "Tiền phòng",
+      "noHiddenFees": "Không phí ẩn hoặc phụ phí khi thanh toán.",
+      "paymentTitle": "Tóm tắt thanh toán",
+      "voucherDiscount": "Giảm giá Voucher",
+      "totalCost": "Tổng tiền thanh toán",
+      "confirmBooking": "Xác nhận đặt phòng",
+      "securePayment": "Thanh toán an toàn & bảo mật"
+    },
+    "success": {
+      "title": "Đặt phòng thành công 🎉",
+      "subtitle": "Yêu cầu đặt phòng của bạn đã được xác nhận. Một email xác nhận sẽ được gửi sớm nhất có thể.",
+      "guest": "Khách hàng",
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "totalPaid": "Đã thanh toán",
+      "backHome": "Quay lại Trang chủ"
+    },
+    "home": {
+      "blog": {
+        "title": "Blog Của Chúng Tôi",
+        "loadFailed": "Tải danh sách blog thất bại"
+      },
+      "roomAndSuites": "Phòng & Phòng VIP",
+      "decorate": "Trang Trí",
+      "facilities": {
+        "title": "Tiện ích & Dịch vụ",
+        "loading": "Đang tải tiện ích...",
+        "testimonial": "Đánh giá của khách hàng"
+      },
+      "bookAppointment": {
+        "subtitle": "Đặt lịch hẹn",
+        "titleLine1": "Thư giãn và tận hưởng sự sang trọng",
+        "titleLine2": "trong suốt kỳ nghỉ của bạn",
+        "description": "Vì một địa điểm có thể thay đổi mọi thứ, đặc biệt là khoảnh khắc bạn dành ở đó. Hãy đặt lịch hẹn với những điều thiết yếu nhất.",
+        "name": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "message": "Tin nhắn",
+        "privacyPolicy": "Tôi đồng ý với chính sách bảo mật của trang web",
+        "submit": "Gửi thông tin"
+      },
+      "roomShowcase": {
+        "title": "Phòng & Phòng VIP Phổ Biến",
+        "bookNow": "Đặt ngay",
+        "perNight": "/đêm"
+      }
+    },
+    "footer": {
+      "destination": "Điểm Đến",
+      "contact": "Liên Hệ"
+    },
+    "search": {
+      "destination": "Điểm đến",
+      "selectHotel": "Chọn khách sạn",
+      "selectDate": "Chọn ngày",
+      "selectRoomsGuests": "Chọn phòng và khách",
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "room": "Phòng",
+      "adult": "Người lớn",
+      "child": "Trẻ em",
+      "guest": "Khách",
+      "search": "Tìm kiếm",
+      "apply": "Áp dụng",
+      "cancel": "Hủy",
+      "placeholder": {
+        "hotel": "Chọn khách sạn",
+        "date": "Nhận phòng → Trả phòng"
+      },
+      "alerts": {
+        "selectHotel": "Vui lòng chọn khách sạn",
+        "selectDate": "Vui lòng chọn ngày nhận và trả phòng",
+        "loadFailed": "Tải danh sách khách sạn thất bại",
+        "selectBothDates": "Vui lòng chọn cả ngày nhận và trả phòng"
+      }
+    },
+    "calendar": {
+      "month": "Tháng",
+      "days": [
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "CN"
+      ]
+    }
+  },
+  "forgotPassword": {
+    "title": "Quên mật khẩu",
+    "subtitle": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi mã OTP để đặt lại mật khẩu.",
+    "emailLabel": "Địa chỉ Email",
+    "emailPlaceholder": "you@example.com",
+    "emailRequired": "Vui lòng nhập email",
+    "emailInvalid": "Email không hợp lệ",
+    "sendOtp": "Gửi mã xác thực",
+    "sendingOtp": "Đang gửi mã...",
+    "backToLogin": "Quay lại Đăng nhập",
+    "resetTitle": "Đặt lại mật khẩu",
+    "resetSubtitle": "Chúng tôi đã gửi mã đến",
+    "resetSubtitle2": "Nhập mã và mật khẩu mới bên dưới.",
+    "otpLabel": "Mã xác thực",
+    "passwordLabel": "Mật khẩu mới",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "passwordPlaceholder": "••••••••",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+    "passwordsNotMatch": "Mật khẩu không khớp",
+    "resetButton": "Đặt lại mật khẩu",
+    "resetting": "Đang đặt lại mật khẩu...",
+    "noCode": "Chưa nhận được mã?",
+    "resendOtp": "Gửi lại OTP",
+    "changeEmail": "Thay đổi địa chỉ email",
+    "alerts": {
+      "sendSuccess": "Gửi OTP thành công!",
+      "sendSuccessDesc": "Vui lòng kiểm tra email để lấy mã xác thực.",
+      "sendFailed": "Gửi OTP thất bại!",
+      "sendFailedDesc": "Email không tồn tại hoặc đã có lỗi xảy ra.",
+      "verifyFailed": "Vui lòng nhập đầy đủ mã OTP.",
+      "resetSuccess": "Thành công!",
+      "resetSuccessDesc": "Mật khẩu của bạn đã được thay đổi.",
+      "invalidOtp": "Mã OTP không hợp lệ hoặc đã hết hạn.",
+      "resendSuccess": "Đã gửi lại mã!",
+      "resendSuccessDesc": "Vui lòng kiểm tra email của bạn.",
+      "resendFailed": "Lỗi!",
+      "resendFailedDesc": "Không thể gửi lại mã vào lúc này."
+    }
+  },
+  "register": {
+    "title": "Đăng ký",
+    "fullName": "Họ và tên",
+    "phoneNumber": "Số điện thoại",
+    "emailAddress": "Địa chỉ email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "createAccount": "Tạo tài khoản",
+    "creatingAccount": "Đang tạo tài khoản...",
+    "forgotPassword": "Quên mật khẩu?",
+    "alreadyHaveAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
+    "success": "Đăng ký thành công!",
+    "failed": "Đăng ký thất bại. Vui lòng thử lại.",
+    "validation": {
+      "fullNameRequired": "Họ và tên là bắt buộc",
+      "phoneRequired": "Số điện thoại là bắt buộc",
+      "invalidPhone": "Số điện thoại không hợp lệ",
+      "emailRequired": "Email là bắt buộc",
+      "invalidEmail": "Địa chỉ email không hợp lệ",
+      "passwordRequired": "Mật khẩu là bắt buộc",
+      "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp"
+    },
+    "placeholder": {
+      "fullName": "Nguyễn Văn A",
+      "phone": "+84123456789",
+      "email": "you@example.com",
+      "password": "••••••••"
+    }
+  },
+  "room": {
+    "hero": {
+      "title": "Phòng & Phòng VIP"
+    },
+    "filter": {
+      "rentalTime": "Thời gian thuê",
+      "results": "Kết quả lọc",
+      "priceRange": "Khoảng giá",
+      "options": {
+        "twoHours": "2 Giờ đầu",
+        "overnight": "Qua đêm",
+        "daily": "Ngày đêm"
+      }
+    },
+    "grid": {
+      "noRooms": "Không tìm thấy phòng nào"
+    },
+    "card": {
+      "doubleBed": "Giường đôi",
+      "guest": "khách",
+      "price": "Giá"
+    },
+    "detail": {
+      "extraHour": "giờ sau",
+      "explore": "Chi tiết & khám phá",
+      "facilities": {
+        "area": "Diện tích",
+        "doubleBed": "Giường đôi",
+        "minibar": "Đồ uống minibar",
+        "airConditioning": "Điều hòa",
+        "netflix": "Netflix",
+        "bathroom": "Phòng tắm vòi sen",
+        "more": "Thêm tiện ích"
+      }
+    },
+    "explore": {
+      "title": "Khám phá các lựa chọn phòng khác",
+      "viewDetails": "Xem chi tiết phòng",
+      "booking": "Đặt phòng"
+    }
+  },
+  "roomDetail": {
+    "overview": "Tổng quan",
+    "amenities": "Tiện ích",
+    "policies": {
+      "title": "Chính sách khách sạn",
+      "description": "Chính sách giường phụ tùy thuộc vào loại phòng. Vui lòng kiểm tra chi tiết phòng để biết thêm thông tin. Tất cả trẻ em đều được chào đón.",
+      "infants": "Trẻ sơ sinh (0–1 tuổi, bao gồm trẻ nhỏ)",
+      "infantsStay": "Ở miễn phí khi sử dụng giường có sẵn.",
+      "children": "Trẻ em (2–6 tuổi, bao gồm trẻ mới biết đi)",
+      "childrenStay": "Ở miễn phí khi sử dụng giường có sẵn.",
+      "guests7": "Khách từ 7 tuổi trở lên",
+      "guests7AsAdult": "Được coi là người lớn.",
+      "extraBed": "Giường phụ có sẵn theo yêu cầu và sẽ tính thêm phí.",
+      "moreThan5Rooms": "Đối với các đơn đặt phòng trên 5 phòng, các chính sách bổ sung có thể được áp dụng."
+    },
+    "booking": {
+      "adult": "Người lớn",
+      "children": "Trẻ em",
+      "doubleBed": "Giường đôi",
+      "extraBed": "Giường phụ",
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "priceOptions": {
+        "twoHours": "2 giờ đầu",
+        "overnight": "Qua đêm (sau 22h)",
+        "daily": "Giá phòng ngày đêm"
+      },
+      "extraHours": "Thêm giờ nghỉ",
+      "hour": "giờ",
+      "night": "đêm",
+      "totalCost": "Tổng cộng",
+      "button": "Đặt phòng ngay",
+      "alerts": {
+        "selectPriceType": "Vui lòng chọn loại giá",
+        "missingSearchInfo": "Thiếu thông tin tìm kiếm đặt phòng"
+      }
+    },
+    "rooms": "Các phòng khác",
+    "seeMore": "Xem thêm phòng",
+    "detailsExplore": "Chi tiết & khám phá"
+  }
+}

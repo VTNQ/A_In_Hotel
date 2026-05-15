@@ -1,20 +1,22 @@
 import { Check } from "lucide-react";
 import { BookingPackages } from "../../type/booking.types";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
-const BookingPackage = ({ form,nights,onChange }: any) => {
+const BookingPackage = ({ form, nights, onChange }: any) => {
+  const { t } = useTranslation();
   const PACKAGE_OPTIONS = [
-    { label: "First 2 Hours", value: "1" },
-    { label: "Overnight", value: "2" },
-    { label: "fullday", value: "3" },
+    { label: t("booking.schedule.packages.twoHours.title"), value: "1" },
+    { label: t("booking.schedule.packages.overnight.title"), value: "2" },
+    { label: t("booking.schedule.packages.daily.title"), value: "3" },
   ];
 
-const packageOptions = useMemo(() => {
-  return PACKAGE_OPTIONS.map((opt) => ({
-    ...opt,
-    disabled: opt.value === "2" && nights > 1, // ✅ chỉ overnight
-  }));
-}, [nights]);
+  const packageOptions = useMemo(() => {
+    return PACKAGE_OPTIONS.map((opt) => ({
+      ...opt,
+      disabled: opt.value === "2" && nights > 1, // ✅ chỉ overnight
+    }));
+  }, [nights]);
   useEffect(() => {
     if (!form.checkInDate || !form.checkOutDate) return;
 
@@ -38,21 +40,20 @@ const packageOptions = useMemo(() => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {BookingPackages.map((pkg) => {
           const Icon = pkg.icon;
-          const option = packageOptions.find((o)=>o.value === pkg.id);
+          const option = packageOptions.find((o) => o.value === pkg.id);
           const isDisabled = option?.disabled;
           const isActive = form.package === pkg.id;
           return (
             <button
               key={pkg.id}
               disabled={isDisabled}
-              onClick={() => onChange("package",pkg.id)}
+              onClick={() => onChange("package", pkg.id)}
               className={`flex flex-col items-start p-4 rounded-lg transition-all text-left
-                ${
-                  isDisabled
+                ${isDisabled
                   ? "opacity-40 cursor-not-allowed"
                   : isActive
-                  ? "border-2 border-black bg-blue-50"
-                  :"border border-outline-variant hover:border-black"
+                    ? "border-2 border-black bg-blue-50"
+                    : "border border-outline-variant hover:border-black"
                 }
                 `}
             >
@@ -63,8 +64,8 @@ const packageOptions = useMemo(() => {
                     isDisabled
                       ? "text-gray-400"
                       : isActive
-                      ? "text-black"
-                      : "text-gray-400"
+                        ? "text-black"
+                        : "text-gray-400"
                   }
                 />
                 <div
@@ -75,17 +76,26 @@ const packageOptions = useMemo(() => {
                 </div>
               </div>
               <span
-               className={`text-sm font-semibold ${
-                 isDisabled
-                 ? "text-gray-300"
-                 : isActive
-                 ? "text-black"
-                 : "text-gray-400"
-               }`}
+                className={`text-sm font-semibold ${isDisabled
+                    ? "text-gray-300"
+                    : isActive
+                      ? "text-black"
+                      : "text-gray-400"
+                  }`}
               >
-                {pkg.title}
+                {(() => {
+                  const pkgKeys: any = { "1": "twoHours", "2": "overnight", "3": "daily" };
+                  const key = pkgKeys[pkg.id];
+                  return t(`booking.schedule.packages.${key}.title`);
+                })()}
               </span>
-              <span className="text-xs text-[rgb(87,95,103)] mt-1">{pkg.desc}</span>
+              <span className="text-xs text-[rgb(87,95,103)] mt-1">
+                {(() => {
+                  const pkgKeys: any = { "1": "twoHours", "2": "overnight", "3": "daily" };
+                  const key = pkgKeys[pkg.id];
+                  return t(`booking.schedule.packages.${key}.desc`);
+                })()}
+              </span>
             </button>
           );
         })}

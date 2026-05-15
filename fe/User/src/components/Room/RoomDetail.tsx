@@ -13,10 +13,12 @@ import {
   Wind,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const AUTO_SLIDE_DELAY = 4000;
 
 const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
+  const { t } = useTranslation();
   const [active, setActive] = useState(0);
   const navigate = useNavigate();
   const images = room?.images || [];
@@ -101,7 +103,7 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
           >
             +
           </span>
-          +{room.defaultRate?.toLocaleString() || "70.000"} / giờ sau
+          +{room.defaultRate?.toLocaleString() || "70.000"} / {t("room.detail.extraHour")}
         </div>
         <div>
           <h3
@@ -116,31 +118,31 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
     hover:after:w-full cursor-pointer
   "
           >
-            Details & explore
+            {t("room.detail.explore")}
           </h3>
           <ul className="space-y-3 text-gray-600 text-sm">
             <li className="flex items-center gap-3">
-              <Maximize size={18} /> Square area: {room.area || 20} m²
+              <Maximize size={18} /> {t("room.detail.facilities.area")}: {room.area || 20} m²
             </li>
             <li className="flex items-center gap-3">
-              <BedDouble size={18} /> Double bed
+              <BedDouble size={18} /> {t("room.detail.facilities.doubleBed")}
             </li>
             <li className="flex items-center gap-3">
-              <Coffee size={18} /> Minibar drinks
+              <Coffee size={18} /> {t("room.detail.facilities.minibar")}
             </li>
             <li className="flex items-center gap-3">
-              <Wind size={18} /> Air conditioning
+              <Wind size={18} /> {t("room.detail.facilities.airConditioning")}
             </li>
             <li className="flex items-center gap-3">
-              <Tv size={18} /> Netflix
+              <Tv size={18} /> {t("room.detail.facilities.netflix")}
             </li>
             <li className="flex items-center gap-3">
-              <Bath size={18} /> Bathrooms with shower
+              <Bath size={18} /> {t("room.detail.facilities.bathroom")}
             </li>
           </ul>
         </div>
         <button className="flex items-center gap-2 text-[#b38a58] text-sm hover:gap-3 transition-all">
-          <Plus size={16} /> More facilities
+          <Plus size={16} /> {t("room.detail.facilities.more")}
         </button>
       </div>
     </div>

@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const RoomHero = () => {
+  const { t } = useTranslation();
   return (
     <section
       className="
@@ -19,7 +22,7 @@ const RoomHero = () => {
       <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10 text-center px-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-white tracking-wide">
-            Room & Suites
+          {t("room.hero.title")}
         </h1>
       </div>
     </section>

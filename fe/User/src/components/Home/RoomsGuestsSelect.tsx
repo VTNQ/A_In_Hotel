@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import type { RoomsGuestsSelectProps } from "../../type/booking.types";
 import { Minus, Plus, Users } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [rooms, setRooms] = useState(1);
   const [adults, setAdults] = useState(1);
@@ -92,7 +94,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
   return (
     <div ref={wrapperRef} className="relative flex-1">
       <label className="text-xs text-gray-500 mb-1 block">
-        Select rooms and guests
+        {t("search.selectRoomsGuests")}
       </label>
 
       <button
@@ -102,7 +104,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
       >
         <Users size={18} className="text-gray-500" />
         <span className="text-sm font-medium text-gray-800">
-          {rooms} Room, {totalGuests} Guests
+          {rooms} {t("search.room")}, {totalGuests} {t("search.guest")}
         </span>
       </button>
       {open &&
@@ -115,11 +117,11 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
                 className="bg-white w-full rounded-t-2xl p-6 space-y-6 animate-slideUp"
               >
                 <h3 className="text-lg font-semibold text-center">
-                  Select guests
+                  {t("search.selectRoomsGuests")}
                 </h3>
 
                 <Row
-                  label="Rooms"
+                  label={t("search.room")}
                   value={rooms}
                   min={1}
                   onMinus={() => setRooms((v) => Math.max(1, v - 1))}
@@ -127,7 +129,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
                 />
 
                 <Row
-                  label="Adults"
+                  label={t("search.adult")}
                   value={adults}
                   min={1}
                   onMinus={() => setAdults((v) => Math.max(1, v - 1))}
@@ -135,7 +137,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
                 />
 
                 <Row
-                  label="Children"
+                  label={t("search.child")}
                   value={children}
                   min={0}
                   onMinus={() => setChildren((v) => Math.max(0, v - 1))}
@@ -146,7 +148,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
                   onClick={apply}
                   className="w-full py-3 bg-[#b38a58] text-white rounded-xl font-medium"
                 >
-                  Apply
+                  {t("search.apply")}
                 </button>
               </div>
             </div>
@@ -158,7 +160,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
               className="z-[999999] bg-white border rounded-xl shadow-xl p-5 space-y-5"
             >
               <Row
-                label="Rooms"
+                label={t("search.room")}
                 value={rooms}
                 min={1}
                 onMinus={() => setRooms((v) => Math.max(1, v - 1))}
@@ -166,7 +168,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
               />
 
               <Row
-                label="Adults"
+                label={t("search.adult")}
                 value={adults}
                 min={1}
                 onMinus={() => setAdults((v) => Math.max(1, v - 1))}
@@ -174,7 +176,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
               />
 
               <Row
-                label="Children"
+                label={t("search.child")}
                 value={children}
                 min={0}
                 onMinus={() => setChildren((v) => Math.max(0, v - 1))}
@@ -186,7 +188,7 @@ const RoomGuestsSelect = ({ value, onChange }: RoomsGuestsSelectProps) => {
                   onClick={apply}
                   className="px-4 py-2 bg-[#b38a58] text-white rounded-lg text-sm font-medium hover:bg-[#9a7748]"
                 >
-                  Apply
+                  {t("search.apply")}
                 </button>
               </div>
             </div>

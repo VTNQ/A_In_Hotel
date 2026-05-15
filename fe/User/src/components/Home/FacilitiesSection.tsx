@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import type { facilitiesResponse } from "../../type/facilities.types";
 import { File_URL } from "../../setting/constant/app";
 import { getFacilities } from "../../service/api/facilities";
+import { useTranslation } from "react-i18next";
 
 export default function FacilitiesSection() {
   const [data, setData] = useState<facilitiesResponse[]>([]);
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     try {
@@ -25,7 +27,7 @@ export default function FacilitiesSection() {
     <section className="w-full bg-[#fcfaf8] py-12 px-4 sm:py-16 lg:py-20  text-center">
       {/* Title top */}
       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-dmserif font-bold text-[#2b3a67] mb-8 sm:mb-12">
-        Facilities & services
+        {t("home.facilities.title")}
       </h2>
 
       {/* Box with border */}
@@ -35,7 +37,7 @@ export default function FacilitiesSection() {
       >
         {/* Facilities Grid */}
         {loading ? (
-          <p className="text-gray-500">Loading facilities...</p>
+          <p className="text-gray-500">{t("home.facilities.loading")}</p>
         ) : (
           <div
             className="
@@ -88,7 +90,7 @@ export default function FacilitiesSection() {
 
       {/* Bottom text */}
       <h3 className="text-xl sm:text-2xl lg:text-3xl font-dmserif text-[#2b3a67] mt-10 sm:mt-14">
-        Customer’s Testimonial
+        {t("home.facilities.testimonial")}
       </h3>
     </section>
   );

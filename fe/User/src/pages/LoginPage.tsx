@@ -5,12 +5,10 @@ import { saveTokens } from "../util/auth";
 import { login } from "../service/api/Authenticate";
 import { useAlert } from "../components/alert-context";
 import { BASE_API } from "../setting/constant/app";
-
-const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; // <- thay bằng đường dẫn logo bạn host (VD: /assets/ain-logo.png)
-const BG_URL =
-  "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg"; // ảnh nền bạn gửi
+import { useTranslation } from "react-i18next";
 
 function SocialButton({ provider }: { provider: "google" | "facebook" }) {
+  const { t } = useTranslation();
   const isGoogle = provider === "google";
   const handleClick = () => {
     if (provider === "google") {
@@ -30,7 +28,7 @@ function SocialButton({ provider }: { provider: "google" | "facebook" }) {
         bg-white px-4 py-2 text-sm shadow-sm transition
         hover:shadow active:translate-y-px
       "
-      aria-label={`Sign in with ${isGoogle ? "Google" : "Facebook"}`}
+      aria-label={t("login.socialSignIn", { provider: isGoogle ? "Google" : "Facebook" })}
     >
       {isGoogle ? (
         // Google icon
@@ -71,6 +69,7 @@ function SocialButton({ provider }: { provider: "google" | "facebook" }) {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -99,7 +98,7 @@ export default function LoginPage() {
         });
 
         showAlert({
-          title: "Đăng nhập thành công!",
+          title: t("login.alerts.success"),
           type: "success",
           autoClose: 3000,
         });
@@ -107,14 +106,14 @@ export default function LoginPage() {
         navigate(from, { replace: true });
       } else {
         showAlert({
-          title: "Bạn không có quyền truy cập hệ thống.",
+          title: t("login.alerts.noPermission"),
           type: "error",
           autoClose: 3000,
         });
       }
     } catch (err) {
       showAlert({
-        title: "Đăng nhập thất bại. Vui lòng thử lại.",
+        title: t("login.alerts.failed"),
         type: "error",
         autoClose: 3000,
       });
@@ -122,6 +121,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const LOGO_URL = "/image/logo/Screenshot From 2025-08-15 13-49-26.png"; 
+  const BG_URL =
+    "https://i.pinimg.com/1200x/72/fb/df/72fbdfa013d8fa9f9696181daf6b294b.jpg"; 
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden">
@@ -159,13 +162,13 @@ export default function LoginPage() {
           {/* Form right */}
           <div className="lg:col-span-7 w-full">
             <h1 className="mb-6 text-2xl sm:text-3xl font-semibold text-gray-900 text-center lg:text-left">
-              Login
+              {t("login.title")}
             </h1>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Email address
+                  {t("login.emailLabel")}
                 </span>
                 <input
                   type="email"
@@ -177,13 +180,13 @@ export default function LoginPage() {
                   focus:border-[#b08a66]
                   outline-none transition
                 "
-                  placeholder="you@example.com"
+                  placeholder={t("login.emailPlaceholder")}
                 />
               </label>
 
               <label className="block">
                 <span className="mb-1 block text-sm text-gray-700">
-                  Password
+                  {t("login.passwordLabel")}
                 </span>
                 <input
                   type="password"
@@ -195,7 +198,7 @@ export default function LoginPage() {
                   focus:border-[#b08a66]
                   outline-none transition
                 "
-                  placeholder="••••••••"
+                  placeholder={t("login.passwordPlaceholder")}
                 />
               </label>
 
@@ -234,10 +237,10 @@ export default function LoginPage() {
                       />
                     </svg>
 
-                    <span>Signing in...</span>
+                    <span>{t("login.signingIn")}</span>
                   </span>
                 ) : (
-                  "Sign in"
+                  t("login.submit")
                 )}
               </button>
 
@@ -249,10 +252,10 @@ export default function LoginPage() {
                     onChange={(e) => setRemember(e.target.checked)}
                     className="h-4 w-4 rounded border-gray-300 text-[#b08a66] focus:ring-[#b08a66]"
                   />
-                  <span className="text-gray-700">Remember me</span>
+                  <span className="text-gray-700">{t("login.rememberMe")}</span>
                 </label>
-                <button onClick={()=>navigate("/forgot-password")} className="text-gray-500 hover:underline">
-                  Forgot password?
+                <button type="button" onClick={()=>navigate("/forgot-password")} className="text-gray-500 hover:underline">
+                  {t("login.forgotPassword")}
                 </button>
               </div>
 
@@ -262,12 +265,12 @@ export default function LoginPage() {
               </div>
 
               <p className="mt-6 text-center text-sm text-gray-600">
-                Don’t have an account?{" "}
+                {t("login.noAccount")}{" "}
                 <NavLink
                   to="/Register"
                   className="font-medium text-[#b08a66] hover:underline"
                 >
-                  Sign up
+                  {t("login.signUp")}
                 </NavLink>
               </p>
             </form>

@@ -7,8 +7,10 @@ import { formatBookingDateRange } from "../../util/formatDate";
 import { getRoomById } from "../../service/api/Room";
 import { estimateServicePrice } from "../../util/estimateServicePrice";
 import { validateVoucher } from "../../service/api/Voucher";
+import { useTranslation } from "react-i18next";
 
 const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
+  const { t } = useTranslation();
   const nights = useMemo(() => {
     if (!schedule.checkInDate || !schedule.checkOutDate) return 0;
     const start = new Date(schedule.checkInDate);
@@ -26,7 +28,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
   const [room, setRoom] = useState<any>(null);
   const handleApplyVoucher = async () => {
     if (!data.voucherCode) {
-      setVoucherError("Vui lòng nhập mã voucher");
+      setVoucherError(t("booking.payment.voucher.missing"));
       setVoucherSuccess("");
       return;
     }
@@ -47,7 +49,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
         ...prev,
         discountAmount: discountAmount,
       }));
-      setVoucherSuccess("Voucher applied successfully");
+      setVoucherSuccess(t("booking.payment.voucher.success"));
     } catch (err: any) {
       onChange((prev: any) => ({
         ...prev,
@@ -60,7 +62,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
         voucherCode: "",
       }));
       setVoucherError(
-        err?.response?.data?.message || "Invalid or expired voucher",
+        err?.response?.data?.message || t("booking.payment.voucher.error"),
       );
     } finally {
       setIsCheckingVoucher(false);
@@ -117,7 +119,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
       <div className="lg:col-span-7 space-y-8">
         <div className="bg-white border border-outline-variant rounded-xl p-[24px]">
           <h2 className="font-sans text-[20px] line-clamp-1 font-semibold mb-[16px] text-on-surface">
-            Review Booking Details
+            {t("booking.payment.title")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
             <div className="flex gap-[16px] p-[16px] rounded-lg bg-[rgb(241,244,249)] border border-outline-variant/30">
@@ -127,7 +129,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                   className="text-[12px] line-clamp-1 tracking-[0.02em] font-medium font-sans text-[rgb(65,71,84)]
                                 uppercase"
                 >
-                  Check-in / Check-out
+                  {t("booking.payment.checkInOut")}
                 </p>
                 <p className="text-[16px] line-clamp-1 font-semibold font-sans">
                   {formatBookingDateRange(
@@ -140,8 +142,8 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                   className="text-[12px] line-clamp-1 tracking-[0.02em] font-medium font-sans text-[rgb(65,71,84)]
                                 uppercase"
                 >
-                  {nights} Nights, {search?.adults} Adults, {search?.children}{" "}
-                  Children
+                  {nights} {t("booking.payment.nights")}, {search?.adults} {t("booking.payment.adults")}, {search?.children}{" "}
+                  {t("booking.payment.children")}
                 </p>
               </div>
             </div>
@@ -152,7 +154,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                   className="text-[12px] line-clamp-1 tracking-[0.02em] font-medium font-sans text-[rgb(65,71,84)]
                                 uppercase"
                 >
-                  Selected Room
+                  {t("booking.payment.selectedRoom")}
                 </p>
                 <p className="text-[16px] line-clamp-1 font-semibold font-sans">
                   {room?.roomName || "Loading..."}
@@ -169,11 +171,11 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
         </div>
         <div className="bg-white border border-outline-variant rounded-lg p-[24px]">
           <h2 className="font-sans text-[20px] line-clamp-1 font-semibold mb-[16px] text-on-surface">
-            Payment Method
+            {t("booking.payment.methodTitle")}
           </h2>
           <div className="mb-6">
             <label className="block text-sm font-medium text-on-surface mb-2">
-              Voucher Code
+              {t("booking.payment.voucher.label")}
             </label>
 
             <div className="flex flex-col gap-3">
@@ -187,7 +189,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                       voucherCode: e.target.value,
                     }))
                   }
-                  placeholder="Enter voucher code"
+                  placeholder={t("booking.payment.voucher.placeholder")}
                   className="flex-1 h-[44px] px-4 border border-outline-variant rounded-lg
                    outline-none transition-all text-sm
                    focus:ring-2 focus:ring-primary focus:border-primary"
@@ -205,7 +207,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                         : "bg-on-surface text-white hover:opacity-90"
                     }`}
                 >
-                  {isCheckVoucher ? "Checking..." : "Apply"}
+                  {isCheckVoucher ? t("booking.payment.voucher.checking") : t("booking.payment.voucher.apply")}
                 </button>
               </div>
 
@@ -222,7 +224,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                   </p>
 
                   <p className="text-sm text-green-500 mt-1">
-                    Discount: -$
+                    {t("booking.payment.voucher.discount")}: $
                     {Number(data?.discountAmount || 0).toLocaleString()}
                   </p>
                 </div>
@@ -247,9 +249,9 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               >
                 <CreditCard size={18} className="text-on-surface" />
                 <div className="flex-1">
-                  <p className="font-sans font-bold">Credit Card</p>
+                  <p className="font-sans font-bold">{t("booking.payment.methods.card")}</p>
                   <p className="font-sans text-on-surface">
-                    Visa, Mastercard, AMEX
+                    {t("booking.payment.methods.cardDesc")}
                   </p>
                 </div>
                 <div
@@ -277,9 +279,9 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               >
                 <Landmark size={18} className="text-on-surface" />
                 <div className="flex-1">
-                  <p className="font-sans font-bold">Bank Transfer</p>
+                  <p className="font-sans font-bold">{t("booking.payment.methods.bank")}</p>
                   <p className="font-sans text-on-surface">
-                    Local and International Wire
+                    {t("booking.payment.methods.bankDesc")}
                   </p>
                 </div>
                 <div
@@ -308,9 +310,9 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                 <HandCoins size={18} className="text-on-surface" />
 
                 <div className="flex-1">
-                  <p className="font-sans font-bold">Pay at Hotel</p>
+                  <p className="font-sans font-bold">{t("booking.payment.methods.cash")}</p>
                   <p className="font-sans text-on-surface">
-                    Secure your booking, pay on arrival
+                    {t("booking.payment.methods.cashDesc")}
                   </p>
                 </div>
                 <div
@@ -326,13 +328,13 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
             <div className="mt-[24px] pt-[24px] border-t border-outline-variant space-y-6">
               {/* Deposit */}
               <div className="flex justify-between text-[14px]">
-                <span className="text-gray-500">Tiền cần trả trước</span>
+                <span className="text-gray-500">{t("booking.payment.summary.prepaid")}</span>
                 <span className="font-medium">
                   {paidAmount?.toLocaleString()}₫
                 </span>
               </div>
               <div className="flex justify-between items-center text-[14px]">
-                <span className="text-gray-500">Số tiền còn lại</span>
+                <span className="text-gray-500">{t("booking.payment.summary.outstanding")}</span>
                 <span className="font-medium text-red-500">
                   {outstanding?.toLocaleString()}₫
                 </span>
@@ -340,10 +342,10 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
 
               {/* Note */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-on-surface">Ghi chú</label>
+                <label className="text-sm text-on-surface">{t("booking.payment.summary.note")}</label>
                 <textarea
                   className="border border-outline-variant rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Yêu cầu đặc biệt (nếu có)..."
+                  placeholder={t("booking.payment.summary.notePlaceholder")}
                   value={data.note}
                   onChange={(e) =>
                     onChange((p: any) => ({ ...p, note: e.target.value }))
@@ -354,7 +356,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
 
               {/* Info */}
               <div className="text-xs text-gray-400 italic">
-                * Bạn sẽ thanh toán phần còn lại khi nhận phòng tại khách sạn.
+                {t("booking.payment.summary.cashInfo")}
               </div>
             </div>
           )}
@@ -401,7 +403,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
           <div className="flex items-center gap-2 mb-4">
             <ShieldCheck size={20} className="text-green-600" />
             <h2 className="font-sans text-[20px] font-semibold text-on-surface">
-              Chính sách hủy phòng
+              {t("booking.payment.cancellation.title")}
             </h2>
           </div>
           
@@ -409,8 +411,8 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
             <div className="flex gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
               <Info size={18} className="text-green-600 shrink-0 mt-0.5" />
               <div className="text-sm text-green-800">
-                <p className="font-semibold mb-1">Hủy miễn phí</p>
-                <p>Bạn có thể hủy phòng miễn phí trước 48 giờ tính từ thời điểm nhận phòng.</p>
+                <p className="font-semibold mb-1">{t("booking.payment.cancellation.free")}</p>
+                <p>{t("booking.payment.cancellation.freeDesc")}</p>
               </div>
             </div>
 
@@ -418,21 +420,21 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
                 <div className="w-2 h-2 rounded-full bg-orange-400 mt-1.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="font-medium text-on-surface">Hủy trong vòng 24-48 giờ:</span>
-                  <span className="ml-2 text-secondary">Phí hủy là 50% tổng tiền đặt phòng.</span>
+                  <span className="font-medium text-on-surface">{t("booking.payment.cancellation.within48")}</span>
+                  <span className="ml-2 text-secondary">{t("booking.payment.cancellation.within48Desc")}</span>
                 </div>
               </div>
               <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
                 <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="font-medium text-on-surface">Hủy dưới 24 giờ hoặc Vắng mặt:</span>
-                  <span className="ml-2 text-secondary">Không hoàn lại tiền đặt trước.</span>
+                  <span className="font-medium text-on-surface">{t("booking.payment.cancellation.under24")}</span>
+                  <span className="ml-2 text-secondary">{t("booking.payment.cancellation.under24Desc")}</span>
                 </div>
               </div>
             </div>
 
             <p className="text-[12px] text-gray-500 italic mt-2">
-              * Thời gian được tính theo giờ địa phương của khách sạn. Việc hoàn tiền sẽ được xử lý trong vòng 3-5 ngày làm việc.
+              {t("booking.payment.cancellation.footer")}
             </p>
           </div>
         </div>
