@@ -435,7 +435,7 @@ const BookingPage = () => {
             </button>
           )}
           <div className="hidden lg:flex gap-4 text-gray-400 dark:text-gray-500 font-sans text-sm font-medium">
-            {BookingSteps.map((step, i) => {
+            {BookingSteps.map((_, i) => {
               const stepKeys = ["guest", "schedule", "services", "payment"];
               const translatedStep = t(`booking.steps.${stepKeys[i]}`);
               return (
