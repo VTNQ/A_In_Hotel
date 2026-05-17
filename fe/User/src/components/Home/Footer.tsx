@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* LOGO */}
           <div className="flex justify-center lg:justify-start">
-            <img
+            <img loading="lazy"
               src="/image/logo.png"
               alt="A In Hotel Logo"
               className="w-40 sm:w-48 object-contain"

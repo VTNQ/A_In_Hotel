@@ -120,7 +120,7 @@ export default function HeroHeader({
       {/* Hero image */}
       <div className="bg-gray-50">
         <div className="mx-auto max-w-screen-2xl">
-          <img
+          <img loading="lazy"
             src={imageUrl}
             alt="Grand ballroom"
             className="h-[360px] w-full object-cover sm:h-[460px]"

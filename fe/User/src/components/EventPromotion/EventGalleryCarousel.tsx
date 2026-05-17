@@ -82,7 +82,7 @@ export default function EventGalleryCarousel({ images, className = "" }: Props) 
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${items.length}`}
             >
-              <img
+              <img loading="lazy"
                 src={img.src}
                 alt={img.alt}
                 className="h-[360px] w-full object-cover rounded"

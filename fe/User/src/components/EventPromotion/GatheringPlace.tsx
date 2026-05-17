@@ -11,7 +11,7 @@ export default function GatheringPlace({
     <section className="mx-auto max-w-6xl gap-10 px-6 py-16 md:grid md:grid-cols-2 md:items-center">
       {/* Ảnh bên trái bo góc lớn */}
       <div className="overflow-hidden rounded-[28px] shadow-sm">
-        <img
+        <img loading="lazy"
           src={imageUrl}
           alt="Sheraton Saigon exterior"
           className="h-full w-full object-cover"

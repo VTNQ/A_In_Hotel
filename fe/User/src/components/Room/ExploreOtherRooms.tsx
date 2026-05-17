@@ -97,7 +97,7 @@ export default function ExploreOtherRooms({ roomGrid }: Props) {
 
                       <div className="relative h-[360px] sm:h-[420px] rounded-xl overflow-hidden shadow-md group">
 
-                        <img
+                        <img loading="lazy"
                           src={File_URL + room.images[0]?.url}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />

@@ -64,7 +64,7 @@ export default function FacilitiesSection() {
               >
                 {/* ICON */}
                 {item.image?.url ? (
-                  <img
+                  <img loading="lazy"
                     src={File_URL + item.image.url}
                     alt={item.image.altText || item.name}
                     className="w-8 h-8 

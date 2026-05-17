@@ -60,9 +60,26 @@ const PromotionDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <span className="text-slate-500">Loading...</span>
-      </div>
+      <main className="flex-1 animate-pulse" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        <section className="relative w-full h-[70vh] min-h-[520px] bg-slate-200 dark:bg-slate-800">
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 px-6 text-center">
+             <div className="w-20 h-6 bg-slate-300 dark:bg-slate-700 rounded mb-4 mx-auto" />
+             <div className="w-3/4 max-w-4xl h-12 md:h-16 bg-slate-300 dark:bg-slate-700 rounded mb-6 mx-auto" />
+             <div className="w-1/2 max-w-sm h-6 bg-slate-300 dark:bg-slate-700 rounded mx-auto" />
+          </div>
+        </section>
+
+        <div className="max-w-[800px] mx-auto px-6 py-16">
+          <div className="space-y-4">
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-full mt-8" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-5/6" />
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -167,7 +184,7 @@ const PromotionDetailPage = () => {
                 className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group cursor-pointer"
               >
                 <div className="h-48 overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     src={File_URL + item.image?.url}
                     alt={item.title}

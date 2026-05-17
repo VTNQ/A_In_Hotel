@@ -39,7 +39,7 @@ const PromotionPage = () => {
   return (
     <>
       <header className="relative h-[260px] sm:h-[320px] md:h-[400px] flex items-center justify-center">
-        <img
+        <img loading="lazy"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE4R7LVLgpL9pPAbzD0n3AeWkCB3OS-wVaJLnvUPoYtCB1CjaKYvETKqwsRkzenePfMPXpHPCzuijqyqTR49pM5mYFajSCosBdcG8JKHYmxrINQewHGQequ8lzjl0dA4mFRHsZDi8yiJTZA60w3ab5E9jKf-VT_6QWbz_byJp_lMP9WHNkmBoDWYKIjjMG9EmkFWmK7k1O9u7WGdkogefyC41Oc5DeM5v8akYDh5zfkLpZqITdFKX6AFp2z6eKO6-0A2PFj-8rT5vH"
           alt="Luxury Hotel Interior"
           className="absolute inset-0 w-full h-full object-cover opacity-80 dark:opacity-60"
@@ -138,8 +138,17 @@ const PromotionPage = () => {
             Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[420px] rounded-lg bg-gray-100 dark:bg-zinc-800 animate-pulse"
-              />
+                className="group bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-gray-100 dark:border-zinc-800 shadow-sm flex flex-col animate-pulse"
+              >
+                <div className="relative aspect-[16/10] bg-gray-200 dark:bg-zinc-800" />
+                <div className="p-5 sm:p-6 lg:p-8 flex flex-col flex-grow">
+                  <div className="h-6 bg-gray-200 dark:bg-zinc-800 rounded w-3/4 mb-4" />
+                  <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded w-full mb-2" />
+                  <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded w-full mb-2" />
+                  <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded w-2/3 mb-8" />
+                  <div className="w-full h-12 bg-gray-200 dark:bg-zinc-800 mt-auto" />
+                </div>
+              </div>
             ))}
           {!loading && blogs.length === 0 && (
             <div className="col-span-full text-center py-24">
@@ -156,7 +165,7 @@ const PromotionPage = () => {
                 dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={File_URL + blog.image.url}
                     alt={blog.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

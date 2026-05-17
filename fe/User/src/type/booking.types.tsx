@@ -62,7 +62,28 @@ export interface RoomsGuestsSelectProps {
   value?: RoomGuestValue;
   onChange?: (value: RoomGuestValue) => void;
 }
-
+export interface  BookingDetailResponse {
+  id: number;
+  roomName: string;
+  roomNumber: string;
+  roomType: string;
+  price: number;
+}
+export interface BookingResponse{
+   id: number;
+  code: string;
+  guestName: string;
+  phoneNumber: string;
+  email: string;
+  numberOfGuests: number;
+  checkInDate: string;
+  checkInTime: string;
+  checkOutDate: string;
+  checkOutTime: string;
+  totalPrice: number;
+  status: number;
+  details: BookingDetailResponse[];
+}
 export interface BookingSearch {
   hotelId?: number;
   checkIn?: string;

@@ -7,7 +7,7 @@ const BookAppointmentSection = () => {
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 px-4 sm:px-6 lg:px-8 items-center">
         {/* LEFT IMAGE */}
         <div className="w-full">
-          <img
+          <img loading="lazy"
             src="/image/9d73a69d98ce7e6a1df54437f26aa08426192c09.jpg"
             alt="Luxury Room"
             className="
@@ -25,7 +25,7 @@ const BookAppointmentSection = () => {
         {/* RIGHT FORM */}
         <div className="text-white flex flex-col justify-center">
           <span className="uppercase text-xs tracking-[0.3em] mb-3 block text-white/80">
-            {t("home.bookAppointment.title")}
+            {t("home.bookAppointment.subtitle")}
           </span>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-dmserif leading-tight mb-4">

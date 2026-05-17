@@ -11,7 +11,7 @@ const BookingServiceCard = ({ service, selected, onToggle }: any) => {
             md:flex-row group transition-all hover:border-[rgb(0,89,187)]/30"
       >
         <div className="md:w-1/3 h-48 md:h-auto overflow-hidden">
-          <img
+          <img loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             src={service?.icon?.url || "https://via.placeholder.com/300"}
             alt={service?.icon?.altText}

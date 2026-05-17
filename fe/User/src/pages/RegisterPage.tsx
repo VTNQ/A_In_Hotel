@@ -176,7 +176,7 @@ export default function RegisterPage() {
   return (
     <main className="relative min-h-screen w-full pt-20 pb-16">
       {/* Background */}
-      <img
+      <img loading="lazy"
         src={BG_URL}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
@@ -194,7 +194,7 @@ export default function RegisterPage() {
         >
           {/* Logo left */}
           <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:items-center lg:justify-center">
-            <img
+            <img loading="lazy"
               src={LOGO_URL}
               alt="A‑IN HOTEL"
               className="h-40 w-auto object-contain"

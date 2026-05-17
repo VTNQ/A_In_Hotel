@@ -153,7 +153,7 @@ const ProfilePage = () => {
                   className="w-full h-full border border-[rgba(113,121,118)]/20
     p-1 rounded-2xl bg-white shadow-sm overflow-hidden"
                 >
-                  <img
+                  <img loading="lazy"
                     className="w-full h-full object-cover rounded-xl"
                     src={
                       avatarPreview ||

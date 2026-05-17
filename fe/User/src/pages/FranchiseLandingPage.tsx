@@ -3,7 +3,7 @@ const FranchiseLandingPage = () => {
     <>
       <section className="relative min-h-[921px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img
+          <img loading="lazy"
             className="w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD19rfihsALINjEI7D6yjY24iIuJt_kqWaCgtFQArlaPkGxGIqe1aXYsWxpKz0bynRrjWUrJBTPPXxd6qxnCwd-IqCbyQzzKdHryMr8GpAoBVKi-n1bSEwxE-MHJY3FJbsV7COOmqiAPwfQqkj3P1kVUzkDDGyj99mNxslcUDDCWyOEa9RhhUXBhH5cmUoYsYgRqt_fOb6x_CXavMOGCiBeyWKg0n5FtBOwNW34eUI9lcuqcr5NPFLyQKtjP3czl01YCOhccC4tc1Y"
           />
@@ -74,20 +74,20 @@ const FranchiseLandingPage = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-[24px]">
           <div className="md:col-span-7 h-[600px] overflow-hidden">
-            <img
+            <img loading="lazy"
               className="w-full h-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2zHkJSZD9zsRxjOXasGl9dUy9gCckrMRCwsVHel0OfXh4vqr-4acQY61UAS_d8NkbkQmTNhnK5Yu_iccrb-Ab8VWwp6AI9E2zA0-7Ac4vemhHLJrLZYod0GE9CD-r-fycx1fRztb3tSN00iRV1eXppINcLDZ-M1b56tswJLJzYfQWzcRYDXBABnfRliYQafNqHTchA0_cKafLzKKnW9cBewVIJY-Yxhk42HDKWQbxDmtNrU5UU5K0hLGQxoB36S-imFLBzsO6MT4"
             />
           </div>
           <div className="md:col-span-5 flex flex-col gap-[24px]">
             <div className="h-[288px] overflow-hidden">
-              <img
+              <img loading="lazy"
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3jfdb8DuGTgDDlcmuVhc1w53IPjIw-8_HklWyKleQZAo1_WSTAIWhAwfI76YLqceXWI-kNuYxO-V37bTFjhBwCJ9TNZF_YK6oilhsLXwGNbbqYAJVhgz2drJeRcCfKqY2-JwPl2m70FdM7Weo0wb6J5g9nschSJ-SiLRGl10FqI8S_wNUCgQsSCtATOuRN1_K9AI0Hu4C2KcivFxFiC_zzJqUuOUmYlMFWyTO3Nc-WNXnhOr5tUUlLaohk2KCypadLkzf7TZkuWk"
               />
             </div>
             <div className="h-[288px] overflow-hidden">
-              <img
+              <img loading="lazy"
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHbQnl4L4GlftqgiVoN6cSbdYrTwlxwbL1ziYKkx_VjAwhSMiEBI2X_PigrGoey0E10_woSb0Yuk98Td9v26z-PQNFTMW9WUU6q3-lGNDoGghTNz3JYw35iR2qMMoEy9fKvL2-4IfTOdsD0DtBRry_Kj4kq69cIaGjSRhAN29GeRJqoh2ZzvASaHinNZ_zXhMArsmtsOjOBMrhCXhDg_9dAzTmuk8dLQw1JW2qWYBQgctQEu4bv9bGQC5oqbkZ3UjdNiewYTcWJLI"
               />
@@ -106,7 +106,7 @@ const FranchiseLandingPage = () => {
                 absolute top-8 left-8 opacity-10"
               style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
             ></div>
-            <img
+            <img loading="lazy"
               className="relative z-10 w-full h-auto object-cover border border-[rgb(193,200,196)] "
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDudmWEeaFvJtAhZU4DOVu7vcmXwvqFlzkxLndWHQKPJhSg36Esfb9hCKd-Ehnv5VH0Kl5c7Ef-Z6PZbPE2hLWZ50t0atLIeCzOIm2LN9crIR8myYwyccPpr7qQxC8PIsg6cxMCjNVfxbD_GXhjzEe4j7R3YQpf-_f7pkZ0SnC-8AUP1kzM1woc7Svpy9Qpanao1Nr6NHu6Y9fK9qCg1FdK18lDOjwwCKm_eZ3FwdORlZ3h7_bOCgKumLVXiREb30-DFWciWnocEcM"
             />

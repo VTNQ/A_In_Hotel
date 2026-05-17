@@ -33,7 +33,7 @@ const RoomAndSuites = () => {
               className="relative overflow-hidden rounded-2xl group"
               onClick={() => navigate(`/Hotel/Room/${room.hotelId}`)}
             >
-              <img
+              <img loading="lazy"
                 src={File_URL + room.images[0]?.url}
                 alt={room.images[0]?.altText}
                 className="h-[280px] md:h-[320px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
