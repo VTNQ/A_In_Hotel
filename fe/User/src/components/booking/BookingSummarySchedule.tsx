@@ -45,7 +45,7 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
       <div className=" top-24 space-y-6">
         <div className="bg-white border border-outline-variant rounded-xl overflow-hidden">
           <div className="h-48 w-full relative">
-            <img
+            <img loading="lazy"
               src={`${room?.images[0]?.url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD2iBSVkCjjNe6zg2pIvfZ5bhBQxGR6uTNnExcDlgnb5P1gv7xNQgYHBX87pZTHPLdAVBfisRCLCKbCnoskRQRGbbqhtBKImJdgq-UJA3YUVQmzhxqRGYakQFewUdjDqpE_NiOTK33ZnBINAAnBDgRNRn3UeFAK-CNe6Zg77uU5uUWMIxNNF37UiVAgLPIamIr5l6Vm3uyaCMAgGxAE0HKrvZUp6AF32JKZfOuONBdHjphPX19yqc6E7gnCn99CxPuQFH5sXV4Vl7FV"}`}
               alt="Room"
               className="w-full h-full object-cover"

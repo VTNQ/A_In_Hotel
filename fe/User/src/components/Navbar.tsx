@@ -97,7 +97,7 @@ export default function Navbar() {
             onClick={() => navigate("/")}
             className="flex flex-col items-center"
           >
-            <img
+            <img loading="lazy"
               src="/image/Vector.png"
               className={`transition-all ${
                 isScrolled ? "h-8 brightness-0" : "h-10 brightness-200"
@@ -188,7 +188,7 @@ export default function Navbar() {
                   isHome && !isScrolled ? "border-white/30" : "border-gray-200"
                 }`}
               >
-                <img src={flagMap[currentLang]} className="w-5 h-3.5 object-cover rounded-sm" />
+                <img loading="lazy" src={flagMap[currentLang]} className="w-5 h-3.5 object-cover rounded-sm" />
                 <ChevronDown size={14} className={navColor} />
               </button>
 
@@ -200,7 +200,7 @@ export default function Navbar() {
                       onClick={() => changeLanguage(code)}
                       className="flex items-center w-full px-3 py-2.5 hover:bg-gray-50 transition"
                     >
-                      <img src={flagMap[code]} className="w-5 h-3.5 mr-3 object-cover rounded-sm" />
+                      <img loading="lazy" src={flagMap[code]} className="w-5 h-3.5 mr-3 object-cover rounded-sm" />
                       <span className="text-xs font-bold">{code === 'vi' ? 'Tiếng Việt' : 'English'}</span>
                     </button>
                   ))}
@@ -322,7 +322,7 @@ export default function Navbar() {
                       currentLang === code ? "border-primary bg-primary/5" : "border-gray-200"
                     }`}
                   >
-                    <img src={flagMap[code]} className="w-5 h-3.5 object-cover rounded-sm" />
+                    <img loading="lazy" src={flagMap[code]} className="w-5 h-3.5 object-cover rounded-sm" />
                     <span className="text-xs font-bold uppercase">{code}</span>
                   </button>
                 ))}

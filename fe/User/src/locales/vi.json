@@ -40,6 +40,66 @@
       "failed": "Đăng nhập thất bại. Vui lòng thử lại."
     }
   },
+  "home": {
+    "blog": {
+      "title": "Blog Của Chúng Tôi",
+      "loadFailed": "Tải danh sách blog thất bại"
+    },
+    "roomAndSuites": "Phòng & Phòng VIP",
+    "decorate": "Trang Trí",
+    "facilities": {
+      "title": "Tiện ích & Dịch vụ",
+      "loading": "Đang tải tiện ích...",
+      "testimonial": "Đánh giá của khách hàng"
+    },
+    "bookAppointment": {
+      "subtitle": "Đặt lịch hẹn",
+      "titleLine1": "Thư giãn và tận hưởng sự sang trọng",
+      "titleLine2": "trong suốt kỳ nghỉ của bạn",
+      "description": "Vì một địa điểm có thể thay đổi mọi thứ, đặc biệt là khoảnh khắc bạn dành ở đó. Hãy đặt lịch hẹn với những điều thiết yếu nhất.",
+      "name": "Tên",
+      "lastName": "Họ",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "message": "Tin nhắn",
+      "privacyPolicy": "Tôi đồng ý với chính sách bảo mật của trang web",
+      "submit": "Gửi thông tin"
+    },
+    "roomShowcase": {
+      "title": "Phòng & Phòng VIP Phổ Biến",
+      "bookNow": "Đặt ngay",
+      "perNight": "/đêm"
+    }
+  },
+  "footer": {
+    "destination": "Điểm Đến",
+    "contact": "Liên Hệ"
+  },
+  "search": {
+    "destination": "Điểm đến",
+    "selectHotel": "Chọn khách sạn",
+    "selectDate": "Chọn ngày",
+    "selectRoomsGuests": "Chọn phòng và khách",
+    "checkIn": "Nhận phòng",
+    "checkOut": "Trả phòng",
+    "room": "Phòng",
+    "adult": "Người lớn",
+    "child": "Trẻ em",
+    "guest": "Khách",
+    "search": "Tìm kiếm",
+    "apply": "Áp dụng",
+    "cancel": "Hủy",
+    "placeholder": {
+      "hotel": "Chọn khách sạn",
+      "date": "Nhận phòng → Trả phòng"
+    },
+    "alerts": {
+      "selectHotel": "Vui lòng chọn khách sạn",
+      "selectDate": "Vui lòng chọn ngày nhận và trả phòng",
+      "loadFailed": "Tải danh sách khách sạn thất bại",
+      "selectBothDates": "Vui lòng chọn cả ngày nhận và trả phòng"
+    }
+  },
   "booking": {
     "title": "Lịch sử đặt phòng",
     "subtitle": "Quản lý các kỳ nghỉ tuyệt vời và lịch sử đặt phòng của bạn.",
@@ -244,66 +304,6 @@
       "checkOut": "Trả phòng",
       "totalPaid": "Đã thanh toán",
       "backHome": "Quay lại Trang chủ"
-    },
-    "home": {
-      "blog": {
-        "title": "Blog Của Chúng Tôi",
-        "loadFailed": "Tải danh sách blog thất bại"
-      },
-      "roomAndSuites": "Phòng & Phòng VIP",
-      "decorate": "Trang Trí",
-      "facilities": {
-        "title": "Tiện ích & Dịch vụ",
-        "loading": "Đang tải tiện ích...",
-        "testimonial": "Đánh giá của khách hàng"
-      },
-      "bookAppointment": {
-        "subtitle": "Đặt lịch hẹn",
-        "titleLine1": "Thư giãn và tận hưởng sự sang trọng",
-        "titleLine2": "trong suốt kỳ nghỉ của bạn",
-        "description": "Vì một địa điểm có thể thay đổi mọi thứ, đặc biệt là khoảnh khắc bạn dành ở đó. Hãy đặt lịch hẹn với những điều thiết yếu nhất.",
-        "name": "Tên",
-        "lastName": "Họ",
-        "email": "Email",
-        "phone": "Số điện thoại",
-        "message": "Tin nhắn",
-        "privacyPolicy": "Tôi đồng ý với chính sách bảo mật của trang web",
-        "submit": "Gửi thông tin"
-      },
-      "roomShowcase": {
-        "title": "Phòng & Phòng VIP Phổ Biến",
-        "bookNow": "Đặt ngay",
-        "perNight": "/đêm"
-      }
-    },
-    "footer": {
-      "destination": "Điểm Đến",
-      "contact": "Liên Hệ"
-    },
-    "search": {
-      "destination": "Điểm đến",
-      "selectHotel": "Chọn khách sạn",
-      "selectDate": "Chọn ngày",
-      "selectRoomsGuests": "Chọn phòng và khách",
-      "checkIn": "Nhận phòng",
-      "checkOut": "Trả phòng",
-      "room": "Phòng",
-      "adult": "Người lớn",
-      "child": "Trẻ em",
-      "guest": "Khách",
-      "search": "Tìm kiếm",
-      "apply": "Áp dụng",
-      "cancel": "Hủy",
-      "placeholder": {
-        "hotel": "Chọn khách sạn",
-        "date": "Nhận phòng → Trả phòng"
-      },
-      "alerts": {
-        "selectHotel": "Vui lòng chọn khách sạn",
-        "selectDate": "Vui lòng chọn ngày nhận và trả phòng",
-        "loadFailed": "Tải danh sách khách sạn thất bại",
-        "selectBothDates": "Vui lòng chọn cả ngày nhận và trả phòng"
-      }
     },
     "calendar": {
       "month": "Tháng",

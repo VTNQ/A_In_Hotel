@@ -35,7 +35,7 @@ const OurBlog = () => {
               className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
             >
               <div className="overflow-hidden">
-                <img
+                <img loading="lazy"
                   src={File_URL + blog.image?.url}
                   alt={blog.image?.altText}
                   className="

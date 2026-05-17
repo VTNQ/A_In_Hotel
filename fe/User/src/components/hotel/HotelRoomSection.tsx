@@ -48,7 +48,7 @@ const HotelRoomSection = () => {
                             className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center`}
                         >
                             <div className={reverse ? "lg:order-2" : ""}>
-                                <img
+                                <img loading="lazy"
                                     src={room.image}
                                     alt={room.name}
                                     className="w-full rounded-xl object-cover"

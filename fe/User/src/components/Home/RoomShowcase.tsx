@@ -59,7 +59,7 @@ export default function RoomShowcase() {
             transition-all duration-300"
           >
             <div className="relative">
-              <img
+              <img loading="lazy"
                 src={room.image}
                 alt={room.name}
                 className="w-full h-48 sm:h-56 lg:h-64 object-cover"

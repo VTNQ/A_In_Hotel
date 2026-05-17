@@ -78,7 +78,7 @@ const HotelRoomPage = () => {
                                             rounded-2xl 
                                             ${reverse ? "" : "ml-auto"}`}
                   >
-                    <img
+                    <img loading="lazy"
                       src={File_URL + room.roomImage?.url}
                       alt={room.roomImage?.altText}
                       className="h-[260px] sm:h-[400px] lg:h-[520px] w-full object-cover"
@@ -112,7 +112,7 @@ const HotelRoomPage = () => {
                       {room.assets.map((asset, index) => (
                         <li key={index} className="flex items-center gap-2">
                           {/* ICON */}
-                          <img
+                          <img loading="lazy"
                             src={File_URL + asset.thumbnail?.url}
                             alt={asset.assetName}
                             className="h-4 w-4 object-contain"

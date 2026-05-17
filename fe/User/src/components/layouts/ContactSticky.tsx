@@ -10,7 +10,7 @@ const ContactSticky = () => {
         rel="noopener noreferrer"
         className="flex h-12 w-12 items-center justify-center rounded-full "
       >
-        <img
+        <img loading="lazy"
           src="/image/IconPhone.png"
           alt="Call"
           className="h-50 w-50 object-contain"
@@ -22,7 +22,7 @@ const ContactSticky = () => {
         rel="noopener noreferrer"
         className="flex h-12 w-12 items-center justify-center rounded-full "
       >
-        <img
+        <img loading="lazy"
           src="/image/IconZalo.png"
           alt="Call"
           className="h-50 w-50 object-contain"
@@ -34,7 +34,7 @@ const ContactSticky = () => {
         rel="noopener noreferrer"
         className="flex h-12 w-12 items-center justify-center rounded-full "
       >
-        <img
+        <img loading="lazy"
          src="/image/IconMessage.png"
           alt="Call"
           className="h-50 w-50 object-contain"
@@ -46,7 +46,7 @@ const ContactSticky = () => {
         rel="noopener noreferrer"
         className="flex h-12 w-12 items-center justify-center rounded-full "
       >
-        <img
+        <img loading="lazy"
          src="/image/FrameIcon.png"
           alt="Call"
           className="h-50 w-50 object-contain"

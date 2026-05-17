@@ -19,7 +19,7 @@ const RoomCard = ({
       className="border rounded-lg overflow-hidden bg-white cursor-pointer
                  hover:shadow-md transition"
     >
-      <img
+      <img loading="lazy"
         src={image ? File_URL + image : "https://picsum.photos/300/180"}
         alt={title}
         className="h-[180px] w-full object-cover"

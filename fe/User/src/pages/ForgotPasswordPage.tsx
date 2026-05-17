@@ -138,7 +138,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      <img
+      <img loading="lazy"
         src={BG_URL}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
@@ -150,7 +150,7 @@ const ForgotPasswordPage = () => {
           style={{ boxShadow: "0 12px 48px rgba(0,0,0,.28)" }}
         >
           <div className="hidden lg:col-span-5 lg:flex lg:items-center lg:justify-center">
-            <img
+            <img loading="lazy"
               src={LOGO_URL}
               alt="A‑IN HOTEL"
               className="max-h-48 w-auto object-contain"

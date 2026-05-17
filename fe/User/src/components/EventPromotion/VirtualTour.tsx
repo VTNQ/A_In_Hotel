@@ -11,7 +11,7 @@ export default function VirtualTour({
     <section className="relative">
       {/* Background image */}
       <div className="h-[500px] w-full">
-        <img
+        <img loading="lazy"
           src={backgroundUrl}
           alt="Event service"
           className="h-full w-full object-cover"

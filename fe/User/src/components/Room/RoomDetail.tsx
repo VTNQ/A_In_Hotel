@@ -50,7 +50,7 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
           {images.map((img, i) => (
-            <img
+            <img loading="lazy"
               key={i}
               src={File_URL + img.url}
               className="w-full h-full object-cover shrink-0"

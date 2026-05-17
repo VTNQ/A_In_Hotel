@@ -29,7 +29,7 @@ const AboutOurHotel = () => {
   return (
     <section className="relative w-full min-h-[600px] sm:min-h-[700px] lg:h-[800px] overflow-hidden">
       {/* Background */}
-      <img
+      <img loading="lazy"
         src={File_URL + settingContent.backgroundImage?.url}
         alt={settingContent.backgroundImage?.altText}
         className="absolute inset-0 w-full h-full object-cover"
@@ -141,7 +141,7 @@ const AboutOurHotel = () => {
             transition
           "
             >
-              <img
+              <img loading="lazy"
                 src="/image/VectorBlack.png"
                 alt="Vector"
                 className="w-5 h-5 sm:w-6 sm:h-6"

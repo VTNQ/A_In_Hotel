@@ -83,7 +83,7 @@ const DecorateSlider = () => {
           const isNear = Math.abs(pos) === 1;
 
           return (
-            <img
+            <img loading="lazy"
               key={i}
               src={img}
               className={`

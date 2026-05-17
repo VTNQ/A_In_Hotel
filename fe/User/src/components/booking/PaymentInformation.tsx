@@ -10,31 +10,31 @@ const PaymentInformation = () => {
       <p className="text-sm font-medium mb-2">How would you like to pay?</p>
 
       <div className="flex items-center gap-4 mb-6">
-        <img
+        <img loading="lazy"
           src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
           alt="Visa"
           className="h-6 object-contain"
         />
 
-        <img
+        <img loading="lazy"
           src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
           alt="Mastercard"
           className="h-6 object-contain"
         />
 
-        <img
+        <img loading="lazy"
           src="https://upload.wikimedia.org/wikipedia/commons/0/04/JCB_logo.svg"
           alt="JCB"
           className="h-6 object-contain"
         />
 
-        <img
+        <img loading="lazy"
           src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg"
           alt="Apple Pay"
           className="h-6 object-contain"
         />
 
-        <img
+        <img loading="lazy"
           src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg"
           alt="Amex"
           className="h-6 object-contain"

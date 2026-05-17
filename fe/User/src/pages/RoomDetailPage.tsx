@@ -193,7 +193,7 @@ const RoomDetailPage = () => {
                 className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden cursor-pointer"
                 onClick={() => setOpenGallery(true)}
               >
-                <img
+                <img loading="lazy"
                   src={File_URL + roomv2?.images[0]?.url}
                   className="w-full h-full object-cover"
                 />
@@ -208,7 +208,7 @@ const RoomDetailPage = () => {
                       className="relative flex-1 rounded-xl overflow-hidden cursor-pointer"
                       onClick={() => setOpenGallery(true)}
                     >
-                      <img
+                      <img loading="lazy"
                         src={File_URL + img.url}
                         className="w-full h-full object-cover hover:scale-105 transition"
                       />
@@ -270,7 +270,7 @@ const RoomDetailPage = () => {
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-gray-700">
                       {amenities.map((item) => (
                         <li key={item.id} className="flex items-center gap-3">
-                          <img
+                          <img loading="lazy"
                             src={File_URL + item.thumbnail?.url}
                             alt={item.assetName}
                             className="w-4 h-4 object-contain"
@@ -571,7 +571,7 @@ const RoomDetailPage = () => {
 
           {/* MAIN IMAGE */}
           <div className="flex flex-col items-center w-full max-w-6xl px-6">
-            <img
+            <img loading="lazy"
               src={room.images[activeIndex].url}
               className="max-h-[80vh] w-auto object-contain rounded-xl mb-6 transition-all"
             />
@@ -579,7 +579,7 @@ const RoomDetailPage = () => {
             {/* THUMBNAILS */}
             <div className="flex gap-3 overflow-x-auto max-w-full pb-2">
               {room.images.map((img, i) => (
-                <img
+                <img loading="lazy"
                   key={i}
                   src={img.url}
                   onClick={() => setActiveIndex(i)}
