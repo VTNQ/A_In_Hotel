@@ -7,43 +7,17 @@ import {
   ShieldCheck,
   ArrowLeft,
   Calendar,
-  Clock,
-  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBookingById } from "../service/api/bookings";
 import BookingDetailSkeleton from "../components/booking/BookingDetailSkeleton";
-import { BookingStatus, statusLabel, statusStyle } from "../type/booking.types";
+import { BookingStatus, statusLabel, statusStyle, type BookingResponse } from "../type/booking.types";
 import { useTranslation } from "react-i18next";
-
-/* ================= TYPES ================= */
-
-interface BookingDetailResponse {
-  id: number;
-  roomName: string;
-  roomNumber: string;
-  roomType: string;
-  price: number;
-}
-
-interface BookingResponse {
-  id: number;
-  code: string;
-  guestName: string;
-  phoneNumber: string;
-  email: string;
-  numberOfGuests: number;
-  checkInDate: string;
-  checkInTime: string;
-  checkOutDate: string;
-  checkOutTime: string;
-  totalPrice: number;
-  status: number;
-  details: BookingDetailResponse[];
-}
-
-/* ================= PAGE ================= */
+import { formatTime, calculateNights } from "../util/formatDate";
+import Info from "../components/booking/detail/Info";
+import GuestRow from "../components/booking/detail/GuestRow";
+import SummaryRow from "../components/booking/detail/SummaryRow";
 
 export default function BookingDetailPage() {
   const { t, i18n } = useTranslation();
@@ -308,44 +282,4 @@ export default function BookingDetailPage() {
   );
 }
 
-/* ================= HELPERS ================= */
 
-const formatTime = (time: string) => time?.slice(0, 5);
-
-const calculateNights = (checkIn: string, checkOut: string) => {
-  const inDate = new Date(checkIn);
-  const outDate = new Date(checkOut);
-  const diff = outDate.getTime() - inDate.getTime();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-};
-
-function Info({ title, main, sub }: any) {
-  return (
-    <div>
-      <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">{title}</p>
-      <p className="font-bold text-slate-800 dark:text-slate-100">{main}</p>
-      {sub && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{sub}</p>}
-    </div>
-  );
-}
-
-function GuestRow({ icon, label, value }: any) {
-  return (
-    <div className="flex items-start gap-4">
-      <div className="bg-primary/10 text-primary p-2.5 rounded-xl">{icon}</div>
-      <div>
-        <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-0.5">{label}</p>
-        <p className="font-bold text-slate-800 dark:text-slate-100">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function SummaryRow({ label, value }: any) {
-  return (
-    <div className="flex justify-between text-sm mb-4">
-      <span className="text-slate-500 dark:text-slate-400 font-medium">{label}</span>
-      <span className="font-bold">{value}</span>
-    </div>
-  );
-}
