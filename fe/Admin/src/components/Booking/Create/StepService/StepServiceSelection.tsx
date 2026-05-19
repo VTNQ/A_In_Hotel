@@ -8,16 +8,22 @@ import { getAllCategory } from "../../../../service/api/Category";
 import { getTokens } from "../../../../util/auth";
 import { estimateServicePrice } from "../../../../util/estimateServicePrice";
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
 
 const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   const [services, setServices] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
+  const { watch, setValue, handleSubmit } = useForm<any>({
+    mode: "onChange",
+    defaultValues: {
+      services: booking.services || [],
+    },
+  });
+  const selectedServices = watch("services");
   const hotelId = getTokens()?.hotelId;
   useEffect(() => {
     if (!hotelId) return;
@@ -62,13 +68,47 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
   /* ===================== SELECT SERVICE ===================== */
   const toggleService = (service: any) => {
-    setSelectedServices((prev) =>
-      prev.some((s) => s.id === service.id)
-        ? prev.filter((s) => s.id !== service.id)
-        : [...prev, service],
+     const exists = selectedServices.some(
+      (s: any) => s.id === service.id
+    );
+
+    let updatedServices = [...selectedServices];
+
+    if (exists) {
+      updatedServices = updatedServices.filter(
+        (s: any) => s.id !== service.id
+      );
+    } else {
+      updatedServices.push(service);
+    }
+
+    setValue(
+      "services",
+      updatedServices,
+      {
+        shouldValidate: true,
+      }
     );
   };
+  const submit = () => {
+    onNext({
+      services: selectedServices.map(
+        (s: any) => ({
+          extraServiceId: s.id,
 
+          extraCharge: s.extraCharge,
+
+          price: estimateServicePrice(
+            s,
+            booking
+          ),
+
+          serviceName:
+            s.serviceName ?? s.name,
+        })
+      ),
+    });
+  };
   const ServiceSkeleton = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
@@ -113,7 +153,10 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
                 key={service.id}
                 service={service}
                 booking={booking}
-                selected={selectedServices.some((s) => s.id === service.id)}
+                 selected={selectedServices.some(
+                  (s: any) =>
+                    s.id === service.id
+                )}
                 onToggle={() => toggleService(service)}
               />
             ))
@@ -125,16 +168,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           <BookingSummary
             booking={booking}
             services={selectedServices}
-            onNext={() =>
-              onNext({
-                services: selectedServices.map((s) => ({
-                  extraServiceId: s.id,
-                  extraCharge: s.extraCharge,
-                  price: estimateServicePrice(s, booking),
-                  serviceName: s.serviceName ?? s.name,
-                })),
-              })
-            }
+             onNext={handleSubmit(submit)}
           />
         </div>
       </div>

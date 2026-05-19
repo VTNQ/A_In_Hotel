@@ -1,13 +1,20 @@
 import { useTranslation } from "react-i18next";
 import PaymentForm from "./PaymentForm";
 import PaymentSummary from "./PaymentSummary";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useForm } from "react-hook-form";
 
 const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
   const { t } = useTranslation();
-  const [discount, setDiscount] = useState(0);
-  const [voucherCode, setVoucherCode] = useState("");
-
+  const { watch, setValue, handleSubmit } = useForm<any>({
+    mode: "onChange",
+    defaultValues: {
+      voucherCode: "",
+      discount: 0,
+    },
+  });
+  const voucherCode = watch("voucherCode");
+  const discount = watch("discount");
   const rooms = booking.rooms || [];
   const services = booking.services || [];
   const nights = booking.selectDate?.nights || 0;
@@ -25,7 +32,16 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
     return roomTotal + serviceTotal;
   }, [rooms, services, nights]);
   const finalTotal = Math.max(0, total - discount);
-
+  const submit = () => {
+    onNext({
+      payment: {
+        total,
+        finalTotal,
+        discount,
+        voucherCode,
+      },
+    });
+  };
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -36,10 +52,10 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
             total={total}
             finalTotal={finalTotal}
             discount={discount}
-            setDiscount={setDiscount}
+            setDiscount={(value: number) => setValue("discount", value)}
             voucherCode={voucherCode}
-            setVoucherCode={setVoucherCode}
-            onSubmit={onNext}
+            setVoucherCode={(value: string) => setValue("voucherCode", value)}
+            onSubmit={handleSubmit(submit)}
           />
         </div>
 
@@ -53,8 +69,8 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
       <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4 ">
         {/* CANCEL - BÊN TRÁI */}
         <button
-        onClick={onCancel}
-        className="
+          onClick={onCancel}
+          className="
           w-full sm:w-auto
           px-4 py-2
           rounded-lg
@@ -66,14 +82,14 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
           hover:border-red-300
           transition
         "
-      >
-        {t("payment.actions.cancel")}
-      </button>
+        >
+          {t("payment.actions.cancel")}
+        </button>
 
         {/* BACK */}
         <button
-        onClick={onBack}
-        className="
+          onClick={onBack}
+          className="
           w-full sm:w-auto
           px-4 py-2
           rounded-xl
@@ -83,9 +99,9 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
           hover:bg-gray-200
           transition
         "
-      >
-        {t("payment.actions.backServices")}
-      </button>
+        >
+          {t("payment.actions.backServices")}
+        </button>
       </div>
     </div>
   );
