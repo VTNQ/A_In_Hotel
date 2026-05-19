@@ -26,7 +26,6 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
     watch,
     setValue,
     handleSubmit,
-    formState: { errors },
   } = useForm<any>({
     mode: "onChange",
     defaultValues: {
