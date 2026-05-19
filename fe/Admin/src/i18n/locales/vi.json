@@ -647,6 +647,10 @@
         "subtitle": "Phòng trống · {{count}} khách",
         "searchRoom": "Tìm theo tên phòng",
         "allRoomTypes": "Tất cả loại phòng",
+        "validation": {
+            "selectRoom": "Vui lòng chọn ít nhất một phòng",
+            "capacity": "Sức chứa của phòng không đủ cho số lượng khách"
+        },
         "noRooms": "Không tìm thấy phòng phù hợp",
         "yourBooking": "Thông tin đặt phòng",
         "checkIn": "Nhận phòng",

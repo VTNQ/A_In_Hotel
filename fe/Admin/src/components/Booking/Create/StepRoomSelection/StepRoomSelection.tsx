@@ -107,19 +107,15 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
   /* ===================== SELECT ROOM ===================== */
   const toggleRoom = (roomWithData: any) => {
-    const exists = selectedRooms.find(
-      (r: any) => r.id === roomWithData.id
-    );
+    const exists = selectedRooms.find((r: any) => r.id === roomWithData.id);
 
     let updatedRooms = [...selectedRooms];
 
     if (exists && roomWithData._action === "remove") {
-      updatedRooms = updatedRooms.filter(
-        (r: any) => r.id !== roomWithData.id
-      );
+      updatedRooms = updatedRooms.filter((r: any) => r.id !== roomWithData.id);
     } else if (exists) {
       updatedRooms = updatedRooms.map((r: any) =>
-        r.id === roomWithData.id ? roomWithData : r
+        r.id === roomWithData.id ? roomWithData : r,
       );
     } else {
       updatedRooms.push(roomWithData);
@@ -137,6 +133,28 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
       ))}
     </div>
   );
+  const hasSelectedRoom = selectedRooms.length > 0;
+  const totalGuests =
+    (booking.selectDate?.adults || 0) + (booking.selectDate?.children || 0);
+  const totalCapacity = selectedRooms.reduce(
+    (sum: number, room: any) => sum + (room.capacity || 0),
+    0,
+  );
+  const capacityValid = totalCapacity >= totalGuests;
+
+  const submit = () => {
+    if (!hasSelectedRoom || !capacityValid) return;
+
+    onNext({
+      rooms: selectedRooms,
+    });
+  };
+    const roomError =
+    !hasSelectedRoom
+      ? t("roomSelection.validation.selectRoom")
+      : !capacityValid
+      ? t("roomSelection.validation.capacity")
+      : "";
 
   return (
     <div className="bg-gray-50">
@@ -175,12 +193,17 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
                 service={extras}
                 bookingDate={booking.selectDate}
                 packageType={booking.selectDate?.package}
-                 selected={selectedRooms.some(
-                  (r: any) => r.id === room.id
-                )}
+                selected={selectedRooms.some((r: any) => r.id === room.id)}
                 onSelect={toggleRoom}
               />
             ))
+          )}
+           {roomError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+              <p className="text-sm text-red-500">
+                {roomError}
+              </p>
+            </div>
           )}
         </div>
         <div className="lg:sticky lg:top-6 h-fit">
@@ -193,7 +216,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
               children: booking.selectDate?.children,
             }}
             onEditGuests={onBack}
-            onNext={() => onNext({ rooms: selectedRooms })}
+            onNext={handleSubmit(submit)}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import CalendarRange from "../../ui/CalenderRange";
 import BookingDetailsPanel from "./BookingDetailsPanel";
 import { useTranslation } from "react-i18next";
