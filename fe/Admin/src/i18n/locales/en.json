@@ -639,6 +639,10 @@
     "searchRoom": "Search room name",
     "allRoomTypes": "All Room Types",
     "noRooms": "No rooms found",
+    "validation": {
+      "selectRoom": "Please select at least one room",
+      "capacity": "Room capacity is insufficient for the number of guests"
+    },
     "yourBooking": "Your Booking",
     "checkIn": "Check-in",
     "checkOut": "Check-out",
