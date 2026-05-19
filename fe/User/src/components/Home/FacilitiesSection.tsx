@@ -26,7 +26,7 @@ export default function FacilitiesSection() {
   return (
     <section className="w-full bg-[#fcfaf8] py-12 px-4 sm:py-16 lg:py-20  text-center">
       {/* Title top */}
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-dmserif font-bold text-[#2b3a67] mb-8 sm:mb-12">
+      <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2b3a67] mb-10 sm:mb-12">
         {t("home.facilities.title")}
       </h2>
 
@@ -89,7 +89,7 @@ export default function FacilitiesSection() {
       </div>
 
       {/* Bottom text */}
-      <h3 className="text-xl sm:text-2xl lg:text-3xl font-dmserif text-[#2b3a67] mt-10 sm:mt-14">
+      <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2b3a67] mt-10 sm:mt-14">
         {t("home.facilities.testimonial")}
       </h3>
     </section>

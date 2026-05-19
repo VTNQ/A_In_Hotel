@@ -67,7 +67,7 @@ const DecorateSlider = () => {
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-[#fff7f0] overflow-hidden">
-      <h2 className="text-center text-3xl md:text-4xl font-dmserif font-medium text-[#4B3F30] mb-12">
+      <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2b3a67] mb-10 sm:mb-12">
         {t("home.decorate")}
       </h2>
 

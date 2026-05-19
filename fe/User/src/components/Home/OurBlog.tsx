@@ -25,7 +25,7 @@ const OurBlog = () => {
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-dmserif text-[#4B3F30] mb-8 sm:mb-12">
+        <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2b3a67] mb-10 sm:mb-12">
           {t("home.blog.title")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-6  sm:gap-8">

@@ -8,14 +8,13 @@ import { getAllRoom } from "../../../../service/api/Room";
 import { getAll } from "../../../../service/api/ExtraService";
 import { getAllCategory } from "../../../../service/api/Category";
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
 
 const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   const [rooms, setRooms] = useState<any[]>([]);
   const { t } = useTranslation();
   const [extras, setExtras] = useState<any[]>([]);
   const [roomTypes, setRoomTypes] = useState<any[]>([]);
-  const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
-
   const [search, setSearch] = useState("");
   const [roomType, setRoomType] = useState("");
 
@@ -23,8 +22,18 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   const [initialized, setInitialized] = useState(false);
 
   const hotelId = getTokens()?.hotelId;
-
-  /* ===================== INIT LOAD ===================== */
+  const {
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<any>({
+    mode: "onChange",
+    defaultValues: {
+      rooms: booking.rooms || [],
+    },
+  });
+  const selectedRooms = watch("rooms");
   useEffect(() => {
     if (!hotelId) return;
 
@@ -98,18 +107,26 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
   /* ===================== SELECT ROOM ===================== */
   const toggleRoom = (roomWithData: any) => {
-    setSelectedRooms((prev) => {
-      const exists = prev.find((r) => r.id === roomWithData.id);
+    const exists = selectedRooms.find(
+      (r: any) => r.id === roomWithData.id
+    );
 
-      if (exists && roomWithData._action === "remove") {
-        return prev.filter((r) => r.id !== roomWithData.id);
-      }
+    let updatedRooms = [...selectedRooms];
 
-      if (exists) {
-        return prev.map((r) => (r.id === roomWithData.id ? roomWithData : r));
-      }
+    if (exists && roomWithData._action === "remove") {
+      updatedRooms = updatedRooms.filter(
+        (r: any) => r.id !== roomWithData.id
+      );
+    } else if (exists) {
+      updatedRooms = updatedRooms.map((r: any) =>
+        r.id === roomWithData.id ? roomWithData : r
+      );
+    } else {
+      updatedRooms.push(roomWithData);
+    }
 
-      return [...prev, roomWithData];
+    setValue("rooms", updatedRooms, {
+      shouldValidate: true,
     });
   };
 
@@ -158,7 +175,9 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
                 service={extras}
                 bookingDate={booking.selectDate}
                 packageType={booking.selectDate?.package}
-                selected={selectedRooms.some((r) => r.id === room.id)}
+                 selected={selectedRooms.some(
+                  (r: any) => r.id === room.id
+                )}
                 onSelect={toggleRoom}
               />
             ))
@@ -191,9 +210,9 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
         {/* BACK */}
         <button
-        type="button"
-        onClick={onBack}
-        className="
+          type="button"
+          onClick={onBack}
+          className="
           w-full sm:w-auto
           inline-flex items-center justify-center gap-2
           px-5 py-3
@@ -201,9 +220,9 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           bg-gray-100
           text-sm font-medium text-gray-700
           hover:bg-gray-200 transition"
-      >
-        {t("roomSelection.back")}
-      </button>
+        >
+          {t("roomSelection.back")}
+        </button>
       </div>
     </div>
   );

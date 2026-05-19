@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SectionHeader from "./SectionHeader";
 import { ClipboardList, Mail, User } from "lucide-react";
 import Input from "../../ui/Input";
@@ -6,40 +5,62 @@ import Select from "../../ui/Select";
 import { GUEST_TYPE_OPTIONS } from "../../../type/booking.types";
 import TextArea from "../../ui/TextArea";
 import { useTranslation } from "react-i18next";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    idNumber: "",
-    guestType: "",
-    email: "",
-    phone: "",
-    companyName: "",
-    note: "",
-    ...data,
+  const schema = z.object({
+    firstName: z.string().min(1, "First name is required").max(100),
+
+    lastName: z.string().min(1, "Last name is required").max(100),
+
+    idNumber: z
+      .string()
+      .min(6, "ID number must be at least 6 characters")
+      .max(20),
+
+    guestType: z.string().min(1, "Guest type is required"),
+
+    email: z.string().min(1, "Email is required").email("Invalid email format"),
+
+    phone: z.string().regex(/^[0-9+\-\s()]{8,15}$/, "Invalid phone number"),
+
+    note: z.string().optional(),
   });
+  type FormValues = z.infer<typeof schema>;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isValid },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      idNumber: "",
+      guestType: "",
+      email: "",
+      phone: "",
+      note: "",
+      ...data,
+    },
+  });
+
   const { t } = useTranslation();
 
-  const update = (key: string, value: string) => {
-    setForm((prev: any) => ({ ...prev, [key]: value }));
+  const submit = (values: FormValues) => {
+    onNext(values);
   };
 
-  const isValid =
-    form.firstName.trim() !== "" &&
-    form.lastName.trim() !== "" &&
-    form.idNumber.trim() !== "" &&
-    form.guestType !== "" &&
-    form.email.trim() !== "" &&
-    form.phone.trim() !== "";
   return (
-  <div>
+    <div>
       <h2 className="text-lg sm:text-xl font-semibold mb-2">
         {t("bookingGuest.title")}
       </h2>
-      <p className="text-sm text-gray-500 mb-6">
-        {t("bookingGuest.step")}
-      </p>
+      <p className="text-sm text-gray-500 mb-6">{t("bookingGuest.step")}</p>
 
       {/* Identity */}
       <SectionHeader
@@ -51,37 +72,42 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         <Input
           label={t("bookingGuest.firstName")}
           placeholder="e.g. Jonathan"
-          value={form.firstName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            update("firstName", e.target.value)
-          }
+          error={errors.firstName?.message?.toString()}
+          {...register("firstName")}
         />
-
+     
         <Input
           label={t("bookingGuest.lastName")}
           placeholder="e.g. Doe"
-          value={form.lastName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            update("lastName", e.target.value)
-          }
+          error={errors.lastName?.message?.toString()}
+          {...register("lastName")}
         />
-
+        
         <Input
           label={t("bookingGuest.idNumber")}
           placeholder="Enter ID number"
-          value={form.idNumber}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            update("idNumber", e.target.value)
-          }
+          error={errors.idNumber?.message?.toString()}
+          {...register("idNumber")}
         />
-
-        <Select
-          label={t("bookingGuest.guestType")}
-          value={form.guestType}
-          placeholder="Select type"
-          options={GUEST_TYPE_OPTIONS}
-          onChange={(value) => update("guestType", value)}
+       
+        <Controller
+          control={control}
+          name="guestType"
+          render={({ field }) => (
+            <Select
+              label={t("bookingGuest.guestType")}
+              placeholder="Select type"
+              options={GUEST_TYPE_OPTIONS}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
+        {errors.guestType?.message && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.guestType.message.toString()}
+          </p>
+        )}
       </div>
 
       {/* Contact */}
@@ -95,21 +121,19 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           type="email"
           label={t("bookingGuest.email")}
           placeholder="name@example.com"
-          value={form.email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            update("email", e.target.value)
-          }
+          {...register("email")}
+          error={errors.email?.message?.toString()}
         />
+     
 
         <Input
           type="tel"
           label={t("bookingGuest.phone")}
           placeholder="+1 (555) 000-0000"
-          value={form.phone}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            update("phone", e.target.value)
-          }
+          {...register("phone")}
+          error={errors.phone?.message?.toString()}
         />
+      
       </div>
 
       {/* Specifics */}
@@ -121,11 +145,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       <TextArea
         label={t("bookingGuest.note")}
         placeholder={t("bookingGuest.notePlaceholder")}
-        value={form.note}
-        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-          update("note", e.target.value)
-        }
+        {...register("note")}
       />
+      {errors.note?.message && (
+        <p className="mt-1 text-sm text-red-500">
+          {errors.note.message.toString()}
+        </p>
+      )}
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-8">
@@ -140,15 +166,15 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
 
         <button
           disabled={!isValid}
-          onClick={() => onNext(form)}
+          onClick={handleSubmit(submit)}
           className={`w-full sm:w-auto 
             flex items-center justify-center
             gap-2 px-6 py-3 text-sm sm:text-base font-medium rounded-xl 
             transition-all duration-200 ${
-            isValid
-              ? "bg-[#42578E] text-white hover:bg-[#536DB2] active:scale-[0.98]"
-              : "bg-gray-300 text-gray-400 cursor-not-allowed"
-          }`}
+              isValid
+                ? "bg-[#42578E] text-white hover:bg-[#536DB2] active:scale-[0.98]"
+                : "bg-gray-300 text-gray-400 cursor-not-allowed"
+            }`}
         >
           {t("bookingGuest.next")}
         </button>
