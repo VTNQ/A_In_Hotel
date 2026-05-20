@@ -1,4 +1,4 @@
-import type { ApiResponse, GetAllOptions } from "../../type";
+import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
 import type { Category, CategoryFormData } from "../../type/category.types";
 import Http from "../http/http";
 
@@ -12,7 +12,7 @@ export const getAllCategory = async (options: GetAllOptions = {}) => {
     searchValue,
     all = false,
   } = options;
-  const res = await Http.get<ApiResponse<Category>>("/api/categories", {
+  const res = await Http.get<ApiResponse<PageResponse<Category>>>("/api/categories", {
     params: { page, size, sort, filter, searchField, searchValue, all },
   })
   return res.data;

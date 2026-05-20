@@ -56,7 +56,7 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
         setRooms(roomResp.data?.content || []);
         setExtras(extraResp.data?.content || []);
-        setRoomTypes(typeResp?.content || []);
+        setRoomTypes(typeResp.data.content || []);
         setInitialized(true); // ✅ đánh dấu đã load xong
       } catch (error) {
         console.error("Init fetch error:", error);

@@ -99,11 +99,11 @@ const UpdateAssetFormModal = ({
         reset({
           id: data?.id?.toString() || "",
           assetName: data.assetName || "",
-          categoryId: data.categoryId || "",
-          price: data.price || 0,
-          quantity: data.quantity || 0,
+          categoryId: String(data.categoryId) || "",
+          price: String(data.price) || "",
+          quantity: String(data.quantity) || "",
           note: data.note || "",
-          roomId: data.roomId || "",
+          roomId: String(data.roomId) || "",
           image: null,
         });
         setPreview(File_URL + data.thumbnail?.url || null);
@@ -139,7 +139,7 @@ const UpdateAssetFormModal = ({
         all: true,
         filter: "isActive==1 and type==3",
       });
-      setCategories(res.content || []);
+      setCategories(res.data.content || []);
     } catch (err) {
       console.log(err);
     }

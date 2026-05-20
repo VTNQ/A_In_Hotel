@@ -100,7 +100,7 @@ const ViewBooking = () => {
 
       setData(res?.content || []);
       setTotalPages(res?.totalPages || 1);
-      setTotalResults(res?.totalElements || res?.totalItems || 0);
+      setTotalResults(res?.totalElements || 0);
       setPage(pageNumber);
     } catch (err: any) {
       console.error("Fetch error:", err);

@@ -117,7 +117,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
         all: true,
         filter: "isActive==1 and type==1",
       });
-      setCategory(res.content || []);
+      setCategory(res.data.content || []);
     } catch (err) {
       console.log(err);
     } finally {

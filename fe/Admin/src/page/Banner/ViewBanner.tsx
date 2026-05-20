@@ -4,10 +4,10 @@ import BannerActionMenu from "../../components/Banner/BannerActionMenu";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import { getBanner } from "../../service/api/Banner";
-import BannerFormModal from "../../components/Banner/BannerFormModal";
 import BannerEditFormModal from "../../components/Banner/BannerEditFormModal";
 import { useTranslation } from "react-i18next";
 import { formatISO } from "date-fns";
+import  BannerFormModal from "../../components/Banner/BannerFormModal";
 
 const ViewBanner = () => {
   const [data, setData] = useState<any[]>([]);
@@ -59,7 +59,7 @@ const ViewBanner = () => {
       const resp = await getBanner(params);
       setData(resp?.data?.content || []);
       setTotalPages(resp?.data?.totalPages || 1);
-      setTotalResults(resp?.data?.totalElements || resp?.data?.totalItems || 0);
+      setTotalResults(resp?.data?.totalElements || 0);
       setPage(pageNumber);
     } catch (err: any) {
       console.error("Fetch error:", err);

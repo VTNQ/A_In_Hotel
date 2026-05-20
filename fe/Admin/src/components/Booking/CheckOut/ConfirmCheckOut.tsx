@@ -42,7 +42,7 @@ const ConfirmCheckOut = ({
     setData(res.data.data);
 
     const usedIds =
-      res.data?.details
+      res.data.data?.details
         ?.map((d: any) => d.extraServiceId)
         .filter((x: any) => x != null) || [];
 

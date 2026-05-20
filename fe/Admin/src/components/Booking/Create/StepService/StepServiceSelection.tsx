@@ -54,7 +54,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           }),
         ]);
 
-        setCategories(categoryResp?.content || []);
+        setCategories(categoryResp.data.content || []);
         setServices(serviceResp.data?.content || []);
       } catch (e) {
         console.error(e);

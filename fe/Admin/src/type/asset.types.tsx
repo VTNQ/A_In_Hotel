@@ -25,6 +25,7 @@ export interface Asset {
   roomNumber:string;
   price:number;
   quantity:number;
+  status:number;
   note:string;
   hotelName:string;
   thumbnail:ImageResponse;
