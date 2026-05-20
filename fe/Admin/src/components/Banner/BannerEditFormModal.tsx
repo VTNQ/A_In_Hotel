@@ -6,7 +6,7 @@ import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import { findById, updateBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
-import type { BannerEditFormModalProps, BannerFormModal } from "../../type/banner.types";
+import type { BannerEditFormModalProps, BannerFormModalProp } from "../../type/banner.types";
 import z from "zod";
 import { createImageBannerSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
@@ -156,7 +156,7 @@ const BannerEditFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      ) as BannerFormModal;
+      ) as BannerFormModalProp;
       await updateBanner(Number(data.id), cleanedData);
       showAlert({
         title: t("banner.createOrUpdate.updateSucess"),
