@@ -3,11 +3,11 @@ export const VOUCHER_TYPE: Record<number, string> = {
   2: "voucher.typeView.percent",
   3: "voucher.typeView.special",
 };
-export const BOOKING_TYPE:Record<number,string> ={
-  1:"bookingDateTime.packageDayUse",
-  2:"bookingDateTime.packageOvernight",
-  3:"bookingDateTime.packageFullDay"
-}
+export const BOOKING_TYPE: Record<number, string> = {
+  1: "bookingDateTime.packageDayUse",
+  2: "bookingDateTime.packageOvernight",
+  3: "bookingDateTime.packageFullDay",
+};
 export interface CreateVoucherModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,9 +16,43 @@ export interface CreateVoucherModalProps {
 export interface UpdateVoucherModalProps extends CreateVoucherModalProps {
   voucherId: number;
 }
+export interface VoucherResponse {
+  id: number;
+  voucherCode: string;
+  voucherName: string;
+  type: number;
+  description: string;
+  value: number;
+  maxDiscountValue: number;
+  bookingType: number;
+  minimumStay: number;
+  customerType: number;
+  usageType: number;
+  usageLimit: number;
+  usagePerCustomer: number;
+  startDate: string;
+  endDate: string;
+  stackWithPromotion: boolean;
+  stackWithOtherVoucher: boolean;
+  priority: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  roomTypes: voucherRoomType[];
+}
 export interface voucherRoomType {
-  roomTypeId:string;
-  excluded:boolean;
+  roomTypeId: string;
+  excluded: boolean;
+}
+export interface validateVoucherRequest{
+  voucherCode:string;
+  totalAmount:number;
+  nights:number;
+  roomTypeIds:number[];
+}
+export interface validateVoucherResponse {
+  discountAmount:number;
+  finalAmount:number;
 }
 export interface ViewVoucherProps {
   isOpen: boolean;
@@ -26,25 +60,24 @@ export interface ViewVoucherProps {
   voucherId: any;
 }
 export interface voucherFormProps {
-  voucherCode:string;
-  voucherName:string;
-  type:string;
-  description:string;
-  value:string;
-  maxDiscountValue:string;
-  bookingType:string;
-  minimumStay:string;
-  customerType:number;
-  usageType:number;
-  usageLimit:string;
-  usagePerCustomer:string;
-  startDate:string;
-  endDate:string;
-  stackWithPromotion:boolean;
-  stackWithOtherVoucher:boolean;
-  priority:string;
-  roomTypes:voucherRoomType[];
-
+  voucherCode: string;
+  voucherName: string;
+  type: string;
+  description: string;
+  value: string;
+  maxDiscountValue: string;
+  bookingType: string;
+  minimumStay: string;
+  customerType: number;
+  usageType: number;
+  usageLimit: string;
+  usagePerCustomer: string;
+  startDate: string;
+  endDate: string;
+  stackWithPromotion: boolean;
+  stackWithOtherVoucher: boolean;
+  priority: string;
+  roomTypes: voucherRoomType[];
 }
 export interface VoucherActionMenuProps {
   voucher: {
@@ -56,28 +89,28 @@ export interface VoucherActionMenuProps {
   onDiabled?: (voucher: any) => void;
 }
 export const CUSTOMER_TYPE = {
-  ALL:0,
+  ALL: 0,
   PERSONAL: 1,
   COMPANY: 2,
   WALKIN: 3,
   ONLINE: 4,
   VIP: 5,
-}
-export const CUSTOMER_TYPE_OPTIONS =[
-  {value:CUSTOMER_TYPE.ALL,labelKey:"common.all"},
-  {value:CUSTOMER_TYPE.PERSONAL,labelKey:"voucher.customerType.personal"},
-  {value:CUSTOMER_TYPE.COMPANY,labelKey:"voucher.customerType.company"},
-  {value:CUSTOMER_TYPE.WALKIN,labelKey:"voucher.customerType.walkin"},
-  {value:CUSTOMER_TYPE.ONLINE,labelKey:"voucher.customerType.online"},
-  {value:CUSTOMER_TYPE.VIP,labelKey:"voucher.customerType.vip"},
-]
+};
+export const CUSTOMER_TYPE_OPTIONS = [
+  { value: CUSTOMER_TYPE.ALL, labelKey: "common.all" },
+  { value: CUSTOMER_TYPE.PERSONAL, labelKey: "voucher.customerType.personal" },
+  { value: CUSTOMER_TYPE.COMPANY, labelKey: "voucher.customerType.company" },
+  { value: CUSTOMER_TYPE.WALKIN, labelKey: "voucher.customerType.walkin" },
+  { value: CUSTOMER_TYPE.ONLINE, labelKey: "voucher.customerType.online" },
+  { value: CUSTOMER_TYPE.VIP, labelKey: "voucher.customerType.vip" },
+];
 
-export const USAGE_TYPE ={
-  ONE_TIME:1,
-  MULTIPLE_TIME:2,
-}
+export const USAGE_TYPE = {
+  ONE_TIME: 1,
+  MULTIPLE_TIME: 2,
+};
 
-export const USAGE_TYPE_OPTIONS =[
-  {value:USAGE_TYPE.ONE_TIME,labelKey:"voucher.usageType.oneTime"},
-  {value:USAGE_TYPE.MULTIPLE_TIME,labelKey:"voucher.usageType.multiTime"},
-]
+export const USAGE_TYPE_OPTIONS = [
+  { value: USAGE_TYPE.ONE_TIME, labelKey: "voucher.usageType.oneTime" },
+  { value: USAGE_TYPE.MULTIPLE_TIME, labelKey: "voucher.usageType.multiTime" },
+];

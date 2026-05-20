@@ -50,7 +50,7 @@ const ViewBlogPage = () => {
       const res = await getAllBlog(params);
       setData(res?.data?.content || []);
       setTotalPages(res?.data?.totalPages || 1);
-      setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
+      setTotalResults(res?.data?.totalElements || 0);
       setPage(pageNumber);
     } catch (err: any) {
       console.error("Fetch error:", err);

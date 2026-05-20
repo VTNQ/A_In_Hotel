@@ -1,4 +1,3 @@
-
 import { useAlert } from "../alert-context";
 import CommonModal from "../ui/CommonModal";
 import { addCategory } from "../../service/api/Category";
@@ -14,15 +13,15 @@ const CategoryFormModal = ({
   onSuccess,
 }: CategoryFormModalProps) => {
   const { t } = useTranslation();
- 
+
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isValid,isSubmitting },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<CategoryFormData>({
-    mode:"onBlur",
+    mode: "onBlur",
     defaultValues: {
       name: "",
       type: "",
@@ -35,14 +34,17 @@ const CategoryFormModal = ({
     try {
       const cleanedData = Object.fromEntries(
         Object.entries({
-          name: data.name,
-          type: data.type,
-          description: data.description,
+          name: data.name?.toString().trim() === "" ? null : data.name,
+          type: data.type?.toString().trim() === "" ? null : data.type,
+          description:
+            data.description?.toString().trim() === ""
+              ? null
+              : data.description,
         }).map(([key, value]) => [
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      );
+      ) as unknown as CategoryFormData;
       const response = await addCategory(cleanedData);
       showAlert({
         title:
@@ -61,7 +63,7 @@ const CategoryFormModal = ({
         type: "error",
         autoClose: 4000,
       });
-    } 
+    }
   };
   const handleCancel = () => {
     reset();
@@ -117,7 +119,7 @@ const CategoryFormModal = ({
             {t("category.type")} *
           </label>
           <select
-           className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 text-sm sm:text-base outline-none"
+            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 text-sm sm:text-base outline-none"
             {...register("type", {
               required: t("category.validate.typeRequired"),
             })}

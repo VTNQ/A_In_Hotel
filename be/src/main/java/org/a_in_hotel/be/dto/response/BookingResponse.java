@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +21,7 @@ import java.util.List;
 public class BookingResponse {
 
     private Long id;
-        private String guestName;
+    private String guestName;
     private String note;
 
     private String surname;

@@ -1,3 +1,5 @@
+import type { ImageResponse } from ".";
+
 export interface BlogFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -6,7 +8,27 @@ export interface BlogFormModalProps {
 export interface UpdateBlogFormModalProps extends BlogFormModalProps {
   blogId: any;
 }
-
+export interface BlogForm{
+  title:string;
+  category:number;
+  description:string;
+  content:string;
+  status:number;
+  image:File;
+}
+export interface BlogResponse{
+  id:number;
+  blogCode:string;
+  title:string;
+  category:string;
+  categoryId:number;
+  content:string;
+  description:string;
+  status:number;
+  createdAt:string;
+  updatedAt:string;
+  image:ImageResponse;
+}
 export interface BlogActionMenuProps {
   blog: {
     status?: number;

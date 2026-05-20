@@ -1,4 +1,5 @@
-import type { GetAllOptions } from "../../type";
+import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
+import type { Banner, BannerFormModal } from "../../type/banner.types";
 import Http from "../http/http";
 
 export const getBanner = async(options:GetAllOptions={})=>{
@@ -11,13 +12,13 @@ export const getBanner = async(options:GetAllOptions={})=>{
         searchValue,
         all = false,
     } = options;
-    const resp = await Http.get("/api/banners/getAll",{
+    const resp = await Http.get<ApiResponse<PageResponse<Banner>>>("/api/banners/getAll",{
         params: { page, size, sort, filter, searchField, searchValue, all },
     });
     return resp.data;
 }
 
-export const updateBanner = async (id: number, bannerData: any) => {
+export const updateBanner = async (id: number, bannerData: BannerFormModal) => {
      const formData = new FormData();
     Object.entries(bannerData).forEach(([key, value]) => {
         if (key !== "image" && value !== undefined && value !== null) {
@@ -32,7 +33,7 @@ export const updateBanner = async (id: number, bannerData: any) => {
     });
 }
 
-export const createBanner = async (bannerData: any) => {
+export const createBanner = async (bannerData: BannerFormModal) => {
      const formData = new FormData();
     Object.entries(bannerData).forEach(([key, value]) => {
         if (key !== "image" && value !== undefined && value !== null) {
@@ -43,11 +44,11 @@ export const createBanner = async (bannerData: any) => {
         formData.append("image", bannerData.image);
     }
 
-    return await Http.post("/api/banners/create", formData, {
+    return await Http.post<ApiResponse<void>>("/api/banners/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
     });
 }
 export const findById = async (id:number)=>{
-    return await Http.get(`/api/banners/${id}`)
+    return await Http.get<ApiResponse<Banner>>(`/api/banners/${id}`)
 
 }

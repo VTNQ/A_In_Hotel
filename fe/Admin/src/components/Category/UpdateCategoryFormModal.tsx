@@ -75,7 +75,7 @@ const UpdateCategoryFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      );
+      ) as unknown as CategoryFormData;
 
       const response = await updateCategory(Number(data.id), cleanedData);
       const message =

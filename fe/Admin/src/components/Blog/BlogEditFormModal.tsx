@@ -6,7 +6,7 @@ import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useTranslation } from "react-i18next";
-import type { UpdateBlogFormModalProps } from "../../type/blog.types";
+import type { BlogForm, UpdateBlogFormModalProps } from "../../type/blog.types";
 import z from "zod";
 import { createImageBlogSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
@@ -190,7 +190,7 @@ const BlogEditFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      );
+      ) as BlogForm;
       await updateBlog(Number(data.id), cleanedData);
       const message = t("blog.createOrUpdate.updateSucess");
       showAlert({

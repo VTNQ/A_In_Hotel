@@ -6,7 +6,7 @@ import { getAllCategory } from "../../service/api/Category";
 import { getAllRoom } from "../../service/api/Room";
 import { getTokens } from "../../util/auth";
 import { useTranslation } from "react-i18next";
-import type { AssetFormModalProps } from "../../type/asset.types";
+import type { AssetForm, AssetFormModalProps } from "../../type/asset.types";
 import z from "zod";
 import { createImageAssetSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
@@ -128,7 +128,7 @@ const AssetFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      );
+      ) as AssetForm;
       const response = await createAsset(cleanedData);
       showAlert({
         title:

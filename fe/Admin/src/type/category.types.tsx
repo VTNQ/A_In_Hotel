@@ -4,17 +4,22 @@ export interface CategoryFormModalProps {
   onSuccess: () => void;
 }
 export interface UpdateCategoryFormModalProps extends CategoryFormModalProps {
-  categoryId: any; 
+  categoryId: any;
 }
 export interface Category {
-  id?: number;
-  name?: string;
-  description?: string;
-  isActive?: boolean;
-  [key: string]: any;
+  id: number;
+  name: string;
+  type: string;
+  capacity: number;
+  idType: number;
+  code:string;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 export interface CategoryFormData {
-  id?:string;
+  id?: string;
   name: string;
   type: string;
   description: string;

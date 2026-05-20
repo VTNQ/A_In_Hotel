@@ -50,7 +50,7 @@ const ViewVoucherPage = () => {
     const resp = await getVouchers(params);
     setData(resp.data?.content || []);
     setTotalPages(resp?.data?.totalPages || 1);
-    setTotalResults(resp?.data?.totalElements || resp?.data?.totalItems || 0);
+    setTotalResults(resp?.data?.totalElements || 0);
     setPage(pageNumber);
   };
   const loadVouchers = async (page = 1) => {
