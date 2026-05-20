@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type {
+  checkOutRequest,
   ConfirmCheckOutProps,
   ExtraCharge,
 } from "../../../type/booking.types";
@@ -109,7 +110,7 @@ const ConfirmCheckOut = ({
           serviceName: c.name,
           price: c.price,
         })),
-      };
+      }as checkOutRequest;
       const response = await handleCheckOut(data.id, payload);
       showAlert({
         title:

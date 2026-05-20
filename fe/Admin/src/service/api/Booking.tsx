@@ -1,5 +1,5 @@
 import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
-import type { bookingListTopResponse, bookingResponse } from "../../type/booking.types";
+import type { bookingListTopResponse, bookingRequest, bookingResponse, checkOutRequest, SwitchRoomRequest } from "../../type/booking.types";
 import Http from "../http/http";
 
 export const GetAllBookings = async(options:GetAllOptions={})=>{
@@ -33,7 +33,7 @@ export const GetAllBookingTop = async(options:GetAllOptions={})=>{
     return resp.data.data;
 }
 
-export const createBooking =async(booking:any)=>{
+export const createBooking =async(booking:bookingRequest)=>{
     return await Http.post("/api/bookings",booking);
 
 }
@@ -50,12 +50,12 @@ export const handleCheckIn =async(id:number)=>{
     return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/check-in`)
 }
 
-export const handleCheckOut =async(id:number,data:any)=>{
+export const handleCheckOut =async(id:number,data:checkOutRequest)=>{
     return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/check-out`,data)
 
 }
 
-export const handleSwitchRoom = async (id: number, data: any) =>{
+export const handleSwitchRoom = async (id: number, data: SwitchRoomRequest) =>{
     return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/switch-room`, data);
 
 }
