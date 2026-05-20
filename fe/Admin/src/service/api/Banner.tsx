@@ -1,5 +1,5 @@
 import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
-import type { Banner, BannerFormModal } from "../../type/banner.types";
+import type { Banner, BannerFormModalProp } from "../../type/banner.types";
 import Http from "../http/http";
 
 export const getBanner = async(options:GetAllOptions={})=>{
@@ -18,7 +18,7 @@ export const getBanner = async(options:GetAllOptions={})=>{
     return resp.data;
 }
 
-export const updateBanner = async (id: number, bannerData: BannerFormModal) => {
+export const updateBanner = async (id: number, bannerData: BannerFormModalProp) => {
      const formData = new FormData();
     Object.entries(bannerData).forEach(([key, value]) => {
         if (key !== "image" && value !== undefined && value !== null) {
@@ -33,7 +33,7 @@ export const updateBanner = async (id: number, bannerData: BannerFormModal) => {
     });
 }
 
-export const createBanner = async (bannerData: BannerFormModal) => {
+export const createBanner = async (bannerData: BannerFormModalProp) => {
      const formData = new FormData();
     Object.entries(bannerData).forEach(([key, value]) => {
         if (key !== "image" && value !== undefined && value !== null) {
