@@ -3,6 +3,7 @@ import {
   CUSTOMER_TYPE_OPTIONS,
   USAGE_TYPE_OPTIONS,
   type UpdateVoucherModalProps,
+  type voucherFormProps,
 } from "../../type/voucher.types";
 import { getAllCategory } from "../../service/api/Category";
 import { getVoucherById, updateVoucher } from "../../service/api/Voucher";
@@ -340,25 +341,25 @@ const UpdateVoucher = ({
     if (saving) return;
     try {
       setSaving(true);
-      const payload = {
+      const payload:voucherFormProps = {
         voucherCode: data.voucherCode,
         voucherName: data.voucherName,
         type: data.type,
-        description: data.description,
+        description: data.description || "",
         value: data.value,
-        maxDiscountValue: isPercent ? data.maxDiscountValue : "",
+        maxDiscountValue: isPercent ? data.maxDiscountValue || "" : "",
         bookingType: data.bookingType,
         minimumStay: data.minimumStay,
         customerType: data.customerType,
         usageType: data.usageType,
         usageLimit: data.usageLimit,
         usagePerCustomer:
-          data.usagePerCustomer == "" ? null : data.usagePerCustomer,
+          data.usagePerCustomer == null ? "" : data.usagePerCustomer,
         startDate: data.startDate,
         endDate: data.endDate,
         stackWithPromotion: data.stackWithPromotion,
         stackWithOtherVoucher: data.stackWithOtherVoucher,
-        priority: data.priority,
+        priority: data.priority || "",
         roomTypes: data.roomTypes.map((r) => ({
           roomTypeId: r.roomTypeId,
           excluded: r.excluded,

@@ -2,6 +2,7 @@ import { Info, Rocket, Tag, Users, X } from "lucide-react";
 import {
   TABS,
   type CreatePromotionModalProps,
+  type PromotionForm,
   type TabType,
 } from "../../../type/promotion.types";
 import { useState } from "react";
@@ -48,7 +49,7 @@ const CreatePromotion = ({
 
       roomTypes: z.array(
         z.object({
-          id: z.any(),
+          id: z.number(),
           excluded: z.boolean(),
         }),
       ),
@@ -161,19 +162,20 @@ const CreatePromotion = ({
   const onSubmit = async (data: FormData) => {
     try {
       setLoading(true);
-      const payload = {
+      const payload: PromotionForm = {
         name: data.name,
-        description: data.description,
+        description: data.description || "",
         type: formData.type,
         value: formData.value,
         priority: formData.priority,
-        startDate: formData.startDate || null,
-        endDate: formData.endDate || null,
+        startDate: formData.startDate || "",
+        endDate: formData.endDate || "",
         bookingType: formData.bookingType,
         customerType: formData.customerType,
         minNights: formData.minNights,
+
         promotionRoomTypeRequests: formData.roomTypes.map((r) => ({
-          roomTypeId: r.id,
+          id: r.id,
           excluded: r.excluded,
         })),
       };

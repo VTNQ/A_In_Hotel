@@ -6,7 +6,7 @@ import {
 } from "../../service/api/Promotion";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
-import { PROMOTION_TYPE_I18N } from "../../type/promotion.types";
+import { PROMOTION_TYPE_I18N, type PromotionResponse } from "../../type/promotion.types";
 import CreatePromotion from "../../components/Promotion/Create/CreatePromotion";
 import PromotionActionMenu from "../../components/Promotion/PromotionActionMenu";
 import UpdatePromotion from "../../components/Promotion/UpdatePromotion";
@@ -14,7 +14,7 @@ import { useAlert } from "../../components/alert-context";
 import ViewPromotionModal from "../../components/Promotion/ViewPromotionModal";
 
 const ViewPromotion = () => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<PromotionResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -26,7 +26,7 @@ const ViewPromotion = () => {
   const [showViewModal,setShowViewModal] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [selectedService, setSelectedService] = useState<any | null>(null);
+  const [selectedService, setSelectedService] = useState<number | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,15 +58,15 @@ const ViewPromotion = () => {
 
     setData(res.data?.content || []);
     setTotalPages(res?.data?.totalPages || 1);
-    setTotalResults(res?.data?.totalElements || res?.data?.totalItems || 0);
+    setTotalResults(res?.data?.totalElements || 0);
     setPage(pageNumber);
   };
-  const handleView = (row:any)=>{
+  const handleView = (row:PromotionResponse)=>{
     setSelectedService(row.id);
     setShowViewModal(true);
   }
 
-  const handleEdit = (row: any) => {
+  const handleEdit = (row: PromotionResponse) => {
     setSelectedService(row.id);
     setShowUpdateModal(true);
   };
@@ -127,7 +127,7 @@ const ViewPromotion = () => {
     {
       key: "status",
       label: t("common.status"),
-      render: (row: any) => (
+      render: (row: PromotionResponse) => (
         <div
           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium
                   ${row.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
@@ -148,12 +148,12 @@ const ViewPromotion = () => {
     {
       key: "createdBy",
       label: t("promotion.createdBy"),
-      render: (value: any) => value.createdBy ?? t("common.none"),
+      render: (value: PromotionResponse) => value.createdBy ?? t("common.none"),
     },
     {
       key: "action",
       label: t("common.action"),
-      render: (row: any) => (
+      render: (row: PromotionResponse) => (
         <PromotionActionMenu
           promotion={row}
           onDiabled={() => handleUpdateStatusPromotion(row.id, false)}
@@ -232,7 +232,7 @@ const ViewPromotion = () => {
         isOpen={showUpdateModal}
         onClose={() => setShowUpdateModal(false)}
         onSuccess={() => fetchData()}
-        promotionId={selectedService}
+        promotionId={selectedService!}
       />
       <ViewPromotionModal
         isOpen={showViewModal}

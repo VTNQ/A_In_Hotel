@@ -3,6 +3,7 @@ import {
   CUSTOMER_TYPE_OPTIONS,
   USAGE_TYPE_OPTIONS,
   type CreateVoucherModalProps,
+  type voucherFormProps,
 } from "../../type/voucher.types";
 import CommonModal from "../ui/CommonModal";
 import { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ const CreateVoucher = ({
 
       roomTypes: z.array(
         z.object({
-          roomTypeId: z.any(),
+          roomTypeId: z.number(),
           excluded: z.boolean(),
         }),
       ),
@@ -255,7 +256,7 @@ const CreateVoucher = ({
     setValue(
       "roomTypes",
       currentRoomTypes.map((r) =>
-        r.roomTypeId === roomTypeId ? { ...r, excluded: !r.excluded } : r,
+        r.roomTypeId === Number(roomTypeId) ? { ...r, excluded: !r.excluded } : r,
       ),
       {
         shouldValidate: true,
@@ -303,27 +304,27 @@ const CreateVoucher = ({
   const isPercent = watch("type") === "2";
   const onSubmit = async (data: VoucherFormData) => {
     try {
-      const payload = {
+      const payload: voucherFormProps = {
         voucherCode: data.voucherCode,
         voucherName: data.voucherName,
         type: data.type,
-        description: data.description,
+        description: data.description || "",
         value: data.value,
-        maxDiscountValue: isPercent ? data.maxDiscountValue : "",
+        maxDiscountValue: isPercent ? data.maxDiscountValue || "" : "",
         bookingType: data.bookingType,
         minimumStay: data.minimumStay,
         customerType: data.customerType,
         usageType: data.usageType,
         usageLimit: data.usageLimit,
         usagePerCustomer:
-          data.usagePerCustomer == "" ? null : data.usagePerCustomer,
+          data.usagePerCustomer == null ? "" : data.usagePerCustomer,
         startDate: data.startDate,
         endDate: data.endDate,
         stackWithPromotion: data.stackWithPromotion,
         stackWithOtherVoucher: data.stackWithOtherVoucher,
-        priority: data.priority,
+        priority: data.priority || "",
         roomTypes: data.roomTypes.map((r) => ({
-          roomTypeId: r.roomTypeId,
+          roomTypeId: String(r.roomTypeId),
           excluded: r.excluded,
         })),
       };
@@ -476,7 +477,7 @@ const CreateVoucher = ({
                       {...register("endDate")}
                       className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
                     />
-                     {errors.endDate && (
+                    {errors.endDate && (
                       <span className="text-red-500">
                         {errors.endDate.message}
                       </span>

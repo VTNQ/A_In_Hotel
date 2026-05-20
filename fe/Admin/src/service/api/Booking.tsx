@@ -1,4 +1,5 @@
-import type { GetAllOptions } from "../../type";
+import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
+import type { bookingListTopResponse, bookingResponse } from "../../type/booking.types";
 import Http from "../http/http";
 
 export const GetAllBookings = async(options:GetAllOptions={})=>{
@@ -11,7 +12,7 @@ export const GetAllBookings = async(options:GetAllOptions={})=>{
         searchValue,
         all = false,
     } = options;
-    const resp= await Http.get("/api/bookings",{
+    const resp= await Http.get<ApiResponse<PageResponse<bookingResponse>>>("/api/bookings",{
         params: { page, size, sort, filter, searchField, searchValue, all },
     });
     return resp.data.data;
@@ -26,7 +27,7 @@ export const GetAllBookingTop = async(options:GetAllOptions={})=>{
         searchValue,
         all = false,
     } = options;
-    const resp= await Http.get("/api/bookings/top",{
+    const resp= await Http.get<ApiResponse<PageResponse<bookingListTopResponse>>>("/api/bookings/top",{
         params: { page, size, sort, filter, searchField, searchValue, all },
     });
     return resp.data.data;
@@ -38,27 +39,27 @@ export const createBooking =async(booking:any)=>{
 }
 
 export const GetBookingById =async(id:number)=>{
-    return await Http.get(`/api/bookings/${id}`);
+    return await Http.get<ApiResponse<bookingResponse>>(`/api/bookings/${id}`);
 }
 
 export const findByIdAndDetailsActiveTrue = async(id:number)=>{
-    return await Http.get(`/api/bookings/${id}/active-details`);
+    return await Http.get<ApiResponse<void>>(`/api/bookings/${id}/active-details`);
 }
 
 export const handleCheckIn =async(id:number)=>{
-    return await Http.patch(`/api/bookings/${id}/check-in`)
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/check-in`)
 }
 
 export const handleCheckOut =async(id:number,data:any)=>{
-    return await Http.patch(`/api/bookings/${id}/check-out`,data)
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/check-out`,data)
 
 }
 
 export const handleSwitchRoom = async (id: number, data: any) =>{
-    return await Http.patch(`/api/bookings/${id}/switch-room`, data);
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/switch-room`, data);
 
 }
 
 export const cancelBooking = async (id:number)=>{
-    return await Http.patch(`/api/bookings/${id}/cancel`)
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/cancel`)
 }

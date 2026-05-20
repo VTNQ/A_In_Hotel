@@ -1,6 +1,76 @@
 import type { ImageResponse } from ".";
+import type { ExtraService } from "./extraService.types";
 import type { Room } from "./room.types";
-
+export interface Payment {
+  paidAmount: number;
+  paymentMethod: string;
+  paymentType: number;
+  notes: string;
+}
+export interface bookingListTopResponse{
+  bookingCode:string;
+  guestName:string;
+  roomType:string;
+  checkInDate:string;
+  roomNumber:string;
+  checkInTime:string;
+  checkOutDate:string;
+  checkOutTime:string;
+  status:number;
+}
+export interface bookingResponse {
+  id: number;
+  guestName: string;
+  note: string;
+  surname: string;
+  code: string;
+  idNumber: string;
+  email: string;
+  hotelId: number;
+  phoneNumber: string;
+  guestType: number;
+  numberOfGuests: number;
+  checkInDate: string;
+  checkOutDate: string;
+  checkInTime: string;
+  checkOutTime: string;
+  BookingPackage: number;
+  status: number;
+  checkedInAt: string;
+  checkedOutAt:string;
+  payment:Payment[],
+  totalPrice:number;
+  createdAt:number;
+  updatedAt:number;
+  details:BookingDetailResponse[];
+  roomSwitchHistories:RoomSwitchHistory[];
+}
+export interface RoomSwitchHistory{
+  id:number;
+  fromRoomNumber:string;
+  fromRoomName:string;
+  fromRoomTypeName:string;
+  toRoomNumber:string;
+  toRoomName:string;
+  toRoomTypeName:string;
+  reason:string;
+  additionalPrice:number;
+  switchedAt:string;
+  
+}
+export interface BookingDetailResponse {
+  id:number;
+  bookingId:number;
+  roomId:number;
+  roomCode:string;
+  roomName:string;
+  roomNumber:string;
+  roomType:string;
+  extraServiceName:string;
+  specialRequests:string;
+  extraServiceId:number;
+  price:number;
+}
 export interface Booking {
   step: number;
   guest: {
@@ -14,9 +84,9 @@ export interface Booking {
     days?: number;
     package?: string;
   };
-  services: any[];
-  rooms: any[];
-  payment: any;
+  services: ExtraService[];
+  rooms: Room[];
+  payment: Payment | null;
 }
 export interface CalendarRangeProps {
   value: {
@@ -68,29 +138,7 @@ export const PACKAGE_TIME_MAP: Record<
     checkOut: "12:00",
   },
 };
-export interface bookingResponse {
-  guest: {
-    name: string;
-    adults: number;
-    notes?: string;
-  };
-  rooms: {
-    id: string | number;
-    name: string;
-    type: string;
-  }[];
-  date: {
-    checkIn: string;
-    checkOut: string;
-    nights: number;
-  };
-  payment: {
-    total: number;
-    paid: number;
-    outstanding: number;
-    currency?: string;
-  };
-}
+
 export interface CheckInBookingResponse {
   open: boolean;
   id: number;

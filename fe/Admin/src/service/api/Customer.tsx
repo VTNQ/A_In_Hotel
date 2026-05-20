@@ -1,4 +1,5 @@
-import type { GetAllOptions } from "../../type";
+import type { ApiResponse, GetAllOptions, PageResponse } from "../../type";
+import type { BookingSummaryResponse, Customer, CustomerDetail } from "../../type/customer.types";
 import Http from "../http/http";
 
 export const getCustomer = async(options:GetAllOptions={})=>{
@@ -12,21 +13,21 @@ export const getCustomer = async(options:GetAllOptions={})=>{
         searchValue,
         all = false,
     } = options;
-    const resp = await Http.get("/api/customers/my-hotel",{
+    const resp = await Http.get<ApiResponse<PageResponse<Customer>>>("/api/customers/my-hotel",{
         params: { page, size, sort, filter, searchField, searchValue, all,hotelId},
     });
     return resp.data?.data;
 }
 export const updateStatus=async(id:number,status:boolean)=>{
-    return await Http.patch(`/api/customers/${id}/status?status=${status}`)
+    return await Http.patch<ApiResponse<void>>(`/api/customers/${id}/status?status=${status}`)
 
 }
 export const getCustomerDetail = async(id:number)=>{
-    const resp = await Http.get(`/api/customers/${id}`);
+    const resp = await Http.get<ApiResponse<CustomerDetail>>(`/api/customers/${id}`);
     return resp.data;
 
 }
 export const BookingSummary = async(customerId:number)=>{
-    const resp = await Http.get(`/api/customers/summary?customerId=${customerId}`);
+    const resp = await Http.get<ApiResponse<BookingSummaryResponse>>(`/api/customers/summary?customerId=${customerId}`);
     return resp.data;
 }

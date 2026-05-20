@@ -15,7 +15,19 @@ export interface InputProps
   error?: string;
   className?: string;
 }
-
+export interface ApiResponse<T>{
+  data: T;
+  message?: string;
+  status?: number;
+}
+export interface PageResponse<T>{
+  content:T[];
+  pageNumber:number;
+  pageSize:number;
+  totalElements:number;
+  totalPages:number;
+  last:boolean;
+}
 export interface ConfirmLogoutModalProps {
   open: boolean;
   onCancel: () => void;

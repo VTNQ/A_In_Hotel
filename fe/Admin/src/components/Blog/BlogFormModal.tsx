@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import BlotFormatter from "quill-blot-formatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 Quill.register("modules/blotFormatter", BlotFormatter);
-import type { BlogFormModalProps } from "../../type/blog.types";
+import type { BlogForm, BlogFormModalProps } from "../../type/blog.types";
 import z from "zod";
 import { createImageBlogSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
@@ -143,7 +143,7 @@ const BlogFormModal = ({ isOpen, onClose, onSuccess }: BlogFormModalProps) => {
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      );
+      )as BlogForm;
       await createBlog(cleanedData);
 
       showAlert({

@@ -13,7 +13,7 @@ const DEFAULT: BookingWithTime = {
   guest: {},
   selectDate: {},
   rooms: [],
-  payment: {},
+  payment: null,
   services: [],
   updatedAt: Date.now(),
 };

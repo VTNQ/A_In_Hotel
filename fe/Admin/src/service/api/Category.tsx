@@ -1,4 +1,5 @@
-import type { GetAllOptions } from "../../type";
+import type { ApiResponse, GetAllOptions } from "../../type";
+import type { Category, CategoryFormData } from "../../type/category.types";
 import Http from "../http/http";
 
 export const getAllCategory = async (options: GetAllOptions = {}) => {
@@ -11,20 +12,20 @@ export const getAllCategory = async (options: GetAllOptions = {}) => {
     searchValue,
     all = false,
   } = options;
-  const res = await Http.get("/api/categories", {
+  const res = await Http.get<ApiResponse<Category>>("/api/categories", {
     params: { page, size, sort, filter, searchField, searchValue, all },
   })
   return res.data;
 }
-export const addCategory = async (categoryData: any) => {
-  return await Http.post('/api/categories', categoryData);
+export const addCategory = async (categoryData: CategoryFormData) => {
+  return await Http.post<ApiResponse<void>>('/api/categories', categoryData);
 }
-export const updateCategory = async (id: number, categoryData: any) => {
-  return await Http.put(`/api/categories/${id}`, categoryData);
+export const updateCategory = async (id: number, categoryData: CategoryFormData) => {
+  return await Http.put<ApiResponse<void>>(`/api/categories/${id}`, categoryData);
 }
 export const updateStatus = async (id: number, status: boolean) => {
   return await Http.patch(`/api/categories/updateStatus/${id}?status=${status}`)
 }
 export const findById =async(id:number)=>{
-  return await Http.get(`/api/categories/${id}`)
+  return await Http.get<ApiResponse<Category>>(`/api/categories/${id}`)
 }

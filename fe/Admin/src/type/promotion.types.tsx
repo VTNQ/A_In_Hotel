@@ -29,16 +29,38 @@ export interface PromotionForm {
   minNights: string;
   customerType: string;
 
-  roomTypes: RoomTypes[];
+  promotionRoomTypeRequests: RoomTypes[];
+}
+export interface PromotionResponse {
+  id: number;
+  name:string;
+  type:number;
+  value:number;
+  description:string;
+  code:string;
+  priority:number;
+  startDate:string;
+  endDate:string;
+  isActive:boolean;
+  bookingType:number;
+  minNights:number;
+  customerType:number;
+  promotionRoomTypeResponses:PromotionRoomTypeResponse[];
+  createdAt:string;
+  updatedAt:string;
+  createdBy:string;
+  updatedBy:string;
+}
+export interface PromotionRoomTypeResponse {
+  roomTypeId:number;
+  roomTypeName:string;
+  excluded:boolean;
 }
 export interface PromotionActionMenuProps {
-  promotion: {
-    isActive?: boolean;
-    [key: string]: any;
-  };
-  onView?: (promotion: any) => void;
-  onEdit?: (promotion: any) => void;
-  onDiabled?: (promotion: any) => void;
+  promotion: PromotionResponse;
+  onView?: (promotion: PromotionResponse) => void;
+  onEdit?: (promotion: PromotionResponse) => void;
+  onDiabled?: (promotion: PromotionResponse) => void;
 }
 
 export interface CreateOrUpdateTabProps {
