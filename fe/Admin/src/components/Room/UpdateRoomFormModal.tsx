@@ -146,7 +146,7 @@ const UpdateRoomFormModal = ({
           findById(roomId),
         ]);
 
-        setCategories(catRes.content || []);
+        setCategories(catRes.data.content || []);
 
         const room = roomRes?.data?.data;
 

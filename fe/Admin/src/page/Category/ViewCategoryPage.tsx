@@ -54,9 +54,9 @@ const ViewCategoryPage = () => {
                 size: 10, searchValue: searchValue, ...(filterQuery ? { filter: filterQuery } : {})
             }
             const res = await getAllCategory(params);
-            setData(res?.content || []);
-            setTotalPages(res?.totalPages || 1);
-            setTotalResults(res?.totalElements || res?.totalItems || 0);
+            setData(res?.data.content || []);
+            setTotalPages(res?.data.totalPages || 1);
+            setTotalResults( res?.data.totalElements || 0);
             setPage(pageNumber);
         } catch (err: any) {
             console.error("Fetch error:", err);

@@ -31,7 +31,7 @@ public class BookingController {
         return ResponseEntity.ok(RequestResponse.success("Booking created successfully"));
     }
     @GetMapping("/top")
-    public ResponseEntity<RequestResponse<Page<BookingListTopResponse>>> getBookingTop(
+    public ResponseEntity<RequestResponse<PageResponse<BookingListTopResponse>>> getBookingTop(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String sort,
@@ -52,7 +52,7 @@ public class BookingController {
                             all
                     );
 
-            return ResponseEntity.ok(RequestResponse.success(result));
+            return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(result)));
 
 
     }

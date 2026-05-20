@@ -24,7 +24,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
           filter: "isActive==1 and type==1",
         });
 
-        const data = response.content || [];
+        const data = response.data.content || [];
 
         setCategories(data);
 

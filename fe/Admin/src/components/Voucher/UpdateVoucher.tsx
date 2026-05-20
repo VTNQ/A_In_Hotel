@@ -230,7 +230,7 @@ const UpdateVoucher = ({
           all: true,
           filter: "isActive==1 and type==1",
         });
-        const categories = categoryRes.content || [];
+        const categories = categoryRes.data.content || [];
         setRoomTypes(categories);
 
         // 2. Load voucher detail

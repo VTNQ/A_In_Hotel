@@ -37,7 +37,7 @@ const ViewRoomPage = () => {
         all: true,
         filter: "isActive==1 and type==1",
       });
-      setCategories(res.content || []);
+      setCategories(res.data.content || []);
     } catch (err) {
       console.log(err);
     }

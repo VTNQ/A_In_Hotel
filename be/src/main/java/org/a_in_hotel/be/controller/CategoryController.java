@@ -2,6 +2,7 @@ package org.a_in_hotel.be.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.a_in_hotel.be.dto.PageResponse;
 import org.a_in_hotel.be.dto.request.CategoryDTO;
 import org.a_in_hotel.be.dto.response.CategoryResponse;
 import org.a_in_hotel.be.dto.response.RequestResponse;
@@ -65,7 +66,7 @@ public class CategoryController {
 
     // 👉 Search categories
     @GetMapping
-    public ResponseEntity<Page<CategoryResponse>> search(
+    public ResponseEntity<PageResponse<CategoryResponse>> search(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id,desc") String sort,
@@ -74,7 +75,7 @@ public class CategoryController {
             @RequestParam(required = false) String searchValue,
             @RequestParam(required = false) boolean all
     ) {
-        return ResponseEntity.ok(categoryService.search(page, size, sort, filter, searchField, searchValue, all));
+        return ResponseEntity.ok(new PageResponse<>(categoryService.search(page, size, sort, filter, searchField, searchValue, all)));
     }
 }
 

@@ -5,7 +5,7 @@ import QuillEditor, { Quill } from "react-quill-new";
 import DateTimePicker from "../ui/DateTimePicker";
 import { createBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
-import type { BannerFormModal, BannerFormModalProps } from "../../type/banner.types";
+import type {  BannerFormModalProp, BannerFormModalProps } from "../../type/banner.types";
 
 import BlotFormatter from "quill-blot-formatter";
 import z from "zod";
@@ -140,7 +140,7 @@ const BannerFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      )as BannerFormModal;
+      )as BannerFormModalProp;
       await createBanner(cleanedData);
       showAlert({
         title: t("banner.createOrUpdate.createSucess"),

@@ -26,7 +26,7 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
           getAllCategory({ all: true, filter: "isActive==1 and type==1" }),
         ]);
         setVoucher(voucherRes?.data?.data);
-        setRoomTypes(categoryRes.content || []);
+        setRoomTypes(categoryRes.data.content || []);
       } catch (err: any) {
         showAlert({
           title: err?.response?.data?.message || "Load voucher failed",

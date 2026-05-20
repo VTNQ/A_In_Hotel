@@ -73,7 +73,7 @@ const AssetFormModal = ({
         all: true,
         filter: "isActive==1 and type==3",
       });
-      setCategories(res.content || []);
+      setCategories(res.data.content || []);
     } catch (err) {
       console.log(err);
     } finally {

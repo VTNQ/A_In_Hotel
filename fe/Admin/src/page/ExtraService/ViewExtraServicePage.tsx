@@ -70,7 +70,7 @@ const ViewExtraServicePage = () => {
         all: true,
         filter: "isActive==1 and type==2"
       });
-      setCategory(res.content || []);
+      setCategory(res.data.content || []);
     } catch (err) {
       console.error("Fetch error:", err);
       setError(t("extraService.errorLoad"));

@@ -121,7 +121,7 @@ const UpdateExtraServiceFormModal = ({
         all: true,
         filter: "isActive==1 and type==2",
       });
-      setCategories(res.content || []);
+      setCategories(res.data.content || []);
     } catch (err) {
       console.log(err);
     }

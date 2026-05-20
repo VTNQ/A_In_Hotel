@@ -227,7 +227,7 @@ const CreateVoucher = ({
           filter: "isActive==1 and type==1",
         });
 
-        const data = response.content || [];
+        const data = response.data.content || [];
         setRoomTypes(data);
         setValue(
           "roomTypes",

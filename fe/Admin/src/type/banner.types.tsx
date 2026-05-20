@@ -5,7 +5,7 @@ export interface BannerFormModalProps {
   onClose: () => void;
   onSuccess: () => void;
 }
-export interface BannerFormModal {
+export interface BannerFormModalProp {
   name: string;
   startAt: string;
   endAt: string;
