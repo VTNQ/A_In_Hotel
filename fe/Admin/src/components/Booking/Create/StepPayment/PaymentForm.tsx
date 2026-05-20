@@ -5,6 +5,7 @@ import { useAlert } from "../../../alert-context";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { validateVoucher } from "../../../../service/api/Voucher";
+import type { bookingRequest } from "../../../../type/booking.types";
 
 const PaymentForm = ({
   booking,
@@ -65,7 +66,7 @@ const PaymentForm = ({
   // 🔹 OUTSTANDING = TOTAL - PAID
   const outstanding = Math.max(0, Number(finalTotal) - paidAmount);
 
-  const buildBookingPayload = (booking: any) => {
+  const buildBookingPayload = (booking: any):bookingRequest => {
     const nights = booking.selectDate?.nights || 0;
 
     // ===== ROOM DETAILS =====
@@ -130,7 +131,7 @@ const PaymentForm = ({
       checkOutTime: booking.selectDate?.checkOutTime,
 
       // ===== PACKAGE =====
-      bookingPackage: booking.selectDate?.package,
+      BookingPackage: booking.selectDate?.package,
 
       // ===== TOTAL =====
       totalPrice: Math.max(0, originalTotal - discount),
@@ -144,7 +145,7 @@ const PaymentForm = ({
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const payload = buildBookingPayload(booking);
+      const payload = buildBookingPayload(booking) as bookingRequest;
       const response = await createBooking(payload);
       showAlert({
         title: response?.data?.message || "Booking created successfully.",

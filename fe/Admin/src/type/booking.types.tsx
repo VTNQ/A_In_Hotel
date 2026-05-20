@@ -58,6 +58,33 @@ export interface RoomSwitchHistory{
   switchedAt:string;
   
 }
+export interface bookingRequest{
+  guestName:string;
+  surname:string;
+  idNumber:string;
+  email:string;
+  phoneNumber:string;
+  guestType:number;
+  numberOfGuests:number;
+  checkInDate:string;
+  totalPrice:number;
+  checkInTime:string;
+  checkOutDate:string;
+  checkOutTime:string;
+  BookingPackage:number;
+  originalAmount:number;
+  discountAmount:number;
+  voucherCode?:string;
+  note:string;
+  bookingDetail:BookingDetailRequest[];
+  payment:Payment;
+}
+export interface BookingDetailRequest{
+  roomId?:number;
+  specialRequest:string;
+  extraServiceId?:number;
+  price:number;
+}
 export interface BookingDetailResponse {
   id:number;
   bookingId:number;
@@ -87,6 +114,24 @@ export interface Booking {
   services: ExtraService[];
   rooms: Room[];
   payment: Payment | null;
+}
+export interface checkOutRequest{
+  extraCharges:CheckOutExtraServiceRequest[];
+  paidAmount:number;
+
+}
+export interface SwitchRoomRequest{
+  items:RoomSwitchItemRequest[];
+}
+export interface RoomSwitchItemRequest{
+  bookingDetailId:number;
+  newRoomId:number;
+  reason:string;
+}
+export interface CheckOutExtraServiceRequest{
+  extraServiceId:number;
+  serviceName:string;
+  price:number;
 }
 export interface CalendarRangeProps {
   value: {
