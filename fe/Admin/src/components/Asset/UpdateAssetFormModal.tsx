@@ -92,8 +92,7 @@ const UpdateAssetFormModal = ({
     const fetchData = async () => {
       try {
         setLoading(true);
-        await fetchCategories();
-        await fetchRooms();
+        await Promise.all([fetchCategories(), fetchRooms()]);
         const res = await findById(assetId);
         const data = res?.data?.data;
         reset({
@@ -106,7 +105,7 @@ const UpdateAssetFormModal = ({
           roomId: String(data.roomId) || "",
           image: null,
         });
-        setPreview(File_URL + data.thumbnail?.url || null);
+        setPreview(data.thumbnail?.url ?File_URL +data.thumbnail?.url  : null);
       } catch (error) {
         showAlert({
           title: t("asset.loadError"),
@@ -146,7 +145,7 @@ const UpdateAssetFormModal = ({
   };
   const fetchRooms = async () => {
     try {
-      setLoading(true);
+    
       let filters: string[] = [];
       filters.push(`hotel.id==${getTokens()?.hotelId}`);
       const filterQuery = filters.join(" and ");
@@ -158,8 +157,6 @@ const UpdateAssetFormModal = ({
       setRooms(res.data.content || []);
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false);
     }
   };
 
