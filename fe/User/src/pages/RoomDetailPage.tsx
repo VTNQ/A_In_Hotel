@@ -1,4 +1,4 @@
-import { Baby, BedDouble, Calendar, Minus, Plus, User } from "lucide-react";
+import { Baby, Calendar, Minus, Plus, User } from "lucide-react";
 import RoomCard from "../components/RoomDetail/RoomCard";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,6 @@ import { useBookingSearch } from "../context/booking/BookingSearchContext";
 import type { PriceType } from "../type/booking.types";
 import RoomCardSkeleton from "../components/RoomDetail/RoomCardSkeleton";
 import RoomGallerySkeleton from "../components/RoomDetail/RoomGallerySkeleton";
-import RoomHeaderSkeleton from "../components/RoomDetail/RoomHeaderSkeleton";
 import AmenitiesSkeleton from "../components/RoomDetail/AmenitiesSkeleton";
 import BookingBoxSkeleton from "../components/RoomDetail/BookingBoxSkeleton";
 import { useTranslation } from "react-i18next";

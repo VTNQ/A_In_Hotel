@@ -1,5 +1,4 @@
 import type { ImageResponse } from "./common";
-import i18n from "../i18n/i18n";
 export interface BlogResponse {
   id: number;
   blogCode: string;
