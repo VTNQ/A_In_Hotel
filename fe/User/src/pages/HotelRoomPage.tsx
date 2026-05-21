@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { getRoomTypeByHotel } from "../service/api/RoomType";
 import type { RooTypeResponse } from "../type/roomType.types";
 import { File_URL } from "../setting/constant/app";
+import { useTranslation } from "react-i18next";
 
 const HotelRoomPage = () => {
   const { id } = useParams();
-
+  const {t} = useTranslation();
   const [rooms, setRooms] = useState<RooTypeResponse[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -78,7 +79,8 @@ const HotelRoomPage = () => {
                                             rounded-2xl 
                                             ${reverse ? "" : "ml-auto"}`}
                   >
-                    <img loading="lazy"
+                    <img
+                      loading="lazy"
                       src={File_URL + room.roomImage?.url}
                       alt={room.roomImage?.altText}
                       className="h-[260px] sm:h-[400px] lg:h-[520px] w-full object-cover"
@@ -112,7 +114,8 @@ const HotelRoomPage = () => {
                       {room.assets.map((asset, index) => (
                         <li key={index} className="flex items-center gap-2">
                           {/* ICON */}
-                          <img loading="lazy"
+                          <img
+                            loading="lazy"
                             src={File_URL + asset.thumbnail?.url}
                             alt={asset.assetName}
                             className="h-4 w-4 object-contain"
@@ -133,7 +136,7 @@ const HotelRoomPage = () => {
                         href="#"
                         className="text-xs tracking-widest text-gray-500 hover:text-[#bfa383]"
                       >
-                        DETAILS →
+                        {t("hotelRoomPage.viewDetails")}
                       </a>
 
                       <button
@@ -144,7 +147,7 @@ const HotelRoomPage = () => {
                       text-white 
                       hover:bg-[#a88b6a] transition"
                       >
-                        BOOK NOW
+                       {t("hotelRoomPage.bookNow")}
                       </button>
                     </div>
                   </div>

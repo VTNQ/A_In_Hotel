@@ -14,6 +14,8 @@ const RoomPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [priceRanges, setPriceRanges] = useState<string[]>([]);
+  const [roomTypes, setRoomTypes] = useState<string[]>([]);
+  const [assets, setAssets] = useState<string[]>([]);
 
   return (
     <>
@@ -28,6 +30,10 @@ const RoomPage = () => {
               <RoomFilterSideBar
                 priceRanges={priceRanges}
                 onPriceChange={setPriceRanges}
+                roomTypes={roomTypes}
+                onRoomTypeChange={setRoomTypes}
+                assets={assets}
+                onAssetsChange={setAssets}
               />
             </div>
 
@@ -39,6 +45,8 @@ const RoomPage = () => {
                 onPageInfo={setTotalPages}
                 onSelect={setSelectedRoom}
                 onLoaded={setRoomGrid}
+                roomTypes={roomTypes}
+                assets={assets}
                 selectedRoomId={selectedRoom?.id}
               />
               <RoomPagination

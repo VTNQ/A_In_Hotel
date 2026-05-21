@@ -3,7 +3,7 @@ import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
 import { useTranslation } from "react-i18next";
 
-const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
+const RoomCard = ({ room, onClick, isSelected }: RoomCardProps) => {
   const { t } = useTranslation();
   return (
     <div
@@ -27,7 +27,8 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
     >
       {/* Image */}
       <div className="w-full md:w-[260px] h-[220px] md:h-[200px] shrink-0">
-        <img loading="lazy"
+        <img
+          loading="lazy"
           src={File_URL + room?.images[0]?.url}
           alt={room?.images[0]?.altText}
           className="w-full h-full object-cover"
@@ -43,8 +44,10 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
           </h3>
 
           {/* Room info */}
-          <div className="flex flex-wrap items-center gap-3 text-xs 
-          sm:text-sm text-gray-600 mb-3">
+          <div
+            className="flex flex-wrap items-center gap-3 text-xs 
+          sm:text-sm text-gray-600 mb-3"
+          >
             <div className="flex items-center gap-1">
               <Maximize size={16} />
               <span>{room.area || 20} m²</span>
@@ -57,14 +60,15 @@ const RoomCard = ({ room, onClick,isSelected }: RoomCardProps) => {
 
             <div className="flex items-center gap-1">
               <Users size={16} />
-              <span>{room.capacity} {t("room.card.guest")}</span>
+              <span>
+                {room.capacity} {t("room.card.guest")}
+              </span>
             </div>
           </div>
 
           {/* Description */}
           <p className="text-xs sm:text-sm text-gray-500 line-clamp-3">
-            A In Hotel Riverside cung cấp phòng nghỉ tại trung tâm Hồ Chí Minh,
-            cách Bảo tàng Mỹ thuật 1.2 km. Khách sạn cung cấp WiFi miễn phí.
+            {room.note?.trim() || t("room.noNote")}
           </p>
         </div>
 

@@ -360,11 +360,11 @@
     ]
   },
   "room": {
+    "noNote": "No notes",
     "hero": {
       "title": "Rooms & Suites"
     },
     "filter": {
-      "rentalTime": "Rental Time",
       "results": "Filter results",
       "priceRange": "Price Range",
       "options": {
@@ -431,9 +431,49 @@
       "password": "••••••••"
     }
   },
+   "blogCategories": {
+    "allPosts": "All Posts",
+    "newsUpdates": "News & Updates",
+    "offersPromotions": "Offers & Promotions",
+    "travelGuides": "Travel Guides",
+    "localFood": "Local Food",
+    "bookingTips": "Booking Tips",
+    "hotelServices": "Hotel Services",
+    "eventsActivities": "Events & Activities",
+    "nearbyAttractions": "Nearby Attractions",
+    "travelTips": "Travel Tips",
+    "guestExperiences": "Guest Experiences"
+  },
+  "promotion": {
+    "hero": {
+      "title": "Special Offers",
+      "description": "Discover the latest special offers from A-IN-HOTEL"
+    },
+    "categories": {
+      "more": "More"
+    },
+    "empty": {
+      "noArticles": "No articles found"
+    },
+    "buttons": {
+      "readMore": "Read More"
+    }
+  },
+  "hotelRoomPage": {
+    "luxuryRooms": "Luxury Rooms",
+    "discover": "Discover Your Perfect Stay",
+    "description": "Experience elegant living spaces with premium amenities, sophisticated interiors, and exceptional comfort for your unforgettable stay.",
+    "room": "Room",
+    "viewDetails": "VIEW DETAILS",
+    "bookNow": "BOOK NOW"
+  },
   "roomDetail": {
     "overview": "Overview",
     "amenities": "Amenities",
+    "rentalType": "Rental Type",
+    "bookingSummary": "Booking Summary",
+    "viewGallery": "View Gallary",
+    "noOverview": "No overview available for this room",
     "policies": {
       "title": "Property Policies",
       "description": "Extra bed policies vary by room type. Please check the room details for more information. All children are welcome.",
@@ -461,7 +501,7 @@
       "extraHours": "Extra hours",
       "hour": "hour",
       "night": "night",
-      "totalCost": "Total Cost",
+      "totalCost": "Total for your stay",
       "button": "Booking",
       "alerts": {
         "selectPriceType": "Please select price type",

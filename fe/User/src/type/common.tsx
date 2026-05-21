@@ -70,4 +70,8 @@ export interface CustomerTypeSelectProps {
 export interface RoomFilterSideBarProps {
   priceRanges: string[];
   onPriceChange: (v: string[]) => void;
-}
+  roomTypes: string[];
+  onRoomTypeChange: (v: string[]) => void;
+  assets: string[];
+  onAssetsChange: (v: string[]) => void;
+}

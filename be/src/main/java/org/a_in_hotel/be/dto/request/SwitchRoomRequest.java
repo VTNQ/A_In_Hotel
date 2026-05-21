@@ -10,7 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SwitchRoomRequest {
-
     private List<RoomSwitchItem> items;
-
 }

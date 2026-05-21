@@ -7,6 +7,9 @@ import RoomGuestsSelect from "../Home/RoomsGuestsSelect";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
 import type { RoomFilterSideBarProps } from "../../type/common";
 import { useTranslation } from "react-i18next";
+import { Check, Filter, DollarSign, BedDouble, Sparkles, Search } from "lucide-react";
+import { getCategories } from "../../service/api/Category";
+import { GetAsset } from "../../service/api/Asset";
 
 const PRICE_OPTIONS = [
   { label: "$0 - $200", value: "0-200", count: 200 },
@@ -16,15 +19,23 @@ const PRICE_OPTIONS = [
   { label: "$2,000 - $5,000", value: "2000-5000", count: 230 },
 ];
 
+
+
 const RoomFilterSideBar = ({
   priceRanges,
   onPriceChange,
+  roomTypes,
+  onRoomTypeChange,
+  assets,
+  onAssetsChange,
 }: RoomFilterSideBarProps) => {
   const { t } = useTranslation();
   const { search, setSearch } = useBookingSearch();
   const [selectedHotel, setSelectedHotel] = useState<HotelResponse | null>(
     null,
   );
+  const [categories,setCategories] = useState<any[]>([]);
+  const [assetOptions, setAssetOptions] = useState<any[]>([]);
   const [hotels, setHotels] = useState<HotelResponse[]>([]);
 
   const [dateRange, setDateRange] = useState<{
@@ -37,12 +48,25 @@ const RoomFilterSideBar = ({
     adults: 2,
     children: 0,
   });
-  const TIME_OPTIONS = [
-    { label: t("room.filter.options.twoHours"), value: "1" },
-    { label: t("room.filter.options.overnight"), value: "2" },
-    { label: t("room.filter.options.daily"), value: "3" },
-  ];
-  const [timeTypes, setTimeTypes] = useState<string[]>([]);
+  const fetchCategories = async ()=>{
+    try{
+      const res = await getCategories({all:true});
+      const list = res?.content ?? [];
+      setCategories(list);
+    }catch(err){
+       console.error(t("search.alerts.loadFailed"));
+    }
+  }
+
+  const fetchAssets = async () => {
+    try {
+      const res = await GetAsset({ all: true });
+      const list = res?.data?.content ?? [];
+      setAssetOptions(list);
+    } catch (err) {
+      console.error(t("search.alerts.loadFailed"));
+    }
+  };
   useEffect(() => {
     const fetchHotel = async () => {
       try {
@@ -57,8 +81,13 @@ const RoomFilterSideBar = ({
         console.error(t("search.alerts.loadFailed"));
       }
     };
+    
     fetchHotel();
   }, [search?.hotelId]);
+  useEffect(()=>{
+    fetchCategories();
+    fetchAssets();
+  },[])
   useEffect(() => {
     setDateRange({
       checkIn: search?.checkIn || null,
@@ -91,16 +120,18 @@ const RoomFilterSideBar = ({
       adults: guests.adults,
       children: guests.children,
       priceRanges,
-      timeTypes,
     });
   };
 
   return (
     <div className="space-y-6 w-full lg:w-[320px]">
       {/* TOP CARD */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
-        <div>
-          <label className="text-sm font-medium text-gray-700">
+      <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#f0ece6] space-y-5 relative overflow-hidden">
+        {/* Subtle decorative background element */}
+        <div className="absolute top-0 right-0 -mr-6 -mt-6 w-24 h-24 rounded-full bg-[#9C7A55]/5 blur-2xl pointer-events-none"></div>
+
+        <div className="relative z-20">
+          <label className="text-xs text-gray-500 mb-1 block">
             {t("search.destination")}
           </label>
           <SelectHotelButton
@@ -110,88 +141,147 @@ const RoomFilterSideBar = ({
           />
         </div>
 
-        <div>
-          <label className="text-sm font-medium text-gray-700">
-            {t("search.selectDate")}
-          </label>
+        <div className="relative z-10">
           <DateSelect value={dateRange} onChange={setDateRange} />
         </div>
 
-        <div>
-          <label className="text-sm font-medium text-gray-700">
-            {t("search.selectRoomsGuests")}
-          </label>
+        <div className="relative z-0">
           <RoomGuestsSelect value={guests} onChange={setGuests} />
         </div>
 
         <button
           onClick={handleSearch}
-          className="w-full h-[44px] rounded-xl bg-[#9C7A55] text-white font-medium
-          hover:bg-[#7c6247] transition-all"
+          className="w-full h-[48px] mt-4 rounded-xl bg-gradient-to-r from-[#9C7A55] to-[#8B6D4C] text-white font-medium
+          hover:from-[#8B6D4C] hover:to-[#7A5F42] active:scale-[0.98] transition-all shadow-lg shadow-[#9C7A55]/30 flex items-center justify-center gap-2 relative overflow-hidden group"
         >
-          {t("search.search")}
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+          <Search className="w-4 h-4 relative z-10" />
+          <span className="relative z-10">{t("search.search")}</span>
         </button>
       </div>
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
-          {t("room.filter.rentalTime")}
-        </div>
-        <div className="p-4 space-y-3">
-          {TIME_OPTIONS.map((p) => (
-            <label
-              key={p.value}
-              className="flex items-center justify-between text-sm mb-2 cursor-pointer"
-            >
-              <span className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={timeTypes.includes(p.value)}
-                  onChange={() =>
-                    setTimeTypes((prev) =>
-                      prev.includes(p.value)
-                        ? prev.filter((v) => v !== p.value)
-                        : [...prev, p.value],
-                    )
-                  }
-                />
-                {p.label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* PRICE FILTER */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="bg-[#8B735A] px-4 py-3 text-white text-sm font-medium">
-          {t("room.filter.results")}
+      {/* FILTERS CONTAINER */}
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+        <div className="bg-[#9C7A55] px-6 py-4 text-white flex items-center gap-2">
+          <Filter className="w-5 h-5" />
+          <span className="font-semibold">{t("room.filter.results") || "Filter Options"}</span>
         </div>
 
-        <div className="p-4">
-          <h4 className="font-medium mb-4 text-sm">{t("room.filter.priceRange")}</h4>
-          <div className="space-y-3">
-            {PRICE_OPTIONS.map((p) => (
-              <label
-                key={p.value}
-                className="flex items-center justify-between text-sm cursor-pointer mb-2"
-              >
-                <span className="flex items-center gap-2">
+        {/* PRICE FILTER */}
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-4 text-[#9C7A55]">
+            <DollarSign className="w-4 h-4" />
+            <h4 className="font-semibold text-sm">{t("room.filter.priceRange")}</h4>
+          </div>
+          <div className="space-y-2">
+            {PRICE_OPTIONS.map((p) => {
+              const checked = priceRanges.includes(p.value);
+              return (
+                <label
+                  key={p.value}
+                  className="group flex items-center justify-between cursor-pointer p-2.5 hover:bg-[#FBF7F2] rounded-xl transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200
+                      ${checked ? "bg-[#9C7A55] border-[#9C7A55]" : "border-gray-300 group-hover:border-[#9C7A55]"}`}>
+                      <Check className={`w-3.5 h-3.5 text-white transition-opacity duration-200 ${checked ? "opacity-100" : "opacity-0"}`} strokeWidth={3} />
+                    </div>
+                    <span className={`text-sm transition-colors ${checked ? "text-[#9C7A55] font-semibold" : "text-gray-600 font-medium"}`}>
+                      {p.label}
+                    </span>
+                  </div>
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full font-medium">{p.count}</span>
                   <input
                     type="checkbox"
-                    checked={priceRanges.includes(p.value)}
+                    className="hidden"
+                    checked={checked}
                     onChange={() =>
                       onPriceChange(
-                        priceRanges.includes(p.value)
+                        checked
                           ? priceRanges.filter((v) => v !== p.value)
                           : [...priceRanges, p.value],
                       )
                     }
                   />
-                  {p.label}
-                </span>
-                <span className="text-xs text-gray-400">{p.count}</span>
-              </label>
-            ))}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="h-[1px] bg-gray-100 mx-6"></div>
+
+        {/* ROOM TYPE FILTER */}
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-4 text-[#9C7A55]">
+            <BedDouble className="w-4 h-4" />
+            <h4 className="font-semibold text-sm">Room Type</h4>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((p) => {
+              const checked = roomTypes.includes(p.id);
+              return (
+                <button
+                  key={p.id}
+                  onClick={() =>
+                    onRoomTypeChange(
+                      checked
+                        ? roomTypes.filter((v) => v !== p.id)
+                        : [...roomTypes, p.id],
+                    )
+                  }
+                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 border
+                    ${checked 
+                      ? "bg-[#9C7A55] border-[#9C7A55] text-white shadow-md shadow-[#9C7A55]/20" 
+                      : "bg-white border-gray-200 text-gray-600 hover:border-[#9C7A55] hover:text-[#9C7A55]"
+                    }`}
+                >
+                  {p.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="h-[1px] bg-gray-100 mx-6"></div>
+
+        {/* ASSETS FILTER */}
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-4 text-[#9C7A55]">
+            <Sparkles className="w-4 h-4" />
+            <h4 className="font-semibold text-sm">Assets</h4>
+          </div>
+          <div className="space-y-2">
+            {assetOptions.map((p) => {
+              const checked = assets.includes(p.id);
+              return (
+                <label
+                  key={p.id}
+                  className="group flex items-center justify-between cursor-pointer p-2.5 hover:bg-[#FBF7F2] rounded-xl transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200
+                      ${checked ? "bg-[#9C7A55] border-[#9C7A55]" : "border-gray-300 group-hover:border-[#9C7A55]"}`}>
+                      <Check className={`w-3.5 h-3.5 text-white transition-opacity duration-200 ${checked ? "opacity-100" : "opacity-0"}`} strokeWidth={3} />
+                    </div>
+                    <span className={`text-sm transition-colors ${checked ? "text-[#9C7A55] font-semibold" : "text-gray-600 font-medium"}`}>
+                      {p.assetName}
+                    </span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={checked}
+                    onChange={() =>
+                      onAssetsChange(
+                        checked
+                          ? assets.filter((v) => v !== p.id)
+                          : [...assets, p.id],
+                      )
+                    }
+                  />
+                </label>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -44,7 +44,7 @@ const SelectHotelButton = ({
             {open && (
                 <div
                     className="absolute left-0 right-0 mt-2 bg-white border rounded-xl
-                     shadow-lg z-50 overflow-hidden"
+                     shadow-lg z-50 overflow-hidden overflow-y-auto max-h-72"
                 >
                     {hotels.map((h) => {
                         const isSelected = value?.id === h.id;
