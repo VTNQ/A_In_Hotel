@@ -4,10 +4,12 @@ import { BLOG_CATEGORIES, type BlogResponse } from "../type/blog.types";
 import { getBlog } from "../service/api/Blog";
 import { File_URL } from "../setting/constant/app";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PromotionPage = () => {
   const [blogs, setBlogs] = useState<BlogResponse[]>([]);
   const [page, setPage] = useState(1);
+  const { t } = useTranslation();
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState<number>(0);
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,8 @@ const PromotionPage = () => {
   return (
     <>
       <header className="relative h-[260px] sm:h-[320px] md:h-[400px] flex items-center justify-center">
-        <img loading="lazy"
+        <img
+          loading="lazy"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE4R7LVLgpL9pPAbzD0n3AeWkCB3OS-wVaJLnvUPoYtCB1CjaKYvETKqwsRkzenePfMPXpHPCzuijqyqTR49pM5mYFajSCosBdcG8JKHYmxrINQewHGQequ8lzjl0dA4mFRHsZDi8yiJTZA60w3ab5E9jKf-VT_6QWbz_byJp_lMP9WHNkmBoDWYKIjjMG9EmkFWmK7k1O9u7WGdkogefyC41Oc5DeM5v8akYDh5zfkLpZqITdFKX6AFp2z6eKO6-0A2PFj-8rT5vH"
           alt="Luxury Hotel Interior"
           className="absolute inset-0 w-full h-full object-cover opacity-80 dark:opacity-60"
@@ -47,10 +50,10 @@ const PromotionPage = () => {
         <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />
         <div className="relative z-10 text-center px-4">
           <h1 className="text-3xl sm:text-4xl md:text-6xl text-white font-display mb-4">
-            Special offers
+            {t("promotion.hero.title")}
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-xl mx-auto">
-            Discover the latest special offers from A-IN-HOTEL
+            {t("promotion.hero.description")}
           </p>
         </div>
       </header>
@@ -82,7 +85,7 @@ const PromotionPage = () => {
                     }
                       `}
                 >
-                  {item.label}
+                  {t(item.key)}
                 </button>
               );
             })}
@@ -99,7 +102,7 @@ const PromotionPage = () => {
       }`}
                 type="button"
               >
-                <Plus /> More
+                <Plus /> {t("promotion.categories.more")}
               </button>
             )}
           </div>
@@ -125,7 +128,7 @@ const PromotionPage = () => {
                   : "text-gray-700 hover:text-primary"
               }`}
                   >
-                    {item.label}
+                    {t(item.key)}
                   </button>
                 );
               })}
@@ -153,7 +156,7 @@ const PromotionPage = () => {
           {!loading && blogs.length === 0 && (
             <div className="col-span-full text-center py-24">
               <p className="text-gray-500 text-sm uppercase tracking-widest">
-                No articles found
+                {t("promotion.empty.noArticles")}
               </p>
             </div>
           )}
@@ -165,8 +168,9 @@ const PromotionPage = () => {
                 dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img loading="lazy"
-                    src={File_URL + blog.image.url}
+                  <img
+                    loading="lazy"
+                    src={File_URL + blog?.image?.url}
                     alt={blog.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -185,7 +189,7 @@ const PromotionPage = () => {
                     onClick={() => navigate(`/promotion/${blog.id}`)}
                     className="w-full bg-primary text-white py-3 px-6 text-xs font-bold uppercase tracking-wide hover:bg-opacity-90 transition"
                   >
-                    Read more
+                    {t("promotion.buttons.readMore")}
                   </button>
                 </div>
               </article>
@@ -211,8 +215,8 @@ const PromotionPage = () => {
                   text-xs sm:text-sm font-bold transition
                   ${
                     isActive
-                    ? "bg-primary text-white"
-                    : "border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-primary hover:border-primary"
+                      ? "bg-primary text-white"
+                      : "border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-primary hover:border-primary"
                   }
                   `}
               >

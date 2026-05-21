@@ -177,45 +177,77 @@ const RoomDetailPage = () => {
 
   return (
     <>
-      <div
-        className=""
-        style={{
-          backgroundImage:
-            "url('/image/724ed79d34d3b1706617f9c2e66ea6c1fffec304.png')",
-        }}
-      >
-        <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden pt-[90px]">
+      <div className="bg-[#f6f3ee] min-h-screen overflow-hidden">
+        <div
+          className="absolute top-0 left-0 w-full h-[780px] bg-gradient-to-b 
+              from-[#b38a58]/15 via-[#b38a58]/5 to-transparent pointer-events-none"
+        />
+        <section className="relative z-10 pt-[90px]">
           {loadingRoomDetail ? (
             <RoomGallerySkeleton />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 max-w-7xl mx-auto">
-              <div
-                className="lg:col-span-2 h-[400px] rounded-xl overflow-hidden cursor-pointer"
-                onClick={() => setOpenGallery(true)}
-              >
-                <img loading="lazy"
-                  src={File_URL + roomv2?.images[0]?.url}
-                  className="w-full h-full object-cover"
-                />
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 h-[620px]">
+                <div
+                  className="lg:col-span-3 relative rounded-[30px] overflow-hidden
+                              group cursor-pointer shadow-2xl"
+                  onClick={() => {
+                    setActiveIndex(0);
+                    setOpenGallery(true);
+                  }}
+                >
+                  <img
+                    loading="lazy"
+                    src={File_URL + roomv2?.images[0]?.url}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  <div className="absolute bottom-10 left-10 text-white">
+                    <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10  backdrop-blur-md border border-white/20 mb-4">
+                      <span className="uppercase tracking-[4px] text-xs font-semibold">
+                        {roomv2?.roomTypeName}
+                      </span>
+                    </div>
+                    <h1 className="text-5xl font-black leading-tight mb-3">
+                      {roomv2?.roomName}
+                    </h1>
+                  </div>
+                  <p className="text-white/80 text-lg max-w-xl">
+                    📍 {roomv2?.hotelAddress}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-4 h-[400px]">
+              <div className="lg:col-span-2 flex flex-col gap-4">
                 {roomv2?.images.slice(1, 3).map((img, i) => {
                   const isLast = i === 1 && roomv2?.images.length > 3;
-
                   return (
                     <div
                       key={i}
-                      className="relative flex-1 rounded-xl overflow-hidden cursor-pointer"
-                      onClick={() => setOpenGallery(true)}
+                      className="relative flex-1 rounded-[28px] overflow-hidden group cursor-pointer
+                        shadow-xl"
+                      onClick={() => {
+                        setActiveIndex(i + 1);
+                        setOpenGallery(true);
+                      }}
                     >
-                      <img loading="lazy"
+                      <img
+                        loading="lazy"
                         src={File_URL + img.url}
-                        className="w-full h-full object-cover hover:scale-105 transition"
+                        className="w-full h-full object-cover group-hover:scale-110
+                        transition duration-700"
                       />
-
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-500" />
                       {isLast && (
-                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-3xl font-semibold">
-                          +{remainImages}
+                        <div
+                          className="absolute inset-0 bg-black/55 backdrop-blur-sm flex flex-col items-center
+                          justify-center text-white"
+                        >
+                          <h2 className="text-5xl font-black">
+                            +{remainImages}
+                          </h2>
+                          <p className="uppercase tracking-[5px] text-xs mt-2">
+                            {t("roomDetail.moreImages")}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -225,378 +257,369 @@ const RoomDetailPage = () => {
             </div>
           )}
         </section>
-        <section className="max-w-7xl mx-auto px-4 pt-[30px] pb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* LEFT */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* ===== HEADER ===== */}
-              <div>
-                {loadingRoomDetail ? (
-                  <RoomHeaderSkeleton />
-                ) : (
-                  <>
-                    <h1 className="text-2xl font-semibold">
-                      {roomv2?.roomName}{" "}
-                      <span className="text-base  text-gray-500 font-semibold">
-                        ( {roomv2?.roomTypeName} )
-                      </span>
-                    </h1>
+        <section className="relative z-10 py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white rounded-[30px] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.05)] border border-white">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-2 h-10 rounded-full bg-[#b38a58]" />
+                    <h2 className="text-3xl font-black text-gray-900">
+                      {t("roomDetail.overview")}
+                    </h2>
+                  </div>
 
-                    <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                      <span>📍</span>
-                      {roomv2?.hotelAddress}
-                    </p>
-                  </>
-                )}
-              </div>
-
-              {/* ===== OVERVIEW ===== */}
-              <div className="space-y-3">
-                <h4 className="font-semibold">{t("roomDetail.overview")}</h4>
-
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {roomv2?.note}
-                </p>
-              </div>
-
-              {/* ===== AMENITIES + POLICIES ===== */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                {/* AMENITIES */}
-                <div className="bg-transparent border border-[#2B2B2B] rounded-xl p-5 h-fit">
-                  <h4 className="font-semibold mb-4">{t("roomDetail.amenities")}</h4>
+                  <p className="text-gray-600 leading-[2] text-[15px]">
+                    {roomv2?.note || t("roomDetail.noOverview")}
+                  </p>
+                </div>
+                <div className="bg-white rounded-[30px] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-2 h-10 rounded-full bg-[#b38a58]" />
+                    <h2 className="text-3xl font-black text-gray-900">
+                      {t("roomDetail.amenities")}
+                    </h2>
+                  </div>
                   {loadingRoomDetail ? (
                     <AmenitiesSkeleton />
                   ) : (
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-gray-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       {amenities.map((item) => (
-                        <li key={item.id} className="flex items-center gap-3">
-                          <img loading="lazy"
-                            src={File_URL + item.thumbnail?.url}
-                            alt={item.assetName}
-                            className="w-4 h-4 object-contain"
-                          />
-                          <span>{item.assetName}</span>
-                        </li>
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-4 p-4 rounded-2xl bg-[#faf7f2] hover:bg-[#f3ece3] transition-all duration-300"
+                        >
+                          <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                            <img
+                              loading="lazy"
+                              src={File_URL + item.thumbnail?.url}
+                              className="w-6 h-6 object-contain"
+                            />
+                          </div>
+
+                          <span className="font-semibold text-gray-800">
+                            {item.assetName}
+                          </span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   )}
                 </div>
+                <div className="bg-white rounded-[30px] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-2 h-10 rounded-full bg-[#b38a58]" />
+                    <h2 className="text-3xl font-black text-gray-900">
+                      {t("roomDetail.policies.title")}
+                    </h2>
+                  </div>
+                  <div className="space-y-5">
+                    {[
+                      t("roomDetail.policies.infantsStay"),
+                      t("roomDetail.policies.childrenStay"),
+                      t("roomDetail.policies.guests7AsAdult"),
+                      t("roomDetail.policies.extraBed"),
+                      t("roomDetail.policies.moreThan5Rooms"),
+                    ].map((policy, idx) => (
+                      <div
+                        key={idx}
+                        className="flex gap-4 p-5 rounded-2xl bg-[#faf7f2]"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-[#b38a58] text-white flex items-center justify-center font-bold shrink-0">
+                          {idx + 1}
+                        </div>
 
-                {/* POLICIES */}
-                <div className="bg-transparent border border-[#2B2B2B] rounded-xl p-5 max-h-[326px] overflow-y-auto">
-                  <h4 className="font-semibold mb-4">{t("roomDetail.policies.title")}</h4>
-
-                  <p className="text-xs text-gray-500 mb-3">
-                    {t("roomDetail.policies.description")}
-                  </p>
-
-                  <ul className="space-y-2 text-sm text-gray-700 list-disc list-inside">
-                    <li>
-                      <strong>{t("roomDetail.policies.infants")}</strong>
-                      <br />
-                      {t("roomDetail.policies.infantsStay")}
-                    </li>
-
-                    <li>
-                      <strong>
-                        {t("roomDetail.policies.children")}
-                      </strong>
-                      <br />
-                      {t("roomDetail.policies.childrenStay")}
-                    </li>
-
-                    <li>
-                      <strong>{t("roomDetail.policies.guests7")}</strong>
-                      <br />
-                      {t("roomDetail.policies.guests7AsAdult")}
-                    </li>
-
-                    <li>
-                      {t("roomDetail.policies.extraBed")}
-                    </li>
-
-                    <li>
-                      {t("roomDetail.policies.moreThan5Rooms")}
-                    </li>
-                  </ul>
+                        <p className="text-gray-700 leading-relaxed">
+                          {policy}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="relative">
+                <div className="sticky top-[120px]">
+                  {loadingRoomDetail ? (
+                    <BookingBoxSkeleton />
+                  ) : (
+                    <div className="rounded-[35px] overflow-hidden bg-white/85 backdrop-blur-xl border border-white shadow-[0_20px_70px_rgba(0,0,0,0.08)]">
+                      <div className="bg-gradient-to-r from-[#b38a58] to-[#8f6b43] p-8 text-white">
+                        <p className="uppercase tracking-[5px] text-xs text-white/70 mb-2">
+                          {t("roomDetail.bookingSummary")}
+                        </p>
+                        <h2 className="text-4xl font-black">
+                          {priceResult.total.toLocaleString()}đ
+                        </h2>
+                        <p className="text-white/70 mt-2">
+                          {t("roomDetail.booking.totalCost")}
+                        </p>
+                      </div>
+                      <div className="p-7 space-y-7">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-[#faf7f2] rounded-2xl p-5">
+                            <div className="flex items-center gap-3 text-gray-600 mb-3">
+                              <User size={18} className="text-[#b38a58]" />
+                              <span>{t("roomDetail.booking.adult")}</span>
+                            </div>
 
-            {/* RIGHT – BOOKING */}
-            <div className="lg:sticky lg:top-[120px] h-fit bg-white">
-              {loadingRoomDetail ?(
-                <BookingBoxSkeleton/>
-              ):(
-                <div className="rounded-xl p-5 shadow-sm space-y-5 ">
-                {/* ===== GUEST & BED INFO ===== */}
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <User size={16} />
-                      <span>{t("roomDetail.booking.adult")}: {adults}</span>
+                            <h3 className="text-3xl font-black text-gray-900">
+                              {adults}
+                            </h3>
+                          </div>
+                          <div className="bg-[#faf7f2] rounded-2xl p-5">
+                            <div className="flex items-center gap-3 text-gray-600 mb-3">
+                              <Baby size={18} className="text-[#b38a58]" />
+                              <span>{t("roomDetail.booking.children")}</span>
+                            </div>
+
+                            <h3 className="text-3xl font-black text-gray-900">
+                              {children}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="rounded-3xl overflow-hidden border border-gray-100">
+                          <div className="grid grid-cols-2">
+                            <div className="p-5 bg-[#faf7f2]">
+                              <p className="text-xs uppercase tracking-[3px] text-gray-400 mb-2">
+                                {t("roomDetail.booking.checkIn")}
+                              </p>
+                              <div className="flex items-center gap-2 font-bold">
+                                <Calendar size={15} />
+                                {formatDate(checkIn)}
+                              </div>
+                            </div>
+                            <div className="p-5">
+                              <p className="text-xs uppercase tracking-[3px] text-gray-400 mb-2">
+                                {t("roomDetail.booking.checkOut")}
+                              </p>
+
+                              <div className="flex items-center gap-2 font-bold">
+                                <Calendar size={15} />
+                                {formatDate(checkOut)}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <h3 className="font-black text-xl text-gray-900">
+                            {t("roomDetail.rentalType")}
+                          </h3>
+                          {[
+                            {
+                              key: "1",
+                              label: t(
+                                "roomDetail.booking.priceOptions.twoHours",
+                              ),
+                              price: roomv2?.hourlyBasePrice,
+                            },
+                            {
+                              key: "2",
+                              label: t(
+                                "roomDetail.booking.priceOptions.overnight",
+                              ),
+                              price: roomv2?.overnightPrice,
+                            },
+                            {
+                              key: "3",
+                              label: t("roomDetail.booking.priceOptions.daily"),
+                              price: roomv2?.defaultRate,
+                            },
+                          ].map((item) => (
+                            <label
+                              key={item.key}
+                              className={`flex items-center justify-between rounded-2xl border-2 p-5 cursor-pointer transition-all duration-300 ${
+                                PriceType === item.key
+                                  ? "border-[#b38a58] bg-[#b38a58]/5 shadow-md"
+                                  : "border-gray-100 hover:border-[#b38a58]/30"
+                              }`}
+                            >
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="radio"
+                                  checked={PriceType === item.key}
+                                  onChange={() => {
+                                    setPriceType(item.key as PriceType);
+                                    setExtraHours(0);
+                                  }}
+                                  className="w-5 h-5 accent-[#b38a58]"
+                                />
+
+                                <div>
+                                  <p className="font-semibold text-gray-800">
+                                    {item.label}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <span className="font-black text-[#b38a58]">
+                                {item.price?.toLocaleString()}đ
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                        <div
+                          className={`rounded-2xl p-5 transition-all ${
+                            PriceType !== "1"
+                              ? "bg-gray-100 opacity-50 pointer-events-none"
+                              : "bg-[#faf7f2]"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-bold text-gray-900">
+                                {t("roomDetail.booking.extraHours")}
+                              </p>
+                              <p className="text-sm text-[#b38a58] mt-1">
+                                +
+                                {roomv2?.hourlyAdditionalPrice?.toLocaleString()}
+                                đ / {t("roomDetail.booking.hour")}
+                              </p>
+                            </div>
+                            <div
+                              className="flex items-center gap-3 bg-white rounded-full
+                            p-2 shadow-sm"
+                            >
+                              <button
+                                onClick={() =>
+                                  setExtraHours(Math.max(0, extraHours - 1))
+                                }
+                                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                              >
+                                <Minus size={15} />
+                              </button>
+                              <span className="font-black w-5 text-center">
+                                {extraHours}
+                              </span>
+                              <button
+                                onClick={() => setExtraHours(extraHours + 1)}
+                                className="w-8 h-8 rounded-full bg-[#b38a58] text-white flex items-center justify-center"
+                              >
+                                <Plus size={15} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-3 border-t border-gray-100 pt-5">
+                          <div className="flex justify-between text-sm text-gray-500">
+                            <span>
+                              {nights} {t("roomDetail.booking.night")}
+                            </span>
+
+                            <span>{priceResult.base.toLocaleString()}đ</span>
+                          </div>
+                          <div className="flex justify-between items-end">
+                            <span className="text-lg font-bold text-gray-900">
+                              {t("roomDetail.booking.totalCost")}
+                            </span>
+
+                            <span className="text-3xl font-black text-[#b38a58]">
+                              {priceResult.total.toLocaleString()}đ
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleBooking}
+                          className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#b38a58] to-[#8f6b43] text-white text-lg font-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl"
+                        >
+                          {t("roomDetail.booking.button")}
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Baby size={16} />
-                      <span>{t("roomDetail.booking.children")}: {children}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <BedDouble size={16} />
-                      <span>{t("roomDetail.booking.doubleBed")}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <BedDouble size={16} />
-                      <span>{t("roomDetail.booking.extraBed")}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ===== DATE ===== */}
-                <div className="text-sm text-gray-700 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span>{t("roomDetail.booking.checkIn")}</span>
-                    <span className="flex items-center gap-1">
-                      <Calendar size={14} /> {formatDate(checkIn)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>{t("roomDetail.booking.checkOut")}</span>
-                    <span className="flex items-center gap-1">
-                      <Calendar size={14} /> {formatDate(checkOut)}
-                    </span>
-                  </div>
-                </div>
-
-                <hr />
-
-                {/* ===== PRICE OPTIONS ===== */}
-                <div className="space-y-3">
-                  <label
-                    className={`flex items-center gap-3 border rounded-lg p-3 cursor-pointer
-                                        ${
-                                          isMultiDay
-                                            ? "opacity-50 pointer-events-none"
-                                            : ""
-                                        }`}
-                  >
-                    <input
-                      type="radio"
-                      name="price"
-                      disabled={isMultiDay}
-                      checked={PriceType === "1"}
-                      className="accent-[#b38a58]"
-                      onChange={() => {
-                        setPriceType("1");
-                        setExtraHours(0);
-                      }}
-                    />
-                    <div>
-                      <p className="text-xs text-gray-500">{t("roomDetail.booking.priceOptions.twoHours")}</p>
-                      <p className="font-semibold text-[#b38a58]">
-                        {roomv2?.hourlyBasePrice} đ
-                      </p>
-                    </div>
-                  </label>
-
-                  <label
-                    className={`flex items-center gap-3 border rounded-lg p-3 cursor-pointer
-                                        ${
-                                          isMultiDay
-                                            ? "opacity-50 pointer-events-none"
-                                            : ""
-                                        }`}
-                  >
-                    <input
-                      type="radio"
-                      name="price"
-                      disabled={isMultiDay}
-                      checked={PriceType === "2"}
-                      onChange={() => {
-                        setPriceType("2");
-                        setExtraHours(0);
-                      }}
-                      className="accent-[#b38a58]"
-                    />
-                    <div>
-                      <p className="text-xs text-gray-500">{t("roomDetail.booking.priceOptions.overnight")}</p>
-                      <p className="font-semibold text-[#b38a58]">
-                        {roomv2?.overnightPrice} đ
-                      </p>
-                    </div>
-                  </label>
-
-                  <label className="flex items-center gap-3 border rounded-lg p-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="price"
-                      checked={PriceType === "3"}
-                      onChange={() => {
-                        setPriceType("3");
-                        setExtraHours(0);
-                      }}
-                      className="accent-[#b38a58]"
-                    />
-                    <div>
-                      <p className="text-xs text-gray-500">
-                        {t("roomDetail.booking.priceOptions.daily")}
-                      </p>
-                      <p className="font-semibold text-[#b38a58]">
-                        {roomv2?.defaultRate} đ
-                      </p>
-                    </div>
-                  </label>
-                </div>
-
-                {/* ===== EXTRA HOURS ===== */}
-                <div
-                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm
-                                        ${
-                                          PriceType !== "1"
-                                            ? "opacity-50 pointer-events-none bg-gray-100"
-                                            : "bg-gray-50"
-                                        }`}
-                >
-                  <span>{t("roomDetail.booking.extraHours")} +{roomv2?.hourlyAdditionalPrice}/{t("roomDetail.booking.hour")}</span>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setExtraHours(Math.max(0, extraHours - 1))}
-                      className="w-6 h-6 rounded-full border flex items-center justify-center"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span>{extraHours}</span>
-                    <button
-                      onClick={() => setExtraHours(extraHours + 1)}
-                      className="w-6 h-6 rounded-full border flex items-center justify-center"
-                    >
-                      <Plus size={14} />
-                    </button>
-                    <span className="ml-1">{t("roomDetail.booking.hour")}</span>
-                  </div>
-                </div>
-
-                {/* ===== TOTAL ===== */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>{nights} {t("roomDetail.booking.night")}</span>
-                    <span>{priceResult.base.toLocaleString()} vnd</span>
-                  </div>
-                  {/* <div className="flex justify-between">
-                    <span>Service (*10%)</span>
-                    <span>{priceResult.service.toLocaleString()} vnd</span>
-                  </div> */}
-                </div>
-
-                <div className="flex justify-between font-semibold border-t pt-3">
-                  <span>{t("roomDetail.booking.totalCost")}</span>
-                  <span>{priceResult.total.toLocaleString()} vnd</span>
-                </div>
-
-                {/* ===== BUTTON ===== */}
-                <button
-                  onClick={handleBooking}
-                  className="w-full bg-[#b38a58] text-white py-2 rounded-lg"
-                >
-                  {t("roomDetail.booking.button")}
-                </button>
-              </div>
-              )}
-            </div>
-          </div>
-        </section>
-        <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden">
-          <div className="w-screen">
-            <iframe
-              className="w-full h-[320px] border-0"
-              loading="lazy"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(
-                room.address,
-              )}&output=embed`}
-            />
-          </div>
-        </section>
-        <section className="relative left-1/2 -ml-[50vw] w-full overflow-hidden bg-[#fdfcf9] py-14">
-          <div className="w-screen">
-            <div className="max-w-7xl mx-auto px-4">
-              <h4 className="font-semibold mb-8">{t("roomDetail.rooms")}</h4>
-
-              <div className="bg-[#F2F2F2] rounded-xl shadow-sm p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {loadingRooms
-                    ? Array.from({ length: 4 }).map((_, i) => (
-                        <RoomCardSkeleton key={i} />
-                      ))
-                    : otherRooms
-                        .slice(0, 4)
-                        .map((room) => (
-                          <RoomCard
-                            key={room.id}
-                            id={room.id}
-                            title={room.roomName}
-                            price={room.defaultRate}
-                            image={room.images?.[0]?.url}
-                            size={room.area}
-                            guests={room.capacity}
-                            bed={t("roomDetail.booking.doubleBed")}
-                            description={room.note}
-                          />
-                        ))}
-                </div>
-                <div className="flex flex-col items-center mt-10 text-gray-600 cursor-pointer group">
-                  <div className="w-10 h-10 rounded-full border font-bold border-gray-300 flex items-center justify-center group-hover:bg-gray-100 transition">
-                    ↓
-                  </div>
-                  <span className="mt-2 text-sm text-[#1A1A1A] font-medium group-hover:text-gray-800">
-                    {t("roomDetail.seeMore")}
-                  </span>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </section>
-      </div>
-      {openGallery && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
-          {/* CLOSE */}
-          <button
-            className="absolute top-6 right-6 text-white text-3xl z-50"
-            onClick={() => setOpenGallery(false)}
-          >
-            ✕
-          </button>
+        <section className="relative z-10 py-10">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="overflow-hidden rounded-[35px] shadow-2xl">
+              <iframe
+                className="w-full h-[400px] border-0"
+                loading="lazy"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(
+                  roomv2?.hotelAddress || "",
+                )}&output=embed`}
+              />
+            </div>
+          </div>
+        </section>
+        <section className="relative z-10 py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <p className="uppercase tracking-[4px] text-[#b38a58] text-sm font-bold mb-2">
+                  Recommendation
+                </p>
 
-          {/* MAIN IMAGE */}
-          <div className="flex flex-col items-center w-full max-w-6xl px-6">
-            <img loading="lazy"
-              src={room.images[activeIndex].url}
-              className="max-h-[80vh] w-auto object-contain rounded-xl mb-6 transition-all"
-            />
+                <h2 className="text-4xl font-black text-gray-900">
+                  {t("roomDetail.rooms")}
+                </h2>
+              </div>
+            </div>
 
-            {/* THUMBNAILS */}
-            <div className="flex gap-3 overflow-x-auto max-w-full pb-2">
-              {room.images.map((img, i) => (
-                <img loading="lazy"
-                  key={i}
-                  src={img.url}
-                  onClick={() => setActiveIndex(i)}
-                  className={`
-              h-20 w-28 object-cover rounded-lg cursor-pointer transition
-              ${
-                i === activeIndex
-                  ? "ring-2 ring-white opacity-100"
-                  : "opacity-50 hover:opacity-90"
-              }
-            `}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+              {loadingRooms
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <RoomCardSkeleton key={i} />
+                  ))
+                : otherRooms
+                    .slice(0, 4)
+                    .map((room) => (
+                      <RoomCard
+                        key={room.id}
+                        id={room.id}
+                        title={room.roomName}
+                        price={room.defaultRate}
+                        image={room.images?.[0]?.url}
+                        size={room.area}
+                        guests={room.capacity}
+                        bed={t("roomDetail.booking.doubleBed")}
+                        description={room.note}
+                      />
+                    ))}
+            </div>
+          </div>
+        </section>
+        {openGallery && (
+          <div className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-md flex items-center justify-center">
+            {/* CLOSE */}
+            <button
+              className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center transition"
+              onClick={() => setOpenGallery(false)}
+            >
+              ✕
+            </button>
+
+            <div className="w-full max-w-7xl px-6 flex flex-col items-center">
+              {/* MAIN */}
+              <div className="h-[75vh] flex items-center justify-center mb-8">
+                <img
+                  loading="lazy"
+                  src={File_URL + roomv2?.images?.[activeIndex]?.url}
+                  className="max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
                 />
-              ))}
+              </div>
+
+              {/* THUMB */}
+              <div className="flex gap-4 overflow-x-auto pb-3">
+                {roomv2?.images.map((img, i) => (
+                  <img
+                    key={i}
+                    loading="lazy"
+                    src={File_URL + img.url}
+                    onClick={() => setActiveIndex(i)}
+                    className={`h-24 w-36 rounded-2xl object-cover cursor-pointer transition-all duration-300 ${
+                      i === activeIndex
+                        ? "ring-4 ring-white scale-105 opacity-100"
+                        : "opacity-40 hover:opacity-100"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

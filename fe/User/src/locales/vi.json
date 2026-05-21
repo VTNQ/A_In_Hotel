@@ -391,11 +391,11 @@
     }
   },
   "room": {
+    "noNote": "Không có ghi chú",
     "hero": {
       "title": "Phòng & Phòng VIP"
     },
     "filter": {
-      "rentalTime": "Thời gian thuê",
       "results": "Kết quả lọc",
       "priceRange": "Khoảng giá",
       "options": {
@@ -431,8 +431,48 @@
       "booking": "Đặt phòng"
     }
   },
+  "blogCategories": {
+    "allPosts": "Tất cả bài viết",
+    "newsUpdates": "Tin tức & Cập nhật",
+    "offersPromotions": "Ưu đãi & Khuyến mãi",
+    "travelGuides": "Cẩm nang du lịch",
+    "localFood": "Ẩm thực địa phương",
+    "bookingTips": "Mẹo đặt phòng",
+    "hotelServices": "Dịch vụ khách sạn",
+    "eventsActivities": "Sự kiện & Hoạt động",
+    "nearbyAttractions": "Địa điểm tham quan gần đây",
+    "travelTips": "Mẹo du lịch",
+    "guestExperiences": "Trải nghiệm khách hàng"
+  },
+   "promotion": {
+    "hero": {
+      "title": "Ưu đãi đặc biệt",
+      "description": "Khám phá những ưu đãi mới nhất từ A-IN-HOTEL"
+    },
+    "categories": {
+      "more": "Xem thêm"
+    },
+    "empty": {
+      "noArticles": "Không tìm thấy bài viết"
+    },
+    "buttons": {
+      "readMore": "Xem chi tiết"
+    }
+  },
+   "hotelRoomPage": {
+    "luxuryRooms": "Phòng cao cấp",
+    "discover": "Khám phá không gian nghỉ dưỡng",
+    "description": "Tận hưởng trải nghiệm lưu trú sang trọng với thiết kế tinh tế, tiện nghi hiện đại và không gian thư giãn đẳng cấp.",
+    "room": "Phòng",
+    "viewDetails": "XEM CHI TIẾT",
+    "bookNow": "ĐẶT PHÒNG NGAY"
+  },
   "roomDetail": {
     "overview": "Tổng quan",
+    "viewGallery": "Xem bộ sưu tập ảnh",
+    "rentalType": "Loại thuê",
+    "bookingSummary": "Tóm tắt đặt phòng",
+    "noOverview": "Chưa có mô tả tổng quan cho phòng này",
     "amenities": "Tiện ích",
     "policies": {
       "title": "Chính sách khách sạn",
@@ -461,7 +501,7 @@
       "extraHours": "Thêm giờ nghỉ",
       "hour": "giờ",
       "night": "đêm",
-      "totalCost": "Tổng cộng",
+      "totalCost": "Tổng chi phí cho kỳ nghỉ của bạn",
       "button": "Đặt phòng ngay",
       "alerts": {
         "selectPriceType": "Vui lòng chọn loại giá",

@@ -92,7 +92,6 @@ export interface BookingSearch {
   adults?: number;
   children?: number;
   priceRanges?: string[];
-  timeTypes?: string[];
   roomId?: number;
   priceType?: string;
   guestName?: string;

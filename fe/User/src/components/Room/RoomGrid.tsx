@@ -12,6 +12,8 @@ const RoomGrid = ({
   onLoaded,
   selectedRoomId,
   priceRange,
+  roomTypes,
+  assets,
 }: RoomGridProps) => {
   const { t } = useTranslation();
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
@@ -21,11 +23,19 @@ const RoomGrid = ({
     if (!ranges.length) return "";
 
     return ranges
-      .map(r => {
+      .map((r) => {
         const [min, max] = r.split("-").map(Number);
         return `(basePrice>=${min};basePrice<=${max})`;
       })
       .join(",");
+  };
+  const buildAssetsFilter = (assets:string[])=>{
+    if(!assets.length) return "";
+    return assets.map((id)=>`assets.id==${id}`).join(";");
+  }
+  const buildRoomTypesFilter = (amenities: string[]) => {
+    if (!amenities.length) return "";
+    return amenities.map((id) => `roomType.id==${id}`).join(";");
   };
   useEffect(() => {
     if (!search) return;
@@ -44,6 +54,18 @@ const RoomGrid = ({
         if (priceFilter) {
           filter += `;(${priceFilter})`;
         }
+
+        const roomTypesFilter = buildRoomTypesFilter(roomTypes);
+        if (roomTypesFilter) {
+          filter += `;(${roomTypesFilter})`;
+        }
+
+        const assetsFilter = buildAssetsFilter(assets);
+        if (assetsFilter) {
+          filter += `;(${assetsFilter})`;
+        }
+
+
         const res = await getRoom({
           page,
           size: 5,
@@ -71,7 +93,7 @@ const RoomGrid = ({
     return () => {
       mounted = false;
     };
-  }, [search, page, priceRange]);
+  }, [search, page, priceRange,roomTypes,assets]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
