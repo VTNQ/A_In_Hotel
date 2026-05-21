@@ -66,7 +66,7 @@ public class CategoryController {
 
     // 👉 Search categories
     @GetMapping
-    public ResponseEntity<PageResponse<CategoryResponse>> search(
+    public ResponseEntity<RequestResponse<PageResponse<CategoryResponse>>> search(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id,desc") String sort,
@@ -75,7 +75,7 @@ public class CategoryController {
             @RequestParam(required = false) String searchValue,
             @RequestParam(required = false) boolean all
     ) {
-        return ResponseEntity.ok(new PageResponse<>(categoryService.search(page, size, sort, filter, searchField, searchValue, all)));
+        return ResponseEntity.ok(RequestResponse.success(new PageResponse<>(categoryService.search(page, size, sort, filter, searchField, searchValue, all))));
     }
 }
 
