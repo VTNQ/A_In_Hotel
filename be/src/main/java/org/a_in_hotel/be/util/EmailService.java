@@ -24,11 +24,11 @@ public class EmailService {
         this.hotelRepository = hotelRepository;
     }
 
-    public void sendRegistrationEmail(String to, String fullName, String email, String password) throws MessagingException {
+    public void sendRegistrationEmail(String to, String fullName, String password) throws MessagingException {
         // Gắn dữ liệu vào template
         Context context = new Context();
         context.setVariable("fullName", fullName);
-        context.setVariable("email", email);
+        context.setVariable("email", to);
         context.setVariable("password", password);
 
         String htmlContent = templateEngine.process("account-register", context);
@@ -53,7 +53,7 @@ public class EmailService {
         context.setVariable("hotelName",hotelName);
         context.setVariable("loginUrl","https://admin.ainhotelvn.com");
         String htmlContent = templateEngine.process(
-                "hotel_admin_assigned",
+                "hotel-admin-assigned",
                     context
         );
         MimeMessage message = mailSender.createMimeMessage();
@@ -118,7 +118,7 @@ public class EmailService {
         );
         String htmlContent =
                 templateEngine.process(
-                        "booking-confirmation",
+                        "booking-confirm",
                         context
                 );
         MimeMessage message =
