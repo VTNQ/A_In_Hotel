@@ -112,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
                     throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage(), e);
                 }
             }
-            emailService.sendRegistrationEmail(accountDTO.getEmail(),accountDTO.getFullName(),accountDTO.getEmail(),rawPassword);
+            emailService.sendRegistrationEmail(accountDTO.getEmail(),accountDTO.getFullName(),rawPassword);
             log.info("save account:{}", account);
         }catch (Exception e){
             log.error("save error:{}",e.getMessage());
@@ -134,7 +134,7 @@ public class AccountServiceImpl implements AccountService {
             customer.setAccount(account);
             customerRepository.save(customer);
             emailService.sendRegistrationEmail(userDTO.getEmail(),userDTO.getFirstName()+" "+ userDTO.getLastName()
-                    ,userDTO.getEmail(),userDTO.getPassword());
+                ,userDTO.getPassword());
         }catch (Exception e){
             log.error("save error:{}",e.getMessage());
             e.printStackTrace();

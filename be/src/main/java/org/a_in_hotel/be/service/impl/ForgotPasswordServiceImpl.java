@@ -1,12 +1,14 @@
 package org.a_in_hotel.be.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.a_in_hotel.be.async.event.SendOtpEvent;
 import org.a_in_hotel.be.entity.Account;
 import org.a_in_hotel.be.entity.PasswordResetOtp;
 import org.a_in_hotel.be.repository.AccountRepository;
 import org.a_in_hotel.be.repository.PasswordResetOtpRepository;
 import org.a_in_hotel.be.service.ForgotPasswordService;
 import org.a_in_hotel.be.util.EmailService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final AccountRepository repository;
     private final PasswordResetOtpRepository otpRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public void sendOtp(String email) {
@@ -35,7 +37,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
                 .used(false)
                 .build();
         otpRepository.save(resetOtp);
-        emailService.sendResetPasswordByOTP(account.getEmail(), otp);
+        eventPublisher.publishEvent(
+                new SendOtpEvent(account.getEmail(),otp)
+        );
     }
 
     @Override
