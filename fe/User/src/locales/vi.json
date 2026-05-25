@@ -100,8 +100,24 @@
       "selectBothDates": "Vui lòng chọn cả ngày nhận và trả phòng"
     }
   },
+  "calendar": {
+    "month": "Tháng",
+    "days": [
+      "T2",
+      "T3",
+      "T4",
+      "T5",
+      "T6",
+      "T7",
+      "CN"
+    ]
+  },
   "booking": {
     "title": "Lịch sử đặt phòng",
+    "validation": {
+      "checkInRequired": "Vui lòng chọn ngày nhận phòng",
+      "checkOutRequired": "Vui lòng chọn ngày trả phòng"
+    },
     "subtitle": "Quản lý các kỳ nghỉ tuyệt vời và lịch sử đặt phòng của bạn.",
     "tabs": {
       "upcoming": "Sắp tới",
@@ -304,18 +320,6 @@
       "checkOut": "Trả phòng",
       "totalPaid": "Đã thanh toán",
       "backHome": "Quay lại Trang chủ"
-    },
-    "calendar": {
-      "month": "Tháng",
-      "days": [
-        "T2",
-        "T3",
-        "T4",
-        "T5",
-        "T6",
-        "T7",
-        "CN"
-      ]
     }
   },
   "forgotPassword": {
@@ -390,8 +394,27 @@
       "password": "••••••••"
     }
   },
+  "validation": {
+    "firstNameRequired": "Vui lòng nhập tên",
+    "lastNameRequired": "Vui lòng nhập họ",
+    "idRequired": "Vui lòng nhập số CCCD/CMND",
+    "idMin": "Số CCCD/CMND phải có ít nhất 9 ký tự",
+    "emailRequired": "Vui lòng nhập email",
+    "emailInvalid": "Email không hợp lệ",
+    "phoneRequired": "Vui lòng nhập số điện thoại",
+    "phoneMin": "Số điện thoại phải có ít nhất 10 số"
+  },
   "room": {
     "noNote": "Không có ghi chú",
+    "loading": {
+      "title": "Đang tải thêm phòng",
+      "subtitle": "Vui lòng chờ trong giây lát..."
+    },
+    "loaded": {
+      "title": "Đã tải tất cả phòng",
+      "subtitle": "Không còn phòng nào để hiển thị",
+      "noRooms": "Không còn phòng nào"
+    },
     "hero": {
       "title": "Phòng & Phòng VIP"
     },
@@ -405,12 +428,15 @@
       }
     },
     "grid": {
-      "noRooms": "Không tìm thấy phòng nào"
+      "noRooms": "Không tìm thấy phòng nào",
+      "tryAnotherFilter": "Hãy thử thay đổi bộ lọc, chọn ngày khác hoặc chọn loại phòng khác."
     },
     "card": {
       "doubleBed": "Giường đôi",
       "guest": "khách",
-      "price": "Giá"
+      "price": "Giá",
+      "night": "đêm",
+      "viewDetail": "Xem chi tiết"
     },
     "detail": {
       "extraHour": "giờ sau",
@@ -444,7 +470,7 @@
     "travelTips": "Mẹo du lịch",
     "guestExperiences": "Trải nghiệm khách hàng"
   },
-   "promotion": {
+  "promotion": {
     "hero": {
       "title": "Ưu đãi đặc biệt",
       "description": "Khám phá những ưu đãi mới nhất từ A-IN-HOTEL"
@@ -459,7 +485,7 @@
       "readMore": "Xem chi tiết"
     }
   },
-   "hotelRoomPage": {
+  "hotelRoomPage": {
     "luxuryRooms": "Phòng cao cấp",
     "discover": "Khám phá không gian nghỉ dưỡng",
     "description": "Tận hưởng trải nghiệm lưu trú sang trọng với thiết kế tinh tế, tiện nghi hiện đại và không gian thư giãn đẳng cấp.",

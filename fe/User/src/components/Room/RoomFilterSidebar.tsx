@@ -51,7 +51,7 @@ const RoomFilterSideBar = ({
   const fetchCategories = async ()=>{
     try{
       const res = await getCategories({all:true});
-      const list = res?.content ?? [];
+      const list = res?.data?.content ?? [];
       setCategories(list);
     }catch(err){
        console.error(t("search.alerts.loadFailed"));

@@ -10,24 +10,29 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
+  const { t } = useTranslation();
+
   const schema = z.object({
-    firstName: z.string().min(1, "First name is required").max(100),
+    firstName: z.string().min(1, t("validation.firstNameRequired")).max(100),
 
-    lastName: z.string().min(1, "Last name is required").max(100),
+    lastName: z.string().min(1, t("validation.lastNameRequired")).max(100),
 
-    idNumber: z
+    idNumber: z.string().min(6, t("validation.idNumberMin")).max(20).max(20),
+
+    guestType: z.string().min(1, t("validation.guestTypeRequired")),
+
+    email: z
       .string()
-      .min(6, "ID number must be at least 6 characters")
-      .max(20),
+      .min(1, t("validation.emailRequired"))
+      .email(t("validation.emailInvalid")),
 
-    guestType: z.string().min(1, "Guest type is required"),
-
-    email: z.string().min(1, "Email is required").email("Invalid email format"),
-
-    phone: z.string().regex(/^[0-9+\-\s()]{8,15}$/, "Invalid phone number"),
+    phone: z
+      .string()
+      .regex(/^[0-9+\-\s()]{8,15}$/, t("validation.phoneInvalid")),
 
     note: z.string().optional(),
   });
+
   type FormValues = z.infer<typeof schema>;
   const {
     register,
@@ -48,8 +53,6 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       ...data,
     },
   });
-
-  const { t } = useTranslation();
 
   const submit = (values: FormValues) => {
     onNext(values);
@@ -75,21 +78,21 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           error={errors.firstName?.message?.toString()}
           {...register("firstName")}
         />
-     
+
         <Input
           label={t("bookingGuest.lastName")}
           placeholder="e.g. Doe"
           error={errors.lastName?.message?.toString()}
           {...register("lastName")}
         />
-        
+
         <Input
           label={t("bookingGuest.idNumber")}
           placeholder="Enter ID number"
           error={errors.idNumber?.message?.toString()}
           {...register("idNumber")}
         />
-       
+
         <Controller
           control={control}
           name="guestType"
@@ -124,7 +127,6 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           {...register("email")}
           error={errors.email?.message?.toString()}
         />
-     
 
         <Input
           type="tel"
@@ -133,7 +135,6 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           {...register("phone")}
           error={errors.phone?.message?.toString()}
         />
-      
       </div>
 
       {/* Specifics */}

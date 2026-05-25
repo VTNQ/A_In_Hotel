@@ -25,7 +25,7 @@ const PaymentForm = ({
   // 🔹 TOTAL = ROOMS + SERVICES
   const handleApplyVoucher = async () => {
     if (!voucherCode) {
-      setVoucherError("Please enter voucher code");
+      setVoucherError(t("payment.validation.voucherRequired"));
       setVoucherSuccess("");
       return;
     }
@@ -42,13 +42,14 @@ const PaymentForm = ({
       const discountAmount = res.data?.data?.discountAmount || 0;
 
       setDiscount(discountAmount);
-      setVoucherSuccess("Voucher applied successfully");
+    setVoucherSuccess(t("payment.validation.voucherSuccess"));
     } catch (err: any) {
       setDiscount(0);
       setVoucherSuccess("");
       setVoucherCode("");
       setVoucherError(
-        err?.response?.data?.message || "Invalid or expired voucher",
+        err?.response?.data?.message ||
+          t("payment.validation.voucherInvalid")
       );
     } finally {
       setIsCheckingVoucher(false);
@@ -66,7 +67,7 @@ const PaymentForm = ({
   // 🔹 OUTSTANDING = TOTAL - PAID
   const outstanding = Math.max(0, Number(finalTotal) - paidAmount);
 
-  const buildBookingPayload = (booking: any):bookingRequest => {
+  const buildBookingPayload = (booking: any): bookingRequest => {
     const nights = booking.selectDate?.nights || 0;
 
     // ===== ROOM DETAILS =====
@@ -250,17 +251,15 @@ const PaymentForm = ({
           </label>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-1">
-           
-              <Input
-                placeholder={t("payment.voucherPlaceholder")}
-                value={voucherCode}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setVoucherCode(e.target.value);
-                  setVoucherError("");
-                  setVoucherSuccess("");
-                }}
-              />
-          
+            <Input
+              placeholder={t("payment.voucherPlaceholder")}
+              value={voucherCode}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setVoucherCode(e.target.value);
+                setVoucherError("");
+                setVoucherSuccess("");
+              }}
+            />
 
             <button
               type="button"

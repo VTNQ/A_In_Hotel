@@ -1,4 +1,21 @@
 {
+    "bookingSchedule": {
+        "validation": {
+            "checkInRequired": "Vui lòng chọn ngày nhận phòng",
+            "checkOutRequired": "Vui lòng chọn ngày trả phòng",
+            "checkOutAfterCheckIn": "Ngày trả phòng phải sau ngày nhận phòng",
+            "adultRequired": "Phải có ít nhất 1 người lớn"
+        }
+    },
+    "validation": {
+        "firstNameRequired": "Vui lòng nhập tên",
+        "lastNameRequired": "Vui lòng nhập họ",
+        "idNumberMin": "Số CMND/CCCD phải có ít nhất 6 ký tự",
+        "guestTypeRequired": "Vui lòng chọn loại khách",
+        "emailRequired": "Vui lòng nhập email",
+        "emailInvalid": "Email không hợp lệ",
+        "phoneInvalid": "Số điện thoại không hợp lệ"
+    },
     "common": {
         "saveButton": "Lưu",
         "cancelButton": "Hủy",
@@ -706,6 +723,9 @@
         "title": "Ghi nhận thanh toán",
         "voucherCode": "Mã giảm giá",
         "voucherPlaceholder": "Nhập mã giảm giá",
+        "validation": {
+            "voucherRequired": "Vui lòng nhập mã voucher"
+        },
         "apply": "Áp dụng",
         "subtitle": "Nhập số tiền khách đã thanh toán.",
         "paidAmount": "Số tiền đã trả",

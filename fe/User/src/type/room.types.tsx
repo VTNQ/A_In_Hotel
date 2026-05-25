@@ -23,9 +23,10 @@ export interface RoomGridProps {
   roomTypes:string[];
   onPageInfo: (totalPages: number) => void;
   onSelect: (room: RoomResponse) => void;
-  onLoaded: (rooms: RoomResponse[]) => void;
-  
+  onLoaded: (rooms: RoomResponse[],reset:boolean) => void;
   selectedRoomId?: number;
+  roomGrid: RoomResponse[];
+  onLoading:(loading:boolean)=>void;
 }
 export interface RoomCardProps {
   room: RoomResponse;
