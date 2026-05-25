@@ -84,6 +84,15 @@ export interface BookingResponse{
   status: number;
   details: BookingDetailResponse[];
 }
+export interface GuestFormData {
+  firstName: string;
+  lastName: string;
+  idNumber: string;
+  guestType: string;
+  email: string;
+  phone: string;
+  note: string;
+}
 export interface BookingSearch {
   hotelId?: number;
   checkIn?: string;

@@ -1249,6 +1249,15 @@
         "next": "Tiếp theo: Chọn phòng →"
     },
     "bookingGuest": {
+        "validation": {
+            "firstName": "Vui lòng nhập họ",
+            "lastName": "Vui lòng nhập tên",
+            "idNumber": "Vui lòng nhập số giấy tờ",
+            "guestType": "Vui lòng chọn loại khách",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không hợp lệ",
+            "phone": "Vui lòng nhập số điện thoại"
+        },
         "title": "Thông tin khách lưu trú",
         "step": "Bước 1/5: Vui lòng nhập thông tin khách chính để khởi tạo đặt phòng.",
         "identity": "Thông tin định danh",
@@ -1266,7 +1275,7 @@
         "cancel": "Hủy đặt phòng",
         "next": "Tiếp theo: Ngày & Giờ đặt phòng →"
     },
-      "auth": {
+    "auth": {
         "changePassword": {
             "title": "Đổi mật khẩu",
             "passwordNotMatch": "Mật khẩu xác nhận không khớp",

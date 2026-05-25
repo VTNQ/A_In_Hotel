@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { CalendarUIProps } from "../../type/common";
 import { useTranslation } from "react-i18next";
 
-
-
 function formatDate(date: Date) {
   return date.toISOString().slice(0, 10);
 }
@@ -33,7 +31,10 @@ export default function CalendarUI({
   onSelect,
 }: CalendarUIProps) {
   const { t } = useTranslation();
-  const weekDays = t("calendar.days", { returnObjects: true }) as string[];
+  const weekDays = t("calendar.days", {
+    returnObjects: true,
+    defaultValue: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  }) as string[];
   const [current, setCurrent] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);

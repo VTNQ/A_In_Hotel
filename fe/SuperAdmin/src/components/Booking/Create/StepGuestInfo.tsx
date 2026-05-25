@@ -1,36 +1,54 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import SectionHeader from "./SectionHeader";
-import { ClipboardList, Mail, User } from "lucide-react";
+import { ClipboardList, Mail, User, Watch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/ui/select";
-import { getGuestTypeOptions, GuestType } from "@/type/booking.types";
+import { getGuestTypeOptions } from "@/type/booking.types";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
   const { t } = useTranslation();
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    idNumber: "",
-    guestType: "",
-    email: "",
-    phone: "",
-    companyName: "",
-    note: "",
-    ...data,
+  const schema = z.object({
+    firstName: z.string().min(1, t("bookingGuest.validation.firstName")),
+    lastName: z.string().min(1, t("bookingGuest.validation.lastName")),
+    idNumber: z.string().min(1, t("bookingGuest.validation.idNumber")),
+    guestType: z.string().min(1, t("bookingGuest.validation.guestType")),
+    email: z
+      .string()
+      .min(1, t("bookingGuest.validation.emailRequired"))
+      .email(t("bookingGuest.validation.emailInvalid")),
+    phone: z.string().min(1, t("bookingGuest.validation.phone")),
+    companyName: z.string().optional(),
+    note: z.string().optional(),
   });
-  const update = (key: string, value: string) => {
-    setForm((p: any) => ({ ...p, [key]: value }));
+  type FormValues = z.infer<typeof schema>;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isValid },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      idNumber: "",
+      guestType: "",
+      email: "",
+      phone: "",
+      companyName: "",
+      note: "",
+      ...data,
+    },
+  });
+  const onSubmit = (form: FormValues) => {
+    onNext(form);
   };
-  const isValid =
-    form.firstName.trim() &&
-    form.lastName.trim() &&
-    form.idNumber.trim() &&
-    form.guestType &&
-    form.email.trim() &&
-    form.phone.trim();
   return (
     <div className="space-y-6 sm:space-y-8">
       <div>
@@ -49,47 +67,51 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           <label className="text-sm font-medium ">
             {t("bookingGuest.firstName")}
           </label>
-          <Input
-            placeholder="e.g. Jonathan"
-            value={form.firstName}
-            onChange={(e) => update("firstName", e.target.value)}
-          />
+          <Input placeholder="e.g. Jonathan" {...register("firstName")} />
+          {errors.firstName && (
+            <p className="text-red-500 text-sm">{errors.firstName.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
             {t("bookingGuest.lastName")}
           </label>
-          <Input
-            placeholder="e.g. Doe"
-            value={form.lastName}
-            onChange={(e) => update("lastName", e.target.value)}
-          />
+          <Input placeholder="e.g. Doe" {...register("lastName")} />
+          {errors.lastName && (
+            <p className="text-red-500 text-sm">{errors.lastName.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
             {t("bookingGuest.idNumber")}
           </label>
-          <Input
-            placeholder="Enter ID number"
-            value={form.idNumber}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              update("idNumber", e.target.value)
-            }
-          />
+          <Input placeholder="Enter ID number" {...register("idNumber")} />
+          {errors.idNumber && (
+            <p className="text-red-500 text-sm">{errors.idNumber.message}</p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
             {t("bookingGuest.guestType")}
           </label>
-          <SelectField
-            items={getGuestTypeOptions(t)}
-            value={form.guestType}
-            onChange={(v) => update("guestType", v as GuestType)}
-            isRequired={true}
-            placeholder={t("booking.createOrUpdate.selectType")}
-            getValue={(i) => i.value}
-            getLabel={(i) => i.label}
+          <Controller
+            control={control}
+            name="guestType"
+            render={({ field }) => (
+              <SelectField
+                items={getGuestTypeOptions(t)}
+                value={field.value}
+                onChange={field.onChange}
+                isRequired
+                placeholder={t("booking.createOrUpdate.selectType")}
+                getValue={(i) => i.value}
+                getLabel={(i) => i.label}
+              />
+            )}
           />
+          {errors.guestType && (
+            <p className="text-red-500 text-sm">{errors.guestType.message}</p>
+          )}
         </div>
       </div>
       <SectionHeader
@@ -103,9 +125,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           </label>
           <Input
             placeholder="name@example.com"
-            value={form.email}
-            onChange={(e) => update("email", e.target.value)}
+            {...register("email")}
           />
+            {errors.email && (
+            <p className="text-red-500 text-sm">
+              {errors.email.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="text-sm font-medium">
@@ -113,9 +139,13 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           </label>
           <Input
             placeholder="+1 (555) 000-0000"
-            value={form.phone}
-            onChange={(e) => update("phone", e.target.value)}
+            {...register("phone")}
           />
+           {errors.phone && (
+            <p className="text-red-500 text-sm">
+              {errors.phone.message}
+            </p>
+          )}
         </div>
       </div>
       <SectionHeader
@@ -127,8 +157,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         <label className="text-sm font-medium">{t("bookingGuest.note")}</label>
         <Textarea
           placeholder={t("bookingGuest.notePlaceholder")}
-          value={form.note}
-          onChange={(e) => update("note", e.target.value)}
+        {...register("note")}
         />
       </div>
       <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t pt-5">
@@ -145,7 +174,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
 
         <Button
           disabled={!isValid}
-          onClick={() => onNext(form)}
+          onClick={() => handleSubmit(onSubmit)}
           className={`
     px-5 py-2 rounded-lg text-sm font-medium transition
     ${

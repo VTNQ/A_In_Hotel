@@ -13,6 +13,16 @@
     "logout": "Logout",
     "menu": "Menu"
   },
+  "validation": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "idRequired": "ID number is required",
+    "idMin": "ID number must be at least 9 characters",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "phoneRequired": "Phone number is required",
+    "phoneMin": "Phone number must be at least 10 digits"
+  },
   "common": {
     "vnd": "VND",
     "from": "from",
@@ -23,6 +33,10 @@
   },
   "booking": {
     "title": "Booking History",
+    "validation": {
+      "checkInRequired": "Please select a check-in date",
+      "checkOutRequired": "Please select a check-out date"
+    },
     "subtitle": "Manage your luxury stays and booking history effortlessly.",
     "tabs": {
       "upcoming": "Upcoming",
@@ -361,6 +375,15 @@
   },
   "room": {
     "noNote": "No notes",
+    "loading": {
+      "title": "Loading more rooms",
+      "subtitle": "Please wait a moment..."
+    },
+    "loaded": {
+      "title": "All rooms loaded",
+      "subtitle": "No more rooms to display",
+      "noRooms": "No More Rooms"
+    },
     "hero": {
       "title": "Rooms & Suites"
     },
@@ -374,12 +397,15 @@
       }
     },
     "grid": {
-      "noRooms": "No rooms found"
+      "noRooms": "No rooms found",
+      "tryAnotherFilter": "Try changing your filters, selecting another date, or choosing a different room type."
     },
     "card": {
       "doubleBed": "Double bed",
       "guest": "guest",
-      "price": "Price"
+      "price": "Price",
+      "night": "night",
+      "viewDetail": "View details"
     },
     "detail": {
       "extraHour": "extra hour",
@@ -431,7 +457,7 @@
       "password": "••••••••"
     }
   },
-   "blogCategories": {
+  "blogCategories": {
     "allPosts": "All Posts",
     "newsUpdates": "News & Updates",
     "offersPromotions": "Offers & Promotions",

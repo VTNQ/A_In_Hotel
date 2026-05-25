@@ -1306,6 +1306,15 @@
         "back": "← Back to Room Selection"
     },
     "bookingGuest": {
+        "validation": {
+            "firstName": "First name is required",
+            "lastName": "Last name is required",
+            "idNumber": "ID number is required",
+            "guestType": "Guest type is required",
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email format",
+            "phone": "Phone number is required"
+        },
         "title": "Guest Information",
         "step": "Step 1 of 5: Please enter the primary guest’s details to initialize the booking.",
         "identity": "Identity",

@@ -7,26 +7,35 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
+  const { t } = useTranslation();
   const schema = z
     .object({
-      checkInDate: z.string().min(1, "Check-in date is required"),
+      checkInDate: z
+        .string()
+        .min(1, t("bookingSchedule.validation.checkInRequired")),
 
-      checkOutDate: z.string().min(1, "Check-out date is required"),
+      checkOutDate: z
+        .string()
+        .min(1, t("bookingSchedule.validation.checkOutRequired")),
+      checkInTime: z
+        .string()
+        .min(1, t("bookingSchedule.validation.checkInTimeRequired")),
 
-      checkInTime: z.string().min(1),
+      checkOutTime: z
+        .string()
+        .min(1, t("bookingSchedule.validation.checkOutTimeRequired")),
 
-      checkOutTime: z.string().min(1),
-
-      package: z.string().min(1),
-
-      adults: z.number().min(1, "At least 1 adult is required"),
+      package: z
+        .string()
+        .min(1, t("bookingSchedule.validation.packageRequired")),
+      adults: z.number().min(1, t("bookingSchedule.validation.adultRequired")),
 
       children: z.number().min(0),
     })
     .refine(
       (data) => new Date(data.checkOutDate) >= new Date(data.checkInDate),
       {
-        message: "Check-out date must be after check-in date",
+         message: t("bookingSchedule.validation.checkOutAfterCheckIn"),
         path: ["checkOutDate"],
       },
     );
@@ -72,7 +81,6 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
       nights,
     });
   };
-  const { t } = useTranslation();
 
   return (
     <div className="bg-gray-50">
@@ -123,7 +131,7 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
         <BookingDetailsPanel
           form={form}
           nights={nights}
-         onChange={(key: any, value: any) =>
+          onChange={(key: any, value: any) =>
             setValue(key, value, {
               shouldValidate: true,
             })

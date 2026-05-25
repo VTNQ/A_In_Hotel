@@ -1,4 +1,21 @@
 {
+  "validation":{
+  "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "idNumberMin": "ID number must be at least 6 characters",
+    "guestTypeRequired": "Guest type is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "phoneInvalid": "Invalid phone number"
+  },
+  "bookingSchedule":{
+     "validation": {
+      "checkInRequired": "Check-in date is required",
+      "checkOutRequired": "Check-out date is required",
+      "checkOutAfterCheckIn": "Check-out date must be after check-in date",
+      "adultRequired": "At least 1 adult is required"
+    }
+  },
   "common": {
     "saveButton": "Save",
     "cancelButton": "Cancel",
@@ -700,6 +717,9 @@
   "payment": {
     "title": "Record Payment",
     "voucherCode": "Voucher Code",
+    "validation":{
+        "voucherRequired": "Voucher code is required"
+    },
     "voucherPlaceholder": "Enter voucher code",
     "apply": "Apply",
     "subtitle": "Enter the amount received from the guest.",
