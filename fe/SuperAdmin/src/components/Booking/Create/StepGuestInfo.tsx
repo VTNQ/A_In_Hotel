@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import SectionHeader from "./SectionHeader";
-import { ClipboardList, Mail, User, Watch } from "lucide-react";
+import { ClipboardList, Mail, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/ui/select";
 import { getGuestTypeOptions } from "@/type/booking.types";
