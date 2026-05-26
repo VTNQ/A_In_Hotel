@@ -13,11 +13,15 @@ import RoomGallerySkeleton from "../components/RoomDetail/RoomGallerySkeleton";
 import AmenitiesSkeleton from "../components/RoomDetail/AmenitiesSkeleton";
 import BookingBoxSkeleton from "../components/RoomDetail/BookingBoxSkeleton";
 import { useTranslation } from "react-i18next";
+import type { PromotionResponse } from "../type/promotion.type";
+import { getPromotions } from "../service/api/Promotion";
+
 const RoomDetailPage = () => {
   const { t } = useTranslation();
   const [openGallery, setOpenGallery] = useState(false);
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [loadingRoomDetail, setLoadingRoomDetail] = useState(true);
+  const [promotion, setPromotion] = useState<PromotionResponse | null>(null);
 
   const { id } = useParams();
   const { setSearch } = useBookingSearch();
@@ -35,6 +39,49 @@ const RoomDetailPage = () => {
     }
   };
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!roomv2?.idRoomType) return;
+    const fetchPromotion = async () => {
+      try {
+        const res = await getPromotions({ all: true });
+
+        const promotions = res?.data?.content || [];
+
+        const now = new Date();
+
+        const activePromotion = promotions.find((p: PromotionResponse) => {
+          const start = new Date(p.startDate);
+
+          const end = new Date(p.endDate);
+
+          const matchRoomType = p.promotionRoomTypeResponses?.some(
+            (r) => r.roomTypeId === roomv2.idRoomType,
+          );
+
+          return p.isActive && start <= now && end >= now && matchRoomType;
+        });
+        setPromotion(activePromotion || null);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPromotion();
+  }, [roomv2]);
+  const calculatePromotionPrice = (price: number) => {
+    if (!promotion) return price;
+
+    // percent
+    if (promotion.type === 1) {
+      return price - (price * promotion.value) / 100;
+    }
+
+    // fixed
+    if (promotion.type === 2) {
+      return price - promotion.value;
+    }
+
+    return price;
+  };
   useEffect(() => {
     if (!id) return;
     const fetchRoom = async () => {
@@ -132,16 +179,17 @@ const RoomDetailPage = () => {
     let basePrice = 0;
 
     if (PriceType === "1") {
-      basePrice =
-        roomv2.hourlyBasePrice + extraHours * roomv2.hourlyAdditionalPrice;
+      const hourlyPrice = calculatePromotionPrice(roomv2.hourlyBasePrice);
+      basePrice = hourlyPrice + extraHours * roomv2.hourlyAdditionalPrice;
     }
 
     if (PriceType === "2") {
-      basePrice = roomv2.overnightPrice;
+      basePrice = calculatePromotionPrice(roomv2.overnightPrice);
     }
 
     if (PriceType == "3") {
-      basePrice = roomv2.defaultRate * Math.max(1, nights);
+      basePrice =
+        calculatePromotionPrice(roomv2.defaultRate) * Math.max(nights, 1);
     }
     const serviceFee = basePrice * 0.1;
 
@@ -421,38 +469,51 @@ const RoomDetailPage = () => {
                               label: t("roomDetail.booking.priceOptions.daily"),
                               price: roomv2?.defaultRate,
                             },
-                          ].map((item) => (
-                            <label
-                              key={item.key}
-                              className={`flex items-center justify-between rounded-2xl border-2 p-5 cursor-pointer transition-all duration-300 ${
-                                PriceType === item.key
-                                  ? "border-[#b38a58] bg-[#b38a58]/5 shadow-md"
-                                  : "border-gray-100 hover:border-[#b38a58]/30"
-                              }`}
-                            >
-                              <div className="flex items-center gap-4">
-                                <input
-                                  type="radio"
-                                  checked={PriceType === item.key}
-                                  onChange={() => {
-                                    setPriceType(item.key as PriceType);
-                                    setExtraHours(0);
-                                  }}
-                                  className="w-5 h-5 accent-[#b38a58]"
-                                />
+                          ].map((item) => {
+                            const finalPrice = calculatePromotionPrice(
+                              item.price || 0,
+                            );
+                            return (
+                              <label
+                                key={item.key}
+                                className={`flex items-center justify-between rounded-2xl border-2 p-5 cursor-pointer transition-all duration-300 ${
+                                  PriceType === item.key
+                                    ? "border-[#b38a58] bg-[#b38a58]/5 shadow-md"
+                                    : "border-gray-100 hover:border-[#b38a58]/30"
+                                }`}
+                              >
+                                <div className="flex items-center gap-4">
+                                  <input
+                                    type="radio"
+                                    checked={PriceType === item.key}
+                                    onChange={() => {
+                                      setPriceType(item.key as PriceType);
+                                      setExtraHours(0);
+                                    }}
+                                    className="w-5 h-5 accent-[#b38a58]"
+                                  />
 
-                                <div>
-                                  <p className="font-semibold text-gray-800">
-                                    {item.label}
-                                  </p>
+                                  <div>
+                                    <p className="font-semibold text-gray-800">
+                                      {item.label}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
+                                <div className="flex flex-col items-end">
+                                  <span className="font-black text-xl text-[#b38a58]">
+                                    {finalPrice.toLocaleString()}đ
+                                  </span>
 
-                              <span className="font-black text-[#b38a58]">
-                                {item.price?.toLocaleString()}đ
-                              </span>
-                            </label>
-                          ))}
+                                  {/* OLD PRICE */}
+                                  {promotion && (
+                                    <span className="text-sm text-gray-400 line-through">
+                                      {item.price?.toLocaleString()}đ
+                                    </span>
+                                  )}
+                                </div>
+                              </label>
+                            );
+                          })}
                         </div>
                         <div
                           className={`rounded-2xl p-5 transition-all ${
@@ -501,8 +562,33 @@ const RoomDetailPage = () => {
                             <span>
                               {nights} {t("roomDetail.booking.night")}
                             </span>
-
-                            <span>{priceResult.base.toLocaleString()}đ</span>
+                            <div className="flex flex-col items-end">
+                              <span>{priceResult.base.toLocaleString()}đ</span>
+                              {promotion && PriceType === "3" && (
+                                <span className="text-xs text-gray-400 line-through">
+                                  {(
+                                    (roomv2?.defaultRate || 0) *
+                                    Math.max(1, nights)
+                                  ).toLocaleString()}
+                                  đ
+                                </span>
+                              )}
+                              {promotion && PriceType === "2" && (
+                                <span className="text-xs text-gray-400 line-through">
+                                  {roomv2?.overnightPrice?.toLocaleString()}đ
+                                </span>
+                              )}
+                              {promotion && PriceType === "1" && (
+                                <span className="text-xs text-gray-400 line-through">
+                                  {(
+                                    (roomv2?.hourlyBasePrice || 0) +
+                                    extraHours *
+                                      (roomv2?.hourlyAdditionalPrice || 0)
+                                  ).toLocaleString()}
+                                  đ
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <div className="flex justify-between items-end">
                             <span className="text-lg font-bold text-gray-900">
@@ -567,10 +653,12 @@ const RoomDetailPage = () => {
                         key={room.id}
                         id={room.id}
                         title={room.roomName}
+                        roomTypeName={room.roomTypeName}
                         price={room.defaultRate}
                         image={room.images?.[0]?.url}
                         size={room.area}
                         guests={room.capacity}
+                      
                         bed={t("roomDetail.booking.doubleBed")}
                         description={room.note}
                       />
