@@ -1,4 +1,5 @@
 import type { ImageResponse } from "./common";
+import type { PromotionResponse } from "./promotion.type";
 
 export interface RoomResponse {
   id: number;
@@ -11,6 +12,7 @@ export interface RoomResponse {
   hourlyBasePrice: number;
   overnightPrice: number;
   hourlyAdditionalPrice: number;
+  idRoomType: number;
   hotelId: number;
   note: string;
   defaultRate: number;
@@ -20,6 +22,7 @@ export interface RoomGridProps {
   page: number;
   priceRange: string[];
   assets:string[];
+  promotions?: Map<number,PromotionResponse>;
   roomTypes:string[];
   onPageInfo: (totalPages: number) => void;
   onSelect: (room: RoomResponse) => void;
@@ -32,4 +35,5 @@ export interface RoomCardProps {
   room: RoomResponse;
   onClick: () => void;
   isSelected?: boolean;
+ promotion?: PromotionResponse;
 }

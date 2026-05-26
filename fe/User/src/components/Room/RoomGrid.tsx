@@ -15,6 +15,7 @@ const RoomGrid = ({
   selectedRoomId,
   priceRange,
   roomTypes,
+  promotions,
   assets,
   roomGrid,
   onLoading,
@@ -181,6 +182,7 @@ const RoomGrid = ({
                 room={room}
                 isSelected={room.id === selectedRoomId}
                 onClick={() => onSelect(room)}
+                promotion={promotions?.get(room.idRoomType)}
               />
             </motion.div>
           ))}

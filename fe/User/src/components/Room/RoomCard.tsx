@@ -3,8 +3,20 @@ import { File_URL } from "../../setting/constant/app";
 import type { RoomCardProps } from "../../type/room.types";
 import { useTranslation } from "react-i18next";
 
-const RoomCard = ({ room, onClick, isSelected }: RoomCardProps) => {
+const RoomCard = ({ room, onClick, isSelected, promotion }: RoomCardProps) => {
   const { t } = useTranslation();
+  const calculatePromotionPrice = () => {
+    if (!promotion) return room.defaultRate;
+
+    if (promotion.type === 1) {
+      return room.defaultRate - (room.defaultRate * promotion.value) / 100;
+    }
+    if (promotion.type === 2) {
+      return room.defaultRate - promotion.value;
+    }
+    return room.defaultRate;
+  };
+  const finalPrice = calculatePromotionPrice();
   return (
     <div
       onClick={onClick}
@@ -78,9 +90,21 @@ const RoomCard = ({ room, onClick, isSelected }: RoomCardProps) => {
 
           <div className="text-right">
             <div className="text-xs text-gray-400">{t("room.card.price")}</div>
-            <div className="text-base sm:text-lg font-semibold text-[#b38a58]">
-              {room.defaultRate.toLocaleString()} ₫
-            </div>
+            {promotion ? (
+              <div className="flex flex-col items-end">
+                <div className="text-xl font-bold text-[#b38a58]">
+                  {finalPrice.toLocaleString()} ₫
+                </div>
+                <div className="text-sm text-gray-400 line-through">
+                  {room.defaultRate.toLocaleString()} ₫
+                </div>
+              </div>
+            ) : (
+              <div className="text-base sm:text-lg font-semibold text-[#b38a58]">
+                {room.defaultRate.toLocaleString()} ₫
+              </div>
+            )}
+            
           </div>
         </div>
       </div>

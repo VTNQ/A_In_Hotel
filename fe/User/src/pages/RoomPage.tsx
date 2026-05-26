@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { RoomResponse } from "../type/room.types";
 
 import RoomHero from "../components/Room/RoomHero";
@@ -7,12 +7,15 @@ import RoomGrid from "../components/Room/RoomGrid";
 import ExploreOtherRooms from "../components/Room/ExploreOtherRooms";
 import RoomDetail from "../components/Room/RoomDetail";
 import { useTranslation } from "react-i18next";
+import type { PromotionResponse } from "../type/promotion.type";
+import { getPromotions } from "../service/api/Promotion";
 
 const RoomPage = () => {
   const [selectedRoom, setSelectedRoom] = useState<RoomResponse | null>(null);
 
   const [roomGrid, setRoomGrid] = useState<RoomResponse[]>([]);
   const { t } = useTranslation();
+  const [promotions,setPromotions] = useState<PromotionResponse[]>([]);
   const [page, setPage] = useState(1);
 
   const [totalPages, setTotalPages] = useState(1);
@@ -24,7 +27,33 @@ const RoomPage = () => {
   const [assets, setAssets] = useState<string[]>([]);
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  useEffect(()=>{
+    const fetchPromotions = async()=>{
+      try{
+        const res = await getPromotions({all:true});
+        const now = new Date();
+         const activePromotions =
+          res?.data?.content?.filter(
+            (promotion: PromotionResponse) => {
+              const start = new Date(promotion.startDate);
 
+              const end = new Date(promotion.endDate);
+
+              return (
+                promotion.isActive &&
+                start <= now &&
+                end >= now
+              );
+            },
+          ) || [];
+
+        setPromotions(activePromotions);
+      }catch(err){
+        console.error(err)
+      }
+    }
+    fetchPromotions();
+  },[])
   // RESET WHEN FILTER CHANGES
   useEffect(() => {
     setPage(1);
@@ -52,6 +81,17 @@ const RoomPage = () => {
 
     return () => observer.disconnect();
   }, [loading, page, totalPages]);
+  const promotionMap = useMemo(()=>{
+      const map = new Map<number,PromotionResponse>();
+      promotions.forEach((promotion)=>{
+        promotion.promotionRoomTypeResponses?.forEach(
+          (roomType)=>{
+            map.set(roomType.roomTypeId,promotion);
+          }
+        )
+      });
+      return map;
+  },[promotions])
 
   return (
     <div className="bg-[#FBF7F2] min-h-screen">
@@ -77,6 +117,7 @@ const RoomPage = () => {
               page={page}
               priceRange={priceRanges}
               roomTypes={roomTypes}
+              promotions={promotionMap}
               assets={assets}
               selectedRoomId={selectedRoom?.id}
               roomGrid={roomGrid}
