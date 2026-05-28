@@ -2,7 +2,10 @@ import { SelectField } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-type Option = { label: string; value: string };
+type Option = {
+  label: string;
+  value: string;
+};
 
 const ServiceFilter = ({
   value,
@@ -15,7 +18,10 @@ const ServiceFilter = ({
   const { t } = useTranslation();
 
   const options: Option[] = [
-    { label: t("serviceSelection.allServices"), value: "all" },
+    {
+      label: t("serviceSelection.allServices"),
+      value: "all",
+    },
     ...categories.map((c: any) => ({
       label: c.name,
       value: String(c.id),
@@ -29,30 +35,55 @@ const ServiceFilter = ({
   return (
     <div
       className="
-        grid grid-cols-1 sm:grid-cols-[280px_1fr] gap-4 mt-4
-        rounded-2xl border p-4
+        mt-4 grid grid-cols-1 gap-4 rounded-2xl border p-4
         border-gray-200 bg-white
+        dark:border-neutral-800 dark:bg-neutral-900
+        sm:grid-cols-[280px_1fr]
       "
     >
       {/* SEARCH */}
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label
+          className="
+            mb-1.5 block text-sm font-medium
+            text-gray-700
+            dark:text-neutral-300
+          "
+        >
           {t("serviceSelection.searchLabel", "Tìm kiếm")}
         </label>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search
+            className="
+              absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2
+              text-gray-400
+              dark:text-neutral-500
+            "
+          />
+
           <input
             value={search}
             disabled={disabled}
             onChange={(e) => onSearch(e.target.value)}
             placeholder={t("serviceSelection.searchPlaceholder")}
             className="
-              w-full h-10 pl-9 pr-3
-              border border-gray-300 rounded-md
-              text-sm outline-none transition
+              h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none transition
+              border-gray-300 bg-white text-gray-900
               focus:ring-2 focus:ring-indigo-400
-              disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed
+
+              dark:border-neutral-700
+              dark:bg-neutral-800
+              dark:text-white
+              dark:placeholder:text-neutral-500
+              dark:focus:ring-indigo-500
+
+              disabled:cursor-not-allowed
+              disabled:bg-gray-100
+              disabled:text-gray-400
+
+              dark:disabled:bg-neutral-950
+              dark:disabled:text-neutral-600
             "
           />
         </div>

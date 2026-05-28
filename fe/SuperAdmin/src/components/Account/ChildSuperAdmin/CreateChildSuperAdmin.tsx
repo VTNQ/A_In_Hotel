@@ -114,171 +114,213 @@ const CreateChildSuperAdmin = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {t("childSuperAdmin.title")}
-          </h1>
-          <Breadcrumb
-            items={[
-              { label: t("childSuperAdmin.breadcrumb.home"), href: "/Home" },
-              {
-                label: t("childSuperAdmin.breadcrumb.Child"),
-                href: "/Home/ChildSuperAdmin",
-              },
-              { label: t("adminCreate.title") },
-            ]}
-          />
-        </div>
+ return (
+  <div className="min-h-screen bg-gray-50 p-6 dark:bg-neutral-950">
+    <div className="mx-auto mb-6 flex items-center justify-between">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          {t("childSuperAdmin.title")}
+        </h1>
+
+        <Breadcrumb
+          items={[
+            { label: t("childSuperAdmin.breadcrumb.home"), href: "/Home" },
+            {
+              label: t("childSuperAdmin.breadcrumb.Child"),
+              href: "/Home/ChildSuperAdmin",
+            },
+            { label: t("adminCreate.title") },
+          ]}
+        />
       </div>
-      <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-1">
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-gray-100 p-4">
-            <h3 className="text-lg font-semibold text-gray-800">
-              {" "}
-              {t("childSuperAdmin.form.info")}
-            </h3>
-          </div>
-          <div className="p-6">
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-              {/* Email */}
-              <div>
-                <Label>{t("common.email")}</Label>
-                <Input
-                  placeholder={t("childSuperAdmin.form.emailPlaceholder")}
-                  type="email"
-                  {...register("email")}
-                  className="mt-3"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
+    </div>
 
-              {/* Tên đầy đủ */}
-              <div>
-                <Label>{t("common.fullName")}</Label>
-                <Input
-                  placeholder={t("childSuperAdmin.form.fullNamePlaceholder")}
-                  {...register("fullName")}
-                  className="mt-3"
-                />
-                {errors.fullName && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.fullName.message}
-                  </p>
-                )}
-              </div>
+    <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-1">
+      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+        {/* HEADER */}
+        <div className="flex items-center justify-between border-b border-gray-100 p-4 dark:border-neutral-800">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+            {t("childSuperAdmin.form.info")}
+          </h3>
+        </div>
 
-              {/* Số điện thoại */}
-              <div>
-                <Label>{t("common.phone")}</Label>
-                <Input
-                  placeholder={t("childSuperAdmin.form.phonePlaceholder")}
-                  {...register("phone")}
-                  className="mt-3"
-                />
-                {errors.phone && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
+        {/* BODY */}
+        <div className="p-6">
+          <form
+            className="space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            {/* Email */}
+            <div>
+              <Label className="dark:text-gray-200">
+                {t("common.email")}
+              </Label>
 
-              {/* Ngày sinh */}
-              <div>
-                <Label>{t("common.birthday")}</Label>
-                <Controller
-                  control={control}
-                  name="birthday"
-                  render={({ field }) => (
-                    <DatePickerField
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="mt-3"
-                      placeholder={t("adminCreate.birthdayPlaceholder")}
-                    />
-                  )}
-                />
-                {errors.birthday && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.birthday.message}
-                  </p>
-                )}
-              </div>
+              <Input
+                placeholder={t("childSuperAdmin.form.emailPlaceholder")}
+                type="email"
+                {...register("email")}
+                className="mt-3 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:placeholder:text-gray-500"
+              />
 
-              {/* Giới tính */}
-              <div>
-                <Label className="mb-3">{t("common.gender")}</Label>
-                <SelectField
-                  isRequired={true}
-                  items={GENDER_OPTIONS}
-                  value={formData.gender}
-                  onChange={(val) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      gender: val as Gender,
-                    }));
-                  }}
-                  placeholder={t("childSuperAdmin.form.genderPlaceholder")}
-                  getValue={(item) => item.value}
-                  getLabel={(item) => t(item.labelKey)}
-                  clearable={false}
-                />
-                {errors.gender && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.gender.message}
-                  </p>
-                )}
-              </div>
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
-              {/* Avatar */}
-              <div>
-                <Label>{t("common.avatar")}</Label>
-               <Controller
-                  control={control}
-                  name="image"
-                  render={() => (
-                    <UploadField
-                      className="w-full mt-2"
-                      value={watch("image")}
-                      onChange={(files) =>
-                        setValue("image", files?.[0] ?? null, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                    />
-                  )}
-                />
-                {errors.gender && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.gender.message}
-                  </p>
-                )}
-              </div>
+            {/* Full Name */}
+            <div>
+              <Label className="dark:text-gray-200">
+                {t("common.fullName")}
+              </Label>
 
-              {/* Submit button */}
-              <Button type="submit" disabled={isSubmitting || !isValid}>
-                {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    {t("common.saving")}
-                  </span>
-                ) : (
-                  t("common.save")
+              <Input
+                placeholder={t("childSuperAdmin.form.fullNamePlaceholder")}
+                {...register("fullName")}
+                className="mt-3 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:placeholder:text-gray-500"
+              />
+
+              {errors.fullName && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.fullName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <Label className="dark:text-gray-200">
+                {t("common.phone")}
+              </Label>
+
+              <Input
+                placeholder={t("childSuperAdmin.form.phonePlaceholder")}
+                {...register("phone")}
+                className="mt-3 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:placeholder:text-gray-500"
+              />
+
+              {errors.phone && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+
+            {/* Birthday */}
+            <div>
+              <Label className="dark:text-gray-200">
+                {t("common.birthday")}
+              </Label>
+
+              <Controller
+                control={control}
+                name="birthday"
+                render={({ field }) => (
+                  <DatePickerField
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="mt-3"
+                    placeholder={t("adminCreate.birthdayPlaceholder")}
+                  />
                 )}
-              </Button>
-            </form>
-          </div>
+              />
+
+              {errors.birthday && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.birthday.message}
+                </p>
+              )}
+            </div>
+
+            {/* Gender */}
+            <div>
+              <Label className="mb-3 dark:text-gray-200">
+                {t("common.gender")}
+              </Label>
+
+              <SelectField
+                isRequired={true}
+                items={GENDER_OPTIONS}
+                value={formData.gender}
+                onChange={(val) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    gender: val as Gender,
+                  }));
+
+                  setValue("gender", String(val), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }}
+                placeholder={t(
+                  "childSuperAdmin.form.genderPlaceholder",
+                )}
+                getValue={(item) => item.value}
+                getLabel={(item) => t(item.labelKey)}
+                clearable={false}
+              />
+
+              {errors.gender && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.gender.message}
+                </p>
+              )}
+            </div>
+
+            {/* Avatar */}
+            <div>
+              <Label className="dark:text-gray-200">
+                {t("common.avatar")}
+              </Label>
+
+              <Controller
+                control={control}
+                name="image"
+                render={() => (
+                  <UploadField
+                    className="mt-2 w-full"
+                    value={watch("image")}
+                    onChange={(files) =>
+                      setValue("image", files?.[0] ?? null, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                )}
+              />
+
+              {errors.image && (
+                <p className="mt-1 text-xs text-red-500">
+                  {String(errors.image.message)}
+                </p>
+              )}
+            </div>
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !isValid}
+              className="dark:border-neutral-700"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t("common.saving")}
+                </span>
+              ) : (
+                t("common.save")
+              )}
+            </Button>
+          </form>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default CreateChildSuperAdmin;

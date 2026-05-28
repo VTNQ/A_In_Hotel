@@ -30,15 +30,15 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-neutral-100">
           {t("bookingDateTime.title")}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">
           {t("bookingDateTime.step")}
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 border rounded-xl p-3 sm:p-4 bg-white">
+        <div className="lg:col-span-2 border border-gray-200 dark:border-neutral-800 rounded-xl p-3 sm:p-4 bg-white dark:bg-neutral-900">
           <CalendarRange
             value={{
               start: form.checkInDate,
@@ -61,13 +61,13 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
           }
         />
       </div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-t pt-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-t border-gray-200 dark:border-neutral-800 pt-5">
         <button
           onClick={onCancel}
           className="
             px-4 py-2 rounded-lg text-sm font-medium
-            text-gray-600 border border-gray-300 bg-white
-            hover:bg-gray-50 transition
+            text-gray-600 dark:text-neutral-300 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800
+            hover:bg-gray-50 dark:hover:bg-neutral-700 transition
           "
         >
           {t("bookingDateTime.cancel")}
@@ -76,9 +76,9 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
           <button
             onClick={onBack}
             className="
-              px-4 py-2 rounded-lg text-sm
-              bg-gray-100 text-gray-700
-              hover:bg-gray-200 transition
+              px-4 py-2 rounded-lg text-sm font-medium
+              bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-neutral-300
+              hover:bg-gray-200 dark:hover:bg-neutral-700 transition
             "
           >
             {t("bookingDateTime.back")}
@@ -92,7 +92,7 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
               ${
                 isValid
                   ? "bg-indigo-500 text-white hover:bg-indigo-600"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 text-gray-400 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
               }
             `}
           >

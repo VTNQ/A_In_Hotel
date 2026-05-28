@@ -29,6 +29,7 @@ import UserDropdown from "./UserDropdown";
 import { useAuthWatcher } from "@/hooks/useAuthWatcher";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useTheme } from "./theme-provider";
 
 /**
  * AdminLayout
@@ -39,7 +40,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
  */
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const [dark, setDark] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
   const SECTIONS: SectionSpec[] = [
@@ -188,10 +189,6 @@ export default function AdminLayout() {
 
   useAuthWatcher(setAuthChecking, setShowModal);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    dark ? root.classList.add("dark") : root.classList.remove("dark");
-  }, [dark]);
 
   if (authChecking) return null;
 
@@ -225,8 +222,11 @@ export default function AdminLayout() {
 
           {/* RIGHT */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <IconBtn label="Theme" onClick={() => setDark((v) => !v)}>
-              {dark ? <SunMedium size={18} /> : <Moon size={18} />}
+            <IconBtn 
+              label="Theme" 
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? <SunMedium size={18} /> : <Moon size={18} />}
             </IconBtn>
 
             <LanguageSwitcher />

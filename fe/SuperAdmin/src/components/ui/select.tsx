@@ -29,19 +29,25 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       aria-invalid={error ? true : undefined}
       className={cn(
-        "flex items-center justify-between gap-2 rounded-md border bg-background shadow-xs outline-none transition",
+        "flex items-center justify-between gap-2 rounded-md border border-slate-300 bg-white text-slate-900 shadow-xs outline-none transition",
         "hover:bg-accent/30",
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40",
         "disabled:cursor-not-allowed disabled:opacity-50",
 
+        // DARK
+        "dark:border-neutral-800 dark:bg-neutral-900 dark:text-slate-100",
+        "dark:hover:bg-neutral-900",
+
         size === "sm" && "h-9 px-3 text-sm min-w-[100px] sm:min-w-[120px]",
-        size === "md" && "h-10 px-3.5 text-sm min-w-[120px] sm:min-w-[160px]",
-        size === "lg" && "h-11 px-4 text-base min-w-[140px] sm:min-w-[200px]",
+        size === "md" &&
+          "h-10 px-3.5 text-sm min-w-[120px] sm:min-w-[160px]",
+        size === "lg" &&
+          "h-11 px-4 text-base min-w-[140px] sm:min-w-[200px]",
 
         fullWidth ? "w-full" : "w-auto",
 
         error &&
-          "border-destructive/70 focus-visible:ring-destructive/25 focus-visible:border-destructive",
+          "border-destructive/70 focus-visible:ring-destructive/25 focus-visible:border-destructive dark:border-red-500",
 
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
@@ -49,10 +55,11 @@ function SelectTrigger({
       {...props}
     >
       <div className="min-w-0 flex-1 truncate">{children}</div>
-      {/* nút clear / icon khác */}
+
       {rightAdornment}
+
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="opacity-60" />
+        <ChevronDown className="opacity-60 dark:text-slate-400" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -69,23 +76,29 @@ function SelectContent({
       <SelectPrimitive.Content
         position={position}
         className={cn(
-          "relative z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md",
+          "relative z-50 overflow-hidden rounded-md border border-slate-200 bg-white text-slate-900 shadow-md",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
           "w-[var(--radix-select-trigger-width)] max-w-[95vw]",
+
+          // DARK
+          "dark:border-neutral-800 dark:bg-neutral-900 dark:text-slate-100",
+
           className,
         )}
         {...props}
       >
-        <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 text-muted-foreground">
+        <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 text-muted-foreground dark:text-slate-400">
           <ChevronUp className="size-4" />
         </SelectPrimitive.ScrollUpButton>
-        <SelectPrimitive.Viewport className="max-h-[240px] sm:max-h-[320px] p-1">
+
+        <SelectPrimitive.Viewport className="max-h-[240px] p-1 sm:max-h-[320px]">
           {children}
         </SelectPrimitive.Viewport>
-        <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 text-muted-foreground">
+
+        <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 text-muted-foreground dark:text-slate-400">
           <ChevronDown className="size-4" />
         </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
@@ -104,6 +117,10 @@ function SelectItem({
         "relative flex w-full select-none items-center gap-2 rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none",
         "cursor-default data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         "focus:bg-accent focus:text-accent-foreground",
+
+        // DARK
+        "dark:text-slate-100 dark:focus:bg-neutral-900 dark:focus:text-white",
+
         className,
       )}
       {...props}
@@ -113,6 +130,7 @@ function SelectItem({
           <Check className="size-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
+
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
@@ -169,14 +187,14 @@ function SelectField<T>({
       <span
         role="button"
         tabIndex={0}
-        className="group -mr-1 rounded p-1 hover:bg-muted/60 cursor-pointer"
+        className="group -mr-1 cursor-pointer rounded p-1 hover:bg-muted/60 dark:hover:bg-slate-700"
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
           onChange?.(null, undefined);
         }}
       >
-        <X className="size-4 opacity-60 group-hover:opacity-100" />
+        <X className="size-4 opacity-60 group-hover:opacity-100 dark:text-slate-300" />
       </span>
     ) : null;
 
@@ -184,7 +202,7 @@ function SelectField<T>({
     <div className={cn(fullWidth ? "w-full" : "w-auto", "min-w-0")}>
       {/* LABEL */}
       {label && (
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">
           {label}
           {isRequired && <span className="ml-1 text-red-500">*</span>}
         </label>
@@ -228,12 +246,25 @@ function SelectField<T>({
         </SelectContent>
       </Select>
 
-      {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
+      {error && (
+        <p className="mt-1.5 text-xs text-destructive dark:text-red-400">
+          {error}
+        </p>
+      )}
+
       {description && !error && (
-        <p className="mt-1.5 text-xs text-muted-foreground">{description}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground dark:text-slate-400">
+          {description}
+        </p>
       )}
     </div>
   );
 }
 
-export { Select, SelectTrigger, SelectContent, SelectItem, SelectField };
+export {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectField,
+};

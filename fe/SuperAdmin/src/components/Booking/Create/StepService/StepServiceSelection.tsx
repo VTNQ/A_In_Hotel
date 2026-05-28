@@ -41,7 +41,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           }),
         ]);
 
-        setCategories(categoryResp?.content || []);
+        setCategories(categoryResp?.data?.content || []);
         setServices(serviceResp.data?.content || []);
       } catch (e) {
         console.error(e);
@@ -61,18 +61,18 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   const ServiceSkeleton = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="h-28 bg-gray-200 rounded-lg animate-pulse" />
+        <div key={i} className="h-28 bg-gray-200 dark:bg-neutral-800 rounded-lg animate-pulse" />
       ))}
     </div>
   );
   return (
-    <div className=" min-h-screen p-6">
+    <div className="space-y-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
           {" "}
           {t("serviceSelection.title")}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">
           {t("serviceSelection.subtitle")}
         </p>
       </div>
@@ -89,7 +89,7 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           {loading ? (
             <ServiceSkeleton />
           ) : services.length === 0 ? (
-            <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
+            <p className="text-gray-500 dark:text-neutral-400">{t("serviceSelection.noServices")}</p>
           ) : (
             services.map((service) => (
               <ServiceCard
@@ -117,13 +117,13 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           }
         />
       </div>
-      <div className="flex justify-between items-center pt-5">
+      <div className="flex justify-between items-center border-t border-gray-200 dark:border-neutral-800 pt-5">
         <button
           onClick={onCancel}
           className="
             px-4 py-2 rounded-lg text-sm font-medium
-            text-gray-600 border border-gray-300 bg-white
-            hover:bg-gray-50 transition
+            text-gray-600 dark:text-neutral-300 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800
+            hover:bg-gray-50 dark:hover:bg-neutral-700 transition
           "
         >
           {t("bookingDateTime.cancel")}
@@ -131,9 +131,9 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         <button
           onClick={onBack}
           className="
-              px-4 py-2 rounded-lg text-sm
-              bg-gray-100 text-gray-700
-              hover:bg-gray-200 transition
+              px-4 py-2 rounded-lg text-sm font-medium
+              bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-neutral-300
+              hover:bg-gray-200 dark:hover:bg-neutral-700 transition
             "
         >
           {t("bookingDateTime.back")}

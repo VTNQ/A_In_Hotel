@@ -139,26 +139,26 @@ const AboutHotelContent = () => {
   };
   console.log(errors)
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50 dark:bg-neutral-950 min-h-screen">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
           {t("systemContent.aboutHotel.title")}
         </h1>
         <p className="text-sm text-gray-500 mt-1">
           {t("systemContent.breadcrumb.systemManagement")} /{" "}
           {t("systemContent.breadcrumb.systemContent")} /{" "}
-          <span className="text-blue-600">
+          <span className="text-blue-600 dark:text-blue-400">
             {t("systemContent.aboutHotel.title")}
           </span>
         </p>
       </div>
 
       {/* Card */}
-      <div className="bg-white rounded-xl shadow-sm border">
+      <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border dark:border-neutral-800">
         {/* Card Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="font-medium text-gray-900">
+        <div className="flex items-center justify-between px-6 py-4 border-b dark:border-neutral-800">
+          <h2 className="font-medium text-gray-900 dark:text-neutral-100">
             {t("systemContent.aboutHotel.editTitle")}
           </h2>
           <span className="text-xs text-gray-400">
@@ -170,7 +170,7 @@ const AboutHotelContent = () => {
         <div className="p-6 space-y-6">
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">
               {t("systemContent.aboutHotel.form.title")}{" "}
               <span className="text-red-500">*</span>
             </label>
@@ -185,7 +185,7 @@ const AboutHotelContent = () => {
                 placeholder={t(
                   "systemContent.aboutHotel.form.titlePlaceholder",
                 )}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm
+                className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 rounded-md text-sm
                  focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
               {errors.title && (
@@ -198,7 +198,7 @@ const AboutHotelContent = () => {
             </p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">
               {t("systemContent.aboutHotel.form.description")}{" "}
               <span className="text-red-500">*</span>
             </label>
@@ -209,7 +209,7 @@ const AboutHotelContent = () => {
               placeholder={t(
                 "systemContent.aboutHotel.form.descriptionPlaceholder",
               )}
-              className="w-full border border-gray-300 rounded-md p-3 text-sm text-gray-700
+              className="w-full border border-gray-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 rounded-md p-3 text-sm
                focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.description && (
@@ -226,14 +226,14 @@ const AboutHotelContent = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* CTA */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">
                 {t("systemContent.aboutHotel.form.cta")}
               </label>
               <input
                 type="text"
                 {...register("ctaText")}
                 placeholder={t("systemContent.aboutHotel.form.ctaPlaceholder")}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full border border-gray-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
               {errors.ctaText && (
                 <p className="text-red-500 text-sm">{errors.ctaText.message}</p>
@@ -245,14 +245,14 @@ const AboutHotelContent = () => {
 
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">
                 {t("systemContent.aboutHotel.form.image")}
               </label>
 
               <div className="flex gap-4 items-start">
                 {/* Preview Image */}
                 {preview && (
-                  <div className="w-[140px] h-[140px] rounded-md overflow-hidden border">
+                  <div className="w-[140px] h-[140px] rounded-md overflow-hidden border dark:border-neutral-700">
                     <img
                       src={preview}
                       alt="Preview"
@@ -262,7 +262,7 @@ const AboutHotelContent = () => {
                 )}
 
                 {/* Upload Box */}
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-[140px] w-full cursor-pointer hover:border-blue-500 transition">
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-neutral-700 rounded-md h-[140px] w-full cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 dark:bg-neutral-800/50 transition">
                   <input
                     type="file"
                     className="hidden"
@@ -281,8 +281,8 @@ const AboutHotelContent = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <button className="px-4 py-2 rounded-md border text-gray-600 hover:bg-gray-100">
+          <div className="flex justify-end gap-3 pt-4 border-t dark:border-neutral-800">
+            <button className="px-4 py-2 rounded-md border dark:border-neutral-700 text-gray-600 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition">
               {t("common.cancel")}
             </button>
             <button

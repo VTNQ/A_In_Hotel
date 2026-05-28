@@ -46,18 +46,18 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     onChange("checkOutTime", time.checkOut);
   }, [form.package]);
   return (
-    <div className="border rounded-xl p-3 sm:p-4 bg-white space-y-4">
-      <h3 className="font-semibold text-gray-900">
+    <div className="border border-gray-200 dark:border-neutral-800 rounded-xl p-3 sm:p-4 bg-white dark:bg-neutral-900 space-y-4">
+      <h3 className="font-semibold text-gray-900 dark:text-neutral-100">
         {t("bookingDateTime.bookingDetails")}
       </h3>
       <div>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
           {t("bookingDateTime.checkInDate")}
         </label>
         <Input value={form.checkInDate} readOnly />
       </div>
       <div>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
           {t("bookingDateTime.checkInTime")}
         </label>
         <Input
@@ -69,13 +69,13 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
       </div>
   
       <div>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
           {t("bookingDateTime.checkOutDate")}
         </label>
         <Input value={form.checkOutDate} readOnly />
       </div>
           <div>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
           {t("bookingDateTime.checkOutTime")}
         </label>
         <Input
@@ -86,7 +86,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
         />
       </div>
       <div>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
           {t("bookingDateTime.package")}
         </label>
         <SelectField
@@ -102,7 +102,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingDateTime.adults")}
           </label>
           <Input
@@ -112,7 +112,7 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
           />
         </div>
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingDateTime.children")}
           </label>
           <Input
@@ -123,9 +123,9 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
         </div>
       </div>
 
-      <div className="border-t pt-4 text-sm flex justify-between">
-        <span>{t("bookingDateTime.duration")}</span>
-        <span className="font-medium text-indigo-600">
+      <div className="border-t border-gray-200 dark:border-neutral-800 pt-4 text-sm flex justify-between">
+        <span className="text-gray-600 dark:text-neutral-400">{t("bookingDateTime.duration")}</span>
+        <span className="font-medium text-indigo-600 dark:text-indigo-400">
           {nights}{" "}
           {nights > 1
             ? t("bookingDateTime.nights")

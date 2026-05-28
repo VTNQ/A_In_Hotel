@@ -18,18 +18,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const CreateBlogPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const blogSchema = z.object({
     title: z.string().min(1, t("blog.validate.titleRequired")),
     category: z.string().min(1, t("blog.validate.categoryRequired")),
     description: z.string().optional(),
-    content: z
-      .string()
-      .optional()
-      ,
+    content: z.string().optional(),
     status: z.string(),
     image: createImageBlogSchema(t),
   });
+
   type FormData = z.infer<typeof blogSchema>;
+
   const {
     handleSubmit,
     reset,
@@ -62,34 +62,31 @@ const CreateBlogPage = () => {
     { id: "9", name: t("blog.blogCategories.travelTips") },
     { id: "10", name: t("blog.blogCategories.guestExperiences") },
   ];
+
   const { showAlert } = useAlert();
+
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
-
       [{ header: 1 }, { header: 2 }],
       [{ font: [] }],
       [{ size: [] }],
-
       [{ color: [] }, { background: [] }],
-
       [{ align: [] }],
-
       [{ list: "ordered" }, { list: "bullet" }],
-
       ["link", "image"],
-
       ["blockquote", "code-block"],
-
       [{ indent: "-1" }, { indent: "+1" }],
-
       ["clean"],
     ],
   };
+
   const [submitting, setSubmitting] = useState(false);
+
   const onSubmit = async (data: FormData) => {
     try {
       setSubmitting(true);
+
       const cleanedData = Object.fromEntries(
         Object.entries({
           title: data.title,
@@ -103,12 +100,15 @@ const CreateBlogPage = () => {
           value?.toString().trim() === "" ? null : value,
         ]),
       );
+
       const response = await createBlog(cleanedData);
+
       showAlert({
         title: response?.data?.message,
         type: "success",
         autoClose: 4000,
       });
+
       reset({
         title: "",
         category: "",
@@ -124,14 +124,25 @@ const CreateBlogPage = () => {
         type: "error",
         autoClose: 4000,
       });
+    } finally {
+      setSubmitting(false);
     }
   };
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">
+        <h1
+          className="
+            text-2xl
+            font-semibold
+            text-slate-900
+            dark:text-slate-100
+          "
+        >
           {t("blog.createOrUpdate.titleCreate")}
         </h1>
+
         <Breadcrumb
           items={[
             { label: t("common.home"), href: "/Home" },
@@ -140,32 +151,75 @@ const CreateBlogPage = () => {
           ]}
         />
       </div>
-      <div className="rounded-xl border bg-white p-6 space-y-6">
+
+      <div
+        className="
+          rounded-xl
+          border
+          border-slate-200
+          dark:border-neutral-800
+          bg-white
+          dark:bg-neutral-900
+          p-6
+          space-y-6
+        "
+      >
+        {/* TITLE */}
         <div>
-          <label className="text-sm font-medium">
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
             {t("blog.name")} <span className="text-red-500">*</span>
           </label>
+
           <Input
             name="title"
             placeholder={t("blog.createOrUpdate.enterTitle")}
-            onChange={(e)=>{
+            onChange={(e) => {
               setValue("title", e.target.value, {
                 shouldValidate: true,
                 shouldDirty: true,
               });
+
               trigger("title");
             }}
             value={watch("title")}
-            className="mt-1"
+            className="
+              mt-1
+              bg-white
+              dark:bg-neutral-900
+              border-slate-200
+              dark:border-neutral-800
+              text-slate-900
+              dark:text-slate-100
+            "
           />
-           {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.title.message}
+            </p>
           )}
         </div>
+
+        {/* CATEGORY */}
         <div>
-          <label className="text-sm font-medium">
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
             {t("blog.category")} <span className="text-red-500">*</span>
           </label>
+
           <SelectField
             items={categories}
             value={watch("category")}
@@ -174,6 +228,7 @@ const CreateBlogPage = () => {
                 shouldValidate: true,
                 shouldDirty: true,
               });
+
               trigger("category");
             }}
             isRequired={true}
@@ -181,17 +236,28 @@ const CreateBlogPage = () => {
             getValue={(i) => String(i.id)}
             getLabel={(i) => i.name}
           />
-           {errors.category && (
+
+          {errors.category && (
             <p className="text-red-500 text-sm mt-1">
               {errors.category.message}
             </p>
           )}
         </div>
+
+        {/* STATUS */}
         <div>
-          <label className="text-sm font-medium">
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
             {t("common.status")}
             <span className="text-red-500">*</span>
           </label>
+
           <SelectField
             items={[
               { value: "1", label: t("blog.draft") },
@@ -199,11 +265,12 @@ const CreateBlogPage = () => {
             ]}
             value={watch("status")}
             placeholder={t("blog.createOrUpdate.selectStatus")}
-            onChange={(v) =>{
+            onChange={(v) => {
               setValue("status", String(v), {
                 shouldValidate: true,
                 shouldDirty: true,
               });
+
               trigger("status");
             }}
             isRequired={true}
@@ -211,61 +278,156 @@ const CreateBlogPage = () => {
             getLabel={(i) => i.label}
           />
         </div>
+
+        {/* DESCRIPTION */}
         <div>
-          <label className="text-sm font-medium">{t("blog.description")}</label>
-          <QuillEditor
-            theme="snow"
-            value={watch("description")}
-            onChange={(v) => {
-              setValue("description", v, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-              trigger("description");
-            }}
-            modules={fullToolbar}
-          />
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
+            {t("blog.description")}
+          </label>
+
+          <div
+            className="
+              mt-2
+              border
+              rounded-lg
+              overflow-hidden
+              border-slate-200
+              dark:border-neutral-800
+              bg-white
+              dark:bg-neutral-900
+            "
+          >
+            <QuillEditor
+              theme="snow"
+              value={watch("description")}
+              onChange={(v) => {
+                setValue("description", v, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+
+                trigger("description");
+              }}
+              modules={fullToolbar}
+              className="dark:text-slate-100"
+            />
+          </div>
         </div>
+
+        {/* CONTENT */}
         <div>
-          <label className="text-sm font-medium">{t("blog.content")}</label>
-          <QuillEditor
-            theme="snow"
-            value={watch("content")}
-            onChange={(v) => {
-              setValue("content", v, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-              trigger("content");
-            }}
-            modules={fullToolbar}
-          />
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
+            {t("blog.content")}
+          </label>
+
+          <div
+            className="
+              mt-2
+              border
+              rounded-lg
+              overflow-hidden
+              border-slate-200
+              dark:border-neutral-800
+              bg-white
+              dark:bg-neutral-900
+            "
+          >
+            <QuillEditor
+              theme="snow"
+              value={watch("content")}
+              onChange={(v) => {
+                setValue("content", v, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+
+                trigger("content");
+              }}
+              modules={fullToolbar}
+              className="dark:text-slate-100"
+            />
+          </div>
+
           {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.content.message}
+            </p>
           )}
         </div>
+
+        {/* IMAGE */}
         <div>
-          <label className="text-sm font-medium">{t("blog.thumbnail")}</label>
+          <label
+            className="
+              text-sm
+              font-medium
+              text-slate-700
+              dark:text-slate-300
+            "
+          >
+            {t("blog.thumbnail")}
+          </label>
+
           <UploadField
             className="w-full mt-2"
             value={watch("image")}
-            onChange={(files) =>{
+            onChange={(files) => {
               setValue("image", files?.[0] ?? null, {
                 shouldValidate: true,
                 shouldDirty: true,
               });
+
               trigger("image");
-            }
-            }
+            }}
           />
         </div>
+
         {errors.image && (
-            <p className="text-red-500 text-sm mt-1">{String(errors.image.message)}</p>
+          <p className="text-red-500 text-sm mt-1">
+            {String(errors.image.message)}
+          </p>
         )}
-        <div className="flex justify-end gap-3 border-t pt-4">
-          <Button variant="outline" onClick={() => navigate("/Home/post/blog")}>
+
+        {/* FOOTER */}
+        <div
+          className="
+            flex
+            justify-end
+            gap-3
+            border-t
+            border-slate-200
+            dark:border-neutral-800
+            pt-4
+          "
+        >
+          <Button
+            variant="outline"
+            onClick={() => navigate("/Home/post/blog")}
+            className="
+              border-slate-200
+              dark:border-neutral-800
+              dark:bg-neutral-950
+              dark:text-slate-200
+              dark:hover:bg-neutral-900
+            "
+          >
             {t("common.cancel")}
           </Button>
+
           <Button
             onClick={handleSubmit(onSubmit)}
             disabled={isSubmitting || !isValid}
@@ -292,6 +454,7 @@ const CreateBlogPage = () => {
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                   />
                 </svg>
+
                 {t("common.saving")}
               </span>
             ) : (
@@ -300,8 +463,8 @@ const CreateBlogPage = () => {
           </Button>
         </div>
       </div>
-         
     </div>
   );
 };
+
 export default CreateBlogPage;

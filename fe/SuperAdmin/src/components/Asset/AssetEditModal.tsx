@@ -28,7 +28,8 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
 }) => {
   const { t } = useTranslation();
 
-   const assetSchema = z.object({
+  const assetSchema = z
+    .object({
       assetName: z.string().min(1, t("asset.validate.assetNameRequired")),
       categoryId: z.string().min(1, t("asset.validate.categoryRequired")),
       roomId: z.string().min(1, t("asset.validate.roomRequired")),
@@ -48,10 +49,11 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
             message: t("asset.validate.quantityInvalid"),
           },
         ),
-  
+
       note: z.string().optional(),
       image: z.any().optional(),
-    }).superRefine((data, ctx) => {
+    })
+    .superRefine((data, ctx) => {
       // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
       if (imagePreview) return;
 
@@ -67,29 +69,29 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         });
       }
     });
-    type FormData = z.infer<typeof assetSchema>;
-  
-    const {
-      handleSubmit,
-      reset,
-      setValue,
-      watch,
-      trigger,
-      formState: { errors, isValid, isSubmitting },
-    } = useForm<FormData>({
-      resolver: zodResolver(assetSchema),
-      mode: "onBlur",
-      defaultValues: {
-        assetName: "",
-        categoryId: "",
-        roomId: "",
-        price: "",
-        quantity: "",
-        hotelId: "",
-        note: "",
-        image: null,
-      },
-    });
+  type FormData = z.infer<typeof assetSchema>;
+
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(assetSchema),
+    mode: "onBlur",
+    defaultValues: {
+      assetName: "",
+      categoryId: "",
+      roomId: "",
+      price: "",
+      quantity: "",
+      hotelId: "",
+      note: "",
+      image: null,
+    },
+  });
   const [hotels, setHotels] = useState<HotelRow[]>([]);
   const [fetching, setFetching] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -104,7 +106,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         all: true,
         filter: "isActive==1 and type==3",
       });
-      setCategories(response.content);
+      setCategories(response?.data?.content);
     } catch (err: any) {
       console.log(err);
     }
@@ -120,7 +122,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
       console.log(err);
     }
   };
-  
+
   const fetchRooms = async (hotelId: string) => {
     if (!hotelId) {
       setRooms([]);
@@ -210,11 +212,11 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         type: "error",
         autoClose: 4000,
       });
-    } 
+    }
   };
   const handleRemoveImage = () => {
     setImagePreview(null);
-    setValue("image",null);
+    setValue("image", null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   useEffect(() => {
@@ -223,7 +225,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
     fetchRooms(watch("hotelId"));
 
     if (!assetId) {
-      setValue("roomId","")
+      setValue("roomId", "");
     }
   }, [watch("hotelId")]);
   const handleClose = () => {
@@ -253,7 +255,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
           custom-scrollbar"
       >
         {/* HEADER sticky */}
-        <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 border-b bg-white dark:bg-background px-6 py-4">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
               {t("asset.createOrUpdate.titleEdit")}
@@ -280,12 +282,12 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <Input
                   name="assetName"
                   placeholder={t("asset.createOrUpdate.namePlaceHolder")}
-                  onChange={(e)=>{
-                    setValue("assetName",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("assetName")
+                  onChange={(e) => {
+                    setValue("assetName", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("assetName");
                   }}
                   value={watch("assetName")}
                 />
@@ -302,15 +304,13 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <SelectField
                   items={categories}
                   value={watch("categoryId")}
-                  onChange={(v) =>
-                   {
-                    setValue("categoryId",String(v),{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("categoryId")
-                   }
-                  }
+                  onChange={(v) => {
+                    setValue("categoryId", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("categoryId");
+                  }}
                   isRequired
                   placeholder={t("asset.createOrUpdate.categoryPlaceHolder")}
                   getValue={(i) => String(i.id)}
@@ -329,14 +329,13 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <SelectField
                   items={hotels}
                   value={watch("hotelId")}
-                  onChange={(v) =>{
-                    setValue("hotelId",String(v),{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("hotelId")
-                  }
-                  }
+                  onChange={(v) => {
+                    setValue("hotelId", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("hotelId");
+                  }}
                   isRequired
                   placeholder={t("asset.createOrUpdate.hotelPlaceHolder")}
                   getValue={(i) => String(i.id)}
@@ -355,15 +354,13 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <SelectField
                   items={rooms}
                   value={watch("roomId")}
-                  onChange={(v) =>
-                  {
-                    setValue("roomId",String(v),{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("roomId")
-                  }
-                  }
+                  onChange={(v) => {
+                    setValue("roomId", String(v), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("roomId");
+                  }}
                   isRequired
                   placeholder={t("asset.createOrUpdate.roomPlaceHolder")}
                   getValue={(i) => String(i.id)}
@@ -383,12 +380,12 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   name="price"
                   type="number"
                   placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
-                  onChange={(e)=>{
-                    setValue("price",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("price")
+                  onChange={(e) => {
+                    setValue("price", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("price");
                   }}
                   value={watch("price")}
                 />
@@ -406,12 +403,12 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   name="quantity"
                   type="number"
                   placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
-                  onChange={(e)=>{
-                    setValue("quantity",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("quantity")
+                  onChange={(e) => {
+                    setValue("quantity", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("quantity");
                   }}
                   value={watch("quantity")}
                 />
@@ -428,12 +425,12 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <Textarea
                   name="note"
                   value={watch("note")}
-                  onChange={(e)=>{
-                    setValue("note",e.target.value,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    })
-                    trigger("note")
+                  onChange={(e) => {
+                    setValue("note", e.target.value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("note");
                   }}
                   placeholder={t("asset.createOrUpdate.notePlaceholder")}
                   rows={3}
@@ -459,12 +456,11 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                     if (imagePreview?.startsWith("blob:")) {
                       URL.revokeObjectURL(imagePreview);
                     }
-                    setValue("image",file,{
-                      shouldValidate:true,
-                      shouldDirty:true
-                    
-                    })
-                    trigger("image")
+                    setValue("image", file, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("image");
 
                     setImagePreview(URL.createObjectURL(file));
                   }}
@@ -473,20 +469,33 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                 <div
                   onClick={() => !imagePreview && fileInputRef.current?.click()}
                   className="
-                    relative cursor-pointer overflow-hidden rounded-2xl
-                    border-2 border-dashed border-slate-300 bg-slate-50
-                    hover:border-slate-400 transition
-                  "
+            relative
+            overflow-hidden
+            rounded-2xl
+            border-2
+            border-dashed
+            border-slate-200
+            dark:border-neutral-800
+            bg-slate-50
+            dark:bg-neutral-900
+            hover:border-slate-300
+            dark:hover:border-neutral-700
+            transition
+            cursor-pointer
+          "
                 >
                   {!imagePreview ? (
                     <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12 text-center">
-                      <div className="rounded-full bg-white p-3 shadow-sm">
-                        <Upload className="h-5 w-5 text-slate-600" />
+                      <div className="rounded-full bg-white dark:bg-neutral-800 p-3 shadow-sm">
+                        <Upload className="h-5 w-5 text-slate-600 dark:text-slate-300" />
                       </div>
-                      <p className="text-sm font-medium text-slate-700">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         {t("asset.createOrUpdate.uploadHint")}
                       </p>
-                      <p className="text-xs text-slate-500">JPG, PNG</p>
+
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        JPG, PNG
+                      </p>
                     </div>
                   ) : (
                     <div className="relative">
@@ -518,7 +527,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
         </div>
 
         {/* FOOTER fixed */}
-        <div className="border-t bg-white px-6 py-4">
+        <div className="border-t bg-white dark:bg-background px-6 py-4">
           <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button
               variant="outline"

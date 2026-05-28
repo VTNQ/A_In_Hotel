@@ -141,8 +141,8 @@ const EditProfilePage = () => {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
-          <p className="text-sm text-gray-500">{t("profile.loading")}</p>
+          <div className="w-10 h-10 border-4 border-gray-200 dark:border-neutral-800 border-t-gray-600 dark:border-t-indigo-500 rounded-full animate-spin"></div>
+          <p className="text-sm text-gray-500 dark:text-neutral-400">{t("profile.loading")}</p>
         </div>
       </div>
     );
@@ -152,7 +152,7 @@ const EditProfilePage = () => {
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
             {t("profile.title")}
           </h1>
         </div>
@@ -161,8 +161,8 @@ const EditProfilePage = () => {
       {/* Content */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-800">
+          <div className="rounded-2xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-100">
               {t("profile.personalInfo")}
             </h2>
 
@@ -179,7 +179,7 @@ const EditProfilePage = () => {
 
                 <div
                   onClick={handleAvatarClick}
-                  className="relative group w-32 h-32 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 overflow-hidden cursor-pointer hover:border-[#6C80C2] transition"
+                  className="relative group w-32 h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 overflow-hidden cursor-pointer hover:border-[#6C80C2] transition"
                 >
                   {avatarPreview ? (
                     <img
@@ -193,7 +193,7 @@ const EditProfilePage = () => {
                     />
                   ) : (
                     <div className="flex items-center justify-center w-full h-full">
-                      <Camera className="w-8 h-8 text-gray-400" />
+                    <Camera className="w-8 h-8 text-gray-400 dark:text-neutral-500" />
                     </div>
                   )}
 
@@ -206,7 +206,7 @@ const EditProfilePage = () => {
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-400 mt-2 text-center">
+                <p className="text-xs text-gray-400 dark:text-neutral-500 mt-2 text-center">
                   {t("profile.avatarNote1")} <br />
                   {t("profile.avatarNote2")}
                 </p>
@@ -216,7 +216,7 @@ const EditProfilePage = () => {
               <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Full name */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
                     {t("profile.fullName")}
                   </label>
 
@@ -234,7 +234,7 @@ const EditProfilePage = () => {
 
                 {/* Phone */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
                     {t("profile.phone")}
                   </label>
 
@@ -253,7 +253,7 @@ const EditProfilePage = () => {
 
                 {/* Date */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
                     {t("profile.birthday")}
                   </label>
 
@@ -272,7 +272,7 @@ const EditProfilePage = () => {
 
                 {/* Gender */}
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
                     {t("profile.gender")}
                   </label>
 
@@ -288,7 +288,7 @@ const EditProfilePage = () => {
 
                       <div
                         className="w-5 h-5 rounded-full border-2
-                        border-gray-300 flex items-center justify-center
+                        border-gray-300 dark:border-neutral-700 flex items-center justify-center
                         peer-checked:border-indigo-500 transition"
                       >
                         <div
@@ -298,7 +298,7 @@ const EditProfilePage = () => {
                         />
                       </div>
 
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-gray-700 dark:text-neutral-300">
                         {t("profile.male")}
                       </span>
                     </label>
@@ -314,7 +314,7 @@ const EditProfilePage = () => {
 
                       <div
                         className="w-5 h-5 rounded-full border-2
-                        border-gray-300 flex items-center justify-center
+                        border-gray-300 dark:border-neutral-700 flex items-center justify-center
                         peer-checked:border-indigo-500 transition"
                       >
                         <div
@@ -324,7 +324,7 @@ const EditProfilePage = () => {
                         />
                       </div>
 
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-gray-700 dark:text-neutral-300">
                         {t("profile.female")}
                       </span>
                     </label>
@@ -343,25 +343,25 @@ const EditProfilePage = () => {
               </Button>
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">
+          <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-xl shadow-sm p-6">
+            <div className="border-b border-gray-200 dark:border-neutral-800 pb-4 mb-4">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-100">
                 {t("profile.security")}
               </h2>
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-700">
+                <p className="font-medium text-gray-700 dark:text-neutral-200">
                   {" "}
                   {t("profile.changePassword")}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
                   {t("profile.securityDesc")}
                 </p>
               </div>
               <button
                 onClick={() => setIsChagePassword(true)}
-                className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                className="border border-gray-300 dark:border-neutral-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 dark:text-neutral-300 transition"
               >
                 {t("profile.changePassword")}
               </button>
@@ -369,25 +369,25 @@ const EditProfilePage = () => {
           </div>
         </div>
         <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-            <div className="border-b border-gray-200 pb-4 mb-5">
-              <h2 className="text-lg font-semibold text-gray-800">
+          <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-xl shadow-sm p-6">
+            <div className="border-b border-gray-200 dark:border-neutral-800 pb-4 mb-5">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-100">
                 {t("profile.accountDetails")}
               </h2>
             </div>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="text-gray-400 uppercase text-xs">
+                <p className="text-gray-400 dark:text-neutral-500 uppercase text-xs">
                   {" "}
                   {t("profile.role")}
                 </p>
-                <p className="font-medium text-gray-700">SuperAdmin</p>
+                <p className="font-medium text-gray-700 dark:text-neutral-200">SuperAdmin</p>
               </div>
               <div>
-                <p className="text-gray-400 uppercase text-xs">
+                <p className="text-gray-400 dark:text-neutral-500 uppercase text-xs">
                   {t("profile.createdDate")}
                 </p>
-                <p className="font-medium text-gray-700">
+                <p className="font-medium text-gray-700 dark:text-neutral-200">
                   {watch("createdAt")}
                 </p>
               </div>

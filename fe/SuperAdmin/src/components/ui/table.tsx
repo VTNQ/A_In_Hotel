@@ -11,6 +11,7 @@ import type {
   SortDir,
   TableContextType,
 } from "@/type/common";
+import { useTranslation } from "react-i18next";
 
 /* =======================
    TYPES
@@ -36,6 +37,7 @@ export function Table<SortKey extends string>({
   pagination?: PaginationConfig;
   className?: string;
 }>) {
+  const { t } = useTranslation();
   const totalPages = pagination
     ? Math.ceil(pagination.total / pagination.pageSize)
     : 0;
@@ -63,21 +65,32 @@ export function Table<SortKey extends string>({
     <TableContext.Provider
       value={{ sortKey: sortKey ?? null, sortDir, onSort }}
     >
-      <div className="relative w-full rounded-2xl border bg-white shadow-sm  ">
+      <div
+        className="relative w-full rounded-2xl border border-gray-200 
+      bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+      >
         {/* TABLE */}
         <div className="overflow-x-auto w-full custom-scrollbar">
-          <table className={cn("w-full  text-sm table-fixed", className)}>{children}</table>
+          <table className={cn("w-full  text-sm table-fixed", className)}>
+            {children}
+          </table>
         </div>
 
         {/* PAGINATION FOOTER */}
         {pagination && totalPages > 1 && (
-          <div className="flex items-center justify-between border-t px-4 py-3">
-            <span className="text-sm text-gray-500">
-              Page{" "}
-              <span className="font-medium text-gray-800">
+          <div
+            className="flex items-center justify-between border-t border-gray-200 px-4 py-3
+          dark:border-neutral-800"
+          >
+            <span className="text-sm text-gray-500 dark:">
+              {t("table.page")}{" "}
+              <span className="font-medium text-gray-800 dark:text-white">
                 {pagination.page}
               </span>{" "}
-              / <span className="font-medium text-gray-800">{totalPages}</span>
+              /{" "}
+              <span className="font-medium text-gray-800 dark:text-white">
+                {totalPages}
+              </span>
             </span>
 
             <div className="flex items-center gap-1">
@@ -86,10 +99,10 @@ export function Table<SortKey extends string>({
                 disabled={pagination.page === 1}
                 onClick={() => pagination.onPageChange(pagination.page - 1)}
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full border text-gray-600",
+                  "flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition dark:border-neutral-700 dark:text-neutral-300",
                   pagination.page === 1
                     ? "cursor-not-allowed opacity-40"
-                    : "hover:bg-gray-100",
+                    : "hover:bg-gray-100 dark:hover:bg-neutral-800",
                 )}
               >
                 <ChevronLeft size={18} />
@@ -111,8 +124,8 @@ export function Table<SortKey extends string>({
                     className={cn(
                       "flex h-9 min-w-[36px] items-center justify-center rounded-full text-sm font-medium",
                       p === pagination.page
-                        ? "bg-gray-900 text-white shadow"
-                        : "text-gray-700 hover:bg-gray-100",
+                        ? "bg-gray-900 text-white dark:bg-indigo-600"
+                        : "text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800",
                     )}
                   >
                     {p}
@@ -125,10 +138,10 @@ export function Table<SortKey extends string>({
                 disabled={pagination.page === totalPages}
                 onClick={() => pagination.onPageChange(pagination.page + 1)}
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full border text-gray-600",
+                  "flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition dark:border-neutral-700 dark:text-neutral-300",
                   pagination.page === totalPages
                     ? "cursor-not-allowed opacity-40"
-                    : "hover:bg-gray-100",
+                    : "hover:bg-gray-100 dark:hover:bg-neutral-800",
                 )}
               >
                 <ChevronRight size={18} />
@@ -149,20 +162,37 @@ export function TableHeader(props: React.ComponentProps<"thead">) {
   return (
     <thead
       {...props}
-      className="sticky top-0 z-10 bg-white text-xs font-semibold uppercase tracking-wide text-gray-500 border-b"
+      className="
+      sticky top-0 z-10
+      border-b border-gray-200
+      bg-white 
+      text-xs font-semibold uppercase tracking-wide text-gray-500
+      dark:border-neutral-800
+      dark:bg-neutral-900
+      dark:text-neutral-400"
     />
   );
 }
 
 export function TableBody(props: React.ComponentProps<"tbody">) {
-  return <tbody {...props} className="divide-y divide-gray-100" />;
+  return (
+    <tbody
+      {...props}
+      className="divide-y divide-gray-100 dark:divide-neutral-800"
+    />
+  );
 }
 
 export function TableRow(props: React.ComponentProps<"tr">) {
   return (
     <tr
       {...props}
-      className="transition-colors hover:bg-gray-50 even:bg-gray-50/40"
+      className="
+      transition-colors 
+      hover:bg-gray-50 
+      even:bg-gray-50/40
+      dark:hover:bg-neutral-800/60
+      dark:even:bg-neutral-800/20"
     />
   );
 }
@@ -172,7 +202,10 @@ export function TableCell({ style, ...props }: React.ComponentProps<"td">) {
     <td
       {...props}
       style={style}
-      className="px-4 py-3 text-center text-sm text-gray-600 whitespace-nowrap "
+      className="
+      whitespace-nowrap px-4 py-3 text-center text-sm 
+      text-gray-600
+      dark:text-neutral-300"
     />
   );
 }
@@ -201,8 +234,8 @@ export function TableHead<SortKey extends string>({
       style={width ? { width } : undefined}
       onClick={handleClick}
       className={cn(
-        "px-4 py-3 text-center font-semibold select-none",
-        sortable && "cursor-pointer hover:text-black",
+        "px-4 py-3 text-center font-semibold select-none text-gray-700 dark:text-neutral-200",
+        sortable && "cursor-pointer hover:text-black dark:hover:text-white",
       )}
     >
       <div className="flex items-center justify-center gap-1">
@@ -215,7 +248,7 @@ export function TableHead<SortKey extends string>({
               <ChevronDown size={14} />
             )
           ) : (
-            <ChevronUp size={14} className="opacity-30" />
+            <ChevronUp size={14} className="opacity-30 dark:text-neutral-500" />
           ))}
       </div>
     </th>

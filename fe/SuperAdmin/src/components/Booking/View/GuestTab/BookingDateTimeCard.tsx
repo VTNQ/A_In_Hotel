@@ -10,15 +10,15 @@ const BookingDateTimeCard = ({ data }: any) => {
   > = {
     1: {
       label: t("bookingDateTime.packageDayUse"),
-      className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50",
     },
     2: {
       label: t("bookingDateTime.packageOvernight"),
-      className: "bg-amber-50 text-amber-700 border-amber-200",
+      className: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/50",
     },
     3: {
       label: t("bookingDateTime.packageFullDay"),
-      className: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      className: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/50",
     },
   };
 
@@ -34,14 +34,14 @@ const BookingDateTimeCard = ({ data }: any) => {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <h3 className="flex items-center gap-2 text-base font-semibold text-slate-800 mb-6 border-b border-slate-200 pb-3">
-        <Calendar size={18} className="text-indigo-600" />
+    <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5">
+      <h3 className="flex items-center gap-2 text-base font-semibold text-slate-800 dark:text-neutral-100 mb-6 border-b border-slate-200 dark:border-neutral-800 pb-3">
+        <Calendar size={18} className="text-indigo-600 dark:text-indigo-400" />
         {t("bookingDateTime.title")}
       </h3>
 
       <div className="mb-6">
-        <div className="text-xs font-medium tracking-wide text-slate-400 uppercase">
+        <div className="text-xs font-medium tracking-wide text-slate-400 dark:text-neutral-500 uppercase">
           {t("bookingDateTime.package")}
         </div>
 
@@ -57,7 +57,7 @@ const BookingDateTimeCard = ({ data }: any) => {
 
       {/* ================= TIMELINE ================= */}
       <div className="relative pl-6 space-y-6 text-sm">
-        <div className="absolute left-[6px] top-1 bottom-1 w-px bg-slate-200" />
+        <div className="absolute left-[6px] top-1 bottom-1 w-px bg-slate-200 dark:bg-neutral-800" />
 
         <div className="relative flex gap-4">
           <div
@@ -66,23 +66,23 @@ const BookingDateTimeCard = ({ data }: any) => {
           />
 
           <div className="flex-1">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-neutral-500">
               {t("bookingDateTime.checkInDate")}
             </div>
 
             <div className="flex items-center justify-between mt-1">
               {data?.checkedInAt ? (
                 <>
-                  <span className="font-medium text-slate-800">
+                  <span className="font-medium text-slate-800 dark:text-neutral-200">
                     {formatDateTime(data.checkedInAt)}
                   </span>
-                  <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md text-xs font-medium">
+                  <span className="text-emerald-700 bg-emerald-50 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50 px-2 py-0.5 rounded-md text-xs font-medium">
                     {t("bookingView.actual")}:{" "}
                     {formatDateTime(data?.checkedInAt)}
                   </span>
                 </>
               ) : (
-                <span className="italic text-slate-400">
+                <span className="italic text-slate-400 dark:text-neutral-500">
                   {t("bookingView.pending")}
                 </span>
               )}
@@ -106,27 +106,27 @@ const BookingDateTimeCard = ({ data }: any) => {
 
           {/* CONTENT */}
           <div className="flex-1">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-neutral-500">
               {t("bookingDateTime.checkOutDate")}
             </div>
 
             <div className="flex items-center justify-between mt-1">
               {data?.checkedOutAt ? (
                 <>
-                  <span className="font-medium text-slate-800">
+                  <span className="font-medium text-slate-800 dark:text-neutral-200">
                     {formatDateTime(data.checkedOutAt)}
                   </span>
-                  <span className="text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md text-xs font-medium">
+                  <span className="text-indigo-700 bg-indigo-50 dark:bg-indigo-950/20 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/50 px-2 py-0.5 rounded-md text-xs font-medium">
                     {t("bookingView.actual")}:{" "}
                     {formatDateTime(data?.checkedOutAt)}
                   </span>
                 </>
               ) : data?.checkedInAt ? (
-                <span className="italic text-slate-500">
+                <span className="italic text-slate-500 dark:text-neutral-400">
                   {t("bookingView.pending")}
                 </span>
               ) : (
-                <span className="italic text-slate-300">
+                <span className="italic text-slate-300 dark:text-neutral-600">
                   {t("bookingView.awaitCheckIn")}
                 </span>
               )}

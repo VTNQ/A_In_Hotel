@@ -16,14 +16,14 @@ const GeneralTab = ({
       <div className="mx-auto space-y-16">
         <section className="space-y-8">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-            <h3 className="text-xl font-bold text-slate-800">
+            <div className="h-8 w-1 rounded-full bg-[#3B5CCC] dark:bg-indigo-400" />
+            <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
               {t("promotion.general.title")}
             </h3>
           </div>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label className="font-medium text-[#253150]">
+              <label className="font-medium text-[#253150] dark:text-neutral-200">
                 {t("promotion.general.name")}
               </label>
               <Input
@@ -42,7 +42,7 @@ const GeneralTab = ({
               )}
             </div>
             <div className="flex flex-col gap-2">
-              <label className="font-medium text-[#253150]">
+              <label className="font-medium text-[#253150] dark:text-neutral-200">
                 {t("promotion.general.priority")}
               </label>
               <Input
@@ -64,7 +64,7 @@ const GeneralTab = ({
               )}
             </div>
             <div className="flex flex-col gap-2 sm:col-span-2">
-              <label className="font-medium text-[#253150]">
+              <label className="font-medium text-[#253150] dark:text-neutral-200">
                 {t("promotion.general.description")}
               </label>
               <Textarea
@@ -83,8 +83,8 @@ const GeneralTab = ({
         </section>
         <section className="space-y-8">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-            <h3 className="text-xl font-bold text-slate-800">
+            <div className="h-8 w-1 rounded-full bg-[#3B5CCC] dark:bg-indigo-400" />
+            <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
               {t("promotion.schedule.title")}
             </h3>
           </div>

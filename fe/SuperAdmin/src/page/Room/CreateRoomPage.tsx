@@ -176,7 +176,7 @@ const CreateRoomPage = () => {
         all: true,
         filter: "isActive==1 and type==1",
       });
-      setCategories(res.content);
+      setCategories(res?.data?.content);
     } catch (err: any) {
       console.error(err);
     }
@@ -199,7 +199,7 @@ const CreateRoomPage = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
           {t("room.createOrUpdate.titleCreate")}
         </h1>
         <Breadcrumb
@@ -210,10 +210,10 @@ const CreateRoomPage = () => {
           ]}
         />
       </div>
-      <div className="rounded-xl border bg-white p-6 space-y-6">
+      <div className="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.roomNumber")}
               <span className="text-red-500">*</span>
             </label>
@@ -229,7 +229,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.roomName")}
               <span className="text-red-500">*</span>
             </label>
@@ -245,7 +245,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.roomType")}
               <span className="text-red-500">*</span>
             </label>
@@ -271,7 +271,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.hotel")}
               <span className="text-red-500">*</span>
             </label>
@@ -297,7 +297,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.floor")}
               <span className="text-red-500">*</span>
             </label>
@@ -314,7 +314,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.area")}
               <span className="text-red-500">*</span>
             </label>
@@ -329,7 +329,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.capacity")}
               <span className="text-red-500">*</span>
             </label>
@@ -346,7 +346,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.priceBase")}
               <span className="text-red-500">*</span>
             </label>
@@ -363,7 +363,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.priceExtraHour")}
               <span className="text-red-500">*</span>
             </label>
@@ -380,7 +380,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.priceOvernight")}
               <span className="text-red-500">*</span>
             </label>
@@ -397,7 +397,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.priceFullDay")}
               <span className="text-red-500">*</span>
             </label>
@@ -414,7 +414,7 @@ const CreateRoomPage = () => {
             )}
           </div>
           <div className="sm:col-span-2">
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.note")}
             </label>
             <Textarea
@@ -425,7 +425,7 @@ const CreateRoomPage = () => {
             />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.images")}
             </label>
 
@@ -454,16 +454,16 @@ const CreateRoomPage = () => {
                   {errors.image.message}
                 </p>
               )}
-              <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 hover:border-[#42578E] transition">
+              <div className="rounded-xl border-2 border-dashed border-slate-300 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800 p-4 hover:border-[#42578E] transition">
                 {imagePreview.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10 text-center">
-                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200">
-                      <PictureInPicture />
+                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-neutral-700">
+                      <PictureInPicture className="dark:text-neutral-400" />
                     </div>
-                    <p className="text-sm font-medium text-slate-600">
+                    <p className="text-sm font-medium text-slate-600 dark:text-neutral-300">
                       {t("room.createOrUpdate.clickSelectImages")}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-400 dark:text-neutral-500">
                       {t("room.createOrUpdate.selectFiles")}
                     </p>
                   </div>
@@ -516,7 +516,7 @@ const CreateRoomPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3 border-t pt-4">
+        <div className="flex justify-end gap-3 border-t dark:border-neutral-800 pt-4">
           <Button variant="outline" onClick={() => navigate("/Home/room")}>
             {t("common.cancel")}
           </Button>

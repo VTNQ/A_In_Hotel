@@ -21,7 +21,7 @@ const BookingStepper = ({ currentStep }: BookingStepProps) => {
                 "h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition",
                 currentStep >= s.step
                   ? "bg-indigo-500 text-white"
-                  : "bg-gray-100 text-gray-400",
+                  : "bg-gray-100 text-gray-400 dark:bg-neutral-800 dark:text-neutral-500",
               )}
             >
               {s.step}
@@ -31,14 +31,14 @@ const BookingStepper = ({ currentStep }: BookingStepProps) => {
                 "text-sm whitespace-nowrap",
                 currentStep >= s.step
                   ? "text-indigo-500 font-medium"
-                  : "text-gray-500",
+                  : "text-gray-500 dark:text-neutral-400",
               )}
             >
               {s.label}
             </span>
 
             {index < steps.length - 1 && (
-              <div className="w-8 sm:w-10 h-px bg-gray-300 mx-2 shrink-0" />
+              <div className="w-8 sm:w-10 h-px bg-gray-300 dark:bg-neutral-800 mx-2 shrink-0" />
             )}
           </div>
         ))}

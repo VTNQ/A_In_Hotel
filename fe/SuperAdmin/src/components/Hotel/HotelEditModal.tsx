@@ -221,275 +221,369 @@ const HotelEditModal: React.FC<HotelEditProps> = ({
   console.log(errors)
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent
-        className="
-          p-0
-          w-[calc(100vw-20px)] sm:w-full
-          max-w-[96vw] sm:max-w-xl lg:max-w-2xl
-          max-h-[90vh]
-        overflow-y-auto
-    custom-scrollbar
-        "
-      >
-        {/* Header sticky */}
-        <div className="sticky top-0 z-10 border-b bg-white">
-          <DialogHeader className="px-5 py-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <DialogTitle className="text-lg font-semibold">
-                  {t("hotel.hotelEdit.title")}
-                </DialogTitle>
-                <p className="mt-1 text-sm text-slate-500">
-                  {t("hotel.hotelEdit.managerDesc")}
+  <DialogContent
+    className="
+      p-0
+      w-[calc(100vw-20px)] sm:w-full
+      max-w-[96vw] sm:max-w-xl lg:max-w-2xl
+      max-h-[90vh]
+      overflow-y-auto
+      custom-scrollbar
+
+      dark:border-neutral-800
+      dark:bg-neutral-900
+      dark:text-neutral-100
+    "
+  >
+    {/* Header sticky */}
+    <div className="sticky top-0 z-10 border-b bg-white dark:border-neutral-800 dark:bg-neutral-900">
+      <DialogHeader className="px-5 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <DialogTitle className="text-lg font-semibold text-slate-800 dark:text-neutral-100">
+              {t("hotel.hotelEdit.title")}
+            </DialogTitle>
+
+            <p className="mt-1 text-sm text-slate-500 dark:text-neutral-400">
+              {t("hotel.hotelEdit.managerDesc")}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleClose}
+            className="
+              rounded-full p-2
+              hover:bg-slate-100
+              dark:hover:bg-neutral-800
+            "
+            aria-label="Close"
+          >
+            <X className="h-5 w-5 text-slate-600 dark:text-neutral-300" />
+          </button>
+        </div>
+      </DialogHeader>
+    </div>
+
+    {/* Body */}
+    <div className="custom-scrollbar overflow-y-auto px-5 py-4">
+      {fetching ? (
+        <div className="flex items-center justify-center py-16">
+          <div
+            className="
+              h-8 w-8 animate-spin rounded-full border-4
+              border-slate-200 border-t-slate-700
+
+              dark:border-neutral-700
+              dark:border-t-indigo-500
+            "
+          />
+
+          <span className="ml-3 text-sm text-slate-500 dark:text-neutral-400">
+            {t("hotel.hotelEdit.loading")}
+          </span>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {/* Grid form */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {/* Name */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                {t("hotel.hotelEdit.name")}
+              </label>
+
+              <Input
+                {...register("name")}
+                placeholder={t("hotel.hotelEdit.name")}
+                className="
+                  h-10
+                  dark:border-neutral-700
+                  dark:bg-neutral-800
+                  dark:text-neutral-100
+                  dark:placeholder:text-neutral-500
+                "
+              />
+
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.name.message}
                 </p>
+              )}
+            </div>
+
+            {/* Manager */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                {t("hotel.hotelEdit.manager")}{" "}
+                <span className="text-red-500">*</span>
+              </label>
+
+              <SelectField<UserResponse>
+                items={users}
+                isRequired
+                value={watch("idUser") ? String(watch("idUser")) : null}
+                onChange={(val) => {
+                  setValue("idUser", val ? Number(val) : null, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }}
+                placeholder={t("hotel.hotelEdit.chooseManager")}
+                clearable
+                size="md"
+                fullWidth
+                getValue={(u) => String(u.id)}
+                getLabel={(u) =>
+                  u.fullName ?? u.email ?? `User #${u.id}`
+                }
+              />
+
+              {errors.idUser && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.idUser.message}
+                </p>
+              )}
+            </div>
+
+            {/* Address */}
+            <div className="space-y-2 lg:col-span-2">
+              <label className="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                {t("hotel.hotelEdit.address")}
+              </label>
+
+              <Textarea
+                {...register("address")}
+                placeholder={t("hotel.hotelEdit.address")}
+                className="
+                  min-h-[96px]
+
+                  dark:border-neutral-700
+                  dark:bg-neutral-800
+                  dark:text-neutral-100
+                  dark:placeholder:text-neutral-500
+                "
+              />
+
+              {errors.address && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.address.message}
+                </p>
+              )}
+            </div>
+
+            {/* Hotlines */}
+            <div className="space-y-3 lg:col-span-2">
+              <div className="flex items-center justify-between gap-3">
+                <label className="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                  {t("hotel.hotelEdit.hotlines")}
+                </label>
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="
+                    h-9 gap-2
+                    dark:bg-neutral-800
+                    dark:text-neutral-100
+                    dark:hover:bg-neutral-700
+                  "
+                  onClick={() => append({ phone: "" })}
+                >
+                  <Plus className="h-4 w-4" />
+                  {t("hotel.hotelEdit.addHotline")}
+                </Button>
               </div>
 
-              <button
-                type="button"
-                onClick={handleClose}
-                className="rounded-full p-2 hover:bg-slate-100"
-                aria-label="Close"
-              >
-                <X className="h-5 w-5 text-slate-600" />
-              </button>
-            </div>
-          </DialogHeader>
-        </div>
-
-        {/* Body */}
-        <div className="custom-scrollbar overflow-y-auto px-5 py-4">
-          {fetching ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-700" />
-              <span className="ml-3 text-sm text-slate-500">
-                {t("hotel.hotelEdit.loading")}
-              </span>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {/* Grid form */}
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {/* Name */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    {t("hotel.hotelEdit.name")}
-                  </label>
-                  <Input
-                    {...register("name")}
-                    placeholder={t("hotel.hotelEdit.name")}
-                    className="h-10"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Manager */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    {t("hotel.hotelEdit.manager")}{" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <SelectField<UserResponse>
-                    items={users}
-                    isRequired
-                     value={watch("idUser") ? String(watch("idUser")) : null}
-                  onChange={(val)=>{
-                    setValue(
-                      "idUser",
-                      val ? Number(val) : null,
-                      {
-                        shouldValidate:true,
-                        shouldDirty:true
-                      }
-                    )
-                  }}
-                    placeholder={t("hotel.hotelEdit.chooseManager")}
-                    clearable
-                    size="md"
-                    fullWidth
-                    getValue={(u) => String(u.id)}
-                    getLabel={(u) => u.fullName ?? u.email ?? `User #${u.id}`}
-                  />
-                  {errors.idUser && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.idUser.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Address */}
-                <div className="space-y-2 lg:col-span-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    {t("hotel.hotelEdit.address")}
-                  </label>
-                  <Textarea
-                    {...register("address")}
-                    placeholder={t("hotel.hotelEdit.address")}
-                    className="min-h-[96px]"
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.address.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Hotlines */}
-                <div className="space-y-3 lg:col-span-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <label className="text-sm font-medium text-slate-700">
-                      {t("hotel.hotelEdit.hotlines")}
-                    </label>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      className="h-9 gap-2"
-                      onClick={() => append({ phone: "" })}
-                    >
-                      <Plus className="h-4 w-4" />
-                      {t("hotel.hotelEdit.addHotline")}
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {fields.length === 0 ? (
-                      <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
-                        {t("hotel.hotelEdit.hotlinePlaceholder")}
-                      </div>
-                    ) : (
-                      fields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          className="flex flex-col gap-2 sm:flex-row sm:items-center"
-                        >
-                          <Input
-                            className="h-10 w-full"
-                            placeholder={t(
-                              "hotel.hotelEdit.hotlinePlaceholder",
-                            )}
-                            {...register(`hotlines.${index}.phone`)}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="h-10 w-full sm:w-12"
-                            onClick={() => remove(index)}
-                            aria-label="Remove hotline"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-                {errors.hotlines && (
-                  <p className="text-red-600 text-sm">
-                    {errors.hotlines.message}
-                  </p>
-                )}
-
-                {/* Image */}
-                <div className="space-y-2 lg:col-span-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    {t("hotel.hotelEdit.image")}
-                  </label>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      setValue("image",{
-                        shouldValidate:true,
-                        shouldDirty:true
-                      })
-                      setImagePreview(URL.createObjectURL(file));
-                    }}
-                  />
-
+              <div className="space-y-2">
+                {fields.length === 0 ? (
                   <div
-                    onClick={handlePickFile}
                     className="
-                      relative overflow-hidden rounded-2xl border-2 border-dashed
-                      border-slate-200 bg-slate-50
-                      hover:border-slate-300
-                      transition
-                      cursor-pointer
+                      rounded-xl border border-dashed border-slate-200
+                      bg-slate-50 p-4 text-sm text-slate-500
+
+                      dark:border-neutral-700
+                      dark:bg-neutral-800
+                      dark:text-neutral-400
                     "
                   >
-                    {!imagePreview ? (
-                      <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12">
-                        <div className="rounded-full bg-white p-3 shadow-sm">
-                          <Upload className="h-5 w-5 text-slate-600" />
-                        </div>
-                        <p className="text-sm font-medium text-slate-700">
-                          {t("hotel.hotelEdit.uploadHint")}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          PNG, JPG • (click to upload)
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="relative">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="h-[220px] w-full object-cover sm:h-[260px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveImage();
-                          }}
-                          className="absolute right-3 top-3 rounded-full bg-black/60 p-2 text-white hover:bg-black/70"
-                          aria-label="Remove image"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    )}
+                    {t("hotel.hotelEdit.hotlinePlaceholder")}
                   </div>
-                </div>
-                {errors.image && (
-                  <p className="text-red-600 text-xs mt-1">
-                    {String(errors.image.message)}
-                  </p>
+                ) : (
+                  fields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="flex flex-col gap-2 sm:flex-row sm:items-center"
+                    >
+                      <Input
+                        className="
+                          h-10 w-full
+
+                          dark:border-neutral-700
+                          dark:bg-neutral-800
+                          dark:text-neutral-100
+                          dark:placeholder:text-neutral-500
+                        "
+                        placeholder={t(
+                          "hotel.hotelEdit.hotlinePlaceholder",
+                        )}
+                        {...register(`hotlines.${index}.phone`)}
+                      />
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="
+                          h-10 w-full sm:w-12
+
+                          dark:border-neutral-700
+                          dark:bg-neutral-800
+                          dark:text-neutral-200
+                          dark:hover:bg-neutral-700
+                        "
+                        onClick={() => remove(index)}
+                        aria-label="Remove hotline"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Footer */}
-        <div className="border-t bg-white px-5 py-4">
-          <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button
-              variant="outline"
-              className="h-10 w-full sm:w-auto"
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
-              {t("common.cancel")}
-            </Button>
-            <Button
-              className="h-10 w-full sm:w-auto"
-              onClick={handleSubmit(onSubmitForm)}
-              disabled={isSubmitting || !isValid}
-            >
-              {isSubmitting ? t("common.saving") : t("common.save")}
-            </Button>
-          </DialogFooter>
+            {errors.hotlines && (
+              <p className="text-sm text-red-600">
+                {errors.hotlines.message}
+              </p>
+            )}
+
+            {/* Image */}
+            <div className="space-y-2 lg:col-span-2">
+              <label className="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                {t("hotel.hotelEdit.image")}
+              </label>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  setValue("image", file, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+
+                  setImagePreview(URL.createObjectURL(file));
+                }}
+              />
+
+              <div
+                onClick={handlePickFile}
+                className="
+                  relative overflow-hidden rounded-2xl border-2 border-dashed
+                  border-slate-200 bg-slate-50
+                  hover:border-slate-300
+                  transition cursor-pointer
+
+                  dark:border-neutral-700
+                  dark:bg-neutral-900
+                  dark:hover:border-neutral-600
+                "
+              >
+                {!imagePreview ? (
+                  <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 sm:py-12">
+                    <div className="rounded-full bg-white p-3 shadow-sm dark:bg-neutral-800">
+                      <Upload className="h-5 w-5 text-slate-600 dark:text-neutral-300" />
+                    </div>
+
+                    <p className="text-sm font-medium text-slate-700 dark:text-neutral-200">
+                      {t("hotel.hotelEdit.uploadHint")}
+                    </p>
+
+                    <p className="text-xs text-slate-500 dark:text-neutral-500">
+                      PNG, JPG • (click to upload)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="h-[220px] w-full object-cover sm:h-[260px]"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveImage();
+                      }}
+                      className="
+                        absolute right-3 top-3 rounded-full
+                        bg-black/60 p-2 text-white hover:bg-black/70
+                      "
+                      aria-label="Remove image"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {errors.image && (
+              <p className="mt-1 text-xs text-red-600">
+                {String(errors.image.message)}
+              </p>
+            )}
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      )}
+    </div>
+
+    {/* Footer */}
+    <div className="border-t bg-white px-5 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button
+          variant="outline"
+          className="
+            h-10 w-full sm:w-auto
+
+            dark:border-neutral-700
+            dark:bg-neutral-800
+            dark:text-neutral-200
+            dark:hover:bg-neutral-700
+          "
+          onClick={handleClose}
+          disabled={isSubmitting}
+        >
+          {t("common.cancel")}
+        </Button>
+
+        <Button
+          className="
+            h-10 w-full sm:w-auto
+
+            dark:bg-indigo-500
+            dark:text-white
+            dark:hover:bg-indigo-600
+          "
+          onClick={handleSubmit(onSubmitForm)}
+          disabled={isSubmitting || !isValid}
+        >
+          {isSubmitting
+            ? t("common.saving")
+            : t("common.save")}
+        </Button>
+      </DialogFooter>
+    </div>
+  </DialogContent>
+</Dialog>
   );
 };
 

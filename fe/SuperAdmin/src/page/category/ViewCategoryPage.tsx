@@ -82,7 +82,7 @@ const ViewCategoryPage = () => {
         ...(filters.length > 0 && { filter: filters.join(" and ") }),
       };
       const res = await getAllCategories(param);
-      setData(res?.content || []);
+      setData(res?.data?.content || []);
       setTotal(res?.totalElements || 0);
     } catch (err: any) {
       console.error("Fetch error:", err);

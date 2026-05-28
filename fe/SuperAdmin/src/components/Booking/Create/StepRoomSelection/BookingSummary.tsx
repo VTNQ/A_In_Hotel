@@ -40,47 +40,47 @@ const BookingSummary = ({
   const { t } = useTranslation();
 
   return (
-    <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm w-[109%] sm:w-full">
+    <div className="sticky top-6 rounded-2xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm w-[109%] sm:w-full">
       {/* Header */}
       <div className="mb-4 flex items-center gap-2">
-        <CalendarDays className="h-5 w-5 text-indigo-500" />
-        <h3 className="font-semibold text-gray-800">
+        <CalendarDays className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />
+        <h3 className="font-semibold text-gray-800 dark:text-neutral-100">
           {t("roomSelection.yourBooking")}
         </h3>
       </div>
 
       {/* Dates */}
       <div className="relative mb-4 grid grid-cols-[3fr_2fr] text-sm">
-        <div className="absolute inset-y-2 left-[45%] w-px bg-gray-200" />
+        <div className="absolute inset-y-2 left-[45%] w-px bg-gray-200 dark:bg-neutral-800" />
 
         <div className="flex min-h-[48px] flex-col justify-center pr-4">
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-neutral-500">
             {t("roomSelection.checkIn")}
           </p>
-          <p className="font-medium text-gray-800">
+          <p className="font-medium text-gray-800 dark:text-neutral-200">
             {bookingDate?.checkInDate || "--"}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-neutral-400">
             {bookingDate?.checkInTime || "--"}
           </p>
         </div>
 
         <div className="flex min-h-[48px] flex-col justify-center pl-4">
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-neutral-500">
             {t("roomSelection.checkOut")}
           </p>
-          <p className="font-medium text-gray-800">
+          <p className="font-medium text-gray-800 dark:text-neutral-200">
             {bookingDate?.checkOutDate || "--"}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-neutral-400">
             {bookingDate?.checkOutTime || "--"}
           </p>
         </div>
       </div>
 
       {/* Guests */}
-      <div className="mb-4 flex items-center justify-between border-t border-gray-200 pt-4 text-sm">
-        <div className="flex items-center gap-2 text-gray-700">
+      <div className="mb-4 flex items-center justify-between border-t border-gray-200 dark:border-neutral-800 pt-4 text-sm">
+        <div className="flex items-center gap-2 text-gray-700 dark:text-neutral-300">
           <Users className="h-4 w-4" />
           <span>
             {t("roomSelection.guests", {
@@ -91,7 +91,7 @@ const BookingSummary = ({
         </div>
         <button
           onClick={onEditGuests}
-          className="text-sm text-indigo-500 hover:underline"
+          className="text-sm text-indigo-500 dark:text-indigo-400 hover:underline"
         >
           {t("roomSelection.edit")}
         </button>
@@ -99,7 +99,7 @@ const BookingSummary = ({
 
       {/* Rooms */}
       {rooms.length === 0 ? (
-        <div className="mb-4 rounded bg-gray-50 py-4 text-center text-sm text-gray-400">
+        <div className="mb-4 rounded bg-gray-50 dark:bg-neutral-950 py-4 text-center text-sm text-gray-400 dark:text-neutral-600">
           {t("roomSelection.noRoomSelected")}
         </div>
       ) : (
@@ -113,10 +113,10 @@ const BookingSummary = ({
             return (
               <div
                 key={room.id}
-                className="flex justify-between text-sm font-medium"
+                className="flex justify-between text-sm font-medium text-gray-900 dark:text-neutral-100"
               >
                 <span>{room.roomName}</span>
-                <span className="text-indigo-600">${price}</span>
+                <span className="text-indigo-600 dark:text-indigo-400">${price}</span>
               </div>
             );
           })}
@@ -124,16 +124,16 @@ const BookingSummary = ({
       )}
 
       {/* Price */}
-      <div className="space-y-2 border-t border-gray-200 pt-4 text-sm">
-        <div className="flex justify-between text-gray-600">
+      <div className="space-y-2 border-t border-gray-200 dark:border-neutral-800 pt-4 text-sm">
+        <div className="flex justify-between text-gray-600 dark:text-neutral-400">
           <span>{t("roomSelection.taxesFees")}</span>
           <span>$0.00</span>
         </div>
         <div className="flex justify-between font-semibold">
-          <span className="text-gray-800">
+          <span className="text-gray-800 dark:text-neutral-200">
             {t("roomSelection.total")}
           </span>
-          <span className="text-indigo-600">
+          <span className="text-indigo-600 dark:text-indigo-400">
             ${totalPrice}
           </span>
         </div>
@@ -148,7 +148,7 @@ const BookingSummary = ({
           ${
             rooms.length
               ? "bg-indigo-400 text-white hover:bg-indigo-500"
-              : "cursor-not-allowed bg-gray-200 text-gray-400"
+              : "cursor-not-allowed bg-gray-200 text-gray-400 dark:bg-neutral-800 dark:text-neutral-600"
           }
         `}
       >
@@ -156,7 +156,7 @@ const BookingSummary = ({
       </button>
 
       {/* Footer */}
-      <p className="mt-2 text-center text-xs text-gray-400">
+      <p className="mt-2 text-center text-xs text-gray-400 dark:text-neutral-500">
         {t("roomSelection.notCharged")}
       </p>
     </div>

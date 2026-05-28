@@ -174,7 +174,7 @@ const ListChildSuperAdmin: React.FC = () => {
         key: "gender",
         header: t("childSuperAdmin.table.gender"),
         sortable: true,
-        cell: (row) => t(`gender.${row.gender.toLowerCase()}`),
+        cell: (row) => t(`${row.gender.toLowerCase()}`),
       },
       {
         key: "url",

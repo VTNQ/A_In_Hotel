@@ -102,12 +102,12 @@ const HomePage=()=>{
       {/* KPI */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {kpis.map((k) => (
-          <div key={k.label} className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
+          <div key={k.label} className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
             <div className="flex items-start justify-between">
               <div>
-                <div className="text-sm text-slate-500">{k.label}</div>
-                <div className="mt-2 text-2xl font-semibold tracking-tight text-slate-800">{k.value}</div>
-                <a href="#" className="mt-3 inline-block text-xs text-slate-500 hover:text-slate-700 underline underline-offset-4">{k.cta}</a>
+                <div className="text-sm text-slate-500 dark:text-neutral-400">{k.label}</div>
+                <div className="mt-2 text-2xl font-semibold tracking-tight text-slate-800 dark:text-neutral-100">{k.value}</div>
+                <a href="#" className="mt-3 inline-block text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-700 dark:hover:text-neutral-300 underline underline-offset-4">{k.cta}</a>
               </div>
               <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${k.iconBg}`}>{k.icon}</div>
             </div>
@@ -122,27 +122,27 @@ const HomePage=()=>{
       {/* Charts Row */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Visitors Report */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
           <div className="flex items-center justify-between pb-2">
-            <h3 className="font-semibold text-slate-800">Visitors Report</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Visitors Report</h3>
             <button className="text-slate-400 hover:text-slate-600"><MoreHorizontal className="h-5 w-5" /></button>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-lg border border-slate-200 p-3">
-              <div className="text-slate-500">This Week</div>
-              <div className="mt-1 text-xl font-semibold text-slate-800">14,642</div>
+            <div className="rounded-lg border border-slate-200 dark:border-neutral-700 p-3">
+              <div className="text-slate-500 dark:text-neutral-400">This Week</div>
+              <div className="mt-1 text-xl font-semibold text-slate-800 dark:text-neutral-100">14,642</div>
               <div className="text-emerald-600 text-xs">↑ 0.64%</div>
             </div>
-            <div className="rounded-lg border border-slate-200 p-3">
-              <div className="text-slate-500">Last Week</div>
-              <div className="mt-1 text-xl font-semibold text-slate-800">12,326</div>
+            <div className="rounded-lg border border-slate-200 dark:border-neutral-700 p-3">
+              <div className="text-slate-500 dark:text-neutral-400">Last Week</div>
+              <div className="mt-1 text-xl font-semibold text-slate-800 dark:text-neutral-100">12,326</div>
               <div className="text-rose-600 text-xs">↓ 5.31%</div>
             </div>
           </div>
           <div className="mt-4 h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={visitorsBar}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2ff" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-neutral-700/50" />
                 <XAxis dataKey="d" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
                 <YAxis hide />
                 <Tooltip contentStyle={{ borderRadius: 12 }} />
@@ -154,14 +154,14 @@ const HomePage=()=>{
         </div>
 
         {/* Order Statistics */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 xl:col-span-2">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4 xl:col-span-2">
           <div className="flex items-center justify-between pb-3">
-            <h3 className="font-semibold text-slate-800">Order Statistics</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Order Statistics</h3>
             <div className="flex items-center gap-2">
               {(["Day", "Week", "Month", "Year"] as const).map((t) => (
-                <button key={t} onClick={() => setRange(t)} className={`px-3 py-1.5 rounded-lg text-sm border transition ${range === t ? "bg-violet-600 text-white border-violet-600" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{t}</button>
+                <button key={t} onClick={() => setRange(t)} className={`px-3 py-1.5 rounded-lg text-sm border transition ${range === t ? "bg-violet-600 text-white border-violet-600" : "border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700"}`}>{t}</button>
               ))}
-              <button className="ml-2 inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">Export <ChevronDown className="h-4 w-4" /></button>
+              <button className="ml-2 inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-neutral-700 px-3 py-1.5 text-sm text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700">Export <ChevronDown className="h-4 w-4" /></button>
             </div>
           </div>
           <div className="h-72">
@@ -173,7 +173,7 @@ const HomePage=()=>{
                     <stop offset="95%" stopColor="#6d4cff" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2ff" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-neutral-700/50" />
                 <XAxis dataKey="m" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
                 <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
                 <Tooltip contentStyle={{ borderRadius: 12 }} />
@@ -187,9 +187,9 @@ const HomePage=()=>{
         </div>
 
         {/* Top Selling */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
           <div className="flex items-center justify-between pb-2">
-            <h3 className="font-semibold text-slate-800">Top Selling categories</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Top Selling categories</h3>
             <button className="text-slate-400 hover:text-slate-600"><MoreHorizontal className="h-5 w-5" /></button>
           </div>
           <div className="h-56">
@@ -204,8 +204,8 @@ const HomePage=()=>{
           <ul className="mt-2 space-y-2 text-sm">
             {topSelling.map((c) => (
               <li key={c.name} className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full" style={{ background: c.color }} />{c.name}</span>
-                <span className="text-slate-500">{c.value.toLocaleString()} <span className="text-xs">Sales</span></span>
+                <span className="inline-flex items-center gap-2 text-slate-700 dark:text-neutral-300"><span className="h-2.5 w-2.5 rounded-full" style={{ background: c.color }} />{c.name}</span>
+                <span className="text-slate-500 dark:text-neutral-500">{c.value.toLocaleString()} <span className="text-xs">Sales</span></span>
               </li>
             ))}
           </ul>
@@ -215,20 +215,20 @@ const HomePage=()=>{
       {/* Middle: Country sales + Gender + Activity + Transactions */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Country Wise Sales */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
-          <h3 className="font-semibold text-slate-800 mb-2">Country Wise Sales</h3>
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
+          <h3 className="font-semibold text-slate-800 dark:text-neutral-100 mb-2">Country Wise Sales</h3>
           <ul className="space-y-3">
             {countries.map((c) => (
               <li key={c.name} className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{c.emoji}</span>
                   <div>
-                    <div className="font-medium text-slate-700">{c.name}</div>
-                    <div className="text-xs text-slate-400">{c.users.toLocaleString()} Sales</div>
+                    <div className="font-medium text-slate-700 dark:text-neutral-200">{c.name}</div>
+                    <div className="text-xs text-slate-400 dark:text-neutral-500">{c.users.toLocaleString()} Sales</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium text-slate-700">${c.sales.toLocaleString()}</div>
+                  <div className="font-medium text-slate-700 dark:text-neutral-200">${c.sales.toLocaleString()}</div>
                   <div className={`text-xs ${c.change.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>{c.change}</div>
                 </div>
               </li>
@@ -237,8 +237,8 @@ const HomePage=()=>{
         </div>
 
         {/* Visitors By Gender */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
-          <h3 className="font-semibold text-slate-800 mb-2">Visitors By Gender</h3>
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
+          <h3 className="font-semibold text-slate-800 dark:text-neutral-100 mb-2">Visitors By Gender</h3>
           <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <RadialBarChart innerRadius="50%" outerRadius="100%" startAngle={180} endAngle={0} data={gender}>
@@ -247,19 +247,19 @@ const HomePage=()=>{
               </RadialBarChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 text-center text-slate-500 text-sm">Total Visitors <span className="font-semibold text-slate-700">52805</span></div>
+          <div className="mt-2 text-center text-slate-500 dark:text-neutral-400 text-sm">Total Visitors <span className="font-semibold text-slate-700 dark:text-neutral-200">52805</span></div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
-          <h3 className="font-semibold text-slate-800 mb-2">Recent Activity</h3>
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4">
+          <h3 className="font-semibold text-slate-800 dark:text-neutral-100 mb-2">Recent Activity</h3>
           <ul className="space-y-3 text-sm">
             {activity.map((a, idx) => (
               <li key={idx} className="grid grid-cols-[70px_1fr] items-start gap-3">
                 <div className="text-slate-400">{a.time}</div>
                 <div className="flex items-start gap-2">
                   <span className={`mt-1 h-2.5 w-2.5 rounded-full ${a.color}`} />
-                  <span className="text-slate-700">{a.text}</span>
+                  <span className="text-slate-700 dark:text-neutral-300">{a.text}</span>
                 </div>
               </li>
             ))}
@@ -267,21 +267,21 @@ const HomePage=()=>{
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 xl:col-span-2">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4 xl:col-span-2">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-slate-800">Recent Transactions</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Recent Transactions</h3>
             <button className="text-xs text-violet-600 hover:text-violet-700">View All →</button>
           </div>
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-slate-100 dark:divide-neutral-800">
             {transactions.map((t, i) => (
               <li key={i} className="py-3 flex items-center justify-between text-sm">
                 <div>
-                  <div className="font-medium text-slate-700">{t.mode}</div>
-                  <div className="text-xs text-slate-400">{t.type}</div>
+                  <div className="font-medium text-slate-700 dark:text-neutral-200">{t.mode}</div>
+                  <div className="text-xs text-slate-400 dark:text-neutral-500">{t.type}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium text-slate-700">{t.amount}</div>
-                  <div className="text-xs text-slate-400">{t.date}</div>
+                  <div className="font-medium text-slate-700 dark:text-neutral-200">{t.amount}</div>
+                  <div className="text-xs text-slate-400 dark:text-neutral-500">{t.date}</div>
                 </div>
               </li>
             ))}
@@ -309,12 +309,12 @@ function RecentOrdersTable() {
     { p: "Digital Watch", c: "Fashion", q: 2, cust: "Henry Morgan", status: "Shipped", price: "$100.00", date: "2024-05-21" },
   ];
   return (
-    <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 xl:col-span-2">
+    <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4 xl:col-span-2">
       <div className="flex items-center justify-between pb-3">
-        <h3 className="font-semibold text-slate-800">Recent Orders</h3>
+        <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Recent Orders</h3>
         <div className="flex items-center gap-2">
-          <input className="hidden md:block px-3 py-2 rounded-lg border border-slate-200 text-sm" placeholder="Search Here" />
-          <button className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50">Sort By <ChevronDown className="h-4 w-4" /></button>
+          <input className="hidden md:block px-3 py-2 rounded-lg border border-slate-200 dark:border-neutral-700 dark:bg-neutral-900 text-sm" placeholder="Search Here" />
+          <button className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-neutral-700 px-3 py-2 text-sm text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700">Sort By <ChevronDown className="h-4 w-4" /></button>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -331,9 +331,9 @@ function RecentOrdersTable() {
               <th className="py-3 pr-4 font-medium">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-neutral-800">
             {rows.map((r) => (
-              <tr key={r.p} className="text-slate-700">
+              <tr key={r.p} className="text-slate-700 dark:text-neutral-300">
                 <td className="py-3 pr-4">{r.p}</td>
                 <td className="py-3 pr-4">{r.c}</td>
                 <td className="py-3 pr-4">{r.q}</td>
@@ -373,18 +373,18 @@ function VisitorsByBrowserCard() {
     { name: "Samsung Internet", value: 4134, change: "+ 0.99%" },
   ];
   return (
-    <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 xl:col-span-1">
+    <div className="bg-white dark:bg-neutral-800 rounded-xl border border-slate-200/80 dark:border-neutral-700 shadow-sm p-4 xl:col-span-1">
       <div className="flex items-center justify-between pb-3">
-        <h3 className="font-semibold text-slate-800">Visitors By Browser</h3>
+        <h3 className="font-semibold text-slate-800 dark:text-neutral-100">Visitors By Browser</h3>
       </div>
       <ul className="space-y-4">
         {browsers.map((b, i) => (
           <li key={b.name}>
             <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-slate-700">{b.name}</span>
+              <span className="font-medium text-slate-700 dark:text-neutral-300">{b.name}</span>
               <span className="text-slate-500">{b.value.toLocaleString()}</span>
             </div>
-            <div className="mt-1 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+            <div className="mt-1 h-2 w-full rounded-full bg-slate-100 dark:bg-neutral-700 overflow-hidden">
               <div className="h-2 rounded-full bg-violet-500" style={{ width: `${70 - i * 8}%` }} />
             </div>
             <div className={`mt-1 text-xs ${b.change.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>{b.change}</div>

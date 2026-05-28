@@ -2,11 +2,13 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { Calendar } from "@/components/ui/calendar";
 
 type Props = {
@@ -30,16 +32,19 @@ export default function DateTimePicker({
   minDateTime,
 }: Props) {
   const [open, setOpen] = useState(false);
+
   const isSameDay = (a: Date, b: Date) =>
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
+
   const isHourDisabled = (h: number) => {
     if (!minDateTime || !value) return false;
     if (!isSameDay(minDateTime, value)) return false;
 
     return h < minDateTime.getHours();
   };
+
   const isMinuteDisabled = (m: number) => {
     if (!minDateTime || !value) return false;
     if (!isSameDay(minDateTime, value)) return false;
@@ -49,45 +54,57 @@ export default function DateTimePicker({
     return m <= minDateTime.getMinutes();
   };
 
- const update = (fn: (d: Date) => void) => {
-  const next = value ? new Date(value) : new Date();
-  fn(next);
+  const update = (fn: (d: Date) => void) => {
+    const next = value ? new Date(value) : new Date();
 
- 
-  if (disabledDate?.(next)) return;
+    fn(next);
 
-  // ⛔ BLOCK nếu nhỏ hơn minDateTime
-  if (minDateTime && next < minDateTime) return;
+    if (disabledDate?.(next)) return;
 
-  onChange?.(next);
-};
+    if (minDateTime && next < minDateTime) return;
+
+    onChange?.(next);
+  };
 
   return (
     <Popover
       open={disabled ? false : open}
       onOpenChange={(v) => !disabled && setOpen(v)}
     >
-      {/* ===== INPUT ===== */}
+      {/* INPUT */}
       <PopoverTrigger asChild>
         <button
           type="button"
           disabled={disabled}
           className={cn(
-            "flex h-10 w-full items-center gap-2 rounded-xl border px-3 text-sm",
+            "flex h-10 w-full items-center gap-2 rounded-xl border px-3 text-sm transition-colors",
+            "border-gray-300 dark:border-neutral-800",
             disabled
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-white hover:border-gray-300 focus:ring-2 focus:ring-blue-100",
+              ? "bg-gray-100 text-gray-400 dark:bg-neutral-900 dark:text-neutral-500 cursor-not-allowed"
+              : "bg-white text-gray-900 hover:border-gray-400 focus:ring-2 focus:ring-blue-100 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:border-neutral-700 dark:focus:ring-neutral-800",
           )}
         >
-          <CalendarIcon className="h-4 w-4 text-gray-400" />
-          <span className={cn(!value && "text-gray-400")}>
+          <CalendarIcon className="h-4 w-4 text-gray-400 dark:text-neutral-500" />
+
+          <span
+            className={cn(
+              !value
+                ? "text-gray-400 dark:text-neutral-500"
+                : "text-gray-900 dark:text-neutral-100",
+            )}
+          >
             {value ? format(value, "dd/MM/yyyy HH:mm") : placeholder}
           </span>
         </button>
       </PopoverTrigger>
 
-      {/* ===== POPUP ===== */}
-      <PopoverContent  className="w-[300px] max-h-[380px] overflow-y-auto  space-y-4 p-4 custom-scrollbar" side="bottom" avoidCollisions={false} align="start">
+      {/* POPUP */}
+      <PopoverContent
+        className="w-[300px] max-h-[380px] overflow-y-auto space-y-4 p-4 custom-scrollbar border border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"
+        side="bottom"
+        avoidCollisions={false}
+        align="start"
+      >
         {/* DATE */}
         <Calendar
           mode="single"
@@ -104,14 +121,17 @@ export default function DateTimePicker({
 
         {/* TIME */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-600">
+          <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-neutral-300">
             <Clock className="h-4 w-4" />
             Thời gian
           </div>
 
           {/* HOURS */}
           <div>
-            <p className="mb-1 text-xs text-gray-500">Giờ</p>
+            <p className="mb-1 text-xs text-gray-500 dark:text-neutral-400">
+              Giờ
+            </p>
+
             <div className="grid grid-cols-6 gap-1">
               {HOURS.map((h) => {
                 const active = value?.getHours() === h;
@@ -127,10 +147,10 @@ export default function DateTimePicker({
                     className={cn(
                       "rounded-md px-2 py-1 text-xs transition",
                       disabledHour
-                        ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                        ? "bg-gray-100 text-gray-300 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
                         : active
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-700",
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700",
                     )}
                   >
                     {String(h).padStart(2, "0")}
@@ -142,7 +162,10 @@ export default function DateTimePicker({
 
           {/* MINUTES */}
           <div>
-            <p className="mb-1 text-xs text-gray-500">Phút</p>
+            <p className="mb-1 text-xs text-gray-500 dark:text-neutral-400">
+              Phút
+            </p>
+
             <div className="grid grid-cols-4 gap-1">
               {MINUTES.map((m) => {
                 const active = value?.getMinutes() === m;
@@ -158,10 +181,10 @@ export default function DateTimePicker({
                     className={cn(
                       "rounded-md px-2 py-1 text-xs transition",
                       disabledMinute
-                        ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                        ? "bg-gray-100 text-gray-300 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
                         : active
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-700",
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700",
                     )}
                   >
                     {String(m).padStart(2, "0")}
@@ -173,15 +196,15 @@ export default function DateTimePicker({
         </div>
 
         {/* ACTIONS */}
-        <div className="flex justify-between border-t pt-2">
+        <div className="flex justify-between border-t border-gray-200 pt-2 dark:border-neutral-800">
           <button
             disabled={!value || disabled}
             onClick={() => onChange?.(undefined)}
             className={cn(
-              "text-xs",
+              "text-xs transition-colors",
               value && !disabled
-                ? "text-gray-500 hover:text-red-600"
-                : "text-gray-300 cursor-not-allowed",
+                ? "text-gray-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400"
+                : "text-gray-300 dark:text-neutral-600 cursor-not-allowed",
             )}
           >
             Xóa lựa chọn
@@ -189,7 +212,7 @@ export default function DateTimePicker({
 
           <button
             onClick={() => setOpen(false)}
-            className="text-xs font-medium text-blue-600 hover:text-blue-700"
+            className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Đóng
           </button>

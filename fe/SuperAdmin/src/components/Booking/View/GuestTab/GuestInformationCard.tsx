@@ -13,37 +13,37 @@ const GuestInformationCard = ({ data }: any) => {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
+    <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5">
 
-      <h3 className="flex items-center gap-2 text-base font-semibold text-slate-800 mb-6 border-b border-slate-200 pb-3">
-        <User size={18} className="text-indigo-600" />
+      <h3 className="flex items-center gap-2 text-base font-semibold text-slate-800 dark:text-neutral-100 mb-6 border-b border-slate-200 dark:border-neutral-800 pb-3">
+        <User size={18} className="text-indigo-600 dark:text-indigo-400" />
         {t("bookingGuest.title")}
       </h3>
 
 
       <div className="flex items-start gap-4">
         {/* AVATAR */}
-        <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-semibold">
+        <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-semibold">
           {getInitials(data?.guestName)}
         </div>
 
         {/* INFO */}
         <div className="flex flex-col gap-1">
-          <div className="text-xs font-medium tracking-wide text-slate-400 uppercase">
+          <div className="text-xs font-medium tracking-wide text-slate-400 dark:text-neutral-500 uppercase">
             {t("booking.guestName")}
           </div>
 
-          <div className="text-lg font-semibold text-slate-900">
+          <div className="text-lg font-semibold text-slate-900 dark:text-neutral-100">
             {data?.guestName}
           </div>
 
           {/* BADGES */}
           <div className="flex items-center gap-2 mt-1">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300">
               {GUEST_TYPE_MAP[data?.guestType] ?? "--"}
             </span>
 
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300">
               <Group size={14} />
               {t("confirmCheckIn.numberOfGuests")}: {data?.numberOfGuests}
             </span>
@@ -54,41 +54,41 @@ const GuestInformationCard = ({ data }: any) => {
 
       <div className="grid grid-cols-2 gap-4 text-sm mt-6">
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <div className="text-xs font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
             {t("bookingGuest.phone")}
           </div>
-          <div className="font-medium text-slate-900 ">
+          <div className="font-medium text-slate-900 dark:text-neutral-200">
             {data?.phoneNumber || "--"}
           </div>
         </div>
 
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <div className="text-xs font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
             {t("bookingGuest.email")}
           </div>
-          <div className="font-medium text-slate-900 ">
+          <div className="font-medium text-slate-900 dark:text-neutral-200">
             {data?.email || "--"}
           </div>
         </div>
 
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <div className="text-xs font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
             {t("bookingGuest.idNumber")}
           </div>
-          <div className="font-medium text-slate-900 ">
+          <div className="font-medium text-slate-900 dark:text-neutral-200">
             {data?.idNumber || "--"}
           </div>
         </div>
       </div>
 
       {data?.note && (
-        <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-          <div className="flex items-center gap-2 mb-1 text-xs font-semibold uppercase tracking-wider text-slate-600">
+        <div className="mt-6 rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-950 px-4 py-3">
+          <div className="flex items-center gap-2 mb-1 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-neutral-400">
             <StickyNote size={14} />
             {t("bookingGuest.note")}
           </div>
 
-          <div className="text-sm italic text-slate-700">
+          <div className="text-sm italic text-slate-700 dark:text-neutral-300">
             {data.note}
           </div>
         </div>

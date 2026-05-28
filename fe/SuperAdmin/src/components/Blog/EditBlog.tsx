@@ -43,47 +43,40 @@ const EditBlog: React.FC<BlogEditProps> = ({
     { id: "9", name: t("blog.blogCategories.travelTips") },
     { id: "10", name: t("blog.blogCategories.guestExperiences") },
   ];
+
   const fullToolbar = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
-
       [{ header: 1 }, { header: 2 }],
       [{ font: [] }],
       [{ size: [] }],
-
       [{ color: [] }, { background: [] }],
-
       [{ align: [] }],
-
       [{ list: "ordered" }, { list: "bullet" }],
-
       ["link", "image"],
-
       ["blockquote", "code-block"],
-
       [{ indent: "-1" }, { indent: "+1" }],
-
       ["clean"],
     ],
   };
+
   const [defaultPreview, setDefaultPreview] = useState<string>(
     "/placeholder-image.png",
   );
+
   const [fetching, setFetching] = useState(false);
+
   const blogSchema = z
     .object({
       id: z.string().optional(),
       title: z.string().min(1, t("blog.validate.titleRequired")),
       category: z.string().min(1, t("blog.validate.categoryRequired")),
       description: z.string().optional(),
-      content: z
-        .string()
-        .optional(),
+      content: z.string().optional(),
       status: z.string(),
       image: z.any().optional(),
     })
     .superRefine((data, ctx) => {
-      // nếu đã có preview (ảnh cũ từ backend) thì bỏ validate image
       if (defaultPreview) return;
 
       const imageValidation = createImageBlogSchema(t).safeParse(data.image);
@@ -98,15 +91,16 @@ const EditBlog: React.FC<BlogEditProps> = ({
         });
       }
     });
-  type FormData = z.infer<typeof blogSchema>;
-  const {
 
+  type FormData = z.infer<typeof blogSchema>;
+
+  const {
     handleSubmit,
     reset,
     setValue,
     watch,
     trigger,
-    formState: { errors, isSubmitting ,isValid },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
     mode: "onChange",
@@ -123,11 +117,14 @@ const EditBlog: React.FC<BlogEditProps> = ({
 
   useEffect(() => {
     if (!open || !blogId) return;
+
     const fetchData = async () => {
       setFetching(true);
+
       try {
         const response = await findById(blogId);
         const b = response?.data?.data;
+
         reset({
           title: b.title || "",
           category: b.categoryId ? String(b.categoryId) : "",
@@ -136,6 +133,7 @@ const EditBlog: React.FC<BlogEditProps> = ({
           status: b.status ? String(b.status) : "",
           image: null,
         });
+
         setDefaultPreview(File_URL + b?.image?.url);
       } catch (err: any) {
         console.error(err);
@@ -143,21 +141,23 @@ const EditBlog: React.FC<BlogEditProps> = ({
         setFetching(false);
       }
     };
+
     fetchData();
   }, [open, blogId]);
 
-const handleBannerImage = (files: File[] | null) => {
-  const file = files?.[0] ?? null;
+  const handleBannerImage = (files: File[] | null) => {
+    const file = files?.[0] ?? null;
 
-  setValue("image", file, {
-    shouldValidate: true,
-    shouldDirty: true,
-  });
+    setValue("image", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
 
-  if (file) {
-    setDefaultPreview(URL.createObjectURL(file));
-  }
-};
+    if (file) {
+      setDefaultPreview(URL.createObjectURL(file));
+    }
+  };
+
   const onSubmitForm = async (data: FormData) => {
     try {
       const cleanedData = Object.fromEntries(
@@ -173,12 +173,15 @@ const handleBannerImage = (files: File[] | null) => {
           value?.toString().trim() === "" ? null : value,
         ]),
       );
+
       const response = await updateBlog(blogId ?? 0, cleanedData);
+
       showAlert({
         title: response?.data?.message,
         type: "success",
         autoClose: 4000,
       });
+
       reset({
         title: "",
         category: "",
@@ -187,6 +190,7 @@ const handleBannerImage = (files: File[] | null) => {
         status: "",
         image: null,
       });
+
       onSubmit();
       onClose();
     } catch (err: any) {
@@ -198,6 +202,7 @@ const handleBannerImage = (files: File[] | null) => {
       });
     }
   };
+
   const handleClose = () => {
     reset({
       title: "",
@@ -207,34 +212,98 @@ const handleBannerImage = (files: File[] | null) => {
       status: "",
       image: null,
     });
+
     onClose();
   };
+
   if (!open || !blogId) return <></>;
+
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 rounded-2xl overflow-hidden">
+      <DialogContent
+        className="
+          w-[95vw]
+          sm:max-w-4xl
+          max-h-[90vh]
+          p-0
+          rounded-2xl
+          overflow-hidden
+          bg-white
+          dark:bg-neutral-950
+          border
+          border-slate-200
+          dark:border-neutral-800
+        "
+      >
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
-          <DialogTitle className="text-lg font-semibold">
+        <DialogHeader
+          className="
+            px-6
+            py-4
+            border-b
+            border-slate-200
+            dark:border-neutral-800
+            bg-slate-50
+            dark:bg-neutral-900
+          "
+        >
+          <DialogTitle
+            className="
+              text-lg
+              font-semibold
+              text-slate-900
+              dark:text-slate-100
+            "
+          >
             {t("blog.createOrUpdate.titleEdit")}
           </DialogTitle>
         </DialogHeader>
 
         {fetching ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+            <div
+              className="
+                w-8
+                h-8
+                border-4
+                border-slate-200
+                dark:border-neutral-700
+                border-t-slate-600
+                dark:border-t-slate-300
+                rounded-full
+                animate-spin
+              "
+            />
           </div>
         ) : (
           <>
-            {/* BODY SCROLL */}
-            <div className="px-6 py-6 overflow-y-auto max-h-[70vh] space-y-6">
+            {/* BODY */}
+            <div
+              className="
+                px-6
+                py-6
+                overflow-y-auto
+                max-h-[70vh]
+                space-y-6
+                bg-white
+                dark:bg-neutral-950
+              "
+            >
               {/* TOP GRID */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* TITLE */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label
+                    className="
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      dark:text-slate-300
+                    "
+                  >
                     {t("blog.name")} *
                   </label>
+
                   <Input
                     name="title"
                     value={watch("title")}
@@ -243,10 +312,20 @@ const handleBannerImage = (files: File[] | null) => {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
+
                       trigger("title");
                     }}
-                    className="h-11"
+                    className="
+                      h-11
+                      bg-white
+                      dark:bg-neutral-900
+                      border-slate-200
+                      dark:border-neutral-800
+                      text-slate-900
+                      dark:text-slate-100
+                    "
                   />
+
                   {errors.title && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.title.message}
@@ -268,6 +347,7 @@ const handleBannerImage = (files: File[] | null) => {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
+
                       trigger("status");
                     }}
                     isRequired
@@ -276,7 +356,7 @@ const handleBannerImage = (files: File[] | null) => {
                   />
                 </div>
 
-                {/* CATEGORY FULL */}
+                {/* CATEGORY */}
                 <div className="md:col-span-2 space-y-2">
                   <SelectField
                     label={t("blog.category")}
@@ -287,12 +367,14 @@ const handleBannerImage = (files: File[] | null) => {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
+
                       trigger("category");
                     }}
                     isRequired
                     getValue={(i) => String(i.id)}
                     getLabel={(i) => i.name}
                   />
+
                   {errors.category && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.category.message}
@@ -303,10 +385,28 @@ const handleBannerImage = (files: File[] | null) => {
 
               {/* DESCRIPTION */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label
+                  className="
+                    text-sm
+                    font-medium
+                    text-slate-700
+                    dark:text-slate-300
+                  "
+                >
                   {t("blog.description")}
                 </label>
-                <div className="border rounded-lg overflow-hidden">
+
+                <div
+                  className="
+                    border
+                    rounded-lg
+                    overflow-hidden
+                    bg-white
+                    dark:bg-neutral-900
+                    border-slate-200
+                    dark:border-neutral-800
+                  "
+                >
                   <QuillEditor
                     theme="snow"
                     value={watch("description")}
@@ -315,42 +415,76 @@ const handleBannerImage = (files: File[] | null) => {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
+
                       trigger("description");
                     }}
                     modules={fullToolbar}
-                    className="min-h-[180px]"
+                    className="
+                      min-h-[180px]
+                      dark:text-slate-100
+                    "
                   />
                 </div>
               </div>
 
               {/* CONTENT */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label
+                  className="
+                    text-sm
+                    font-medium
+                    text-slate-700
+                    dark:text-slate-300
+                  "
+                >
                   {t("blog.content")}
                 </label>
-                <div className="border rounded-lg overflow-hidden">
+
+                <div
+                  className="
+                    border
+                    rounded-lg
+                    overflow-hidden
+                    bg-white
+                    dark:bg-neutral-900
+                    border-slate-200
+                    dark:border-neutral-800
+                  "
+                >
                   <QuillEditor
                     theme="snow"
                     value={watch("content")}
-                    onChange={(v) =>{
+                    onChange={(v) => {
                       setValue("content", v, {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
+
                       trigger("content");
                     }}
                     modules={fullToolbar}
-                    className="min-h-[250px]"
+                    className="
+                      min-h-[250px]
+                      dark:text-slate-100
+                      dark:border-neutral-800
+                    "
                   />
-                 
                 </div>
               </div>
 
               {/* IMAGE */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label
+                  className="
+                    text-sm
+                    font-medium
+                    text-slate-700
+                    dark:text-slate-300
+                  "
+                >
                   {t("banner.thumbnail")}
                 </label>
+
                 <UploadField
                   className="w-full"
                   defaultPreviewUrl={defaultPreview}
@@ -360,16 +494,39 @@ const handleBannerImage = (files: File[] | null) => {
             </div>
 
             {/* FOOTER */}
-            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+            <DialogFooter
+              className="
+                px-6
+                py-4
+                border-t
+                border-slate-200
+                dark:border-neutral-800
+                bg-slate-50
+                dark:bg-neutral-900
+                flex
+                justify-end
+                gap-3
+              "
+            >
               <Button
                 variant="outline"
                 onClick={handleClose}
                 disabled={isSubmitting}
+                className="
+                  border-slate-200
+                  dark:border-neutral-800
+                  dark:bg-neutral-950
+                  dark:text-slate-200
+                  dark:hover:bg-neutral-900
+                "
               >
                 {t("common.cancel")}
               </Button>
 
-              <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+              <Button
+                onClick={handleSubmit(onSubmitForm)}
+                disabled={isSubmitting || !isValid}
+              >
                 {isSubmitting ? t("common.saving") : t("common.save")}
               </Button>
             </DialogFooter>
@@ -379,4 +536,5 @@ const handleBannerImage = (files: File[] | null) => {
     </Dialog>
   );
 };
+
 export default EditBlog;

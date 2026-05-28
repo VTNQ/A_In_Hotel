@@ -54,11 +54,11 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
             px-4 py-2
             rounded-lg
             text-sm font-medium
-            text-red-600
-            border border-red-200
-            bg-red-50
-            hover:bg-red-100
-            hover:border-red-300
+            text-red-600 dark:text-red-400
+            border border-red-200 dark:border-red-900/50
+            bg-red-50 dark:bg-red-950/20
+            hover:bg-red-100 dark:hover:bg-red-950/30
+            hover:border-red-300 dark:hover:border-red-900
             transition
           "
         >
@@ -68,7 +68,7 @@ const StepPayment = ({ booking, onBack, onNext, onCancel }: any) => {
         {/* BACK */}
         <button
           onClick={onBack}
-          className="text-sm text-gray-500 hover:underline"
+          className="text-sm text-gray-500 dark:text-neutral-400 hover:underline"
         >
          {t("payment.actions.backServices")}
         </button>

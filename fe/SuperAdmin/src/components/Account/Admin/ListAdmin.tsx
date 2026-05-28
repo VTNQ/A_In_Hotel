@@ -66,7 +66,7 @@ function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
         <img
           src={src}
           alt={alt}
-          className="h-12 w-20 rounded object-cover border"
+          className="h-12 w-20 rounded object-cover border dark:border-neutral-700"
         />
         <span className="pointer-events-none absolute inset-0 hidden items-center justify-center rounded bg-black/30 group-hover:flex">
           <SearchIcon className="h-5 w-5 text-white" />
@@ -89,7 +89,7 @@ function ThumbWithPreview({ src, alt }: { src: string; alt: string }) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="absolute -right-3 -top-3 grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-slate-300"
+                className="absolute -right-3 -top-3 grid h-8 w-8 place-items-center rounded-full bg-white dark:bg-neutral-800 shadow ring-1 ring-slate-300 dark:ring-neutral-700"
                 aria-label="Đóng"
               >
                 <X className="h-4 w-4" />
@@ -171,7 +171,7 @@ const ListAdmin: React.FC = () => {
         key: "gender",
         header: t("admin.table.gender"),
         sortable: true,
-        cell: (row) => t(`gender.${row.gender.toLowerCase()}`),
+        cell: (row) => t(`${row.gender.toLowerCase()}`),
       },
       {
         key: "url",
@@ -218,7 +218,7 @@ const ListAdmin: React.FC = () => {
 return (
   <div className="space-y-6">
     {/* TITLE */}
-    <h2 className="text-xl font-semibold">
+    <h2 className="text-xl font-semibold text-slate-800 dark:text-neutral-100">
       {t("admin.title")}
     </h2>
 
@@ -302,7 +302,7 @@ return (
     </div>
 
     {/* ================= TABLE ================= */}
-    <div className="rounded-2xl border bg-card overflow-hidden">
+    <div className="rounded-2xl border dark:border-neutral-800 bg-card overflow-hidden">
       {error && (
         <div className="p-3 text-sm text-red-600">
           {error}

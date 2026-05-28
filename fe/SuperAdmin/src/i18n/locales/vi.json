@@ -5,12 +5,15 @@
         "save": "Lưu",
         "view": "Xem chi tiết",
         "cancel": "Hủy",
+        "noData": "Không có dữ liệu",
+        "noImage":"Không có ảnh",
         "saving": "Đang lưu...",
         "createdAt": "Ngày tạo",
         "updatedAt": "Ngày cập nhật",
         "included": "Áp dụng",
         "tip": "Gợi ý",
         "excluded": "Không áp dụng",
+        "loading": "Đang tải...",
         "filter": "Lọc",
         "filtering": "Đang lọc...",
         "back": "Quay lại",
@@ -37,6 +40,11 @@
         "upload": "Nhấn để tải ảnh hoặc kéo thả",
         "uploadHint": "SVG, PNG, JPG (tối đa 800×400px)"
     },
+     "table": {
+    "page": "Trang",
+    "previous": "Trang trước",
+    "next": "Trang sau"
+  },
     "status": {
         "active": "Hoạt động",
         "inactive": "Không hoạt động"
@@ -58,6 +66,9 @@
         "table": {
             "serviceId": "Mã dịch vụ",
             "icon": "Biểu tượng",
+            "page":"Trang",
+            "previous":"Trang trước",
+            "next":"Trang sau",
             "serviceName": "Tên dịch vụ",
             "category": "Danh mục",
             "description": "Mô tả",
@@ -927,10 +938,10 @@
         "checkIn": "Nhận phòng",
         "checkOut": "Trả phòng",
         "cancelled": "Hủy phòng",
-        "service": "Dịch vụ bổ sung",
+        "Services": "Dịch vụ bổ sung",
         "searchPlaceholder": "Tìm kiếm theo số phòng, tên khách",
         "Rooms": "Phòng",
-        "payment": "Thanh toán",
+        "Payment": "Thanh toán",
         "cancelConfirm": {
             "title": "Hủy đặt phòng?",
             "description": "Tất cả thông tin đã nhập sẽ bị mất. Hành động này không thể hoàn tác.",

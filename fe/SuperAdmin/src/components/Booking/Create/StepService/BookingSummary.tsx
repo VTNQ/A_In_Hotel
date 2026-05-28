@@ -24,9 +24,9 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
 
   return (
     <div className="self-start">
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sticky top-6">
+      <div className="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm sticky top-6">
         {/* HEADER */}
-        <h3 className="font-semibold text-gray-900 mb-4">
+        <h3 className="font-semibold text-gray-900 dark:text-neutral-100 mb-4">
           {t("serviceSelection.bookingSummary")}
         </h3>
 
@@ -41,10 +41,10 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
               />
 
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-gray-900 truncate">
+                <p className="font-medium text-gray-900 dark:text-neutral-100 truncate">
                   {room.roomName}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
                   {formatBookingDateRange(
                     booking.selectDate?.checkInDate,
                     booking.selectDate?.checkOutDate,
@@ -53,7 +53,7 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
                 </p>
               </div>
 
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-gray-900 dark:text-neutral-100">
                 ${(room.price * nights).toFixed(2)}
               </div>
             </div>
@@ -61,30 +61,30 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
         </div>
 
         {/* ROOM TOTAL */}
-        <div className="text-sm border-t pt-4 mt-4 border-gray-200">
+        <div className="text-sm border-t pt-4 mt-4 border-gray-200 dark:border-neutral-800">
           <div className="flex justify-between">
-            <span className="text-gray-500">
+            <span className="text-gray-500 dark:text-neutral-400">
               {t("serviceSelection.roomsTotal", { count: rooms.length })}
             </span>
-            <span className="font-medium">${roomsTotal.toFixed(2)}</span>
+            <span className="font-medium text-gray-900 dark:text-neutral-100">${roomsTotal.toFixed(2)}</span>
           </div>
         </div>
 
         {/* SERVICES */}
         {services?.length > 0 && (
           <>
-            <p className="text-xs text-indigo-500 mt-4 mb-2 font-semibold">
+            <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-4 mb-2 font-semibold">
               {t("serviceSelection.addedServices")}
             </p>
 
             <div className="space-y-2 text-sm">
               {services.map((s: any) => (
                 <div key={s.id} className="flex justify-between">
-                  <span>
+                  <span className="text-gray-600 dark:text-neutral-400">
                     {" "}
-                    {s.serviceName} ({s.extraCharge}%)
+                    {s.serviceName} ({s.extraCharge})
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium text-gray-900 dark:text-neutral-100">
                     ${estimateServicePrice(s, booking).toFixed(2)}
                   </span>
                 </div>
@@ -94,15 +94,15 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
         )}
 
         {/* TOTAL */}
-        <div className="border-t mt-4 pt-4 border-gray-200">
+        <div className="border-t mt-4 pt-4 border-gray-200 dark:border-neutral-800">
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-neutral-400">
                 {t("serviceSelection.totalEstimate")}
               </p>
-              <p className="text-xs text-gray-400">USD</p>
+              <p className="text-xs text-gray-400 dark:text-neutral-500">USD</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-gray-900 dark:text-neutral-100">
               ${total.toFixed(2)}
             </p>
           </div>
@@ -116,7 +116,7 @@ const BookingSummary = ({ booking, services, onNext }: any) => {
           {t("serviceSelection.continue")}
         </button>
 
-        <p className="text-xs text-gray-400 mt-3 text-center">
+        <p className="text-xs text-gray-400 dark:text-neutral-500 mt-3 text-center">
           {t("serviceSelection.secure")}
         </p>
       </div>
