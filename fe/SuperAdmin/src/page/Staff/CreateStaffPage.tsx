@@ -80,7 +80,6 @@ const CreateStaffPage = () => {
   }, []);
   const onSubmit = async (data: StaffForm) => {
     try {
-    
       const cleanedData = Object.fromEntries(
         Object.entries({
           email: data.email,
@@ -124,9 +123,9 @@ const CreateStaffPage = () => {
     }
   };
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 dark:text-white">
       <div>
-        <h1 className="text-2xl font-semibold">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           {t("staff.create.titleCreate")}
         </h1>
         <Breadcrumb
@@ -137,10 +136,17 @@ const CreateStaffPage = () => {
           ]}
         />
       </div>
-      <div className="rounded-xl border bg-white p-6 space-y-6">
+      <div
+        className="
+        space-y-6 rounded-xl border
+        bg-white p-6
+        dark:border-neutral-800
+        dark:bg-neutral-950
+      "
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("staff.fullName")}
               <span className="ml-1 text-red-500">*</span>
             </label>
@@ -154,7 +160,7 @@ const CreateStaffPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               Email
               <span className="ml-1 text-red-500">*</span>
             </label>
@@ -168,56 +174,82 @@ const CreateStaffPage = () => {
             )}
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-neutral-200">
               {t("staff.gender")}
               <span className="ml-1 text-red-500">*</span>
             </label>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-3">
-              {/* ===== MALE ===== */}
-              <label className="flex items-center gap-2 cursor-pointer group">
+            <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:gap-6">
+              {/* MALE */}
+              <label className="group flex cursor-pointer items-center gap-2">
                 <input
                   type="radio"
                   value="0"
                   checked={watch("gender") === "0"}
                   {...register("gender")}
-                  className="sr-only peer"
+                  className="peer sr-only"
                 />
 
                 <span
-                  className="h-4 w-4 rounded-full
-                  border border-gray-300
-                  bg-white transition
-                  peer-checked:bg-indigo-500
+                  className="h-4 w-4 rounded-full border
+                  border-gray-300 bg-white transition
                   peer-checked:border-indigo-500
-                  group-hover:border-gray-400"
+                  peer-checked:bg-indigo-500
+                  group-hover:border-gray-400
+                  dark:border-neutral-600
+                  dark:bg-neutral-900
+                  dark:peer-checked:border-emerald-400
+                  dark:peer-checked:bg-emerald-400"
                 />
-
                 <span
-                  className="text-sm text-gray-600
-                  peer-checked:text-gray-900"
+                  className="
+                  text-sm text-gray-600
+                  peer-checked:text-gray-900
+
+                  dark:text-neutral-300
+                  dark:peer-checked:text-white
+                "
                 >
                   {t("staff.create.male")}
                 </span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer group">
+
+              {/* FEMALE */}
+              <label className="group flex cursor-pointer items-center gap-2">
                 <input
                   type="radio"
                   value="1"
                   checked={watch("gender") === "1"}
                   {...register("gender")}
-                  className="sr-only peer"
+                  className="peer sr-only"
                 />
 
                 <span
-                  className="h-4 w-4 rounded-full
-                  border border-gray-300 bg-white
-                  transition peer-checked:bg-indigo-500
+                  className="
+                  h-4 w-4 rounded-full border
+                  border-gray-300 bg-white transition
+
                   peer-checked:border-indigo-500
-                  group-hover:border-gray-400"
+                  peer-checked:bg-indigo-500
+
+                  group-hover:border-gray-400
+
+                  dark:border-neutral-600
+                  dark:bg-neutral-900
+                    dark:peer-checked:border-emerald-400
+                  dark:peer-checked:bg-emerald-400
+                "
                 />
 
-                <span className="text-sm text-gray-600 peer-checked:text-gray-900">
+                <span
+                  className="
+                  text-sm text-gray-600
+                  peer-checked:text-gray-900
+
+                  dark:text-neutral-300
+                  dark:peer-checked:text-white
+                "
+                >
                   {t("staff.create.female")}
                 </span>
               </label>

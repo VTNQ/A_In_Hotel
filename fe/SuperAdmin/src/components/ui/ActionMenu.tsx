@@ -59,7 +59,13 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
       <button
         ref={btnRef}
         onClick={toggle}
-        className="p-1 rounded hover:bg-gray-100 transition"
+        className="
+        rounded-lg p-1.5 transition
+        text-gray-600
+        hover:bg-gray-100
+        dark:text-neutral-300
+        dark:hover:bg-neutral-800
+        "
       >
         <MoreHorizontal size={16} />
       </button>
@@ -71,11 +77,17 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -5 }}
               transition={{ duration: 0.15 }}
-              className="fixed z-[2147483647] bg-white border border-gray-200 shadow-xl rounded-xl p-2 w-44"
+              className="fixed z-[2147483647]
+              w-44 rounded-xl p-2
+              bg-white shadow-xl 
+              border border-gray-200
+              dark:border-neutral-700
+              dark:bg-neutral-900"
               style={{ top: menuPos.top, left: menuPos.left }}
             >
               {title && (
-                <p className="text-sm font-semibold text-gray-700 mb-2">
+                <p className="mb-2 text-sm font-semibold 
+                text-gray-700  dark:text-white">
                   {title}
                 </p>
               )}
@@ -87,12 +99,14 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
                       if (!a.disabled) a.onClick?.();
                       setOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 text-sm rounded-md ${
-                      a.disabled
-                        ? "text-gray-400 cursor-not-allowed"
+                    className={`
+                      flex items-center gap-2 px-3 py-2 text-sm rounded-md 
+                      transition
+                      ${a.disabled
+                        ? "text-gray-400 dark:text-neutral-600 cursor-not-allowed"
                         : a.danger
-                          ? "text-red-600 hover:bg-red-50"
-                          : "text-gray-700 hover:bg-gray-100"
+                          ? "text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                          : "text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800"
                     }`}
                   >
                     {a.icon}

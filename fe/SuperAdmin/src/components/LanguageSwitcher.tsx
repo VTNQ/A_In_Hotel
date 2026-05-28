@@ -12,7 +12,7 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative">
+    <div >
       <button
         onClick={() => setOpen(v => !v)}
         className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300"

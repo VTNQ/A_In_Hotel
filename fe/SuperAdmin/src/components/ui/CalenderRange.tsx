@@ -73,16 +73,18 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         )
       : 0;
  return (
-  <div className="bg-white rounded-xl p-3 sm:p-4">
+  <div className="bg-white dark:bg-neutral-900 rounded-xl p-3 sm:p-4 border border-slate-200 dark:border-neutral-800 transition-colors">
     {/* HEADER */}
-    <div className="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-      <h3 className="font-semibold">
+    <div className="flex justify-between items-center border-b border-slate-200 dark:border-neutral-800 pb-3 mb-4">
+      <h3 className="font-semibold text-slate-900 dark:text-white">
         {t("bookingDateTime.selectDates")}
       </h3>
 
       <div className="flex items-center gap-3">
         {nights > 0 && (
-          <span className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-600">
+          <span className="text-xs px-3 py-1 rounded-full
+              bg-indigo-50 text-indigo-600
+              dark:bg-indigo-500/15 dark:text-indigo-300">
             {t("bookingDateTime.totalNights", { count: nights })}
           </span>
         )}
@@ -90,7 +92,8 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         {(value.start || value.end) && (
           <button
             onClick={clearDates}
-            className="text-xs text-red-500 hover:underline"
+            className=" text-xs text-red-500 dark:text-red-400
+              hover:underline"
           >
             {t("bookingDateTime.clear")}
           </button>
@@ -110,13 +113,18 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
             new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
           )
         }
-        className="disabled:opacity-30"
+       className="
+          p-2 rounded-lg
+          text-slate-700 dark:text-neutral-200
+          hover:bg-slate-100 dark:hover:bg-neutral-800
+          transition-colors
+        "
       >
         <ChevronLeft />
       </button>
 
       {/* MOBILE TITLE */}
-      <div className="sm:hidden text-sm font-medium text-center">
+      <div className="sm:hidden text-sm font-medium text-slate-800 dark:text-white text-center">
         {baseMonth.toLocaleString("default", {
           month: "long",
           year: "numeric",
@@ -124,7 +132,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
       </div>
 
       {/* DESKTOP TITLES */}
-      <div className="hidden sm:flex gap-24 font-medium text-sm">
+      <div className="hidden sm:flex gap-24 font-medium text-sm text-slate-800 dark:text-white">
         <span>
           {baseMonth.toLocaleString("default", {
             month: "long",
@@ -148,6 +156,12 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
             new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
           )
         }
+         className="
+          p-2 rounded-lg
+          text-slate-700 dark:text-neutral-200
+          hover:bg-slate-100 dark:hover:bg-neutral-800
+          transition-colors
+        "
       >
         <ChevronRight />
       </button>

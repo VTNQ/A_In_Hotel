@@ -13,13 +13,13 @@ const OfferTab = ({ watch,
       <section className="space-y-8">
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-xl font-bold text-slate-800">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
             {t("promotion.offer.title")}
           </h3>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="font-medium text-[#253150]">
+            <label className="font-medium text-[#253150] dark:text-neutral-300">
               {t("promotion.offer.type")}
             </label>
             <div className="relative mt-2">
@@ -46,7 +46,7 @@ const OfferTab = ({ watch,
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <label className="font-medium text-[#253150]">
+            <label className="font-medium text-[#253150] dark:text-neutral-300">
               {t("promotion.offer.value")}
             </label>
             <div className="relative ">
@@ -81,14 +81,14 @@ const OfferTab = ({ watch,
       </section>
       <section className="space-y-8">
         <div className="flex items-center gap-4">
-          <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-xl font-bold text-slate-800">
+          <div className="h-8 w-1 rounded-full bg-[#3B5CCC] " />
+          <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
             {t("promotion.conditions.title")}
           </h3>
         </div>
         <div className="grid grid-cols-1 ">
           <div className="flex flex-col gap-2 ">
-            <label className="font-medium text-[#253150]">
+            <label className="font-medium text-[#253150] dark:text-neutral-300">
               {t("promotion.conditions.minNights")}
             </label>
             <div className="relative">

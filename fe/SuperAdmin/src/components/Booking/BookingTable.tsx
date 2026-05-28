@@ -40,23 +40,23 @@ const BookingTable = ({
   > = {
     1: {
       label: t("booking.booked"),
-      color: "bg-[#FFDAFB80] text-[#BC00A9]",
-      dot: "bg-[#BC00A9]",
+      color: "bg-[#FFDAFB80] text-[#BC00A9] dark:bg-[#BC00A915] dark:text-[#E0A7D8]",
+      dot: "bg-[#BC00A9] dark:bg-[#E0A7D8]",
     },
     2: {
       label: t("booking.checkIn"),
-      color: "bg-[#E0F2EA] text-[#36A877]",
-      dot: "bg-[#33B27F]",
+      color: "bg-[#E0F2EA] text-[#36A877] dark:bg-[#36A87715] dark:text-[#76D1A8]",
+      dot: "bg-[#33B27F] dark:bg-[#76D1A8]",
     },
     3: {
       label: t("booking.checkOut"),
-      color: "bg-[#F9EFCF] text-[#BE7300]",
-      dot: "bg-[#BE7300]",
+      color: "bg-[#F9EFCF] text-[#BE7300] dark:bg-[#BE730015] dark:text-[#E6C17A]",
+      dot: "bg-[#BE7300] dark:bg-[#E6C17A]",
     },
     4: {
       label: t("booking.cancelled"),
-      color: "bg-[#FFF4F4] text-[#FF0000]",
-      dot: "bg-[#FF0000]",
+      color: "bg-[#FFF4F4] text-[#FF0000] dark:bg-[#FF000015] dark:text-[#FF6666]",
+      dot: "bg-[#FF0000] dark:bg-[#FF6666]",
     },
   };
   const getRoomDisplayName = (details?: any[]) => {

@@ -201,12 +201,12 @@ const CreatePromotionPage = () => {
     }
   };
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 ">
       <div>
-        <h1 className="text-2xl font-semibold">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
           {t("promotion.createOrUpdate.titleCreate")}
         </h1>
-        <p className="text-sm italic text-slate-500">
+        <p className="text-sm italic text-slate-500 dark:text-neutral-400">
           {t("promotion.createOrUpdate.description")}
         </p>
         <Breadcrumb
@@ -218,7 +218,11 @@ const CreatePromotionPage = () => {
         />
       </div>
 
-      <div className="rounded-xl border bg-white">
+      <div className="
+      rounded-xl border bg-white
+      dark:border-neutral-800
+      dark:bg-neutral-900
+      ">
         {/* Tabs */}
         <div className="flex overflow-x-auto px-4 sm:px-6 lg:px-10 pt-6 gap-6 sm:gap-8">
           <TabButton
@@ -306,7 +310,7 @@ const CreatePromotionPage = () => {
             {!isLastTab ? (
               <Button
                 onClick={handleNext}
-                disabled={isSubmitting || !isValid}
+                disabled={isSubmitting }
                 className="w-full sm:w-auto"
               >
                 {t("promotion.next")}

@@ -57,7 +57,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
             filter: "isActive==true and type==1",
           }),
         ]);
-
+  
         setRooms(roomResp.data?.content || []);
         setExtras(extraResp.data?.content || []);
         setRoomTypes(typeResp?.content || []);
@@ -126,17 +126,17 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
   const RoomSkeleton = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="h-32 bg-gray-200 rounded-lg animate-pulse" />
+        <div key={i} className="h-32 bg-gray-200 dark:bg-neutral-800 rounded-lg animate-pulse" />
       ))}
     </div>
   );
 
   return (
     <div className="">
-      <h2 className="text-2xl font-semibold mb-1">
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100 mb-1">
         {t("roomSelection.title")}
       </h2>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-neutral-400">
         {t("roomSelection.subtitle", {
           count: booking.selectDate?.adults || 2,
         })}
@@ -167,7 +167,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           {loading ? (
             <RoomSkeleton />
           ) : rooms.length === 0 ? (
-            <p className="text-gray-500">{t("roomSelection.noRooms")}</p>
+            <p className="text-gray-500 dark:text-neutral-400">{t("roomSelection.noRooms")}</p>
           ) : (
             rooms.map((room) => (
               <RoomCard
@@ -195,13 +195,13 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           onNext={() => onNext({ rooms: selectedRooms,hotelId:hotelId })}
         />
       </div>
-      <div className="flex justify-between items-center border-t pt-5">
+      <div className="flex justify-between items-center border-t border-gray-200 dark:border-neutral-800 pt-5">
         <button
           onClick={onCancel}
           className="
             px-4 py-2 rounded-lg text-sm font-medium
-            text-gray-600 border border-gray-300 bg-white
-            hover:bg-gray-50 transition
+            text-gray-600 dark:text-neutral-300 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800
+            hover:bg-gray-50 dark:hover:bg-neutral-700 transition
           "
         >
           {t("bookingDateTime.cancel")}
@@ -209,9 +209,9 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
           <button
             onClick={onBack}
             className="
-              px-4 py-2 rounded-lg text-sm
-              bg-gray-100 text-gray-700
-              hover:bg-gray-200 transition
+              px-4 py-2 rounded-lg text-sm font-medium
+              bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-neutral-300
+              hover:bg-gray-200 dark:hover:bg-neutral-700 transition
             "
           >
             {t("bookingDateTime.back")}

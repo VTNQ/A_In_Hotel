@@ -282,7 +282,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
 
         "
       >
-        <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 border-b bg-white px-6 py-4 dark:bg-background">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
               {t("room.createOrUpdate.titleEdit")}
@@ -534,23 +534,38 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                           shouldValidate: true,
                           shouldDirty: true,
                         });
-                        trigger("image")
+                        trigger("image");
                         setPreviewReview(
                           files.map((file) => URL.createObjectURL(file)),
                         );
                       }}
                     />
 
-                    <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 hover:border-[#42578E] transition">
+                    <div
+                      className="rounded-xl border-2 border-dashed
+    border-slate-300 dark:border-neutral-800
+    bg-slate-50 dark:bg-background
+    p-4
+    hover:border-[#42578E] dark:hover:border-slate-500
+    transition"
+                    >
                       {imagePreview.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-10 text-center">
-                          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200">
-                            <PictureInPicture />
+                          <div
+                            className="
+        mb-3 flex h-12 w-12 items-center justify-center
+        rounded-full
+        bg-slate-200 dark:bg-background
+      "
+                          >
+                            <PictureInPicture className="text-slate-700 dark:text-slate-200" />
                           </div>
-                          <p className="text-sm font-medium text-slate-600">
+
+                          <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
                             {t("room.createOrUpdate.clickSelectImages")}
                           </p>
-                          <p className="text-xs text-slate-400">
+
+                          <p className="text-xs text-slate-400 dark:text-slate-500">
                             {t("room.createOrUpdate.selectFiles")}
                           </p>
                         </div>
@@ -559,7 +574,12 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                           {imagePreview.map((src, idx) => (
                             <div
                               key={idx}
-                              className="group relative overflow-hidden rounded-xl border bg-white shadow-sm"
+                              className="
+          group relative overflow-hidden rounded-xl
+          border border-slate-200 dark:border-slate-700
+          bg-white dark:bg-slate-800
+          shadow-sm
+        "
                             >
                               <img
                                 src={src}
@@ -595,7 +615,13 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                                     },
                                   );
                                 }}
-                                className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100"
+                                className="
+            absolute right-2 top-2
+            rounded-full bg-black/60
+            px-2 py-1 text-xs text-white
+            opacity-0 group-hover:opacity-100
+            transition
+          "
                               >
                                 ✕
                               </button>
@@ -620,7 +646,10 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                 >
                   {t("common.cancel")}
                 </Button>
-                <Button onClick={handleSubmit(onSubmitForm)} disabled={isSubmitting || !isValid}>
+                <Button
+                  onClick={handleSubmit(onSubmitForm)}
+                  disabled={isSubmitting || !isValid}
+                >
                   {isSubmitting ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>

@@ -17,13 +17,15 @@ const RoomSearchFilter = ({
         grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4
         rounded-2xl border p-4
         border-gray-200 bg-white
+        dark:border-neutral-800 dark:bg-neutral-900
+        transition-colors
       "
     >
       {/* CHI NHÁNH */}
       <SelectField
         label={t("roomSelection.hotel")}
         items={hotels}
-  value={filter.hotelId ?? ""} 
+        value={filter.hotelId ?? ""}
         onChange={(v) => onChange("hotelId", v)}
         placeholder={t("roomSelection.selectHotel")}
         isRequired
@@ -34,22 +36,44 @@ const RoomSearchFilter = ({
 
       {/* SEARCH */}
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label
+          className="
+            mb-1.5 block text-sm font-medium
+            text-gray-700 dark:text-neutral-200
+          "
+        >
           {t("roomSelection.searchRoom")}
         </label>
+
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search
+            className="
+              absolute left-3 top-1/2 -translate-y-1/2
+              w-4 h-4
+              text-gray-400 dark:text-neutral-500
+            "
+          />
+
           <input
             disabled={disabled}
             value={filter.search}
             onChange={(e) => onChange("search", e.target.value)}
-          placeholder={t("roomSelection.searchRoom")}
+            placeholder={t("roomSelection.searchRoom")}
             className="
               w-full h-10 pl-9 pr-3
               border border-gray-300 rounded-md
-              text-sm outline-none transition
+              bg-white text-sm text-gray-900
+              outline-none transition
+
               focus:ring-2 focus:ring-indigo-400
+
               disabled:bg-gray-100 disabled:cursor-not-allowed
+
+              dark:bg-neutral-950
+              dark:border-neutral-700
+              dark:text-white
+              dark:placeholder:text-neutral-500
+              dark:disabled:bg-neutral-800
             "
           />
         </div>

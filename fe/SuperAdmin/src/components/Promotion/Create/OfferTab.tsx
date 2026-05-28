@@ -11,21 +11,21 @@ const OfferTab = ({
   const { t } = useTranslation();
   return (
     <div
-      className=" flex-1 overflow-y-auto
+      className="flex-1 overflow-y-auto
       px-4 sm:px-6 lg:px-8
       py-6 sm:py-8
       space-y-10 sm:space-y-14"
     >
       <section className="space-y-6 sm:space-y-8">
         <div className="flex items-center gap-3">
-          <div className="h-6 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-lg sm:text-xl font-semibold text-slate-800">
+          <div className="h-6 w-1 rounded-full bg-[#3B5CCC] dark:bg-indigo-400" />
+          <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-neutral-100">
             {t("promotion.offer.title")}
           </h3>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="font-medium text-sm text-[#253150]">
+            <label className="font-medium text-sm text-[#253150] dark:text-neutral-200">
               {t("promotion.offer.type")}
             </label>
             <SelectField
@@ -50,11 +50,11 @@ const OfferTab = ({
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="font-medium text-sm text-[#253150]">
+            <label className="font-medium text-sm text-[#253150] dark:text-neutral-200">
               {t("promotion.offer.value")}
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-neutral-400">
                 {watch("type") === "1" || watch("type") === "3" ? (
                   <Percent size={18} />
                 ) : (
@@ -77,15 +77,24 @@ const OfferTab = ({
                     : t("promotion.offer.valueFixedPlaceholder")
                 }
                 className="
-                  h-10 w-full rounded-md border
+                    h-10 w-full rounded-md border
                   pl-9 pr-3
                   text-sm
                   border-input bg-transparent
                   shadow-sm
                   transition
+
+                  text-slate-800
+                  placeholder:text-slate-400
+
                   focus-visible:outline-none
                   focus-visible:ring-2
                   focus-visible:ring-ring/40
+
+                  dark:border-neutral-700
+                  dark:bg-neutral-900
+                  dark:text-neutral-100
+                  dark:placeholder:text-neutral-500
                 "
               />
             </div>
@@ -94,22 +103,23 @@ const OfferTab = ({
       </section>
       <section className="space-y-8">
         <div className="flex items-center gap-4">
-          <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-xl font-bold text-slate-800">
+          <div className="h-8 w-1 rounded-full bg-[#3B5CCC] dark:bg-indigo-400" />
+          <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
             {t("promotion.conditions.title")}
           </h3>
         </div>
         <div className="grid grid-cols-1 ">
           <div className="flex flex-col gap-2 ">
-            <label className="font-medium text-[#253150]">
+            <label className="font-medium text-[#253150] dark:text-neutral-200">
               {t("promotion.conditions.minNights")}
             </label>
             <div className="relative">
               <Moon
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/3 text-slate-500"
+                className="absolute left-4 top-1/2 -translate-y-1/3 text-slate-500
+                dark:text-neutral-400"
               />
-              <input
+             <input
                 value={watch("minNights")}
                 onChange={(e) =>
                   setValue("minNights", e.target.value, {
@@ -117,9 +127,51 @@ const OfferTab = ({
                     shouldDirty: true,
                   })
                 }
-                placeholder={t("promotion.conditions.minNightsPlaceholder")}
-                className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent  pl-10 py-5 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm
-                focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive mt-1"
+                placeholder={t(
+                  "promotion.conditions.minNightsPlaceholder",
+                )}
+                className="
+                  file:text-foreground
+                  placeholder:text-muted-foreground
+                  selection:bg-primary
+                  selection:text-primary-foreground
+
+                  border-input
+                  flex h-9 w-full min-w-0 rounded-md border
+                  bg-transparent
+                  pl-10 py-5 text-base
+                  shadow-xs
+                  transition-[color,box-shadow]
+                  outline-none
+
+                  file:inline-flex
+                  file:h-7
+                  file:border-0
+                  file:bg-transparent
+                  file:text-sm
+                  file:font-medium
+
+                  disabled:pointer-events-none
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+
+                  md:text-sm
+
+                  focus-visible:border-ring
+                  focus-visible:ring-ring/50
+                  focus-visible:ring-[3px]
+
+                  aria-invalid:ring-destructive/20
+                  dark:aria-invalid:ring-destructive/40
+                  aria-invalid:border-destructive
+
+                  mt-1
+
+                  dark:border-neutral-700
+                  dark:bg-neutral-900
+                  dark:text-neutral-100
+                  dark:placeholder:text-neutral-500
+                "
               />
             </div>
           </div>

@@ -199,7 +199,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onMouseMove={onMouseMove}
-          className="relative flex h-60 w-60 items-center justify-center overflow-hidden rounded-md border border-slate-300 bg-slate-50 select-none"
+          className="relative flex h-60 w-60 items-center justify-center overflow-hidden rounded-md border border-slate-300 dark:border-neutral-800 bg-slate-50 select-none"
         >
           {previewUrl ? (
             <>

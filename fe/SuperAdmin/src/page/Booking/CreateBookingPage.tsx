@@ -39,7 +39,7 @@ const CreateBookingPage = () => {
             },
         });
     };
-
+    
   const { t } = useTranslation();
   const renderStep = () => {
     switch (booking.step) {
@@ -115,7 +115,7 @@ const CreateBookingPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
           {t("booking.createOrUpdate.titleCreate")}
         </h1>
         <Breadcrumb
@@ -127,7 +127,7 @@ const CreateBookingPage = () => {
         />
       </div>
       <BookingStepper currentStep={booking.step} />
-      <div className="rounded-xl border bg-white p-6">{renderStep()}</div>
+      <div className="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6">{renderStep()}</div>
     </div>
   );
 };

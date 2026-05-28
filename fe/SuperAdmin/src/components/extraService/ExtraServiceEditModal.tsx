@@ -131,7 +131,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
         all: true,
         filter: "isActive==1 and type==2",
       });
-      setCategories(res.content || []);
+      setCategories(res?.data?.content || []);
     };
 
     const loadHotels = async () => {
@@ -188,7 +188,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl p-0">
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50 dark:bg-background">
           <DialogTitle className="text-lg font-semibold">
             {t("extraService.createOrUpdate.titleEdit")}
           </DialogTitle>
@@ -384,7 +384,7 @@ const ExtraServiceEditModal: React.FC<ExtraServiceEditProps> = ({
             </div>
 
             {/* FOOTER */}
-            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 dark:bg-background flex justify-end gap-3">
               <Button variant="outline" onClick={onClose}>
                 {t("common.cancel")}
               </Button>

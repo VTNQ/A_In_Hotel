@@ -7,17 +7,17 @@ const SwitchRoomHistoryCard = ({ data }: any) => {
   const histories = data?.roomSwitchHistories || [];
 
   return (
-    <div className="border rounded-2xl border-slate-200 bg-white p-6 space-y-5">
+    <div className="border rounded-2xl border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 space-y-5">
       {/* HEADER */}
       <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-lg bg-orange-50 text-orange-600 border border-orange-100">
+        <div className="p-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50">
           <Repeat size={18} />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-slate-800">
+          <h3 className="text-base font-semibold text-slate-800 dark:text-neutral-100">
             {t("switchRoom.history.title")}
           </h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-neutral-400">
             {t("switchRoom.history.subtitle")}
           </p>
         </div>
@@ -34,8 +34,8 @@ const SwitchRoomHistoryCard = ({ data }: any) => {
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-950 px-4 py-6 text-center">
+          <p className="text-sm text-slate-500 dark:text-neutral-400">
             {t("switchRoom.history.empty")}
           </p>
         </div>

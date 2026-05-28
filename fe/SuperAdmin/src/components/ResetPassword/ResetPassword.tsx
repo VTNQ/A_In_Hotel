@@ -9,7 +9,7 @@ export default function ResetPassword() {
 
     return (
         // + thêm padding-top để chừa chỗ cho logo
-        <div className="relative min-h-screen bg-white md:bg-[#EBEBEB] flex items-center justify-center overflow-hidden pt-48 md:pt-56">
+        <div className="relative min-h-screen bg-white md:bg-[#EBEBEB] dark:bg-neutral-950 flex items-center justify-center overflow-hidden pt-48 md:pt-56">
             <SideSlats />
             <Clock />
             {/* Logo cố định trên giữa, không chặn click */}
@@ -91,11 +91,11 @@ export default function ResetPassword() {
 
                     {/* Form nằm trên bàn */}
                     <div className="hidden md:block absolute -top-56 md:-top-78 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
-                        <div className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
-      p-5 transition-colors focus-within:border-black mt-[2vh] ">
+                        <div className="bg-white dark:bg-neutral-900 border border-white dark:border-neutral-800 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
+      p-5 transition-colors focus-within:border-black dark:focus-within:border-neutral-700 mt-[2vh] ">
                             <form className="space-y-4" >
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-neutral-300">
                                         User email
                                     </label>
                                     <input
@@ -103,7 +103,7 @@ export default function ResetPassword() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="Enter your Email"
-                                        className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
+                                        className="mt-1 w-full rounded-md border border-slate-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                                         required
                                     />
                                 </div>
@@ -137,10 +137,10 @@ export default function ResetPassword() {
     `
                         }}>
                             {/* Lớp trong: form trắng */}
-                            <div className="bg-[#EEF0F7] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,.08)] p-5 transition-colors">
+                            <div className="bg-[#EEF0F7] dark:bg-neutral-900 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,.08)] p-5 transition-colors">
                                 <form className="space-y-4" >
                                     <div>
-                                        <label className="block text-sm font-medium text-[#42578E]">
+                                        <label className="block text-sm font-medium text-[#42578E] dark:text-indigo-400">
                                             User email
                                         </label>
                                         <input
@@ -148,7 +148,7 @@ export default function ResetPassword() {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             placeholder="Enter your Email"
-                                            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
+                                            className="mt-1 w-full rounded-md border border-slate-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#42578E]"
                                             required
                                         />
                                     </div>

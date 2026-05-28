@@ -145,12 +145,15 @@ const CustomerDetailPage = () => {
   if (loading || !customer) return <p>Loading...</p>;
 
   return (
-    <div className="flex flex-col gap-6 bg-gray-50 p-6">
+    <div className="flex flex-col gap-6 bg-gray-50 dark:bg-neutral-950 p-6">
       {/* BACK BUTTON */}
       <div className="flex items-center gap-2 mb-2">
         <button
           onClick={() => navigate("/Home/customer")}
-          className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          className="flex items-center gap-2 
+          text-sm font-medium 
+          text-indigo-600 hover:text-indigo-700
+          dark:text-indigo-400 dark:hover:text-indigo-300"
         >
           <ArrowLeft className="w-4 h-4" />
           {t("common.back")}
@@ -158,10 +161,10 @@ const CustomerDetailPage = () => {
       </div>
 
       {/* HEADER */}
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-white p-6 rounded-xl shadow dark:bg-neutral-950">
         {/* Top row: Name + Status */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
             {customer.fullName}
           </h1>
 
@@ -169,8 +172,8 @@ const CustomerDetailPage = () => {
             className={`px-3 py-1 text-sm rounded-full font-medium w-fit
       ${
         customer.blocked
-          ? "bg-red-50 text-red-600"
-          : "bg-indigo-50 text-indigo-600"
+          ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+          : "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400"
       }
     `}
           >
@@ -181,7 +184,13 @@ const CustomerDetailPage = () => {
         </div>
 
         {/* Phone + Email */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-gray-600 mt-2">
+        <div
+          className="
+          mt-2 flex flex-col gap-3 text-gray-600
+          sm:flex-row sm:items-center sm:gap-6
+          dark:text-neutral-300
+        "
+        >
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-indigo-600" />
             <span>{customer.phone}</span>
@@ -195,9 +204,9 @@ const CustomerDetailPage = () => {
 
         {/* Customer ID */}
         <div className="mt-2">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-neutral-400">
             {t("customer.customerId")}:{" "}
-            <span className="font-medium text-indigo-600">
+            <span className="font-medium text-indigo-600 dark:text-indigo-400">
               {customer.customerCode}
             </span>
           </span>
@@ -205,14 +214,14 @@ const CustomerDetailPage = () => {
       </div>
 
       {/* TABS */}
-      <div className="flex gap-6 border-b border-gray-300">
+      <div className="flex gap-6 border-b border-gray-300 dark:border-neutral-800">
         <button
           onClick={() => setActiveTab("basic")}
           className={`pb-2 transition text-sm
       ${
         activeTab === "basic"
-          ? "border-b-2 border-indigo-600 text-indigo-600 font-semibold"
-          : "text-gray-500 hover:text-gray-700"
+          ? "border-b-2 border-indigo-600 text-indigo-600 font-semibold dark:text-indigo-400 dark:border-indigo-400"
+          : "text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-white"
       }
     `}
         >
@@ -224,50 +233,50 @@ const CustomerDetailPage = () => {
           className={`pb-2 transition text-sm
       ${
         activeTab === "points"
-          ? "border-b-2 border-indigo-600 text-indigo-600 font-semibold"
-          : "text-gray-500 hover:text-gray-700"
+          ? "border-b-2 border-indigo-600 text-indigo-600 font-semibold dark:text-indigo-400 dark:border-indigo-400"
+          : "text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-white"
       }
     `}
-        >
-          {t("customer.tabs.points")}
-        </button>
+        />
       </div>
       {activeTab === "basic" && (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* LEFT: BASIC INFO */}
-            <div className="bg-white p-6 rounded-xl shadow">
+            <div className="rounded-xl bg-white p-6 shadow dark:bg-neutral-950">
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 dark:text-neutral-400">
                     {t("customer.fullName")}
                   </span>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium dark:text-white">
                     {customer.fullName}
                   </span>
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 dark:text-neutral-400">
                     {t("customer.phone")}
                   </span>
-                  <span className="text-sm font-medium">{customer.phone}</span>
+                  <span className="text-sm font-medium dark:text-white">
+                    {customer.phone}
+                  </span>
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 dark:text-neutral-400">
                     {t("customer.email")}
                   </span>
-                  <span className="text-sm font-medium break-all text-right">
+                  <span className="text-sm font-medium break-all text-right dark:text-white">
                     {customer.email}
                   </span>
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 dark:text-neutral-400">
                     {t("customer.nationality")}
                   </span>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium dark:text-white">
                     {customer.nationality || "-"}
                   </span>
                 </div>
@@ -278,21 +287,25 @@ const CustomerDetailPage = () => {
               {/* POINTS CARDS */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Total Points */}
-                <div className="bg-white p-5 rounded-xl shadow">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="rounded-xl bg-white p-5 shadow dark:bg-neutral-950">
+                  <div
+                    className="mb-1 flex items-center gap-2 text-sm
+                  text-gray-500 dark:text-neutral-400"
+                  >
                     <Wallet className="w-4 h-4 text-indigo-600" />
                     <span className="font-medium">
                       {t("customer.points.total")}
                     </span>
                   </div>
-                  <p className="text-2xl font-bold text-indigo-600">
+                  <p className="text-2xl font-bold text-indigo-800 dark:text-indigo-400">
                     {customer.totalPoint}
                   </p>
                 </div>
 
                 {/* Available Points */}
-                <div className="bg-white p-5 rounded-xl shadow">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="rounded-xl bg-white p-5 shadow dark:bg-neutral-950">
+                  <div className="mb-1 flex items-center gap-2 text-sm
+                  text-gray-500 dark:text-neutral-400">
                     <Coins className="w-4 h-4 text-green-600" />
                     <span className="font-medium">
                       {t("customer.points.available")}
@@ -304,23 +317,29 @@ const CustomerDetailPage = () => {
                 </div>
 
                 {/* Used Points */}
-                <div className="bg-white p-5 rounded-xl shadow">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <Lock className="w-4 h-4 text-gray-600" />
+                <div className="rounded-xl bg-white p-5 shadow dark:bg-neutral-950">
+                  <div className="mb-1 flex items-center gap-2 text-sm
+                  text-gray-500 dark:text-neutral-400">
+                    <Lock className="w-4 h-4 text-gray-600 dark:text-neutral-300" />
                     <span className="font-medium">
                       {t("customer.points.used")}
                     </span>
                   </div>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-neutral-400">
                     {customer.usedPoint}
                   </p>
                 </div>
               </div>
 
               {/* TIP BOX */}
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-start gap-3">
+              <div
+                className="flex items-start gap-3
+              rounded-xl border border-indigo-100  
+              bg-indigo-50 p-4 
+              dark:border-indigo-500/20 dark:bg-indigo-500/10"
+              >
                 <Info className="w-5 h-5 text-indigo-600 mt-0.5" />
-                <p className="text-sm text-indigo-700 leading-relaxed">
+                <p className="text-sm leading-relaxed text-indigo-700 dark:text-indigo-300">
                   <b>{t("common.tip")}:</b>{" "}
                   {t("customer.points.tip", { percent: 30 })}
                 </p>
@@ -328,8 +347,8 @@ const CustomerDetailPage = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3 bg-white p-6 rounded-xl shadow">
-              <h2 className="text-lg font-semibold mb-4">
+            <div className="lg:col-span-3 rounded-xl bg-white p-6  shadow dark:bg-neutral-950">
+              <h2 className="text-lg font-semibold mb-4 dark:text-white">
                 {t("customer.bookingHistory.title")}
               </h2>
               <BookingHistoryTable
@@ -344,30 +363,30 @@ const CustomerDetailPage = () => {
                 onSortChange={handleSort}
               />
             </div>
-            <div className="bg-white p-4 rounded-xl shadow flex flex-col gap-5">
+            <div className="flex flex-col gap-5 rounded-xl bg-white p-4 shadow dark:bg-neutral-950">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
                   {t("customer.bookingSummary.totalBookings")}
                 </p>
-                <p className="text-2xl font-semibold">
+                <p className="text-2xl font-semibold dark:text-white">
                   {summary?.totalBookings ?? 0}
                 </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
                   {t("customer.bookingSummary.nightsStayed")}
                 </p>
-                <p className="text-2xl font-semibold">
+                <p className="text-2xl font-semibold dark:text-white ">
                   {summary?.nightsStayed ?? 0}
                 </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
                   {t("customer.bookingSummary.totalRevenue")}
                 </p>
-                <p className="text-xl font-semibold">
+                <p className="text-2xl font-semibold dark:text-white">
                   {summary?.totalRevenue?.toLocaleString() ?? 0} VND
                 </p>
               </div>
@@ -376,8 +395,8 @@ const CustomerDetailPage = () => {
         </>
       )}
       {activeTab === "points" && (
-        <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
-          <h2 className="text-lg font-semibold mb-4 text-[#2E3A8C]">
+        <div className="rounded-xl bg-white p-4 shadow dark:bg-neutral-950 sm:p-6">
+          <h2 className="mb-4 text-lg font-semibold text-[#2E3A8C] dark:text-indigo-400">
             {t("reward.title")}
           </h2>
           {/* FILTER BAR */}
@@ -410,32 +429,33 @@ const CustomerDetailPage = () => {
 
             {/* FILTER BUTTON */}
             <div className="w-full lg:w-auto lg:ml-auto">
-<button
-          onClick={() => fetchRewardTransaction(1)}
-          disabled={rewardTransactionLoading}
-          className={`
+              <button
+                onClick={() => fetchRewardTransaction(1)}
+                disabled={rewardTransactionLoading}
+                className={`
             w-full lg:w-auto
-            px-4 py-2 rounded-lg text-sm font-medium text-white transition
+            rounded-lg px-4 py-2  
+            text-sm font-medium text-white 
+            transition
             ${
               rewardTransactionLoading
-                ? "bg-gray-400 cursor-not-allowed"
+                ? "cursor-not-allowed bg-gray-400 dark:bg-neutral-700"
                 : "bg-indigo-600 hover:bg-indigo-700"
             }
           `}
-        >
-          {rewardTransactionLoading
-            ? t("common.filtering")
-            : t("common.filter")}
-        </button>
+              >
+                {rewardTransactionLoading
+                  ? t("common.filtering")
+                  : t("common.filter")}
+              </button>
             </div>
-        
           </div>
           {rewardTransactionLoading && (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-10 bg-gray-100 rounded animate-pulse"
+                  className="h-10 animate-pulse rounded bg-gray-100 dark:bg-neutral-700"
                 />
               ))}
             </div>

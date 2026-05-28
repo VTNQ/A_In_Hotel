@@ -34,10 +34,10 @@ const PaymentStatusCard = ({ data }: any) => {
     `${v < 0 ? "-" : ""}${Math.abs(v).toLocaleString("vi-VN")}`;
 
   return (
-    <div className="border rounded-2xl border-slate-200 bg-white p-6">
+    <div className="border rounded-2xl border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6">
       {/* HEADER */}
-      <h3 className="flex items-center gap-2 font-semibold text-slate-800 mb-5">
-        <div className="p-2 rounded-lg bg-indigo-100 text-indigo-600">
+      <h3 className="flex items-center gap-2 font-semibold text-slate-800 dark:text-neutral-100 mb-5">
+        <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
           <DollarSign size={16} />
         </div>
         {t("bookingView.paymentStatus")}
@@ -45,33 +45,33 @@ const PaymentStatusCard = ({ data }: any) => {
 
       {/* PAID */}
       <div className="space-y-4">
-        <div className="flex justify-between items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-          <span className="text-sm font-medium text-emerald-800">
+        <div className="flex justify-between items-center rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-3">
+          <span className="text-sm font-medium text-emerald-800 dark:text-emerald-400">
             {t("bookingView.paidAmount")}
           </span>
-          <span className="font-bold text-emerald-700 font-mono">
+          <span className="font-bold text-emerald-700 dark:text-emerald-300 font-mono">
             {formatMoney(paidAmount)}{" "}
-            <span className="text-xs font-medium">VND</span>
+            <span className="text-xs font-medium text-emerald-500 dark:text-emerald-400">VND</span>
           </span>
         </div>
 
         {/* OUTSTANDING */}
-        <div className="flex justify-between items-center rounded-xl border border-rose-200 bg-rose-50 px-4 py-3">
-          <span className="text-sm font-medium text-rose-800">
+        <div className="flex justify-between items-center rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/20 px-4 py-3">
+          <span className="text-sm font-medium text-rose-800 dark:text-rose-400">
             {t("bookingView.remainingAmount")}
           </span>
-          <span className="font-bold text-rose-600 font-mono text-lg">
+          <span className="font-bold text-rose-600 dark:text-rose-300 font-mono text-lg">
             {formatMoney(outstanding)}{" "}
-            <span className="text-xs font-medium">VND</span>
+            <span className="text-xs font-medium text-rose-500 dark:text-rose-400">VND</span>
           </span>
         </div>
 
         {/* LAST PAYMENT METHOD */}
-        <div className="flex items-center gap-2 text-sm text-slate-500 pt-1">
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-neutral-400 pt-1">
           <Info size={14} />
           <span>
             {t("bookingView.lastMethod")}:{" "}
-            <strong className="text-slate-700">{lastMethod}</strong>
+            <strong className="text-slate-700 dark:text-neutral-200">{lastMethod}</strong>
           </span>
         </div>
       </div>

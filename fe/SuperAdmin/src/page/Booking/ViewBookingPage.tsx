@@ -144,7 +144,7 @@ const ViewBookingPage = () => {
     <>
       <div className="space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <h2 className="text-xl font-semibold">{t("booking.title")}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-neutral-100">{t("booking.title")}</h2>
           <div className="w-full lg:w-auto">
             <BookingFilter
               search={searchValue}

@@ -41,83 +41,117 @@ const CategoryViewInformation: React.FC<ViewCategoryProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-lg p-6">
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            {t("category.view.title")}
-          </DialogTitle>
-        </DialogHeader>
+ return (
+  <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
+    <DialogContent
+      className="
+        sm:max-w-lg
+        p-6
+        bg-white
+        dark:bg-neutral-950
+        border
+        border-slate-200
+        dark:border-neutral-800
+      "
+    >
+      <DialogHeader>
+        <DialogTitle
+          className="
+            text-lg
+            font-semibold
+            text-slate-900
+            dark:text-white
+          "
+        >
+          {t("category.view.title")}
+        </DialogTitle>
+      </DialogHeader>
 
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <span className="ml-3 text-sm text-gray-500">
-              {t("common.loading")}
-            </span>
-          </div>
-        ) : (
-          <>
-            {/* CONTENT */}
-            <div className="mt-4 space-y-3 rounded-lg border bg-gray-50 p-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">
-                  {t("category.name")}
-                </span>
-                <span className="text-sm font-medium text-gray-900">
-                  {category?.name || "-"}
-                </span>
-              </div>
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
 
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">
-                  {t("category.type")}
-                </span>
-                <span className="text-sm font-medium text-gray-900">
-                  {category?.type || "-"}
-                </span>
-              </div>
+          <span className="ml-3 text-sm text-slate-500 dark:text-slate-400">
+            {t("common.loading")}
+          </span>
+        </div>
+      ) : (
+        <>
+          {/* CONTENT */}
+          <div
+            className="
+              mt-4
+              space-y-3
+              rounded-lg
+              border
+              border-slate-200
+              dark:border-neutral-800
+              bg-slate-50
+              dark:bg-neutral-900
+              p-4
+            "
+          >
+            <div className="flex justify-between">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {t("category.name")}
+              </span>
 
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">
-                  {t("category.capacity")}
-                </span>
-                <span className="text-sm font-medium text-gray-900">
-                  {category?.capacity ?? "-"}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
-                  {t("common.status")}
-                </span>
-                <span
-                  className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
-                    category?.isActive
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-600"
-                  )}
-                >
-                  {category?.isActive
-                    ? t("common.active")
-                    : t("common.deActivate")}
-                </span>
-              </div>
+              <span className="text-sm font-medium text-slate-900 dark:text-white">
+                {category?.name || "-"}
+              </span>
             </div>
 
-            {/* FOOTER */}
-            <DialogFooter className="mt-6">
-              <Button variant="outline" onClick={onClose}>
-                {t("common.close")}
-              </Button>
-            </DialogFooter>
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
+            <div className="flex justify-between">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {t("category.type")}
+              </span>
+
+              <span className="text-sm font-medium text-slate-900 dark:text-white">
+                {category?.type || "-"}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {t("category.capacity")}
+              </span>
+
+              <span className="text-sm font-medium text-slate-900 dark:text-white">
+                {category?.capacity ?? "-"}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {t("common.status")}
+              </span>
+
+              <span
+                className={cn(
+                  "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+                  category?.isActive
+                    ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
+                    : "bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400",
+                )}
+              >
+                {category?.isActive
+                  ? t("common.active")
+                  : t("common.deActivate")}
+              </span>
+            </div>
+          </div>
+
+          {/* FOOTER */}
+          <DialogFooter className="mt-6">
+            <Button variant="outline" onClick={onClose}>
+              {t("common.close")}
+            </Button>
+          </DialogFooter>
+        </>
+      )}
+    </DialogContent>
+  </Dialog>
+);
 };
 
 export default CategoryViewInformation;

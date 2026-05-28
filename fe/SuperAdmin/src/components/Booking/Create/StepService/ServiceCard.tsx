@@ -12,8 +12,8 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
         flex flex-col sm:flex-row gap-4 rounded-2xl border p-4 transition
         ${
           selected
-            ? "border-indigo-300 bg-indigo-50"
-            : "border-gray-200 bg-white hover:border-indigo-200"
+            ? "border-indigo-300 bg-indigo-50 dark:border-indigo-500/50 dark:bg-indigo-950/20"
+            : "border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-indigo-200 dark:hover:border-indigo-800"
         }
       `}
     >
@@ -21,7 +21,7 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
       <img
         src={File_URL + service.icon?.url}
         alt={service.serviceName}
-        className="w-full h-40 sm:w-24 sm:h-24 rounded-xl object-cover bg-gray-100"
+        className="w-full h-40 sm:w-24 sm:h-24 rounded-xl object-cover bg-gray-100 dark:bg-neutral-800"
       />
 
       {/* CONTENT */}
@@ -29,12 +29,12 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
         {/* TOP */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-4">
           <div className="min-w-0">
-            <h3 className="font-medium text-gray-900 text-base sm:text-sm truncate">
+            <h3 className="font-medium text-gray-900 dark:text-neutral-100 text-base sm:text-sm truncate">
               {service.serviceName}
             </h3>
 
             {service.description && (
-              <p className="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-neutral-400 mt-1 line-clamp-2">
                 {service.description}
               </p>
             )}
@@ -42,9 +42,9 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
 
           {/* PRICE */}
           <div className="sm:text-right shrink-0">
-          <div className="text-lg sm:text-base font-semibold text-indigo-500">
+          <div className="text-lg sm:text-base font-semibold text-indigo-500 dark:text-indigo-400">
             {service.extraCharge}%
-            <span className="text-xs text-gray-400 ml-1">
+            <span className="text-xs text-gray-400 dark:text-neutral-500 ml-1">
                   {t("serviceSelection.ofBooking")}
                 </span>
           </div>
@@ -54,9 +54,9 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
 
         {/* BOTTOM */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mt-4">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-neutral-400">
           {t("serviceSelection.estimated")}:
-          <span className="ml-1 font-medium text-gray-700">
+          <span className="ml-1 font-medium text-gray-700 dark:text-neutral-300">
             ${estimate}
           </span>
         </span>
@@ -70,7 +70,7 @@ const ServiceCard = ({ service, selected, onToggle, booking }: any) => {
             ${
               selected
                 ? "bg-indigo-500 text-white hover:bg-indigo-600"
-                : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                : "border border-gray-300 dark:border-neutral-700 text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800"
             }
           `}
         >

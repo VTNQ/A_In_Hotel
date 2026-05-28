@@ -1,4 +1,9 @@
 {
+    "table": {
+        "page": "Page",
+        "previous": "Previous page",
+        "next": "Next page"
+    },
     "common": {
         "action": "Action",
         "edit": "Edit",
@@ -117,6 +122,7 @@
             "icon": "Icon",
             "serviceName": "Service Name",
             "category": "Category",
+            "page": "Page",
             "description": "Description",
             "note": "Note",
             "createdAt": "Created Date",

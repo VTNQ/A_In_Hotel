@@ -38,7 +38,7 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
         ]);
 
         setVoucher(voucherRes?.data?.data);
-        setRoomTypes(categoryRes.content || []);
+        setRoomTypes(categoryRes?.data?.content || []);
       } catch (err: any) {
         showAlert({
           title: err?.response?.data?.message || "Load voucher failed",
@@ -70,10 +70,10 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent size="xl" className="p-0 max-h-[90vh] flex flex-col">
+      <DialogContent size="xl" className="p-0 max-h-[90vh] flex flex-col bg-white dark:bg-neutral-900 dark:border-neutral-800">
         {/* ================= HEADER ================= */}
-        <DialogHeader className="px-6 py-4 border-b shrink-0">
-          <DialogTitle>{t("voucher.view.title")}</DialogTitle>
+        <DialogHeader className="px-6 py-4 border-b dark:border-neutral-800 shrink-0">
+          <DialogTitle className="dark:text-neutral-100">{t("voucher.view.title")}</DialogTitle>
         </DialogHeader>
 
         {/* ================= BODY (SCROLL) ================= */}
@@ -81,7 +81,7 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <div className="w-8 h-8 border-4 border-[#3B5CCC]/20 border-t-[#3B5CCC] rounded-full animate-spin" />
-              <span className="ml-3 text-sm text-slate-500">
+              <span className="ml-3 text-sm text-slate-500 dark:text-neutral-400">
                 {t("common.loading")}
               </span>
             </div>
@@ -90,13 +90,13 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
               {/* ================= LEFT ================= */}
               <div className="space-y-6">
                 {/* GENERAL */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.generalInformation")}
                   </h3>
 
                   <div className="grid grid-cols-12 gap-3 text-sm">
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.status")}
                     </div>
                     <div className="col-span-8">
@@ -120,81 +120,81 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
                       </span>
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.voucherName")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.voucherName || "-"}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.voucherCode")}
                     </div>
-                    <div className="col-span-8 font-mono text-[#253150]">
+                    <div className="col-span-8 font-mono text-[#253150] dark:text-neutral-200">
                       {voucher?.voucherCode || "-"}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.description")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.description || "-"}
                     </div>
                   </div>
                 </div>
 
                 {/* DATE */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.validityRange")}
                   </h3>
 
                   <div className="grid grid-cols-12 gap-3 text-sm">
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.startDate")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.startDate || "-"}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.endDate")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.endDate || "-"}
                     </div>
                   </div>
                 </div>
 
                 {/* STACK */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.stackRules")}
                   </h3>
 
                   <div className="grid grid-cols-12 gap-3 text-sm">
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.stackWithPromotion")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.stackWithPromotion
                         ? t("voucher.view.yes")
                         : t("voucher.view.no")}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.stackWithOtherVoucher")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.stackWithOtherVoucher
                         ? t("voucher.view.yes")
                         : t("voucher.view.no")}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.priority")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.priority || "-"}
                     </div>
                   </div>
@@ -204,32 +204,32 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
               {/* ================= RIGHT ================= */}
               <div className="space-y-6">
                 {/* DISCOUNT */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.discountInformation")}
                   </h3>
 
                   <div className="grid grid-cols-12 gap-3 text-sm">
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.discountType")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {t(VOUCHER_TYPE[Number(voucher?.type)])}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.discountValue")}
                     </div>
-                    <div className="col-span-8 font-semibold text-[#253150]">
+                    <div className="col-span-8 font-semibold text-[#253150] dark:text-neutral-200">
                       {voucher?.value || "-"}
                     </div>
 
                     {voucher?.type === "2" && (
                       <>
-                        <div className="col-span-4 text-slate-500">
+                        <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                           {t("voucher.view.maxDiscount")}
                         </div>
-                        <div className="col-span-8 text-[#253150]">
+                        <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                           {voucher?.maxDiscountValue || "-"}
                         </div>
                       </>
@@ -238,31 +238,31 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
                 </div>
 
                 {/* USAGE */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.usageRules")}
                   </h3>
 
                   <div className="grid grid-cols-12 gap-3 text-sm">
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.bookingType")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {t(BOOKING_TYPE[Number(voucher?.bookingType)])}
                     </div>
 
-                    <div className="col-span-4 text-slate-500">
+                    <div className="col-span-4 text-slate-500 dark:text-neutral-400">
                       {t("voucher.view.usagePerCustomer")}
                     </div>
-                    <div className="col-span-8 text-[#253150]">
+                    <div className="col-span-8 text-[#253150] dark:text-neutral-200">
                       {voucher?.usagePerCustomer || t("voucher.view.no")}
                     </div>
                   </div>
                 </div>
 
                 {/* ROOM TYPES */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-[#253150]">
+                <div className="rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-5 space-y-4">
+                  <h3 className="text-base font-semibold text-[#253150] dark:text-indigo-400">
                     {t("voucher.view.roomTypes")}
                   </h3>
 
@@ -278,8 +278,8 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
                           key={room.id}
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             excluded
-                              ? "bg-[#3B5CCC]/10 text-[#3B5CCC]"
-                              : "bg-slate-100 text-slate-400 line-through"
+                              ? "bg-[#3B5CCC]/10 text-[#3B5CCC] dark:bg-indigo-500/20 dark:text-indigo-400"
+                              : "bg-slate-100 text-slate-400 line-through dark:bg-neutral-800 dark:text-neutral-600"
                           }`}
                         >
                           {room.name}
@@ -294,7 +294,7 @@ const ViewVoucher = ({ isOpen, onClose, voucherId }: ViewVoucherProps) => {
         </div>
 
         {/* ================= FOOTER ================= */}
-        <DialogFooter className="px-6 py-4 border-t shrink-0">
+        <DialogFooter className="px-6 py-4 border-t dark:border-neutral-800 shrink-0">
           <Button variant="outline" onClick={onClose}>
             {t("common.close")}
           </Button>

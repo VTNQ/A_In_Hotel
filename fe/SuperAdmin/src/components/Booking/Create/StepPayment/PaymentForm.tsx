@@ -169,16 +169,16 @@ const PaymentForm = ({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-1">
+    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-xl p-6 shadow-sm">
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100 mb-1">
         {t("payment.title")}
       </h2>
-      <p className="text-sm text-gray-500 mb-6">{t("payment.subtitle")}</p>
+      <p className="text-sm text-gray-500 dark:text-neutral-400 mb-6">{t("payment.subtitle")}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* PAID AMOUNT */}
         <div>
-          <label className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600 dark:text-neutral-400">
             {t("payment.paidAmount")}
           </label>
           <Input
@@ -200,7 +200,7 @@ const PaymentForm = ({
 
         {/* PAYMENT METHOD */}
         <div>
-          <label className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600 dark:text-neutral-400">
             {t("payment.paymentMethod")}
           </label>
           <SelectField
@@ -223,7 +223,7 @@ const PaymentForm = ({
 
         {/* OUTSTANDING */}
         <div>
-          <label className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600 dark:text-neutral-400">
             {t("payment.outstanding")}
           </label>
           <Input type="number" disabled value={outstanding} />
@@ -231,7 +231,7 @@ const PaymentForm = ({
 
         {/* NOTES */}
         <div>
-          <label className="text-sm text-gray-600">{t("payment.notes")}</label>
+          <label className="text-sm text-gray-600 dark:text-neutral-400">{t("payment.notes")}</label>
           <Input
             placeholder={t("payment.notesPlaceholder")}
             value={note}
@@ -241,7 +241,7 @@ const PaymentForm = ({
           />
         </div>
         <div className="sm:col-span-2">
-          <label className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600 dark:text-neutral-400">
             {" "}
             {t("payment.voucherCode")}
           </label>
@@ -266,7 +266,7 @@ const PaymentForm = ({
               transition
               ${
                 isCheckVoucher
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? "bg-gray-300 text-gray-500 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
                   : "bg-indigo-500 text-white hover:bg-indigo-600"
               }
             `}
@@ -297,7 +297,7 @@ const PaymentForm = ({
           )}
 
           {voucherSuccess && (
-            <p className="text-green-600 text-sm mt-2">
+            <p className="text-green-600 dark:text-green-400 text-sm mt-2">
               {voucherSuccess} (-${discount.toFixed(2)})
             </p>
           )}
@@ -309,10 +309,10 @@ const PaymentForm = ({
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className={`px-6 py-2 rounded-lg font-medium flex items-center justify-center gap-2
+          className={`px-6 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition
       ${
         isLoading
-          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          ? "bg-gray-300 text-gray-500 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
           : "bg-indigo-500 text-white hover:bg-indigo-600"
       }`}
         >

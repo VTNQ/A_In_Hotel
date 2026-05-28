@@ -103,7 +103,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent className="w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl p-0">
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50 dark:bg-background">
           <DialogTitle className="text-lg font-semibold">
             {t("category.createOrUpdate.titleEdit")}
           </DialogTitle>
@@ -196,7 +196,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
             </div>
 
             {/* FOOTER */}
-            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+            <DialogFooter className="px-6 py-4 border-t bg-gray-50 dark:bg-background flex justify-end gap-3">
               <Button
                 variant="outline"
                 onClick={handleClose}

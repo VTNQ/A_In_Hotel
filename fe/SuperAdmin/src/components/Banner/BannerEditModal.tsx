@@ -235,181 +235,325 @@ const BannerEditModal: React.FC<BannerEditProps> = ({
   };
   if (!open || !bannerId) return <></>;
   return (
-    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="w-[95vw] sm:max-w-4xl max-h-[96vh] p-0 rounded-2xl overflow-y-auto">
-        {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-gray-50">
-          <DialogTitle className="text-lg font-semibold">
-            {t("banner.createOrUpdate.titleEdit")}
-          </DialogTitle>
-        </DialogHeader>
+<Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+  <DialogContent
+    className="
+      w-[95vw]
+      sm:max-w-4xl
+      max-h-[96vh]
+      p-0
+      rounded-2xl
+      overflow-y-auto
+      bg-white
+      dark:bg-neutral-950
+      border
+      border-slate-200
+      dark:border-neutral-800
+    "
+  >
+    {/* HEADER */}
+    <DialogHeader
+      className="
+        px-6
+        py-4
+        border-b
+        bg-gray-50
+        dark:bg-neutral-900
+        border-slate-200
+        dark:border-neutral-800
+      "
+    >
+      <DialogTitle
+        className="
+          text-lg
+          font-semibold
+          text-slate-900
+          dark:text-slate-100
+        "
+      >
+        {t("banner.createOrUpdate.titleEdit")}
+      </DialogTitle>
+    </DialogHeader>
 
-        {fetching ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
-          </div>
-        ) : (
-          <>
-            {/* BODY SCROLL */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-              {/* TOP GRID */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* TITLE */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {t("banner.name")} *
-                  </label>
-                  <Input
-                    value={watch("name")}
-                    onChange={(e) => {
-                      setValue("name", e.target.value, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      trigger("name");
-                    }}
-                    className="h-11"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-sm">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
+    {fetching ? (
+      <div className="flex items-center justify-center py-20">
+        <div
+          className="
+            w-8
+            h-8
+            border-4
+            border-slate-200
+            dark:border-neutral-800
+            border-t-slate-600
+            dark:border-t-slate-300
+            rounded-full
+            animate-spin
+          "
+        />
+      </div>
+    ) : (
+      <>
+        {/* BODY SCROLL */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          {/* TOP GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* TITLE */}
+            <div className="space-y-2">
+              <label
+                className="
+                  text-sm
+                  font-medium
+                  text-slate-700
+                  dark:text-slate-300
+                "
+              >
+                {t("banner.name")} *
+              </label>
 
-                {/* CTA */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {t("banner.createOrUpdate.ctaLabel")}
-                  </label>
-                  <Input
-                    value={watch("ctaLabel")}
-                    onChange={(e) => {
-                      setValue("ctaLabel", e.target.value, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      trigger("ctaLabel");
-                    }}
-                    className="h-11"
-                  />
-                </div>
+              <Input
+                value={watch("name")}
+                onChange={(e) => {
+                  setValue("name", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("name");
+                }}
+                className="
+                  h-11
+                  bg-white
+                  dark:bg-neutral-900
+                  border-slate-300
+                  dark:border-neutral-800
+                  text-slate-900
+                  dark:text-slate-100
+                "
+              />
 
-                {/* START DATE */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {t("banner.startAt")} *
-                  </label>
-                  <DateTimePicker
-                    value={watch("startDate")}
-                    onChange={(date: any) => {
-                      setValue("startDate", date, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-
-                      trigger("startDate");
-                    }}
-                    disabledDate={(date) => isBefore(date, startOfToday())}
-                    placeholder={t("banner.createOrUpdate.selectStartAt")}
-                  />
-                  {errors.startDate && (
-                    <p className="text-red-500 text-sm">
-                      {errors.startDate.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* END DATE */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {t("banner.endAt")} *
-                  </label>
-                  <DateTimePicker
-                    value={watch("endDate")}
-                    onChange={(date: any) => {
-                      setValue("endDate", date, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-
-                      trigger("endDate");
-                    }}
-                    minDateTime={watch("startDate")}
-                    disabledDate={(date) =>
-                      !watch("startDate") ? false : date <= watch("startDate")
-                    }
-                    placeholder={t("banner.createOrUpdate.selectEndAt")}
-                  />
-                  {errors.endDate && (
-                    <p className="text-red-500 text-sm">
-                      {errors.endDate.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* DESCRIPTION */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.createOrUpdate.description")}
-                </label>
-                <div className="border rounded-lg overflow-hidden">
-                  <QuillEditor
-                    theme="snow"
-                    value={watch("description")}
-                    onChange={(e) => {
-                      setValue("description", e, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      trigger("description");
-                    }}
-                    modules={fullToolbar}
-                    className="min-h-[200px]"
-                  />
-                </div>
-              </div>
-
-              {/* IMAGE */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("banner.thumbnail")}
-                </label>
-                <UploadField
-                  className="w-full"
-                  defaultPreviewUrl={defaultPreview}
-                  onChange={handleBannerImage}
-                />
-                {errors.bannerImage && (
-                  <p className="text-red-500 text-sm">
-                    {String(errors.bannerImage.message)}
-                  </p>
-                )}
-              </div>
+              {errors.name && (
+                <p className="text-red-500 text-sm">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
-            {/* FOOTER */}
-            <DialogFooter className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                disabled={isSubmitting}
+            {/* CTA */}
+            <div className="space-y-2">
+              <label
+                className="
+                  text-sm
+                  font-medium
+                  text-slate-700
+                  dark:text-slate-300
+                "
               >
-                {t("common.cancel")}
-              </Button>
+                {t("banner.createOrUpdate.ctaLabel")}
+              </label>
 
-              <Button
-                onClick={handleSubmit(onSubmitForm)}
-                disabled={isSubmitting || !isValid}
+              <Input
+                value={watch("ctaLabel")}
+                onChange={(e) => {
+                  setValue("ctaLabel", e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("ctaLabel");
+                }}
+                className="
+                  h-11
+                  bg-white
+                  dark:bg-neutral-900
+                  border-slate-300
+                  dark:border-neutral-800
+                  text-slate-900
+                  dark:text-slate-100
+                "
+              />
+            </div>
+
+            {/* START DATE */}
+            <div className="space-y-2">
+              <label
+                className="
+                  text-sm
+                  font-medium
+                  text-slate-700
+                  dark:text-slate-300
+                "
               >
-                {isSubmitting ? t("common.saving") : t("common.save")}
-              </Button>
-            </DialogFooter>
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
+                {t("banner.startAt")} *
+              </label>
+
+              <DateTimePicker
+                value={watch("startDate")}
+                onChange={(date: any) => {
+                  setValue("startDate", date, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+
+                  trigger("startDate");
+                }}
+                disabledDate={(date) => isBefore(date, startOfToday())}
+                placeholder={t("banner.createOrUpdate.selectStartAt")}
+              />
+
+              {errors.startDate && (
+                <p className="text-red-500 text-sm">
+                  {errors.startDate.message}
+                </p>
+              )}
+            </div>
+
+            {/* END DATE */}
+            <div className="space-y-2">
+              <label
+                className="
+                  text-sm
+                  font-medium
+                  text-slate-700
+                  dark:text-slate-300
+                "
+              >
+                {t("banner.endAt")} *
+              </label>
+
+              <DateTimePicker
+                value={watch("endDate")}
+                onChange={(date: any) => {
+                  setValue("endDate", date, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+
+                  trigger("endDate");
+                }}
+                minDateTime={watch("startDate")}
+                disabledDate={(date) =>
+                  !watch("startDate") ? false : date <= watch("startDate")
+                }
+                placeholder={t("banner.createOrUpdate.selectEndAt")}
+              />
+
+              {errors.endDate && (
+                <p className="text-red-500 text-sm">
+                  {errors.endDate.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="space-y-2">
+            <label
+              className="
+                text-sm
+                font-medium
+                text-slate-700
+                dark:text-slate-300
+              "
+            >
+              {t("banner.createOrUpdate.description")}
+            </label>
+
+            <div
+              className="
+                border
+                rounded-lg
+                overflow-hidden
+                border-slate-200
+                dark:border-neutral-800
+                bg-white
+                dark:bg-neutral-900
+              "
+            >
+              <QuillEditor
+                theme="snow"
+                value={watch("description")}
+                onChange={(e) => {
+                  setValue("description", e, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  trigger("description");
+                }}
+                modules={fullToolbar}
+                className="
+                  min-h-[200px]
+                  text-slate-900
+                  dark:text-slate-100
+                "
+              />
+            </div>
+          </div>
+
+          {/* IMAGE */}
+          <div className="space-y-2">
+            <label
+              className="
+                text-sm
+                font-medium
+                text-slate-700
+                dark:text-slate-300
+              "
+            >
+              {t("banner.thumbnail")}
+            </label>
+
+            <UploadField
+              className="w-full"
+              defaultPreviewUrl={defaultPreview}
+              onChange={handleBannerImage}
+            />
+
+            {errors.bannerImage && (
+              <p className="text-red-500 text-sm">
+                {String(errors.bannerImage.message)}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* FOOTER */}
+        <DialogFooter
+          className="
+            px-6
+            py-4
+            border-t
+            bg-gray-50
+            dark:bg-neutral-900
+            border-slate-200
+            dark:border-neutral-800
+            flex
+            justify-end
+            gap-3
+          "
+        >
+          <Button
+            variant="outline"
+            onClick={handleClose}
+            disabled={isSubmitting}
+            className="
+              dark:bg-neutral-950
+              dark:border-neutral-800
+              dark:text-slate-200
+              dark:hover:bg-neutral-900
+            "
+          >
+            {t("common.cancel")}
+          </Button>
+
+          <Button
+            onClick={handleSubmit(onSubmitForm)}
+            disabled={isSubmitting || !isValid}
+          >
+            {isSubmitting ? t("common.saving") : t("common.save")}
+          </Button>
+        </DialogFooter>
+      </>
+    )}
+  </DialogContent>
+</Dialog>
   );
 };
 export default BannerEditModal;

@@ -107,10 +107,10 @@ const CreateAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-transparent p-6">
       <div className="mx-auto mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
             {t("adminCreate.title")}
           </h1>
           <p className="mt-1 text-sm text-gray-500">
@@ -128,9 +128,9 @@ const CreateAdmin = () => {
         </div>
       </div>
       <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-1">
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-gray-100 p-4">
-            <h3 className="text-lg font-semibold text-gray-800">
+        <div className="rounded-2xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-neutral-800 p-4">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-neutral-100">
               {t("adminCreate.formTitle")}
             </h3>
           </div>

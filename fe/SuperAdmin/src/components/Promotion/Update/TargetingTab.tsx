@@ -23,7 +23,7 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
           filter: "isActive==1 and type==1",
         });
 
-        const data = response.content || [];
+        const data = response.data.content || [];
         setCategories(data);
 
         setValue(
@@ -78,13 +78,13 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
     <div className="flex-1 overflow-y-auto px-9 py-10 space-y-16">
       <section className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-xl font-bold text-slate-800">
+          <div className="h-8 w-1 rounded-full bg-[#3B5CCC] " />
+          <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
             {t("promotion.targeting.audience")}
           </h3>
         </div>
         <div className=" space-y-2">
-          <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
+          <label className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
             {t("promotion.targeting.customerAgent")}
           </label>
           <div className="relative mt-2">
@@ -117,12 +117,12 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
       <section className="space-y-4">
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 rounded-full bg-[#3B5CCC]" />
-          <h3 className="text-xl font-bold text-slate-800">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-neutral-100">
             {t("promotion.targeting.application")}
           </h3>
         </div>
         <div className="space-y-4">
-          <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
+          <label className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
             {t("promotion.targeting.roomTypes")}
           </label>
           {loading && (
@@ -130,13 +130,22 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-[56px] rounded-lg border border-slate-200 bg-slate-100 animate-pulse"
+                  className="h-[56px] rounded-lg border
+                    border-slate-200 bg-slate-100 animate-pulse
+
+                    dark:border-neutral-800
+                    dark:bg-neutral-900"
                 />
               ))}
             </div>
           )}
           {!loading && error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+            <div className="    rounded-lg border p-4 text-sm
+                border-red-200 bg-red-50 text-red-600
+
+                dark:border-red-900
+                dark:bg-red-950/40
+                dark:text-red-400">
               {error}
             </div>
           )}
@@ -147,17 +156,17 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                 className={`flex items-center gap-4 rounded-lg border p-4 cursor-pointer transition mt-2
                   ${
                     isAllSelected
-                      ? "border-[#3B5CCC] bg-[#E8EEFF]"
-                      : "border-dashed border-slate-300 bg-white"
+                      ? "border-[#3B5CCC] bg-[#E8EEFF] dark:border-indigo-400 dark:bg-indigo-500/15"
+                      : "border-dashed border-slate-300 bg-white dark:border-neutral-700 dark:bg-neutral-900"
                   }`}
               >
                 <input
                   type="checkbox"
                   checked={isAllSelected}
                   onChange={toggleSelectAll}
-                  className="h-5 w-5 text-[#3B5CCC]"
+                   className="h-5 w-5 text-[#3B5CCC] dark:text-indigo-400"
                 />
-                <span className="text-sm font-semibold text-[#253150]">
+                 <span className="text-sm font-semibold text-[#253150] dark:text-neutral-100">
                   {t("promotion.targeting.selectAllRoomTypes")}
                 </span>
               </label>
@@ -172,20 +181,20 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                   return (
                     <label
                       key={room.id}
-                      className={`flex items-center gap-4 rounded-lg border p-4 cursor-pointer transition
+                       className={`flex items-center gap-4 rounded-lg border p-4 cursor-pointer transition
                         ${
                           checked
-                            ? "border-[#3B5CCC] bg-[#E8EEFF]/60"
-                            : "border-slate-200 bg-white hover:border-[#3B5CCC]/40"
+                            ? "border-[#3B5CCC] bg-[#E8EEFF]/60 dark:border-indigo-400 dark:bg-indigo-500/15"
+                            : "border-slate-200 bg-white hover:border-[#3B5CCC]/40 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-indigo-400/50"
                         }`}
                     >
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleRoomType(room.id)}
-                        className="h-5 w-5 text-[#3B5CCC]"
+                        className="h-5 w-5 text-[#3B5CCC] dark:text-indigo-400"
                       />
-                      <span className="text-sm font-medium text-[#253150]">
+                       <span className="text-sm font-medium text-[#253150] dark:text-neutral-100">
                         {room.name}
                       </span>
                     </label>
@@ -196,7 +205,8 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
           )}
         </div>
         <div className="space-y-4">
-          <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
+          <label className="text-sm font-bold uppercase tracking-wider text-slate-700
+          dark:text-neutral-300">
             {t("promotion.targeting.bookingTypes")}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mt-2">
@@ -209,8 +219,8 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                   className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition
                     ${
                       checked
-                        ? "border-[#3B5CCC] bg-[#E8EEFF]"
-                        : "border-slate-200 bg-white hover:border-[#3B5CCC]/40"
+                       ? "border-[#3B5CCC] bg-[#E8EEFF] dark:border-indigo-400 dark:bg-indigo-500/15"
+                        : "border-slate-200 bg-white hover:border-[#3B5CCC]/40 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-indigo-400/50"
                     }`}
                 >
                   <input
@@ -226,9 +236,9 @@ const TargetingTab = ({ watch, setValue, trigger }: CreateOrUpdateTabProps) => {
                       trigger("minNights")
                     }
                     }
-                    className="h-4 w-4 text-[#3B5CCC]"
+                  className="h-4 w-4 text-[#3B5CCC] dark:text-indigo-400"
                   />
-                  <span className="text-sm font-medium text-[#253150]">
+                  <span className="text-sm font-medium text-[#253150] dark:text-neutral-100">
                     {t(type.labelKey)}
                   </span>
                 </label>

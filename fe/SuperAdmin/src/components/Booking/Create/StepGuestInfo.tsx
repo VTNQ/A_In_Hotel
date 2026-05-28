@@ -28,9 +28,8 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
   type FormValues = z.infer<typeof schema>;
   const {
     register,
-    handleSubmit,
     control,
-    formState: { errors, isValid },
+    formState: { errors,isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -46,25 +45,23 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       ...data,
     },
   });
-  const onSubmit = (form: FormValues) => {
-    onNext(form);
-  };
+  
   return (
     <div className="space-y-6 sm:space-y-8">
       <div>
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-neutral-100">
           {t("bookingGuest.title")}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">{t("bookingGuest.step")}</p>
+        <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">{t("bookingGuest.step")}</p>
       </div>
       <SectionHeader
         title={t("bookingGuest.identity")}
-        icon={<User className="w-5 h-5 text-indigo-500" />}
+        icon={<User className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
         <div>
-          <label className="text-sm font-medium ">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.firstName")}
           </label>
           <Input placeholder="e.g. Jonathan" {...register("firstName")} />
@@ -73,7 +70,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.lastName")}
           </label>
           <Input placeholder="e.g. Doe" {...register("lastName")} />
@@ -82,7 +79,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.idNumber")}
           </label>
           <Input placeholder="Enter ID number" {...register("idNumber")} />
@@ -91,7 +88,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.guestType")}
           </label>
           <Controller
@@ -116,11 +113,11 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       </div>
       <SectionHeader
         title={t("bookingGuest.contact")}
-        icon={<Mail className="w-5 h-5 text-indigo-500" />}
+        icon={<Mail className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />}
       />
       <div className="grid  grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.email")}
           </label>
           <Input
@@ -134,7 +131,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
             {t("bookingGuest.phone")}
           </label>
           <Input
@@ -150,37 +147,37 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       </div>
       <SectionHeader
         title={t("bookingGuest.specifics")}
-        icon={<ClipboardList className="w-5 h-5 text-indigo-500" />}
+        icon={<ClipboardList className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />}
       />
 
       <div>
-        <label className="text-sm font-medium">{t("bookingGuest.note")}</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">{t("bookingGuest.note")}</label>
         <Textarea
           placeholder={t("bookingGuest.notePlaceholder")}
         {...register("note")}
         />
       </div>
-      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t pt-5">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-gray-200 dark:border-neutral-800 pt-5">
         <Button
           onClick={onCancel}
           className="
             px-4 py-2 rounded-lg text-sm font-medium
-            text-gray-600 border border-gray-300 bg-white
-            hover:bg-gray-50 transition
+            text-gray-600 dark:text-neutral-300 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800
+            hover:bg-gray-50 dark:hover:bg-neutral-700 transition
           "
         >
           {t("bookingGuest.cancel")}
         </Button>
 
         <Button
-          disabled={!isValid}
-          onClick={() => handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+          onClick={() => onNext(data)}
           className={`
     px-5 py-2 rounded-lg text-sm font-medium transition
     ${
-      isValid
+      !isSubmitting
         ? "bg-indigo-500 text-white hover:bg-indigo-600"
-        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        : "bg-gray-200 text-gray-400 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed"
     }
   `}
         >

@@ -272,24 +272,40 @@ const UpdatePromotion = ({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-        <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
-          <header className="flex items-center justify-between border-b border-gray-100 px-10 py-8">
+        <div
+          className="
+        w-full max-w-3xl max-h-[85vh] overflow-hidden 
+        rounded-xl 
+        bg-white dark:bg-neutral-950 
+        shadow-2xl 
+        border border-gray-200 dark:border-neutral-800
+        flex flex-col"
+        >
+          <header
+            className="flex items-center justify-between border-b border-gray-100
+          dark:border-neutral-800 px-10 py-8"
+          >
             <div className="flex flex-col gap-1">
-              <h1 className="text-2xl font-semibold">
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
                 {t("promotion.createOrUpdate.editTitle")}
               </h1>
-              <p className="text-sm italic text-slate-500">
+              <p className="text-sm italic text-slate-500 dark:text-neutral-400">
                 {t("promotion.createOrUpdate.description")}
               </p>
             </div>
             <button
               onClick={handleCancel}
-              className="p-2 rounded-full hover:bg-slate-100"
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-neutral-800 transition"
             >
-              <X className="w-5 h-5 text-slate-500" />
+              <X className="w-5 h-5 text-slate-500 dark:text-neutral-400" />
             </button>
           </header>
-          <div className="border-b px-10 py-4 border-gray-200 bg-white sticky top-0 z-10 ">
+          <div
+            className="border-b border-gray-200 dark:border-neutral-800 
+          bg-white dark:bg-neutral-950
+          sticky top-0 z-10
+          px-10 py-4"
+          >
             <div className="flex gap-10">
               <TabButton
                 icon={<Info size={18} />}
@@ -372,7 +388,8 @@ const UpdatePromotion = ({
               </>
             )}
           </div>
-          <footer className="flex items-center justify-end border-t border-slate-200 bg-white px-10 py-5">
+          <footer className="flex items-center justify-end border-t border-slate-200 dark:border-neutral-800
+          bg-white dark:bg-neutral-950 px-10 py-5">
             <div className="flex gap-3">
               {!isFirstTab && (
                 <Button
@@ -389,7 +406,10 @@ const UpdatePromotion = ({
                   {t("promotion.next")}
                 </Button>
               ) : (
-                <Button onClick={handleSubmit(onSubmitForm)} disabled={loading || isSubmitting}>
+                <Button
+                  onClick={handleSubmit(onSubmitForm)}
+                  disabled={loading || isSubmitting}
+                >
                   {isSubmitting ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
