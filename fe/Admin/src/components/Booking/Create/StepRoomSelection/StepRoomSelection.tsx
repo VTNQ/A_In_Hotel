@@ -155,99 +155,116 @@ const StepRoomSelection = ({ booking, onBack, onNext, onCancel }: any) => {
       ? t("roomSelection.validation.capacity")
       : "";
 
-  return (
-    <div className="bg-gray-50">
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-semibold ">
-          {t("roomSelection.title")}
-        </h2>
-        <p className="text-sm text-gray-500">
-          {t("roomSelection.subtitle", {
-            count: booking.selectDate?.adults || 2,
-          })}
-        </p>
+ return (
+  <div className="">
+
+    {/* HEADER */}
+    <div className="mb-4 sm:mb-6">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        {t("roomSelection.title")}
+      </h2>
+
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {t("roomSelection.subtitle", {
+          count: booking.selectDate?.adults || 2,
+        })}
+      </p>
+    </div>
+
+    {/* FILTER */}
+    <RoomSearchFilter
+      filter={{ search, roomType }}
+      roomTypes={roomTypes}
+      disabled={loading}
+      onChange={(key: string, value: string) => {
+        if (key === "search") setSearch(value);
+        if (key === "roomType") setRoomType(value);
+      }}
+    />
+
+    {/* CONTENT */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+      {/* ROOMS LIST */}
+      <div className="lg:col-span-2 space-y-4">
+
+        {loading ? (
+          <RoomSkeleton />
+        ) : rooms.length === 0 ? (
+          <p className="text-gray-500 dark:text-gray-400">
+            {t("roomSelection.noRooms")}
+          </p>
+        ) : (
+          rooms.map((room) => (
+            <RoomCard
+              key={room.id}
+              room={room}
+              service={extras}
+              bookingDate={booking.selectDate}
+              packageType={booking.selectDate?.package}
+              selected={selectedRooms.some((r: any) => r.id === room.id)}
+              onSelect={toggleRoom}
+            />
+          ))
+        )}
+
+        {/* ERROR */}
+        {roomError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3
+            dark:bg-red-500/10 dark:border-red-500/30">
+            <p className="text-sm text-red-500 dark:text-red-400">
+              {roomError}
+            </p>
+          </div>
+        )}
       </div>
 
-      <RoomSearchFilter
-        filter={{ search, roomType }}
-        roomTypes={roomTypes}
-        disabled={loading}
-        onChange={(key: string, value: string) => {
-          if (key === "search") setSearch(value);
-          if (key === "roomType") setRoomType(value);
-        }}
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <div className="lg:col-span-2 space-y-4">
-          {loading ? (
-            <RoomSkeleton />
-          ) : rooms.length === 0 ? (
-            <p className="text-gray-500">{t("roomSelection.noRooms")}</p>
-          ) : (
-            rooms.map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                service={extras}
-                bookingDate={booking.selectDate}
-                packageType={booking.selectDate?.package}
-                selected={selectedRooms.some((r: any) => r.id === room.id)}
-                onSelect={toggleRoom}
-              />
-            ))
-          )}
-           {roomError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-              <p className="text-sm text-red-500">
-                {roomError}
-              </p>
-            </div>
-          )}
-        </div>
-        <div className="lg:sticky lg:top-6 h-fit">
-          <BookingSummary
-            rooms={selectedRooms}
-            bookingDate={booking.selectDate}
-            packageType={booking.selectDate?.package}
-            guests={{
-              adults: booking.selectDate?.adults,
-              children: booking.selectDate?.children,
-            }}
-            onEditGuests={onBack}
-            onNext={handleSubmit(submit)}
-          />
-        </div>
-      </div>
-
-      <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4 ">
-        <button
-          onClick={onCancel}
-          className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
-        text-red-600 border border-red-200 bg-red-50
-        hover:bg-red-100 hover:border-red-300 transition"
-        >
-          {t("roomSelection.cancel")}
-        </button>
-
-        {/* BACK */}
-        <button
-          type="button"
-          onClick={onBack}
-          className="
-          w-full sm:w-auto
-          inline-flex items-center justify-center gap-2
-          px-5 py-3
-          rounded-xl
-          bg-gray-100
-          text-sm font-medium text-gray-700
-          hover:bg-gray-200 transition"
-        >
-          {t("roomSelection.back")}
-        </button>
+      {/* SUMMARY */}
+      <div className="lg:sticky lg:top-6 h-fit">
+        <BookingSummary
+          rooms={selectedRooms}
+          bookingDate={booking.selectDate}
+          packageType={booking.selectDate?.package}
+          guests={{
+            adults: booking.selectDate?.adults,
+            children: booking.selectDate?.children,
+          }}
+          onEditGuests={onBack}
+          onNext={handleSubmit(submit)}
+        />
       </div>
     </div>
-  );
+
+    {/* ACTIONS */}
+    <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4">
+
+      <button
+        onClick={onCancel}
+        className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
+        text-red-600 border border-red-200 bg-red-50
+        hover:bg-red-100 hover:border-red-300 transition
+        dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30
+        dark:hover:bg-red-500/20"
+      >
+        {t("roomSelection.cancel")}
+      </button>
+
+      <button
+        type="button"
+        onClick={onBack}
+        className="
+          w-full sm:w-auto inline-flex items-center justify-center gap-2
+          px-5 py-3 rounded-xl text-sm font-medium
+          bg-gray-100 text-gray-700 hover:bg-gray-200 transition
+          dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700
+        "
+      >
+        {t("roomSelection.back")}
+      </button>
+
+    </div>
+  </div>
+);
 };
 
 export default StepRoomSelection;

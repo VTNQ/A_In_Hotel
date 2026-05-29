@@ -72,7 +72,9 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
       <button
         ref={btnRef}
         onClick={toggle}
-        className="p-1 rounded hover:bg-gray-100 transition"
+        className="p-1 rounded-lg hover:bg-gray-100 
+        dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200
+        transition-colors"
       >
         <MoreVertical size={16} />
       </button>
@@ -85,11 +87,11 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -5 }}
               transition={{ duration: 0.15 }}
-              className="fixed z-[2147483647] bg-white border border-gray-200 shadow-xl rounded-xl p-2 w-44"
+              className="fixed z-[2147483647] bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-xl rounded-xl p-2 w-44"
               style={{ top: menuPos.top, left: menuPos.left }}
             >
               {title && (
-                <p className="text-sm font-semibold text-gray-700 mb-2">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-100 mb-2">
                   {title}
                 </p>
               )}
@@ -103,10 +105,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, actions }) => {
                     }}
                     className={`flex items-center gap-2 px-3 py-2 text-sm rounded-md ${
                       a.disabled
-                        ? "text-gray-400 cursor-not-allowed"
+                        ? "text-gray-400 dark:text-slate-500 cursor-not-allowed"
                         : a.danger
-                          ? "text-red-600 hover:bg-red-50"
-                          : "text-gray-700 hover:bg-gray-100"
+                          ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
                     }`}
                   >
                     {a.icon}

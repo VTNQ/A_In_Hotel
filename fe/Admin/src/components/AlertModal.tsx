@@ -154,7 +154,7 @@ export function AlertModal({
             aria-describedby={description ? descId : undefined}
             tabIndex={-1}
             ref={panelRef}
-            className={`absolute left-1/2 top-1/2 w-[92vw] ${maxWidth} -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-white/60 bg-white/85 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-xl ring-1 ring-black/5`}
+            className={`absolute left-1/3 top-1/3 w-[92vw] ${maxWidth} -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-white/60 bg-white/85 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-xl ring-1 ring-black/5`}
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}

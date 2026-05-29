@@ -33,38 +33,36 @@ const ViewCategoryInformation: React.FC<ViewCategoryProps> = ({ isOpen, onClose,
         >
             {loading && (
                 <div className="animate-pulse mt-3 space-y-4">
-                    <div className="h-4 w-40 bg-gray-300 rounded"></div>
+                    <div className="h-4 w-40 bg-gray-300 dark:bg-slate-700 rounded"></div>
 
                     <div className="grid grid-cols-[150px_1fr] gap-y-4">
-                        <div className="h-4 w-28 bg-gray-200 rounded"></div>
-                        <div className="h-4 w-40 bg-gray-300 rounded"></div>
+                        <div className="h-4 w-28 bg-gray-200 dark:bg-slate-800 rounded"></div>
+                        <div className="h-4 w-40 bg-gray-300 dark:bg-slate-700 rounded"></div>
 
-                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                        <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                        <div className="h-4 w-20 bg-gray-200 dark:bg-slate-800 rounded"></div>
+                        <div className="h-4 w-24 bg-gray-300 dark:bg-slate-700 rounded"></div>
 
-                        <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                        <div className="h-4 w-20 bg-gray-300 rounded"></div>
+                        <div className="h-4 w-24 bg-gray-200 dark:bg-slate-800 rounded"></div>
+                        <div className="h-4 w-20 bg-gray-300 dark:bg-slate-700 rounded"></div>
                     </div>
 
-                    <div className="h-6 w-full bg-gray-200 rounded"></div>
+                    <div className="h-6 w-full bg-gray-200 dark:bg-slate-800 rounded"></div>
                 </div>
             )}
             {!loading && category && (
                 <>
-                    
-
                     <div
-                        className="w-full py-2 rounded-xl text-sm sm:text-[16px] text-[#2B2B2B]"
+                        className="w-full py-2 rounded-xl text-sm sm:text-[16px] text-[#2B2B2B] dark:text-slate-200 transition-colors"
                         style={{ fontFamily: "Montserrat" }}
                     >
                         <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-y-3 gap-x-4">
-                            <span className="font-semibold text-[#253150]">{t("category.name")}</span>
+                            <span className="font-semibold text-[#253150] dark:text-slate-200">{t("category.name")}</span>
                             <span>{category.name}</span>
 
-                            <span className="font-semibold text-[#253150]">{t("category.type")}</span>
+                            <span className="font-semibold text-[#253150] dark:text-slate-200">{t("category.type")}</span>
                             <span>{category.type}</span>
 
-                            <span className="font-semibold text-[#253150]">{t("category.capacity")}</span>
+                            <span className="font-semibold text-[#253150] dark:text-slate-200">{t("category.capacity")}</span>
                             <span>{category.capacity}</span>
                         </div>
 

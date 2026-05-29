@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { cancelBooking, GetAllBookings, handleCheckIn } from "../../service/api/Booking";
+import {
+  cancelBooking,
+  GetAllBookings,
+  handleCheckIn,
+} from "../../service/api/Booking";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
 import SimpleDatePicker from "../../components/ui/SimpleDatePicker";
@@ -46,7 +50,7 @@ const ViewBooking = () => {
     setSelectedBooking(booking);
     setOpenCheckout(true);
   };
-  const handleCancelBooking = async(booking: any) => {
+  const handleCancelBooking = async (booking: any) => {
     try {
       const response = await cancelBooking(booking.id);
       showAlert({
@@ -74,7 +78,7 @@ const ViewBooking = () => {
   const fetchData = async (
     pageNumber = 1,
     key = sortKey,
-    order = sortOrder
+    order = sortOrder,
   ) => {
     setLoading(true);
     try {
@@ -85,7 +89,7 @@ const ViewBooking = () => {
       if (bookingDate) {
         filters.push(
           `createdAt=ge=${bookingDate}T00:00:00+07:00`,
-          `createdAt=le=${bookingDate}T23:59:59+07:00`
+          `createdAt=le=${bookingDate}T23:59:59+07:00`,
         );
       }
       const filterQuery = filters.join(" and ");
@@ -114,7 +118,8 @@ const ViewBooking = () => {
       const response = await handleCheckIn(id);
 
       showAlert({
-        title: response?.data?.message || t("confirmCheckIn.confirmCheckInSuccess"),
+        title:
+          response?.data?.message || t("confirmCheckIn.confirmCheckInSuccess"),
         type: "success",
         autoClose: 3000,
       });
@@ -140,7 +145,7 @@ const ViewBooking = () => {
 
   const columns = [
     { key: "code", label: t("booking.code"), sortable: true },
-    {key:"idNumber",label:t("bookingGuest.idNumber"),sortable:true},
+    { key: "idNumber", label: t("bookingGuest.idNumber"), sortable: true },
     { key: "guestName", label: t("booking.guestName"), sortale: true },
     { key: "phoneNumber", label: t("booking.phone"), sortable: true },
     { key: "email", label: "Email", sortable: true },
@@ -260,7 +265,7 @@ const ViewBooking = () => {
       render: (row: any) => (
         <BookingActionMenu
           booking={row}
-          onCancel={()=>handleCancelBooking(row)}
+          onCancel={() => handleCancelBooking(row)}
           onCheckOut={() => handleOpenCheckout(row)}
           onCheckIn={() => handleConfirmCheckIn(row)}
           onView={() => handleOpenViewBooking(row)}
@@ -271,56 +276,82 @@ const ViewBooking = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-50">
+    <div className="flex flex-col flex-1 dark:text-gray-100">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-gray-100">
           {t("booking.title")}
         </h1>
+
         <button
           onClick={() => navigate("/Dashboard/booking/create")}
-          className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E] rounded-lg hover:bg-[#536DB2]"
+          className="w-full sm:w-auto px-4 py-2 text-white bg-[#42578E]
+      rounded-lg hover:bg-[#536DB2]
+      dark:bg-blue-600 dark:hover:bg-blue-700"
         >
           {t("booking.new")}
         </button>
       </div>
+
+      {/* FILTER BAR */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
+        {/* SEARCH */}
         <div className="relative w-full lg:w-[320px]">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-gray-500 w-5 h-5" />
           <input
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
             placeholder={t("booking.searchPlaceholder")}
-            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5]
+        rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none
+        bg-white text-gray-700
+        dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600"
           />
         </div>
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
-            {" "}
+
+        {/* STATUS FILTER */}
+        <div
+          className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5]
+    rounded-lg overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-600"
+        >
+          <div
+            className="flex items-center px-3 bg-[#F1F2F3]
+      text-gray-600 text-sm whitespace-nowrap
+      dark:bg-gray-700 dark:text-gray-300"
+          >
             {t("common.status")}
           </div>
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+            className="flex-1 py-2.5 pl-3 pr-8 text-sm
+        bg-white text-gray-700
+        focus:outline-none
+        dark:bg-gray-800 dark:text-gray-100"
           >
             <option value="">{t("common.all")}</option>
-
             <option value="1">{t("booking.booked")}</option>
             <option value="2">{t("booking.checkIn")}</option>
             <option value="3">{t("booking.checkOut")}</option>
             <option value="4">{t("booking.cancelled")}</option>
           </select>
         </div>
+
+        {/* DATE */}
         <div className="w-full lg:w-[260px]">
           <SimpleDatePicker value={bookingDate} onChange={setBookingDate} />
         </div>
       </div>
+
+      {/* TABLE */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <p className="text-gray-500">{t("common.loading")}</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {t("common.loading")}
+          </p>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 dark:text-red-400">{error}</p>
         ) : (
           <CommonTable
             columns={columns}
@@ -339,30 +370,34 @@ const ViewBooking = () => {
           />
         )}
       </div>
+
+      {/* MODALS */}
       <ConfirmCheckIn
         open={open}
         onConfirm={() => handleCheckInConfirm(selectedBooking?.id)}
         onCancel={() => setOpen(false)}
         id={selectedBooking?.id}
       />
+
       <ConfirmCheckOut
         open={openCheckout}
         id={selectedBooking?.id}
         onCancel={() => setOpenCheckout(false)}
         onConfirm={() => fetchData()}
       />
+
       <SwitchRoomModal
         open={openSwitchRoom}
         onConfirm={() => fetchData()}
         onClose={() => setOpenSwitchRoom(false)}
         id={selectedBooking?.id}
       />
+
       <ViewBookingModal
         open={openViewBooking}
         id={selectedBooking?.id}
         onClose={() => setOpenViewBooking(false)}
       />
-   
     </div>
   );
 };

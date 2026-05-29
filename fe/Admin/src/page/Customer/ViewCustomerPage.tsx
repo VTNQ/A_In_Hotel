@@ -173,21 +173,32 @@ const ViewCustomerPage = () => {
     },
   ];
   return (
-    <div className="flex flex-col flex-1 bg-gray-50">
+    <div className="flex flex-col flex-1 ">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-slate-200">
           {t("customer.management.title")}
         </h1>
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-gray-500 w-5 h-5" />
           <input
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
             placeholder={t("customer.search.placeholder")}
-            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="
+            w-full pl-10 pr-3 py-2 
+            border border-[#C2C4C5] dark:border-gray-700
+            rounded-lg
+            bg-white dark:bg-[#1E293B]
+            text-gray-800 dark:text-gray-100
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            focus:ring-2 focus:ring-blue-400 
+            dark:focus:ring-blue-500
+            focus:outline-none
+            transition
+          "
           />
         </div>
       </div>

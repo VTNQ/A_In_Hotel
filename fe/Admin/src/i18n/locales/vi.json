@@ -413,6 +413,8 @@
             "enterName": "Nhập tên danh mục",
             "description": "Mô tả",
             "titleEdit": "Sửa danh mục",
+            "descriptionLimit":"Tối đa 255 ký tự",
+            "nameLimit": "Tối đa 120 ký tự",
             "enterDescription": "Nhập mô tả ngắn",
             "createSucess": "Tạo danh mục thành công!",
             "createError": "Lỗi khi tạo danh mục",
@@ -470,6 +472,7 @@
         "viewTitle": "Xem bài viết",
         "blogCode": "Mã bài viết",
         "status": "Trạng thái",
+
         "loading": "Đang tải...",
         "validate": {
             "titleRequired": "Vui lòng nhập tiêu đề",

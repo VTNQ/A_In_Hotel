@@ -256,7 +256,9 @@ const CreateVoucher = ({
     setValue(
       "roomTypes",
       currentRoomTypes.map((r) =>
-        r.roomTypeId === Number(roomTypeId) ? { ...r, excluded: !r.excluded } : r,
+        r.roomTypeId === Number(roomTypeId)
+          ? { ...r, excluded: !r.excluded }
+          : r,
       ),
       {
         shouldValidate: true,
@@ -382,7 +384,7 @@ const CreateVoucher = ({
               </h2>
 
               <div>
-                <label className="block mb-1 font-medium text-[#253150]">
+                <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                   {t("voucher.createOrUpdate.voucherName")}
                 </label>
                 <input
@@ -391,17 +393,22 @@ const CreateVoucher = ({
                   placeholder={t(
                     "voucher.createOrUpdate.voucherNamePlaceHolder",
                   )}
-                  className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                  className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                 />
                 {errors.voucherName && (
-                  <span className="text-red-500">
+                  <span className="text-red-500 dark:text-red-400">
                     {errors.voucherName.message}
                   </span>
                 )}
               </div>
 
               <div>
-                <label className="block mb-1 font-medium text-[#253150]">
+                <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                   {t("voucher.createOrUpdate.voucherCode")}
                 </label>
                 <input
@@ -410,17 +417,22 @@ const CreateVoucher = ({
                   placeholder={t(
                     "voucher.createOrUpdate.voucherCodePlaceHolder",
                   )}
-                  className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                  className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                 />
                 {errors.voucherCode && (
-                  <span className="text-red-500">
+                  <span className="text-red-500 dark:text-red-400">
                     {errors.voucherCode.message}
                   </span>
                 )}
               </div>
 
               <div>
-                <label className="block mb-1 font-medium text-[#253150]">
+                <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                   {t("voucher.createOrUpdate.description")}
                 </label>
                 <textarea
@@ -428,7 +440,12 @@ const CreateVoucher = ({
                   placeholder={t(
                     "voucher.createOrUpdate.descriptionPlaceholder",
                   )}
-                  className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+                  className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                   rows={4}
                 />
               </div>
@@ -442,21 +459,33 @@ const CreateVoucher = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                     {t("voucher.createOrUpdate.startDate")}
                   </label>
                   <div className="relative">
                     <Calendar
                       size={18}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-[#253150]"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 
+  text-[#253150] dark:text-gray-400"
                     />
+
                     <input
                       type="date"
                       {...register("startDate")}
-                      className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
+                      className="h-12 w-full rounded-lg border pl-12 pr-4 outline-none
+  border-[#4B62A0]
+  bg-white text-[#253150]
+  focus:border-[#3E5286]
+
+  dark:bg-[#1F2937]
+  dark:border-gray-600
+  dark:text-gray-100
+  dark:[color-scheme:dark]
+  dark:focus:border-blue-500"
                     />
+
                     {errors.startDate && (
-                      <span className="text-red-500">
+                      <span className="text-red-500 dark:text-red-400">
                         {errors.startDate.message}
                       </span>
                     )}
@@ -464,7 +493,7 @@ const CreateVoucher = ({
                 </div>
 
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                     {t("voucher.createOrUpdate.endDate")}
                   </label>
                   <div className="relative">
@@ -475,7 +504,16 @@ const CreateVoucher = ({
                     <input
                       type="date"
                       {...register("endDate")}
-                      className="h-12 w-full rounded-lg border pl-12 pr-4 border-[#4B62A0] outline-none"
+                      className="h-12 w-full rounded-lg border pl-12 pr-4 outline-none
+  border-[#4B62A0]
+  bg-white text-[#253150]
+  focus:border-[#3E5286]
+
+  dark:bg-[#1F2937]
+  dark:border-gray-600
+  dark:text-gray-100
+  dark:[color-scheme:dark]
+  dark:focus:border-blue-500"
                     />
                     {errors.endDate && (
                       <span className="text-red-500">
@@ -489,11 +527,14 @@ const CreateVoucher = ({
 
             {/* Stack & Priority Rules */}
             <section className="space-y-4">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {t("voucher.createOrUpdate.stackAndPriority")}
               </h2>
 
-              <div className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-5">
+              <div
+                className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-5
+    dark:border-gray-700 dark:bg-gray-800"
+              >
                 <Toggle
                   label={t("voucher.createOrUpdate.stackWithPromotion")}
                   description={t(
@@ -507,6 +548,7 @@ const CreateVoucher = ({
                     })
                   }
                 />
+
                 <Toggle
                   label={t("voucher.createOrUpdate.stackWithOtherVoucher")}
                   description={t(
@@ -522,24 +564,29 @@ const CreateVoucher = ({
                 />
 
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
                     {t("voucher.createOrUpdate.priority")}{" "}
-                    <span className="text-gray-400 font-normal">
+                    <span className="text-gray-400 dark:text-gray-500 font-normal">
                       ({t("voucher.createOrUpdate.priorityOptional")})
                     </span>
                   </label>
+
                   <input
                     type="number"
                     {...register("priority")}
                     placeholder="1"
-                    className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                    className="w-full border border-[#4B62A0] focus:border-[#3E5286]
+        rounded-lg p-2.5 outline-none
+        bg-white text-gray-900
+        dark:bg-gray-900 dark:border-gray-600 dark:text-white
+        dark:placeholder:text-gray-400"
                   />
                 </div>
               </div>
             </section>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="block mb-1 font-medium text-[#253150]">
+                <span className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
                   {t("voucher.createOrUpdate.roomTypes")}
                 </span>
 
@@ -547,7 +594,7 @@ const CreateVoucher = ({
                   <button
                     type="button"
                     onClick={selectAllRoomTypes}
-                    className="text-xs text-[#253150] font-semibold hover:underline"
+                    className="text-xs text-[#253150] dark:text-indigo-400 font-semibold hover:underline"
                   >
                     {t("voucher.createOrUpdate.selectAll")}
                   </button>
@@ -555,15 +602,17 @@ const CreateVoucher = ({
                   <button
                     type="button"
                     onClick={unselectAllRoomTypes}
-                    className="text-xs text-gray-500 hover:underline"
+                    className="text-xs text-gray-500 dark:text-gray-400 hover:underline"
                   >
                     {t("voucher.createOrUpdate.clear")}
                   </button>
                 </div>
               </div>
+
               <div
-                className="grid grid-cols-1  sm:grid-cols-2 gap-3 p-3 sm:p-4 rounded-xl border 
-              border-[#E3E7F2] bg-white"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4 rounded-xl border
+    border-[#E3E7F2] bg-white
+    dark:border-gray-700 dark:bg-gray-800"
               >
                 {roomTypes.map((room) => {
                   const roomState = watch("roomTypes").find(
@@ -575,8 +624,12 @@ const CreateVoucher = ({
                   return (
                     <label
                       key={room.id}
-                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer
-            ${checked ? "bg-[#253150]/5" : "hover:bg-gray-50"}
+                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors
+            ${
+              checked
+                ? "bg-[#253150]/5 dark:bg-indigo-500/20"
+                : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            }
           `}
                     >
                       <input
@@ -591,7 +644,11 @@ const CreateVoucher = ({
                       {/* Custom checkbox */}
                       <div
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0
-              ${checked ? "bg-[#253150] border-[#253150]" : "border-[#C6CCDD]"}
+              ${
+                checked
+                  ? "bg-[#253150] border-[#253150] dark:bg-indigo-500 dark:border-indigo-500"
+                  : "border-[#C6CCDD] dark:border-gray-500"
+              }
             `}
                       >
                         {checked && (
@@ -611,15 +668,18 @@ const CreateVoucher = ({
                         )}
                       </div>
 
-                      <span className="text-sm font-medium text-[#253150]">
+                      <span className="text-sm font-medium text-[#253150] dark:text-gray-200">
                         {room.name}
                       </span>
                     </label>
                   );
                 })}
               </div>
+
               {errors.roomTypes && (
-                <span className="text-red-500">{errors.roomTypes.message}</span>
+                <span className="text-red-500 dark:text-red-400">
+                  {errors.roomTypes.message}
+                </span>
               )}
             </div>
           </div>
@@ -633,12 +693,17 @@ const CreateVoucher = ({
               </h2>
 
               <div>
-                <label className="block mb-1 font-medium text-[#253150]">
+                <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                   {t("voucher.createOrUpdate.discountType")}
                 </label>
                 <select
                   {...register("type")}
-                  className="h-12 w-full rounded-lg border px-4 border-[#4B62A0] bg-white outline-none appearance-none"
+                  className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                 >
                   <option value="1">{t("voucher.createOrUpdate.fixed")}</option>
                   <option value="2">
@@ -657,7 +722,7 @@ const CreateVoucher = ({
                 className={`grid ${isPercent ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4`}
               >
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                     {t("voucher.createOrUpdate.value")}
                   </label>
                   <div className="relative">
@@ -665,14 +730,21 @@ const CreateVoucher = ({
                       type="text"
                       {...register("value")}
                       placeholder={t("voucher.createOrUpdate.valuePlaceholder")}
-                      className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-10"
+                      className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563]">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] dark:text-white">
                       {isPercent ? "%" : "VND"}
                     </span>
                   </div>
                   {errors.value && (
-                    <span className="text-red-500">{errors.value.message}</span>
+                    <span className="text-red-500 dark:text-red-400">
+                      {errors.value.message}
+                    </span>
                   )}
                 </div>
 
@@ -688,14 +760,24 @@ const CreateVoucher = ({
                         placeholder={t(
                           "voucher.createOrUpdate.maxDiscountPlaceholder",
                         )}
-                        className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none pr-12"
+                        className="w-full border border-[#4B62A0] focus:border-[#3E5286]
+  rounded-lg p-2.5 outline-none pr-12
+  bg-white text-gray-900
+  dark:bg-gray-900 dark:border-gray-600 dark:text-white
+  dark:placeholder:text-gray-400"
                       />
+
                       {errors.maxDiscountValue && (
-                        <span className="text-red-500">
+                        <span className="text-red-500 dark:text-red-400">
                           {errors.maxDiscountValue.message}
                         </span>
                       )}
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] font-medium">
+
+                      <span
+                        className="absolute right-3 top-1/2 -translate-y-1/2
+  text-[#4B5563] font-medium
+  dark:text-gray-300"
+                      >
                         VND
                       </span>
                     </div>
@@ -713,29 +795,39 @@ const CreateVoucher = ({
               {/* Booking Type + Minimum Stay */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                     {t("voucher.createOrUpdate.bookingType")}
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#253150]">
+                    <span
+                      className="absolute left-4 top-1/2 -translate-y-1/2
+    text-[#253150] dark:text-gray-300"
+                    >
                       <Calendar size={18} />
                     </span>
+
                     <select
                       {...register("bookingType")}
-                      className="h-12 w-full rounded-lg border border-[#4B62A0] bg-white pl-12 pr-4 outline-none appearance-none"
+                      className="h-12 w-full rounded-lg border border-[#4B62A0]
+    bg-white pl-12 pr-4 outline-none appearance-none
+    text-gray-900
+    dark:bg-gray-900 dark:border-gray-600 dark:text-white"
                     >
                       <option value="1">
                         {t("bookingDateTime.packageDayUse")}
                       </option>
+
                       <option value="2">
                         {t("bookingDateTime.packageOvernight")}
                       </option>
+
                       <option value="3">
                         {t("bookingDateTime.packageFullDay")}
                       </option>
                     </select>
+
                     {errors.bookingType && (
-                      <span className="text-red-500">
+                      <span className="text-red-500 dark:text-red-400">
                         {errors.bookingType.message}
                       </span>
                     )}
@@ -743,17 +835,22 @@ const CreateVoucher = ({
                 </div>
 
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-white">
                     {t("voucher.createOrUpdate.minimumStay")}
                   </label>
                   <input
                     {...register("minimumStay")}
                     type="number"
                     placeholder="2"
-                    className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                    className="w-full border border-[#4B62A0] dark:border-slate-600 
+                bg-white dark:bg-slate-800
+                text-gray-900 dark:text-white
+                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                focus:border-[#3E5286] dark:focus:border-blue-400
+                rounded-lg p-2.5 outline-none"
                   />
                   {errors.minimumStay && (
-                    <span className="text-red-500">
+                    <span className="text-red-500 dark:text-red-400">
                       {errors.minimumStay.message}
                     </span>
                   )}
@@ -764,23 +861,28 @@ const CreateVoucher = ({
               {/* Customer Type */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="block mb-1 font-medium text-[#253150]">
+                  <span className="block mb-1 font-medium text-[#253150] dark:text-gray-100">
                     {t("voucher.createOrUpdate.customerType")}
                   </span>
                 </div>
 
                 <div
                   className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4 
-                rounded-xl border border-[#E3E7F2] bg-white"
+    rounded-xl border border-[#E3E7F2] bg-white
+    dark:bg-[#1f2937] dark:border-gray-700"
                 >
                   {CUSTOMER_TYPE_OPTIONS.map((type) => {
                     const checked = watch("customerType") === type.value;
+
                     return (
                       <label
                         key={type.value}
-                        className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer ${
-                          checked ? "bg-[#253150]/5" : "hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer
+            ${
+              checked
+                ? "bg-[#253150]/5 dark:bg-white/10"
+                : "hover:bg-gray-50 dark:hover:bg-white/5"
+            }`}
                       >
                         <input
                           type="checkbox"
@@ -790,23 +892,25 @@ const CreateVoucher = ({
                               shouldValidate: true,
                               shouldDirty: true,
                             });
-
                             trigger("customerType");
                           }}
                           className="hidden"
                         />
+
                         <div
-                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                            checked
-                              ? "bg-[#253150] border-[#253150]"
-                              : "border-[#C6CCDD]"
-                          }`}
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0
+              ${
+                checked
+                  ? "bg-[#253150] border-[#253150] dark:bg-blue-500 dark:border-blue-500"
+                  : "border-[#C6CCDD] dark:border-gray-500"
+              }`}
                         >
                           {checked && (
                             <div className="w-2.5 h-2.5 bg-white rounded" />
                           )}
                         </div>
-                        <span className="text-sm font-medium text-[#253150]">
+
+                        <span className="text-sm font-medium text-[#253150] dark:text-gray-100">
                           {t(type.labelKey)}
                         </span>
                       </label>
@@ -817,17 +921,19 @@ const CreateVoucher = ({
 
               {/* Usage Frequency */}
               <div className="space-y-2">
-                <span className="block mb-1 font-medium text-[#253150]">
+                <span className="block mb-1 font-medium text-[#253150] dark:text-gray-100">
                   {t("voucher.createOrUpdate.usageFrequency")}
                 </span>
 
                 <div
                   className="grid grid-cols-1 
-                sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 
-                rounded-xl border border-[#E3E7F2] bg-white"
+    sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 
+    rounded-xl border border-[#E3E7F2] bg-white
+    dark:bg-[#1f2937] dark:border-gray-700"
                 >
                   {USAGE_TYPE_OPTIONS.map((opt) => {
                     const checked = watch("usageType") === opt.value;
+
                     return (
                       <div
                         key={opt.value}
@@ -841,23 +947,33 @@ const CreateVoucher = ({
 
                           trigger("usageType");
                         }}
-                        className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer  ${
-                          checked
-                            ? " bg-[#253150]/5"
-                            : "border-[#D6DBEA] hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer
+            ${
+              checked
+                ? "bg-[#253150]/5 dark:bg-white/10"
+                : "border-[#D6DBEA] hover:bg-gray-50 dark:hover:bg-white/5"
+            }`}
                       >
                         <div
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                            checked ? "border-[#253150]" : "border-[#C6CCDD]"
-                          }`}
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0
+              ${
+                checked
+                  ? "border-[#253150] dark:border-blue-400"
+                  : "border-[#C6CCDD] dark:border-gray-500"
+              }`}
                         >
                           {checked && (
-                            <div className="w-2.5 h-2.5 bg-[#253150] rounded-full" />
+                            <div className="w-2.5 h-2.5 bg-[#253150] dark:bg-blue-400 rounded-full" />
                           )}
                         </div>
+
                         <span
-                          className={`text-sm font-medium ${checked ? "text-[#253150]" : "text-[#4B5563]"}`}
+                          className={`text-sm font-medium
+              ${
+                checked
+                  ? "text-[#253150] dark:text-gray-100"
+                  : "text-[#4B5563] dark:text-gray-300"
+              }`}
                         >
                           {t(opt.labelKey)}
                         </span>
@@ -868,19 +984,27 @@ const CreateVoucher = ({
               </div>
 
               {/* Total Usage + Usage per customer */}
-              <div className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-4">
+              <div
+                className="p-5 rounded-xl border border-[#E3E7F2] bg-gray-50 space-y-4
+  dark:bg-[#1f2937] dark:border-gray-700"
+              >
                 <div>
-                  <label className="block mb-1 font-medium text-[#253150]">
+                  <label className="block mb-1 font-medium text-[#253150] dark:text-gray-100">
                     {t("voucher.createOrUpdate.totalUsageLimit")}
                   </label>
+
                   <input
                     type="number"
                     {...register("usageLimit")}
                     placeholder="100"
-                    className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                    className="w-full border border-[#4B62A0] focus:border-[#3E5286]
+      rounded-lg p-2.5 outline-none
+      dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600
+      dark:focus:border-blue-500"
                   />
+
                   {errors.usageLimit && (
-                    <span className="text-red-500">
+                    <span className="text-red-500 dark:text-red-400">
                       {errors.usageLimit.message}
                     </span>
                   )}
@@ -899,11 +1023,13 @@ const CreateVoucher = ({
                     trigger("usagePerCustomer");
                   }}
                 />
+
                 {watch("usagePerCustomer") !== "" && (
                   <div>
-                    <label className="block mb-1 font-medium text-[#253150]">
+                    <label className="block mb-1 font-medium text-[#253150] dark:text-gray-100">
                       {t("voucher.createOrUpdate.usageLimitPerCustomer")}
                     </label>
+
                     <input
                       type="number"
                       min={1}
@@ -911,10 +1037,14 @@ const CreateVoucher = ({
                       placeholder={t(
                         "voucher.createOrUppdate.usageLimitPerCustomerPlaceholder",
                       )}
-                      className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2.5 outline-none"
+                      className="w-full border border-[#4B62A0] focus:border-[#3E5286]
+        rounded-lg p-2.5 outline-none
+        dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600
+        dark:focus:border-blue-500"
                     />
+
                     {errors.usagePerCustomer && (
-                      <span className="text-red-500">
+                      <span className="text-red-500 dark:text-red-400">
                         {errors.usagePerCustomer.message}
                       </span>
                     )}

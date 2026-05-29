@@ -152,12 +152,14 @@ const HomePage = () => {
     percent >= 0 ? "text-green-500" : "text-red-500";
 
   return (
-    <div className="flex  bg-gray-50">
+    <div className="flex  bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="flex flex-col flex-1 overflow-hidden">
-        <h1 className="text-3xl text-[48px] leading-[100%] font-bold  text-[#42578E] ">
+        <h1 className="text-3xl text-[48px] leading-[100%] font-bold  text-[#42578E] dark:text-blue-300">
           Good morning!
         </h1>
-        <p className="text-gray-500 font-normal mt-2">{formattedDate}</p>
+        <p className="text-gray-500 dark:text-gray-400 font-normal mt-2">
+          {formattedDate}
+        </p>
 
         <div className="hidden  lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
           {stats.map((item, index) => {
@@ -165,11 +167,13 @@ const HomePage = () => {
             return (
               <div
                 key={index}
-                className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100"
+                className="bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors"
               >
                 {/* Top */}
                 <div className="flex justify-between items-center">
-                  <p className="text-sm text-gray-500">{item.title}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {item.title}
+                  </p>
 
                   <div
                     className={`w-10 h-10 rounded-lg flex items-center justify-center ${item.iconBg}`}
@@ -181,7 +185,7 @@ const HomePage = () => {
                 </div>
 
                 {/* Value */}
-                <h2 className="text-3xl font-semibold text-gray-800 mt-4">
+                <h2 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mt-4">
                   {loading
                     ? "..."
                     : item.isMoney
@@ -202,28 +206,34 @@ const HomePage = () => {
                       <ArrowUpRight size={16} />
                     )}
                     {item.percent?.toFixed(1)}%
-                    <span className="text-gray-400 ml-1">from last week</span>
+                    <span className="text-gray-400 dark:text-gray-500 ml-1">
+                      from last week
+                    </span>
                   </div>
                 )}
               </div>
             );
           })}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                 Room availability
               </h3>
               <MoreHorizontal
-                className="text-gray-400 cursor-pointer hover:text-gray-600 transition"
+                className="text-gray-400 dark:text-gray-500 
+                cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition"
                 size={18}
               />
             </div>
-            <p className="text-gray-500 text-sm">Total rooms</p>
-            <p className="text-2xl font-semibold text-gray-800 mb-4">
-              {roomData?.totalRooms}{" "}
-              <span className="text-gray-400 text-base">Rooms</span>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              Total rooms
             </p>
-
+            <p className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+              {roomData?.totalRooms}{" "}
+              <span className="text-gray-500 dark:text-gray-400 text-base">
+                Rooms
+              </span>
+            </p>
             <div className="grid grid-cols-2 gap-y-2 text-sm">
               <p className="text-green-600 font-medium">
                 {roomData?.available} Available
@@ -234,7 +244,7 @@ const HomePage = () => {
               <p className="text-blue-600 font-medium">
                 {roomData?.occupied} Occupied
               </p>
-              <p className="text-gray-500 font-medium">
+              <p className="text-gray-500 dark:text-gray-400 font-medium">
                 {roomData?.notReady} Not ready
               </p>
             </div>
@@ -253,12 +263,10 @@ const HomePage = () => {
         ${
           isRevenue
             ? "col-span-3  lg:col-span-1 p-6 bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg"
-            : "col-span-1 pt-4 pb-4 pl-2 bg-white border border-gray-100 shadow-sm min-h-[120px]"
+            : "col-span-1 pt-4 pb-4 pl-2 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm min-h-[120px]"
         }
       `}
               >
-                {/* Top */}
-                {/* Top */}
                 <div className="flex items-start gap-2 min-w-0">
                   <div
                     className={`
@@ -270,7 +278,7 @@ const HomePage = () => {
                   </div>
 
                   <p
-                    className={`text-xs mt-1 ${isRevenue ? "text-white" : "text-gray-800"} leading-tight break-words whitespace-normal`}
+                    className={`text-xs mt-1 ${isRevenue ? "text-white" : "text-gray-800 dark:text-gray-100"} leading-tight break-words whitespace-normal`}
                   >
                     {item.title}
                   </p>
@@ -280,7 +288,7 @@ const HomePage = () => {
                 <h2
                   className={`
           mt-2 font-semibold
-          ${isRevenue ? "text-3xl" : "text-lg text-gray-800 text-right mr-2"}
+          ${isRevenue ? "text-3xl" : "text-lg text-gray-800 dark:text-gray-100 text-right mr-2"}
         `}
                 >
                   {loading
@@ -339,10 +347,13 @@ const HomePage = () => {
               </div>
             );
           })}
-          <div className="bg-white col-span-3 p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div
+            className="bg-white dark:bg-slate-900 col-span-3 p-6 rounded-2xl shadow-sm border border-gray-100
+          dark:border-slate-800 transition-colors"
+          >
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-[#4B62A0]">
+              <h3 className="text-lg font-semibold text-[#4B62A0] dark:text-blue-300">
                 Room availability
               </h3>
               <MoreHorizontal
@@ -353,10 +364,14 @@ const HomePage = () => {
 
             {/* Total rooms row */}
             <div className="flex justify-between items-center mb-4">
-              <p className="text-[#707070] text-sm">Total rooms</p>
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                Total rooms
+              </p>
+              <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                 {roomData?.totalRooms}
-                <span className="text-gray-400 text-sm ml-1">Rooms</span>
+                <span className="text-gray-400 dark:text-gray-500 text-sm ml-1">
+                  Rooms
+                </span>
               </p>
             </div>
 
@@ -368,14 +383,18 @@ const HomePage = () => {
                   <span className="text-green-600 mr-2 font-semibold">
                     {roomData?.available}
                   </span>
-                  <span className="text-[#2B2B2B] font-medium">Available</span>
+                  <span className="text-gray-800 dark:text-gray-200 font-medium">
+                    Available
+                  </span>
                 </p>
 
                 <p className="font-medium">
                   <span className="text-blue-600 mr-2 font-semibold">
                     {roomData?.occupied}
                   </span>
-                  <span className="text-[#2B2B2B]">Occupied</span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    Occupied
+                  </span>
                 </p>
               </div>
 
@@ -385,14 +404,18 @@ const HomePage = () => {
                   <span className="text-orange-500 mr-2 font-semibold">
                     {roomData?.reserved}
                   </span>
-                  <span className="text-[#2B2B2B]">Reserved</span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    Reserved
+                  </span>
                 </p>
 
                 <p className="font-medium">
                   <span className="text-gray-500 mr-2 font-semibold">
                     {roomData?.notReady}
                   </span>
-                  <span className="text-[#2B2B2B]">Not ready</span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    Not ready
+                  </span>
                 </p>
               </div>
             </div>

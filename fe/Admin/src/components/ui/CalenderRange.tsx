@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Month from "./Month";
 import type { CalendarRangeProps } from "../../type/booking.types";
-import { isBefore, startOfToday } from 'date-fns';
+import { isBefore, startOfToday } from "date-fns";
 
 const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
   const { t } = useTranslation();
@@ -48,21 +48,21 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
      SELECT DATE
   ======================= */
   const handleSelect = (d: Date) => {
-     if (isBefore(d, startOfToday())) return;
+    if (isBefore(d, startOfToday())) return;
 
     const selected = toDateString(d);
 
-  if (!value.start || value.end) {
-    onChange({ start: selected, end: undefined });
-    return;
-  }
+    if (!value.start || value.end) {
+      onChange({ start: selected, end: undefined });
+      return;
+    }
 
-  if (selected < value.start) {
-    onChange({ start: selected, end: undefined });
-    return;
-  }
+    if (selected < value.start) {
+      onChange({ start: selected, end: undefined });
+      return;
+    }
 
-  onChange({ start: value.start, end: selected });
+    onChange({ start: value.start, end: selected });
   };
 
   /* =======================
@@ -87,14 +87,27 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
      RENDER
   ======================= */
   return (
-    <div className="w-full bg-white rounded-xl p-4 sm:p-6">
+    <div
+      className="w-full bg-white rounded-xl p-4 sm:p-6
+    dark:bg-gray-900 dark:border dark:border-gray-700"
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-gray-200 pb-4 mb-5">
-        <h3 className="font-semibold text-gray-800">{t("bookingDateTime.selectDates")}</h3>
+      <div
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3
+      border-b border-gray-200 pb-4 mb-5
+      dark:border-gray-700"
+      >
+        <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+          {t("bookingDateTime.selectDates")}
+        </h3>
 
         <div className="flex items-center gap-3">
           {nights > 0 && (
-            <span className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-600">
+            <span
+              className="text-xs px-3 py-1 rounded-full
+            bg-blue-50 text-blue-600
+            dark:bg-blue-500/10 dark:text-blue-400"
+            >
               {t("bookingDateTime.totalNights", { count: nights })}
             </span>
           )}
@@ -102,7 +115,8 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
           {(value.start || value.end) && (
             <button
               onClick={clearDates}
-              className="text-xs text-red-500 hover:underline"
+              className="text-xs text-red-500 hover:underline
+              dark:text-red-400"
             >
               {t("bookingDateTime.clear")}
             </button>
@@ -122,22 +136,26 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
               new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
             )
           }
-           className="disabled:opacity-30 p-2"
+          className="p-2 disabled:opacity-30 dark:text-gray-300"
         >
           <ChevronLeft />
         </button>
 
-        <div className="flex flex-col sm:flex-row sm:gap-20 text-sm font-medium text-center">
+        <div
+          className="flex flex-col sm:flex-row sm:gap-20 text-sm font-medium text-center
+        text-gray-700 dark:text-gray-200"
+        >
           <span>
             {baseMonth.toLocaleString("default", {
               month: "long",
               year: "numeric",
             })}
           </span>
-           <span className="hidden sm:block">
+
+          <span className="hidden sm:block">
             {new Date(
               baseMonth.getFullYear(),
-              baseMonth.getMonth() + 1
+              baseMonth.getMonth() + 1,
             ).toLocaleString("default", {
               month: "long",
               year: "numeric",
@@ -148,10 +166,10 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
         <button
           onClick={() =>
             setBaseMonth(
-              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)
+              new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
             )
           }
-          className="p-2"
+          className="p-2 dark:text-gray-300"
         >
           <ChevronRight size={20} />
         </button>
@@ -170,10 +188,7 @@ const CalendarRange = ({ value, onChange }: CalendarRangeProps) => {
 
         <div className="hidden sm:block">
           <Month
-            month={new Date(
-              baseMonth.getFullYear(),
-              baseMonth.getMonth() + 1
-            )}
+            month={new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1)}
             value={value}
             onSelect={handleSelect}
             isSame={isSame}

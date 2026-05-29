@@ -228,141 +228,201 @@ const BlogEditFormModal = ({
   }
 
   return (
-    <CommonModal
-      isOpen={isOpen}
-      onClose={handleCancel}
-      onSave={handleSubmit(handleSave)}
-      title={t("blog.createOrUpdate.titleEdit")}
-      saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
-      cancelLabel={t("common.cancelButton")}
-      diabled={!isValid || isSubmitting}
-    >
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <label className="block mb-1 font-medium text-[#253150]">
-            {t("blog.name")} *
-          </label>
-          <input
-            type="text"
-            placeholder={t("blog.createOrUpdate.enterTitle")}
-            {...register("title")}
-            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-          )}
-        </div>
-        <div>
-          <label className="block mb-1 font-medium text-[#253150]">
-            {t("blog.category")} *
-          </label>
-          <select
-            {...register("category")}
-            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
-          >
-            <option value="">{t("blog.createOrUpdate.selectCategory")}</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          {errors.category && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.category.message}
-            </p>
-          )}
-        </div>
-        <div>
-          <label className="font-medium">{t("common.status")}*</label>
-          <select
-            {...register("status")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
-          >
-            <option value="1">{t("blog.draft")}</option>
-            <option value="2">{t("blog.published")}</option>
-            <option value="3">{t("blog.archived")}</option>
-          </select>
-        </div>
-        <div>
-          <label className="font-medium">{t("blog.description")}</label>
-          <QuillEditor
-            theme="snow"
-            value={watch("description")}
-            onChange={(value) => {
-              setValue("description", value, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-            }}
-            onBlur={() => {
-              trigger("description");
-            }}
-            modules={fullToolbarDescription}
-          />
-        </div>
+   <CommonModal
+  isOpen={isOpen}
+  onClose={handleCancel}
+  onSave={handleSubmit(handleSave)}
+  title={t("blog.createOrUpdate.titleEdit")}
+  saveLabel={isSubmitting ? t("common.saving") : t("common.save")}
+  cancelLabel={t("common.cancelButton")}
+  diabled={!isValid || isSubmitting}
+>
+  <div className="grid grid-cols-1 gap-4 text-gray-800 dark:text-gray-100">
+    <div>
+      <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
+        {t("blog.name")} *
+      </label>
 
-        <div>
-          <label className="font-medium">{t("blog.content")}</label>
-          <QuillEditor
-            theme="snow"
-            value={watch("content")}
-            onChange={(value) => {
-              setValue("content", value, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-            }}
-            modules={fullToolbar}
-          />
-          {errors.content && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.content.message}
-            </p>
-          )}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1 font-medium text-[#253150]">
-            {t("blog.thumbnail")} *
-          </label>
+      <input
+        type="text"
+        placeholder={t("blog.createOrUpdate.enterTitle")}
+        {...register("title")}
+        className="
+          w-full rounded-lg p-2 outline-none border
+          border-[#4B62A0]
+          bg-white text-gray-800
+          dark:bg-[#1F2937] dark:text-gray-100 dark:border-gray-600
+          dark:placeholder:text-gray-400
+        "
+      />
 
-          <div
-            className="border-2 border-dashed border-[#AFC0E2] hover:border-[#4B62A0] transition 
-                        rounded-xl bg-[#F6F8FC] cursor-pointer flex flex-col items-center justify-center py-10 text-center"
-            onClick={() => document.getElementById("thumbnailInput")?.click()}
-          >
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-40 h-40 object-cover rounded-lg shadow"
-              />
-            ) : (
-              <>
-                <div className="text-gray-400 flex flex-col items-center">
-                  <img
-                    src="/defaultImage.png"
-                    className="w-[167px] h-[117px] opacity-60"
-                    alt=""
-                  />
-                  <p className="text-gray-500 text-sm">
-                    {t("blog.createOrUpdate.clickSelectImages")}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
+      {errors.title && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors.title.message}
+        </p>
+      )}
+    </div>
 
-          <input
-            id="thumbnailInput"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </div>
+    <div>
+      <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
+        {t("blog.category")} *
+      </label>
+
+      <select
+        {...register("category")}
+        className="
+          w-full rounded-lg p-2 outline-none border
+          border-[#4B62A0]
+          bg-white text-gray-800
+          dark:bg-[#1F2937] dark:text-gray-100 dark:border-gray-600
+        "
+      >
+        <option value="">
+          {t("blog.createOrUpdate.selectCategory")}
+        </option>
+
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.name}
+          </option>
+        ))}
+      </select>
+
+      {errors.category && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors.category.message}
+        </p>
+      )}
+    </div>
+
+    <div>
+      <label className="font-medium dark:text-gray-200">
+        {t("common.status")}*
+      </label>
+
+      <select
+        {...register("status")}
+        className="
+          w-full rounded-lg p-2 outline-none border
+          border-[#4B62A0]
+          bg-white text-gray-800
+          dark:bg-[#1F2937] dark:text-gray-100 dark:border-gray-600
+        "
+      >
+        <option value="1">{t("blog.draft")}</option>
+        <option value="2">{t("blog.published")}</option>
+        <option value="3">{t("blog.archived")}</option>
+      </select>
+    </div>
+
+    <div>
+      <label className="font-medium dark:text-gray-200">
+        {t("blog.description")}
+      </label>
+
+      <div className="dark:[&_.ql-toolbar]:bg-[#111827] dark:[&_.ql-toolbar]:border-gray-700 dark:[&_.ql-container]:bg-[#1F2937] dark:[&_.ql-container]:border-gray-700 dark:[&_.ql-editor]:text-gray-100 dark:[&_.ql-picker]:text-gray-200 dark:[&_.ql-stroke]:stroke-gray-300 dark:[&_.ql-fill]:fill-gray-300">
+        <QuillEditor
+          theme="snow"
+          value={watch("description")}
+          onChange={(value) => {
+            setValue("description", value, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+          onBlur={() => {
+            trigger("description");
+          }}
+          modules={fullToolbarDescription}
+        />
       </div>
-    </CommonModal>
+    </div>
+
+    <div>
+      <label className="font-medium dark:text-gray-200">
+        {t("blog.content")}
+      </label>
+
+      <div className="dark:[&_.ql-toolbar]:bg-[#111827] dark:[&_.ql-toolbar]:border-gray-700 dark:[&_.ql-container]:bg-[#1F2937] dark:[&_.ql-container]:border-gray-700 dark:[&_.ql-editor]:text-gray-100 dark:[&_.ql-picker]:text-gray-200 dark:[&_.ql-stroke]:stroke-gray-300 dark:[&_.ql-fill]:fill-gray-300">
+        <QuillEditor
+          theme="snow"
+          value={watch("content")}
+          onChange={(value) => {
+            setValue("content", value, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+          modules={fullToolbar}
+        />
+      </div>
+
+      {errors.content && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors.content.message}
+        </p>
+      )}
+    </div>
+
+    <div className="mb-4">
+      <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
+        {t("blog.thumbnail")} *
+      </label>
+
+      <div
+        className="
+          border-2 border-dashed rounded-xl transition cursor-pointer
+          flex flex-col items-center justify-center py-10 text-center
+
+          border-[#AFC0E2]
+          bg-[#F6F8FC]
+          hover:border-[#4B62A0]
+
+          dark:border-gray-600
+          dark:bg-[#111827]
+          dark:hover:border-[#64748B]
+        "
+        onClick={() =>
+          document.getElementById("thumbnailInput")?.click()
+        }
+      >
+        {preview ? (
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-40 h-40 object-cover rounded-lg shadow"
+          />
+        ) : (
+          <div className="text-gray-400 flex flex-col items-center">
+            <img
+              src="/defaultImage.png"
+              className="w-[167px] h-[117px] opacity-60"
+              alt=""
+            />
+
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              {t("blog.createOrUpdate.clickSelectImages")}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <input
+        id="thumbnailInput"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageChange}
+      />
+    </div>
+
+    {errors.image?.message && (
+      <p className="text-red-500 text-sm mt-1">
+        {String(errors.image.message)}
+      </p>
+    )}
+  </div>
+</CommonModal>
   );
 };
 export default BlogEditFormModal;

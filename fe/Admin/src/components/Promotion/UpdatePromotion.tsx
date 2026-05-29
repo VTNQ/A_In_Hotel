@@ -246,202 +246,220 @@ const UpdatePromotion = ({
     onClose();
   };
   if (!isOpen || !promotionId) return <></>;
-  console.log(errors)
-  return (
-    <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
-        <div
-          className="w-full
-  sm:w-[95%]
-  lg:w-[850px]
-  max-h-[90vh]
-  overflow-hidden
-  rounded-xl
-  bg-white
-  shadow-2xl
-  flex flex-col"
+return (
+  <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+      <div
+        className="w-full
+        sm:w-[95%]
+        lg:w-[850px]
+        max-h-[90vh]
+        overflow-hidden
+        rounded-xl
+        bg-white dark:bg-[#0F172A]
+        shadow-2xl
+        flex flex-col"
+      >
+        {/* HEADER */}
+        <header
+          className="flex items-start sm:items-center justify-between
+          border-b border-gray-100 dark:border-slate-700
+          px-4 sm:px-6 lg:px-8
+          py-5 sm:py-6
+          gap-4"
         >
-          <header
-            className="flex items-start sm:items-center justify-between
-  border-b border-gray-100
-  px-4 sm:px-6 lg:px-8
-  py-5 sm:py-6
-  gap-4"
-          >
-            <div className="flex flex-col gap-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800">
-                {t("promotion.createOrUpdate.editTitle")}
-              </h1>
-              <p className="text-sm italic text-slate-500">
-                {t("promotion.createOrUpdate.description")}
-              </p>
-            </div>
-            <button
-              onClick={handleCancel}
-              className="p-2 rounded-full hover:bg-slate-100"
-            >
-              <X className="w-5 h-5 text-slate-500" />
-            </button>
-          </header>
-          <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
-            <div className="flex gap-6 px-4 sm:px-6 lg:px-8 py-3 overflow-y-auto whitespace-nowrap">
-              <TabButton
-                icon={<Info size={18} />}
-                label={t("promotion.tabs.general")}
-                disabled={loading}
-                active={activeTab === "general"}
-                onClick={() => setActiveTab("general")}
-              />
-              <TabButton
-                icon={<Tag size={18} />}
-                label={t("promotion.tabs.offer")}
-                disabled={loading}
-                active={activeTab === "offer"}
-                onClick={() => setActiveTab("offer")}
-              />
-              <TabButton
-                icon={<Users size={18} />}
-                label={t("promotion.tabs.targeting")}
-                disabled={loading}
-                active={activeTab === "targeting"}
-                onClick={() => setActiveTab("targeting")}
-              />
-            </div>
+          <div className="flex flex-col gap-1">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800 dark:text-gray-100">
+              {t("promotion.createOrUpdate.editTitle")}
+            </h1>
+
+            <p className="text-sm italic text-slate-500 dark:text-gray-400">
+              {t("promotion.createOrUpdate.description")}
+            </p>
           </div>
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8  py-6 custom-scroll">
-            {loading ? (
-              <div className="flex items-center justify-center h-60 sm:h-80">
-                <div className="flex flex-col items-center gap-4">
-                  <svg
-                    className="animate-spin h-8 w-8 text-[#42578E]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    />
-                  </svg>
-                  <span className="text-sm text-slate-500">
-                    {t("common.loading") || "Loading promotion data..."}
-                  </span>
-                </div>
+
+          <button
+            onClick={handleCancel}
+            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            <X className="w-5 h-5 text-slate-500 dark:text-gray-400" />
+          </button>
+        </header>
+
+        {/* TABS */}
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0F172A] sticky top-0 z-10">
+          <div className="flex gap-6 px-4 sm:px-6 lg:px-8 py-3 overflow-y-auto whitespace-nowrap">
+            <TabButton
+              icon={<Info size={18} />}
+              label={t("promotion.tabs.general")}
+              disabled={loading}
+              active={activeTab === "general"}
+              onClick={() => setActiveTab("general")}
+            />
+
+            <TabButton
+              icon={<Tag size={18} />}
+              label={t("promotion.tabs.offer")}
+              disabled={loading}
+              active={activeTab === "offer"}
+              onClick={() => setActiveTab("offer")}
+            />
+
+            <TabButton
+              icon={<Users size={18} />}
+              label={t("promotion.tabs.targeting")}
+              disabled={loading}
+              active={activeTab === "targeting"}
+              onClick={() => setActiveTab("targeting")}
+            />
+          </div>
+        </div>
+
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 custom-scroll bg-white dark:bg-[#0F172A]">
+          {loading ? (
+            <div className="flex items-center justify-center h-60 sm:h-80">
+              <div className="flex flex-col items-center gap-4">
+                <svg
+                  className="animate-spin h-8 w-8 text-[#42578E]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+
+                <span className="text-sm text-slate-500 dark:text-gray-400">
+                  {t("common.loading") || "Loading promotion data..."}
+                </span>
               </div>
+            </div>
+          ) : (
+            <>
+              {activeTab === "general" && (
+                <GeneralTab
+                  watch={watch}
+                  setValue={setValue}
+                  trigger={trigger}
+                  errors={errors}
+                />
+              )}
+
+              {activeTab === "offer" && (
+                <OfferTab
+                  watch={watch}
+                  setValue={setValue}
+                  trigger={trigger}
+                  errors={errors}
+                />
+              )}
+
+              {activeTab === "targeting" && (
+                <TargetingTab
+                  watch={watch}
+                  setValue={setValue}
+                  trigger={trigger}
+                  errors={errors}
+                />
+              )}
+            </>
+          )}
+        </div>
+
+        {/* FOOTER */}
+        <footer
+          className="flex flex-col sm:flex-row items-stretch sm:items-center
+          justify-between sm:justify-end gap-4
+          border-t border-gray-200 dark:border-slate-700
+          bg-white dark:bg-[#0F172A]
+          px-4 sm:px-6 lg:px-8 py-5"
+        >
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            {/* BACK */}
+            {!isFirstTab && (
+              <button
+                onClick={handleBack}
+                disabled={loading || isSubmitting}
+                className="text-sm font-semibold text-slate-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-50"
+              >
+                {t("promotion.back")}
+              </button>
+            )}
+
+            {/* NEXT / SAVE */}
+            {!isLastTab ? (
+              <button
+                onClick={handleNext}
+                disabled={loading || isSubmitting}
+                className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
+                hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                {t("promotion.next")}
+              </button>
             ) : (
-              <>
-                {activeTab === "general" && (
-                  <GeneralTab
-                    watch={watch}
-                    setValue={setValue}
-                    trigger={trigger}
-                    errors={errors}
-                  />
+              <button
+                onClick={handleSubmit(onSubmit)}
+                disabled={loading || isSubmitting || !isValid}
+                className="flex items-center justify-center gap-2 px-8 h-12 rounded-lg
+                bg-[#42578E] text-white font-semibold
+                hover:bg-[#536DB2]
+                disabled:opacity-60 disabled:cursor-not-allowed transition"
+              >
+                {loading || isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                    </svg>
+
+                    <span>{t("common.saving") || "Saving..."}</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      {t("promotion.createOrUpdate.saveUpdateButton")}
+                    </span>
+
+                    <Rocket size={18} />
+                  </>
                 )}
-                {activeTab === "offer" && (
-                  <OfferTab
-                    watch={watch}
-                    setValue={setValue}
-                    trigger={trigger}
-                    errors={errors}
-                  />
-                )}
-                {activeTab === "targeting" && (
-                  <TargetingTab
-                    watch={watch}
-                    setValue={setValue}
-                    trigger={trigger}
-                    errors={errors}
-                  />
-                )}
-              </>
+              </button>
             )}
           </div>
-
-          <footer
-            className="flex flex-col sm:flex-row items-stretch sm:items-center 
-          justify-between sm:justify-end gap-4 
-          border-t border-gray-200 px-4 sm:px-6 lg:px-8 py-5"
-          >
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              {/* Back */}
-              {!isFirstTab && (
-                <button
-                  onClick={handleBack}
-                  disabled={loading || isSubmitting }
-                  className="text-sm font-semibold text-slate-500 hover:text-indigo-600 disabled:opacity-50"
-                >
-                  {t("promotion.back")}
-                </button>
-              )}
-
-              {/* Next / Launch */}
-              {!isLastTab ? (
-                <button
-                  onClick={handleNext}
-                  disabled={loading || isSubmitting}
-                  className="px-8 h-12 rounded-lg bg-[#42578E] text-white font-semibold
-                   hover:bg-[#536DB2] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t("promotion.next")}
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit(onSubmit)}
-                  disabled={loading || isSubmitting || !isValid }
-                  className="flex items-center justify-center gap-2 px-8 h-12 rounded-lg
-                   bg-[#42578E] text-white font-semibold
-                   hover:bg-[#536DB2]
-                   disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {loading || isSubmitting ? (
-                    <>
-                      <svg
-                        className="animate-spin h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                        />
-                      </svg>
-                      <span>{t("common.saving") || "Creating..."}</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>
-                        {t("promotion.createOrUpdate.saveUpdateButton")}
-                      </span>
-                      <Rocket size={18} />
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          </footer>
-        </div>
+        </footer>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
 };
 export default UpdatePromotion;

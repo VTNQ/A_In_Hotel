@@ -68,45 +68,31 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
 
   /* ===================== SELECT SERVICE ===================== */
   const toggleService = (service: any) => {
-     const exists = selectedServices.some(
-      (s: any) => s.id === service.id
-    );
+    const exists = selectedServices.some((s: any) => s.id === service.id);
 
     let updatedServices = [...selectedServices];
 
     if (exists) {
-      updatedServices = updatedServices.filter(
-        (s: any) => s.id !== service.id
-      );
+      updatedServices = updatedServices.filter((s: any) => s.id !== service.id);
     } else {
       updatedServices.push(service);
     }
 
-    setValue(
-      "services",
-      updatedServices,
-      {
-        shouldValidate: true,
-      }
-    );
+    setValue("services", updatedServices, {
+      shouldValidate: true,
+    });
   };
   const submit = () => {
     onNext({
-      services: selectedServices.map(
-        (s: any) => ({
-          extraServiceId: s.id,
+      services: selectedServices.map((s: any) => ({
+        extraServiceId: s.id,
 
-          extraCharge: s.extraCharge,
+        extraCharge: s.extraCharge,
 
-          price: estimateServicePrice(
-            s,
-            booking
-          ),
+        price: estimateServicePrice(s, booking),
 
-          serviceName:
-            s.serviceName ?? s.name,
-        })
-      ),
+        serviceName: s.serviceName ?? s.name,
+      })),
     });
   };
   const ServiceSkeleton = () => (
@@ -118,14 +104,14 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen px-3 sm:px-6 py-4 sm:py-6">
+    <div className=" min-h-screen px-3 sm:px-6 py-4 sm:py-6">
       {/* HEADER */}
       <div className="mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-semibold">
-          {" "}
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
           {t("serviceSelection.title")}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {t("serviceSelection.subtitle")}
         </p>
       </div>
@@ -140,22 +126,24 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
         onSearch={setSearch}
       />
 
+      {/* CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         {/* LEFT */}
         <div className="lg:col-span-2 space-y-4">
           {loading ? (
             <ServiceSkeleton />
           ) : services.length === 0 ? (
-            <p className="text-gray-500">{t("serviceSelection.noServices")}</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              {t("serviceSelection.noServices")}
+            </p>
           ) : (
             services.map((service) => (
               <ServiceCard
                 key={service.id}
                 service={service}
                 booking={booking}
-                 selected={selectedServices.some(
-                  (s: any) =>
-                    s.id === service.id
+                selected={selectedServices.some(
+                  (s: any) => s.id === service.id,
                 )}
                 onToggle={() => toggleService(service)}
               />
@@ -168,27 +156,36 @@ const StepServiceSelection = ({ booking, onBack, onNext, onCancel }: any) => {
           <BookingSummary
             booking={booking}
             services={selectedServices}
-             onNext={handleSubmit(submit)}
+            onNext={handleSubmit(submit)}
           />
         </div>
       </div>
-      <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4 ">
+
+      {/* ACTIONS */}
+      <div className="mt-10 flex flex-col sm:flex-row sm:justify-between gap-4">
         <button
           onClick={onCancel}
-          className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
-            text-red-600 border border-red-200 bg-red-50 hover:bg-red-100
-            hover:border-red-300 transition"
+          className="
+          w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
+          text-red-600 border border-red-200 bg-red-50
+          hover:bg-red-100 hover:border-red-300 transition
+
+          dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30
+          dark:hover:bg-red-500/20
+        "
         >
           {t("serviceSelection.cancel")}
         </button>
 
         <button
           onClick={onBack}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2
-          px-5 py-3 rounded-xl
-          bg-gray-100
-          text-sm font-medium text-gray-700
-          hover:bg-gray-200 transition"
+          className="
+          w-full sm:w-auto inline-flex items-center justify-center gap-2
+          px-5 py-3 rounded-xl text-sm font-medium
+          bg-gray-100 text-gray-700 hover:bg-gray-200 transition
+
+          dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700
+        "
         >
           {t("serviceSelection.back")}
         </button>

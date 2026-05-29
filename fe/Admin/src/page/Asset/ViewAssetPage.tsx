@@ -315,9 +315,9 @@ const ViewAssetPage = () => {
     setSearchValue(e.target.value);
   };
   return (
-    <div className="flex flex-col flex-1 bg-gray-50">
+    <div className="flex flex-col flex-1 ">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-gray-200">
           {t("asset.title")}
         </h1>
         <button
@@ -329,23 +329,27 @@ const ViewAssetPage = () => {
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
         <div className="relative w-full lg:w-[320px]">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-slate-500 w-5 h-5" />
           <input
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
             placeholder={t("asset.searchPlaceholder")}
-            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg  focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 rounded-lg outline-none border border-[#C2C4C5] dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-blue-400 transition-colors"
           />
         </div>
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+        <div
+          className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] dark:border-slate-700 
+        rounded-lg overflow-hidden bg-white dark:bg-slate-900 transition-colors"
+        >
+          <div className="flex items-center px-3 bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 text-sm whitespace-nowrap">
             {t("common.status")}
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+           className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 dark:text-gray-100 text-sm bg-white 
+            dark:bg-slate-900 focus:outline-none transition-colors"
           >
             <option value="">{t("common.all")}</option>
             <option value="1">{t("asset.status.good")}</option>
@@ -354,14 +358,16 @@ const ViewAssetPage = () => {
             <option value="4">{t("asset.status.deactivated")}</option>
           </select>
         </div>
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+        <div   className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] dark:border-slate-700 
+        rounded-lg overflow-hidden bg-white dark:bg-slate-900 transition-colors">
+          <div className="flex items-center px-3 bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 text-sm whitespace-nowrap">
             {t("asset.category")}
           </div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
+            className="flex-1 py-2.5 pl-3 pr-8 text-gray-700 dark:text-gray-100 text-sm bg-white 
+            dark:bg-slate-900 focus:outline-none transition-colors"
           >
             <option value="">{t("common.all")}</option>
             {categories.map((item) => (

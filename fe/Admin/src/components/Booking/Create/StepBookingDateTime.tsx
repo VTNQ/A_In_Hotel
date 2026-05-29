@@ -82,18 +82,26 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
     });
   };
 
-  return (
-    <div className="bg-gray-50">
+ return (
+    <div className="">
+
+      {/* HEADER */}
       <div className="mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
           {t("bookingDateTime.title")}
         </h2>
-        <p className="text-sm text-gray-500">{t("bookingDateTime.step")}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t("bookingDateTime.step")}
+        </p>
       </div>
 
+      {/* CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* CALENDAR */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl p-4 shadow-sm border border-transparent">
+
             <Controller
               control={control}
               name="checkInDate"
@@ -107,7 +115,6 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
                     setValue("checkInDate", range.start || "", {
                       shouldValidate: true,
                     });
-
                     setValue("checkOutDate", range.end || "", {
                       shouldValidate: true,
                     });
@@ -115,45 +122,51 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
                 />
               )}
             />
+
             {errors.checkInDate && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red-500 dark:text-red-400">
                 {errors.checkInDate.message}
               </p>
             )}
 
             {errors.checkOutDate && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red-500 dark:text-red-400">
                 {errors.checkOutDate.message}
               </p>
             )}
           </div>
         </div>
+
+        {/* PANEL */}
         <BookingDetailsPanel
           form={form}
           nights={nights}
           onChange={(key: any, value: any) =>
-            setValue(key, value, {
-              shouldValidate: true,
-            })
+            setValue(key, value, { shouldValidate: true })
           }
         />
       </div>
+
+      {/* ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mt-8">
-        {/* CANCEL - NGOÀI, BÊN TRÁI */}
+
         <button
           onClick={onCancel}
           className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
           text-red-600 border border-red-200 bg-red-50
-          hover:bg-red-100 hover:border-red-300 transition"
+          hover:bg-red-100 hover:border-red-300 transition
+          dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30 dark:hover:bg-red-500/20"
         >
           {t("bookingDateTime.cancel")}
         </button>
-        {/* BACK + NEXT - NHÓM RIÊNG */}
+
         <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+
           <button
             onClick={onBack}
             className="w-full sm:w-auto px-4 py-2 rounded-lg
-            bg-[#F2F2F2] text-[#4B4B4B]"
+            bg-[#F2F2F2] text-[#4B4B4B]
+            dark:bg-gray-700 dark:text-gray-200"
           >
             {t("bookingDateTime.back")}
           </button>
@@ -162,14 +175,15 @@ const StepBookingDateTime = ({ data, onBack, onNext, onCancel }: any) => {
             disabled={!isValid}
             onClick={handleSubmit(submit)}
             className={`w-full sm:w-auto px-6 py-3 rounded-xl transition
-            ${
-              isValid
-                ? "bg-[#42578E] text-white hover:bg-[#536DB2]"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+              ${
+                isValid
+                  ? "bg-[#42578E] text-white hover:bg-[#536DB2] dark:bg-blue-600 dark:hover:bg-blue-700"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
+              }`}
           >
             {t("bookingDateTime.next")}
           </button>
+
         </div>
       </div>
     </div>

@@ -159,7 +159,7 @@ export default function Login() {
           </div>
 
           {/* Form nằm trên bàn */}
-          <div className="hidden md:block absolute -top-56 md:-top-73 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
+          <div className="hidden md:block absolute -top-40 md:-top-72 left-1/2 -translate-x-1/2 z-30 w-80 md:w-[26rem]">
             <div
               className="bg-white border border-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,.08)]
       p-5 transition-colors focus-within:border-black mt-[2vh] "

@@ -43,33 +43,34 @@ const activities: ActivityItem[] = [
 const iconMap = {
   housekeeping: {
     icon: Home,
-    bg: "bg-blue-100",
-    color: "text-blue-600",
+    bg: "bg-blue-100 dark:bg-blue-900/30",
+    color: "text-blue-600 dark:text-blue-300",
   },
   manager: {
     icon: CheckCircle,
-    bg: "bg-green-100",
-    color: "text-green-600",
+    bg: "bg-green-100 dark:bg-green-900/30",
+    color: "text-green-600 dark:text-green-300",
   },
   reservation: {
     icon: FileText,
-    bg: "bg-indigo-100",
-    color: "text-indigo-600",
+    bg: "bg-indigo-100 dark:bg-indigo-900/30",
+    color: "text-indigo-600 dark:text-indigo-300",
   },
   system: {
     icon: AlertCircle,
-    bg: "bg-orange-100",
-    color: "text-orange-600",
+    bg: "bg-orange-100 dark:bg-orange-900/30",
+    color: "text-orange-600 dark:text-orange-300",
   },
 };
 const RecentActivities = () => {
   return (
-    <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm h-full">
+    <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700
+    rounded-3xl p-6 shadow-sm h-full">
       <div className="flex justify-between items-center mb-5">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
           Recent Activities
         </h3>
-        <MoreHorizontal className="text-gray-400 cursor-pointer" size={18} />
+        <MoreHorizontal className="text-gray-400 dark:text-gray-500 cursor-pointer" size={18} />
       </div>
       <div className="space-y-6">
 {activities.map((item, index) => {
@@ -78,7 +79,7 @@ const RecentActivities = () => {
             <div key={item.id} className="flex gap-4 relative">
               {/* Timeline line */}
               {index !== activities.length - 1 && (
-                <span className="absolute left-4 top-10 w-[2px] h-full bg-gray-200" />
+                <span className="absolute left-4 top-10 w-[2px] h-full bg-gray-200 dark:bg-slate-700" />
               )}
 
               {/* Icon */}
@@ -93,13 +94,13 @@ const RecentActivities = () => {
 
               {/* Content */}
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-800">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                   {item.title}
                 </p>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
                   {item.description}
                 </p>
-                <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+                <div className="flex items-center gap-1 mt-2 text-xs text-gray-400 dark:text-gray-500">
                   <Clock size={12} />
                   {item.time}
                 </div>
