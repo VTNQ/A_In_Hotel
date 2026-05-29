@@ -21,13 +21,13 @@ const BookingPlatformChart = () => {
       {
         data: dataValues,
         backgroundColor: [
-          "#93C5FD", // Light Blue
-          "#86EFAC", // Light Green
-          "#FDE68A", // Soft Yellow
-          "#FCA5A5", // Soft Red
-          "#C4B5FD", // Lavender
-          "#A5F3FC", // Cyan
-          "#E5E7EB", // Light Gray
+          "#93C5FD",
+          "#86EFAC",
+          "#FDE68A",
+          "#FCA5A5",
+          "#C4B5FD",
+          "#A5F3FC",
+          "#E5E7EB",
         ],
         borderWidth: 3,
         borderColor: "#ffffff",
@@ -50,10 +50,11 @@ const BookingPlatformChart = () => {
           font: {
             size: 13,
           },
+          color: "#6B7280",
         },
       },
       tooltip: {
-        backgroundColor: "#fff",
+        backgroundColor: "#ffffff",
         titleColor: "#111827",
         bodyColor: "#374151",
         borderColor: "#E5E7EB",
@@ -63,7 +64,7 @@ const BookingPlatformChart = () => {
           label: function (context: any) {
             const total = context.dataset.data.reduce(
               (a: number, b: number) => a + b,
-              0,
+              0
             );
             const value = context.raw;
             const percent = ((value / total) * 100).toFixed(1);
@@ -80,7 +81,7 @@ const BookingPlatformChart = () => {
         formatter: (value: number, context: any) => {
           const total = context.chart.data.datasets[0].data.reduce(
             (a: number, b: number) => a + b,
-            0,
+            0
           );
           const percent = ((value / total) * 100).toFixed(0);
           return percent + "%";
@@ -90,8 +91,10 @@ const BookingPlatformChart = () => {
   };
 
   return (
-    <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 h-[420px]">
-      <h3 className="text-lg font-semibold mb-4">Booking by platform</h3>
+    <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 h-[420px] transition-colors">
+      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
+        Booking by platform
+      </h3>
 
       <div className="h-[250px]">
         <Pie data={data} options={options} />

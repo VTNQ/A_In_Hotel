@@ -30,27 +30,34 @@ const ViewExtraServicePage = () => {
   const { t } = useTranslation();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   // 🔹 Fetch data
-  const fetchData = async (pageNumber = 1, key = sortKey, order = sortOrder) => {
+  const fetchData = async (
+    pageNumber = 1,
+    key = sortKey,
+    order = sortOrder,
+  ) => {
     setLoading(true);
     let filters: string[] = [];
     // Nếu có status (true / false)
     if (statusFilter) {
       filters.push(`isActive==${statusFilter}`);
     }
-    filters.push("type==2")
-    filters.push("extraCharge>0")
+    filters.push("type==2");
+    filters.push("extraCharge>0");
 
     // Nếu có category (id)
     if (categoryFilter) {
       filters.push(`category.id==${categoryFilter}`);
     }
-    filters.push(`hotelId==${getTokens()?.hotelId}`)
+    filters.push(`hotelId==${getTokens()?.hotelId}`);
     const filterQuery = filters.join(" and ");
     try {
       const params = {
-        page: pageNumber, sort: `${key},${order}`,
-        size: 10, searchValue: searchValue, ...(filterQuery ? { filter: filterQuery } : {})
-      }
+        page: pageNumber,
+        sort: `${key},${order}`,
+        size: 10,
+        searchValue: searchValue,
+        ...(filterQuery ? { filter: filterQuery } : {}),
+      };
       const res = await getAll(params);
       setData(res.data?.content || []);
       setTotalPages(res?.data?.totalPages || 1);
@@ -68,7 +75,7 @@ const ViewExtraServicePage = () => {
     try {
       const res = await getAllCategory({
         all: true,
-        filter: "isActive==1 and type==2"
+        filter: "isActive==1 and type==2",
       });
       setCategory(res.data.content || []);
     } catch (err) {
@@ -122,9 +129,9 @@ const ViewExtraServicePage = () => {
     const newStatus = current === true ? false : true;
     const oldStatus = current;
     setData((prev: any[]) =>
-      prev.map(item =>
-        item.id === row.id ? { ...item, isActive: newStatus } : item
-      )
+      prev.map((item) =>
+        item.id === row.id ? { ...item, isActive: newStatus } : item,
+      ),
     );
     try {
       const response = await updateStatus(row.id, newStatus);
@@ -133,9 +140,9 @@ const ViewExtraServicePage = () => {
       }
     } catch (err: any) {
       setData((prev: any[]) =>
-        prev.map(item =>
-          item.id === row.id ? { ...item, isActive: oldStatus } : item
-        )
+        prev.map((item) =>
+          item.id === row.id ? { ...item, isActive: oldStatus } : item,
+        ),
       );
 
       showAlert({
@@ -143,8 +150,7 @@ const ViewExtraServicePage = () => {
         type: "error",
       });
     }
-
-  }
+  };
   const handleActive = async (row: any) => {
     try {
       setLoading(true);
@@ -156,9 +162,7 @@ const ViewExtraServicePage = () => {
       fetchData();
     } catch (err: any) {
       showAlert({
-        title:
-          err?.response?.data?.message ||
-          t("extraService.activateError"),
+        title: err?.response?.data?.message || t("extraService.activateError"),
         type: "error",
       });
     } finally {
@@ -173,10 +177,7 @@ const ViewExtraServicePage = () => {
       label: t("extraService.icon"),
       render: (row: any) => (
         <img
-          src={row.icon != null
-            ? File_URL + row.icon?.url
-            : "/default.webp"
-          }
+          src={row.icon != null ? File_URL + row.icon?.url : "/default.webp"}
           // hiển thị ảnh đầu tiên
           alt={row.serviceName}
           width="80"
@@ -187,15 +188,15 @@ const ViewExtraServicePage = () => {
     },
     { key: "serviceName", label: t("extraService.name"), sortable: true },
     { key: "categoryName", label: t("extraService.category"), sortable: true },
-   
+
     {
       key: "extraCharge",
       label: t("extraService.extraCharge"),
-      sorable: true
+      sorable: true,
     },
- 
+
     { key: "createdAt", label: t("common.createdAt"), sortable: true },
-    { key: "updatedAt", label: t("common.updatedAt"), sortable: true, },
+    { key: "updatedAt", label: t("common.updatedAt"), sortable: true },
     {
       key: "status",
       label: t("common.status"),
@@ -205,13 +206,11 @@ const ViewExtraServicePage = () => {
             ${row.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
         >
           <span
-            className={`h-2 w-2 rounded-full ${row.isActive ? "bg-green-500" : "bg-red-500"
-              }`}
+            className={`h-2 w-2 rounded-full ${
+              row.isActive ? "bg-green-500" : "bg-red-500"
+            }`}
           ></span>
-          {row.isActive
-            ? t("common.active")
-            : t("common.inactive")}
-
+          {row.isActive ? t("common.active") : t("common.inactive")}
         </div>
       ),
     },
@@ -268,10 +267,12 @@ const ViewExtraServicePage = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-50">
-
+    <div
+      className="flex flex-col  flex-1  min-h-screen transition-colors
+    duration-300"
+    >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-gray-100">
           {t("extraService.title")}
         </h1>
         <button
@@ -286,31 +287,36 @@ const ViewExtraServicePage = () => {
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
         {/* Search */}
         <div className="relative w-full lg:w-[300px]">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-slate-400 w-5 h-5" />
           <input
             type="text"
             placeholder={t("extraService.searchPlaceholder")}
             value={searchValue}
             onChange={handleSearchChange}
-            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className=" w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-colors "
           />
         </div>
 
         {/* Status */}
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+        <div
+          className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] 
+         dark:border-slate-700
+        rounded-lg overflow-hidden bg-white dark:bg-slate-900
+          transition-colors"
+        >
           {/* LABEL */}
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+          <div className=" flex items-center px-3 text-sm whitespace-nowrap bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 ">
             {t("common.status")}
           </div>
 
           {/* DIVIDER */}
-          <div className="w-px bg-[#C2C4C5]" />
+          <div className="w-px bg-[#C2C4C5] dark:bg-slate-700" />
 
           {/* SELECT */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-           className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+            className=" flex-1 py-2 pl-3 pr-8 text-sm bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 focus:outline-none "
           >
             <option value="">{t("common.all")}</option>
             <option value="true">{t("common.active")}</option>
@@ -319,20 +325,20 @@ const ViewExtraServicePage = () => {
         </div>
 
         {/* Category */}
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
+        <div className=" flex w-full lg:w-[220px] h-11 rounded-lg overflow-hidden border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors ">
           {/* LABEL */}
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+          <div className=" flex items-center px-3 text-sm whitespace-nowrap bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 ">
             {t("extraService.category")}
           </div>
 
           {/* DIVIDER */}
-          <div className="w-px bg-[#C2C4C5]" />
+          <div className="w-px bg-gray-300 dark:bg-slate-700" />
 
           {/* SELECT */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
+            className=" flex-1 px-3 text-sm appearance-none bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 focus:outline-none "
           >
             <option value="">{t("common.all")}</option>
             {category.map((item) => (
@@ -342,17 +348,13 @@ const ViewExtraServicePage = () => {
             ))}
           </select>
         </div>
-
-
-        {/* ✅ Deactivated checkbox */}
-
       </div>
 
       {/* Table */}
       {loading ? (
-        <p className="text-gray-500">{t("common.loading")}</p>
+        <p className="text-gray-500 dark:text-gray-400">{t("common.loading")}</p>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500 dark:text-red-400">{error}</p>
       ) : (
         <CommonTable
           columns={columns}
@@ -379,7 +381,6 @@ const ViewExtraServicePage = () => {
           fetchData();
           setShowModal(false);
         }}
-
       />
       <UpdateExtraServiceFormModal
         isOpen={showUpdateModal}
@@ -390,7 +391,6 @@ const ViewExtraServicePage = () => {
         }}
         serviceId={selectedService}
       />
-
     </div>
   );
 };

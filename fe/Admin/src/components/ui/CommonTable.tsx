@@ -51,22 +51,43 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   return (
-    <div className="border border-gray-300 bg-white rounded-2xl shadow-sm mt-4 relative z-0">
-      {/* ✅ Scroll ngang + cho phép dropdown tràn ra ngoài */}
+    <div
+      className="
+      border border-gray-300 dark:border-slate-700
+      bg-white dark:bg-slate-900
+      rounded-2xl shadow-sm mt-4 relative z-0
+      transition-colors
+    "
+    >
+      {/* Table wrapper */}
       <div className="overflow-x-auto relative custom-scroll">
-        <table className="w-full min-w-[900px] lg:min-w-[1400px] text-sm text-gray-700">
-          {/* Header */}
-          <thead className="sticky top-0 bg-[#536DB2] text-[#F2F2F2] uppercase text-[10px] sm:text-xs font-semibold z-10">
+        <table
+          className="
+          w-full min-w-[900px] lg:min-w-[1400px]
+          text-sm text-gray-700 dark:text-gray-200
+        "
+        >
+          {/* HEADER */}
+          <thead
+            className="
+            sticky top-0
+            bg-[#536DB2] dark:bg-slate-800
+            text-[#F2F2F2] dark:text-gray-100
+            uppercase text-[10px] sm:text-xs font-semibold z-10
+          "
+          >
             <tr>
               {columns.map((col, index) => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable && handleSort(col)}
-                  className={`px-4 py-3 text-center border-r border-[#6C80C2] ${index === 0 ? "rounded-tl-xl" : ""
-                    } ${index === columns.length - 1
-                      ? "rounded-tr-xl border-r-0"
-                      : ""
-                    } ${col.sortable ? "cursor-pointer select-none" : ""}`}
+                  className={`
+                  px-4 py-3 text-center
+                  border-r border-[#6C80C2] dark:border-slate-700
+                  ${index === 0 ? "rounded-tl-xl" : ""}
+                  ${index === columns.length - 1 ? "rounded-tr-xl border-r-0" : ""}
+                  ${col.sortable ? "cursor-pointer select-none" : ""}
+                `}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {col.label}
@@ -89,18 +110,30 @@ const CommonTable: React.FC<CommonTableProps> = ({
             </tr>
           </thead>
 
-          {/* Body */}
-          <tbody className="divide-y divide-[#EDEEEE]">
+          {/* BODY */}
+          <tbody
+            className="
+            divide-y divide-[#EDEEEE]
+            dark:divide-slate-800
+          "
+          >
             {data.length ? (
               data.map((row, i) => (
                 <tr
                   key={i}
-                  className="hover:bg-gray-50 transition-colors even:bg-gray-50/40"
+                  className="
+                  hover:bg-gray-50 dark:hover:bg-slate-800
+                  transition-colors
+                  even:bg-gray-50/40 dark:even:bg-slate-800/40
+                "
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="px-2 sm:px-4 py-3 text-center whitespace-nowrap"
+                      className="
+                      px-2 sm:px-4 py-3 text-center whitespace-nowrap
+                      text-gray-700 dark:text-gray-200
+                    "
                     >
                       {col.render ? col.render(row) : row[col.key]}
                     </td>
@@ -111,7 +144,10 @@ const CommonTable: React.FC<CommonTableProps> = ({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="py-6 text-center text-gray-500 italic"
+                  className="
+                  py-6 text-center italic
+                  text-gray-500 dark:text-slate-400
+                "
                 >
                   {t("common.noData")}
                 </td>
@@ -121,8 +157,18 @@ const CommonTable: React.FC<CommonTableProps> = ({
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 px-4 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-600 rounded-b-2xl">
+      {/* PAGINATION */}
+      <div
+        className="
+        flex flex-col sm:flex-row sm:justify-between sm:items-center
+        gap-3 px-4 py-3
+        border-t border-gray-200 dark:border-slate-800
+        bg-gray-50 dark:bg-slate-900
+        text-sm text-gray-600 dark:text-gray-300
+        rounded-b-2xl
+        transition-colors
+      "
+      >
         <p className="text-center sm:text-left">
           {t("table.showing", {
             from: (page - 1) * itemsPerPage + 1,
@@ -131,42 +177,59 @@ const CommonTable: React.FC<CommonTableProps> = ({
           })}
         </p>
 
-        {/* Nút phân trang */}
+        {/* Pagination buttons */}
         <div className="flex justify-center items-center gap-1 flex-wrap">
           <button
             disabled={page === 1}
             onClick={() => onPageChange(page - 1)}
-            className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
+            className="
+            px-2 py-1 rounded-md
+            hover:bg-gray-100 dark:hover:bg-slate-800
+            disabled:opacity-50
+          "
           >
             ‹
           </button>
+
           {Array.from({ length: totalPages }, (_, i) => i + 1)
             .filter(
               (num) =>
                 num === 1 ||
                 num === totalPages ||
-                (num >= page - 1 && num <= page + 1)
+                (num >= page - 1 && num <= page + 1),
             )
             .map((num, index, arr) => (
               <React.Fragment key={num}>
                 {index > 0 && arr[index - 1] !== num - 1 && (
-                  <span className="px-1 text-gray-500">…</span>
+                  <span className="px-1 text-gray-500 dark:text-slate-500">
+                    …
+                  </span>
                 )}
+
                 <button
                   onClick={() => onPageChange(num)}
-                  className={`px-3 py-1 rounded-md ${num === page
-                    ? "bg-blue-100 text-blue-700 font-semibold"
-                    : "hover:bg-gray-100"
-                    }`}
+                  className={`
+                  px-3 py-1 rounded-md
+                  ${
+                    num === page
+                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-semibold"
+                      : "hover:bg-gray-100 dark:hover:bg-slate-800"
+                  }
+                `}
                 >
                   {num}
                 </button>
               </React.Fragment>
             ))}
+
           <button
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
-            className="px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
+            className="
+            px-2 py-1 rounded-md
+            hover:bg-gray-100 dark:hover:bg-slate-800
+            disabled:opacity-50
+          "
           >
             ›
           </button>

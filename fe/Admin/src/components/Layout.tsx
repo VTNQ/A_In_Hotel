@@ -17,11 +17,11 @@ const MainLayout = () => {
   useAuthWatcher(setAuthChecking, setShowModal);
 
   if (authChecking) {
-    return <div className="w-full h-screen bg-white"></div>;
+    return <div className="w-full h-screen bg-white dark:bg-slate-900"></div>;
   }
   
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100">
 
       <SideBar
         open={sidebarOpen}
@@ -36,7 +36,7 @@ const MainLayout = () => {
 
       <div className="flex flex-col flex-1 overflow-hidden">
          <TopBar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-6 sm:p-4 md:p-6 bg-gray-50">
+       <main className="flex-1 overflow-y-auto p-6 sm:p-4 md:p-6 bg-gray-50 dark:bg-slate-900">
           <AlertProvider>
             <Outlet />
           </AlertProvider>

@@ -265,10 +265,10 @@ const ViewRoomPage = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-50">
+    <div className="flex flex-col flex-1 ">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-gray-100">
           {t("room.title")}
         </h1>
         {getTokens()?.role === "ADMIN" && (
@@ -285,27 +285,30 @@ const ViewRoomPage = () => {
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
         {/* Search */}
         <div className="relative w-full lg:w-[300px]">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-slate-400 w-5 h-5" />
           <input
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
             placeholder={t("room.searchPlaceholder")}
-            className="w-full pl-10 pr-3 py-2 border border-[#C2C4C5] rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-slate-400 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-colors"
           />
         </div>
 
         {/* Status */}
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] 
+         dark:border-slate-700
+        rounded-lg overflow-hidden bg-white dark:bg-slate-900
+          transition-colors">
+          <div className="flex items-center px-3 text-sm whitespace-nowrap bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 ">
             {t("common.status")}
           </div>
           {/* DIVIDER */}
-          <div className="w-px bg-[#C2C4C5]" />
+          <div className="w-px bg-[#C2C4C5] dark:bg-slate-700" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="flex-1 py-2 pl-3 pr-8 text-gray-700 text-sm bg-white focus:outline-none"
+            className="flex-1 py-2 pl-3 pr-8 text-sm bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 focus:outline-none "
           >
             <option value="">{t("common.all")}</option>
             <option value="1">{t("room.roomStatus.vacantDirty")}</option>
@@ -319,15 +322,15 @@ const ViewRoomPage = () => {
         </div>
 
         {/* Room Type */}
-        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] rounded-lg overflow-hidden bg-white">
-          <div className="flex items-center px-3 bg-[#F1F2F3] text-gray-600 text-sm whitespace-nowrap">
+        <div className="flex w-full lg:w-[220px] h-11 border border-[#C2C4C5] dark:bg-slate-900  dark:border-slate-700 rounded-lg overflow-hidden bg-white">
+          <div className="flex items-center px-3 text-sm whitespace-nowrap bg-[#F1F2F3] dark:bg-slate-800 text-gray-600 dark:text-slate-300 ">
             {t("room.roomTypeName")}
           </div>
           <div className="w-px bg-[#C2C4C5]" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 px-3 text-sm text-gray-700 bg-white focus:outline-none appearance-none"
+            className="flex-1 py-2 pl-3 pr-8 text-sm bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-100 focus:outline-none "
           >
             <option value="">{t("common.all")}</option>
             {categories.map((item) => (

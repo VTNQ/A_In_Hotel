@@ -310,7 +310,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               </label>
               <select
                 {...register("idRoomType")}
-                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
               >
                 <option value="">
                   {" "}
@@ -323,7 +323,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 ))}
               </select>
               {errors.idRoomType && (
-                <p className="text-red-500 text-xs">
+                <p className="text-red-500 dark:text-red-400 text-xs">
                   {errors.idRoomType.message}
                 </p>
               )}
@@ -336,10 +336,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <input
                 {...register("roomNumber")}
                 placeholder={t("room.createOrUpdate.enterRoomNumber")}
-                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.roomNumber && (
-                <p className="text-red-500 text-xs">
+                <p className="text-red-500 dark:text-red-400 text-xs">
                   {errors.roomNumber.message}
                 </p>
               )}
@@ -353,10 +353,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 <input
                   placeholder={t("room.createOrUpdate.enterRoomName")}
                   {...register("roomName")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.roomName && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.roomName.message}
                   </p>
                 )}
@@ -370,10 +370,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterFloor")}
                   {...register("floor")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.floor && (
-                  <p className="text-red-500 text-xs">{errors.floor.message}</p>
+                  <p className="text-red-500 dark:text-red-400 text-xs">
+                    {errors.floor.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -386,10 +388,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 type="number"
                 {...register("area")}
                 placeholder={t("room.createOrUpdate.enterArea")}
-                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.area && (
-                <p className="text-red-500 text-xs">{errors.area.message}</p>
+                <p className="text-red-500 dark:text-red-400 text-xs">
+                  {errors.area.message}
+                </p>
               )}
             </div>
 
@@ -401,10 +405,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                 {...register("capacity")}
                 type="number"
                 placeholder={t("room.createOrUpdate.enterCapacity")}
-                className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
               />
               {errors.capacity && (
-                <p className="text-red-500 text-xs">
+                <p className="text-red-500 dark:text-red-400 text-xs">
                   {errors.capacity.message}
                 </p>
               )}
@@ -417,7 +421,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               <textarea
                 {...register("note")}
                 placeholder={t("room.createOrUpdate.notePlaceholder")}
-                className="w-full border border-[#4B62A0] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 rows={4}
               />
             </div>
@@ -434,10 +438,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   {...register("hourlyBasePrice")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.hourlyBasePrice && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.hourlyBasePrice.message}
                   </p>
                 )}
@@ -451,10 +455,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   {...register("hourlyAdditionalPrice")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.hourlyAdditionalPrice && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.hourlyAdditionalPrice.message}
                   </p>
                 )}
@@ -468,10 +472,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   {...register("overnightPrice")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.overnightPrice && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.overnightPrice.message}
                   </p>
                 )}
@@ -485,10 +489,10 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   type="number"
                   placeholder={t("room.createOrUpdate.enterPrice")}
                   {...register("defaultRate")}
-                  className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
                 />
                 {errors.defaultRate && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.defaultRate.message}
                   </p>
                 )}
@@ -497,17 +501,24 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
             {/* IMAGE UPLOAD PREVIEW */}
             <div>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-800 dark:text-gray-100">
                 {t("room.createOrUpdate.images")}
               </label>
 
               <div
                 onClick={openImageModal}
-                className="mt-2 border 
-                border-gray-200 rounded-xl bg-gray-50 
-                hover:bg-gray-100 p-4 
-                sm:p-6 cursor-pointer transition flex flex-col items-center 
-                min-h-[200px] sm:h-64"
+                className="
+    mt-2 border
+    border-gray-200 dark:border-gray-700
+    rounded-xl
+    bg-gray-50 dark:bg-[#111827]
+    hover:bg-gray-100 dark:hover:bg-[#1F2937]
+    p-4 sm:p-6
+    cursor-pointer
+    transition-colors duration-200
+    flex flex-col items-center
+    min-h-[200px] sm:h-64
+    "
               >
                 {watchedValues.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -525,14 +536,22 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       src="/defaultImage.png"
                       className="w-[167px] h-[117px] opacity-60"
                     />
-                    <p className="text-gray-600 mt-3">
+
+                    <p className="text-gray-600 dark:text-gray-300 mt-3">
                       {t("room.createOrUpdate.clickSelectImages")}
                     </p>
+
                     <button
-                      className="mt-3 w-full 
-                      sm:w-auto px-6 sm:px-20 py-1.5 
-                      rounded-full border 
-                      border-[#42578E] bg-[#EEF0F7] text-[#42578E] text-sm"
+                      className="
+          mt-3 w-full sm:w-auto
+          px-6 sm:px-20 py-1.5
+          rounded-full border
+          border-[#42578E] dark:border-gray-600
+          bg-[#EEF0F7] dark:bg-[#1F2937]
+          text-[#42578E] dark:text-gray-200
+          text-sm
+          transition-colors duration-200
+          "
                     >
                       {t("room.createOrUpdate.selectFiles")}
                     </button>
@@ -556,7 +575,7 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white w-[95vw] sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 
+              className="bg-white w-[95vw] dark:bg-[#111827] dark:text-white sm:w-[90vw] lg:w-[900px] max-h-[90vh] rounded-2xl p-4 sm:p-6 lg:p-8 
               shadow-xl relative overflow-hidden"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
@@ -598,8 +617,16 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
 
               {/* DROPZONE */}
               <div
-                className="border-2 border-dashed border-[#D4D4E3] rounded-xl bg-[#FAFAFF] p-8 
-     max-h-[500px] overflow-auto custom-scroll"
+                className="
+  border-2 border-dashed
+  border-[#D4D4E3] dark:border-gray-700
+  rounded-xl
+  bg-[#FAFAFF] dark:bg-[#0F172A]
+  p-8
+  max-h-[500px]
+  overflow-auto custom-scroll
+  transition-colors duration-200
+  "
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add("border-blue-500");
@@ -625,20 +652,29 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                   <div className="flex flex-col items-center py-16">
                     <img src="/defaultImage.png" className="w-20 opacity-70" />
 
-                    <p className="mt-4 font-medium">
+                    <p className="mt-4 font-medium text-gray-800 dark:text-gray-100">
                       {t("room.createOrUpdate.dragDrop")}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {t("room.createOrUpdate.supportedFormat")}
                     </p>
 
-                    <p className="mt-4 text-gray-400">
+                    <p className="mt-4 text-gray-400 dark:text-gray-500">
                       {t("room.createOrUpdate.or")}
                     </p>
 
                     <label
                       htmlFor="filePicker"
-                      className="mt-3 px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
+                      className="
+        mt-3 px-6 py-2 rounded-full border
+        bg-white dark:bg-[#1F2937]
+        border-gray-300 dark:border-gray-600
+        text-black dark:text-white
+        cursor-pointer
+        hover:bg-gray-50 dark:hover:bg-[#374151]
+        transition-colors duration-200
+        "
                     >
                       {t("room.createOrUpdate.browseFiles")}
                     </label>
@@ -671,7 +707,14 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                             clone.splice(0, 1);
                             setTempImages(clone);
                           }}
-                          className="absolute top-3 right-3 bg-black/60 text-white p-1.5 rounded-full"
+                          className="
+            absolute top-3 right-3
+            bg-black/60 dark:bg-black/70
+            text-white
+            p-1.5 rounded-full
+            hover:bg-black/80
+            transition-colors
+            "
                         >
                           <X size={16} />
                         </button>
@@ -692,7 +735,15 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                                 clone.splice(index + 1, 1);
                                 setTempImages(clone);
                               }}
-                              className="absolute top-2 right-2 bg-black/60 text-white p-[3px] rounded-full opacity-0 group-hover:opacity-100 transition"
+                              className="
+                absolute top-2 right-2
+                bg-black/60 dark:bg-black/70
+                text-white
+                p-[3px] rounded-full
+                opacity-0 group-hover:opacity-100
+                hover:bg-black/80
+                transition
+                "
                             >
                               <X size={14} />
                             </button>
@@ -701,11 +752,19 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
                       </div>
                     </div>
 
-                    {/* ALWAYS SHOW {t("room.createOrUpdate.browseFiles")} HERE */}
+                    {/* ALWAYS SHOW BROWSE BUTTON */}
                     <div className="flex justify-center mt-8">
                       <label
                         htmlFor="filePickerMore"
-                        className="px-6 py-2 rounded-full border bg-white cursor-pointer hover:bg-gray-50"
+                        className="
+          px-6 py-2 rounded-full border
+          bg-white dark:bg-[#1F2937]
+          border-gray-300 dark:border-gray-600
+          text-black dark:text-white
+          cursor-pointer
+          hover:bg-gray-50 dark:hover:bg-[#374151]
+          transition-colors duration-200
+          "
                       >
                         {t("room.createOrUpdate.browseFiles")}
                       </label>
@@ -732,25 +791,45 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
       =============================== */}
       {confirmCloseOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
-          <div className="bg-white p-6 rounded-lg w-[90vw] sm:w-[360px] shadow-lg relative">
+          <div
+            className="
+  bg-white dark:bg-[#111827]
+  text-black dark:text-white
+  p-6 rounded-lg
+  w-[90vw] sm:w-[360px]
+  shadow-lg relative
+  transition-colors duration-200
+  "
+          >
             <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              className="
+    absolute top-3 right-3
+    text-gray-500 dark:text-gray-400
+    hover:text-gray-700 dark:hover:text-white
+    transition-colors
+    "
               onClick={() => setConfirmCloseOpen(false)}
             >
               ✕
             </button>
 
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t("room.createOrUpdate.confirmCloseTitle")}
             </h2>
 
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
               {t("room.createOrUpdate.confirmCloseDesc")}
             </p>
 
             <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
               <button
-                className="px-4 py-2 bg-gray-200 rounded-lg"
+                className="
+      px-4 py-2 rounded-lg
+      bg-gray-200 dark:bg-gray-700
+      text-black dark:text-white
+      hover:bg-gray-300 dark:hover:bg-gray-600
+      transition-colors duration-200
+      "
                 onClick={() => {
                   setConfirmCloseOpen(false);
                   handleCancel();
@@ -760,7 +839,12 @@ const RoomFormModal = ({ isOpen, onClose, onSuccess }: RoomFormModalProps) => {
               </button>
 
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                className="
+      px-4 py-2 rounded-lg
+      bg-blue-600 hover:bg-blue-700
+      text-white
+      transition-colors duration-200
+      "
                 onClick={handleSubmit(async (data) => {
                   setConfirmCloseOpen(false);
                   await handleSave(data);

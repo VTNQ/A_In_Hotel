@@ -181,10 +181,11 @@ const AssetFormModal = ({
       diabled={!isValid || isSubmitting}
     >
       <div className="mb-4">
-        <label className="block mb-1 font-medium text-[#253150]">
+        <label className="block mb-2 font-medium text-[#253150] dark:text-slate-200">
           {t("asset.createOrUpdate.icon")}
         </label>
-        <div className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] border border-[#4B62A0] rounded-xl overflow-hidden cursor-pointer">
+        <div  className="relative w-28 h-28 sm:w-32 sm:h-32 bg-[#EEF0F7] dark:bg-slate-800 
+        border border-[#4B62A0] dark:border-slate-700 rounded-xl overflow-hidden cursor-pointer">
           <input
             type="file"
             accept="image/*"
@@ -222,26 +223,36 @@ const AssetFormModal = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label  className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.name")} *
           </label>
           <input
             type="text"
             placeholder={t("asset.createOrUpdate.namePlaceHolder")}
             {...register("assetName")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+             className=" w-full rounded-lg px-3 py-2.5 sm:py-2 
+           outline-none border border-[#4B62A0] 
+           dark:border-slate-700 bg-white 
+           dark:bg-slate-900 text-gray-700 dark:text-gray-100 
+           placeholder:text-gray-400 dark:placeholder:text-slate-500 
+           focus:ring-2 focus:ring-[#4B62A0] transition-colors "
           />
           {errors.assetName && (
-            <p className="text-red-500 mt-1">{errors.assetName.message}</p>
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.assetName.message}</p>
           )}
         </div>
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.createOrUpdate.room")} *
           </label>
           <select
             {...register("roomId")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+            className=" w-full rounded-lg px-3 py-2.5 sm:py-2 
+           outline-none border border-[#4B62A0] 
+           dark:border-slate-700 bg-white 
+           dark:bg-slate-900 text-gray-700 dark:text-gray-100 
+           placeholder:text-gray-400 dark:placeholder:text-slate-500 
+           focus:ring-2 focus:ring-[#4B62A0] transition-colors "
           >
             <option value="">{t("asset.createOrUpdate.selectRoom")}</option>
             {room.length > 0 ? (
@@ -255,16 +266,21 @@ const AssetFormModal = ({
             )}
           </select>
           {errors.roomId && (
-            <p className="text-red-500 mt-1">{errors.roomId.message}</p>
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.roomId.message}</p>
           )}
         </div>
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.category")} *
           </label>
           <select
             {...register("categoryId")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+             className=" w-full rounded-lg px-3 py-2.5 sm:py-2 
+           outline-none border border-[#4B62A0] 
+           dark:border-slate-700 bg-white 
+           dark:bg-slate-900 text-gray-700 dark:text-gray-100 
+           placeholder:text-gray-400 dark:placeholder:text-slate-500 
+           focus:ring-2 focus:ring-[#4B62A0] transition-colors "
           >
             <option value="">{t("asset.createOrUpdate.selectCategory")}</option>
             {categories.length > 0 ? (
@@ -278,46 +294,56 @@ const AssetFormModal = ({
             )}
           </select>
           {errors.categoryId && (
-            <p className="text-red-500 mt-1">{errors.categoryId.message}</p>
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.categoryId.message}</p>
           )}
         </div>
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.createOrUpdate.price")} *
           </label>
           <input
             type="number"
             placeholder={t("asset.createOrUpdate.pricePlaceHolder")}
             {...register("price")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+            className=" w-full rounded-lg px-3 py-2.5 sm:py-2 
+           outline-none border border-[#4B62A0] 
+           dark:border-slate-700 bg-white 
+           dark:bg-slate-900 text-gray-700 dark:text-gray-100 
+           placeholder:text-gray-400 dark:placeholder:text-slate-500 
+           focus:ring-2 focus:ring-[#4B62A0] transition-colors "
           />
           {errors.price && (
-            <p className="text-red-500 mt-1">{errors.price.message}</p>
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.price.message}</p>
           )}
         </div>
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.createOrUpdate.quantity")}
           </label>
           <input
             type="number"
             placeholder={t("asset.createOrUpdate.quantityPlaceHolder")}
             {...register("quantity")}
-            className="w-full border border-[#4B62A0] focus:border-[#3E5286] rounded-lg p-2 outline-none"
+             className=" w-full rounded-lg px-3 py-2.5 sm:py-2 
+           outline-none border border-[#4B62A0] 
+           dark:border-slate-700 bg-white 
+           dark:bg-slate-900 text-gray-700 dark:text-gray-100 
+           placeholder:text-gray-400 dark:placeholder:text-slate-500 
+           focus:ring-2 focus:ring-[#4B62A0] transition-colors "
           />
           {errors.quantity && (
-            <p className="text-red-500 mt-1">{errors.quantity.message}</p>
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.quantity.message}</p>
           )}
         </div>
 
         <div className="sm:col-span-2">
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-slate-200">
             {t("asset.createOrUpdate.note")}
           </label>
           <textarea
             {...register("note")}
             placeholder={t("asset.createOrUpdate.notePlaceholder")}
-            className="w-full border border-[#253150] focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
+            className="w-full border border-[#253150] dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100  dark:placeholder:text-slate-500  focus:border-[#3E5286] bg-[#EEF0F7] rounded-lg p-2 outline-none"
             rows={2}
           />
         </div>

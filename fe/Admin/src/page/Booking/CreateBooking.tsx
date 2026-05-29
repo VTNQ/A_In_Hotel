@@ -16,6 +16,7 @@ const CreateBooking = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const { t } = useTranslation();
+
   const handleCancel = () => {
     showAlert({
       type: "warning",
@@ -38,12 +39,18 @@ const CreateBooking = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen px-3 sm:px-6 py-4 sm:py-6">
+    <div className="bg-gray-50 dark:bg-[#0f172a] min-h-screen px-3 sm:px-6 py-4 sm:py-6">
+
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-6">
+
+        {/* STEPPER */}
+        <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl shadow-sm p-4 sm:p-6 mb-6 border border-transparent">
           <BookingStepper step={booking.step} />
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+
+        {/* CONTENT */}
+        <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl shadow-sm p-4 sm:p-6 border border-transparent">
+
           {booking.step === 1 && (
             <StepGuestInfo
               onCancel={handleCancel}
@@ -54,6 +61,7 @@ const CreateBooking = () => {
               }}
             />
           )}
+
           {booking.step === 2 && (
             <StepBookingDateTime
               onCancel={handleCancel}
@@ -100,9 +108,11 @@ const CreateBooking = () => {
               }}
             />
           )}
+
         </div>
       </div>
     </div>
   );
 };
+
 export default CreateBooking;

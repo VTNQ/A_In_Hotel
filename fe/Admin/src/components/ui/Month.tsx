@@ -37,21 +37,29 @@ const Month = ({ month, value, onSelect, isSame, isInRange,  isDisabled }: any) 
           const isCurrentMonth = day.getMonth() === month.getMonth();
 
           return (
-            <button
+           <button
               key={day.toISOString()}
               disabled={disabled}
               onClick={() => onSelect(day)}
               className={`
                 h-9 w-9 mx-auto rounded-full flex items-center justify-center
                 transition
-                ${!isCurrentMonth ? "text-gray-300" : ""}
+
+                ${!isCurrentMonth ? "text-gray-300 dark:text-gray-600" : "dark:text-gray-200"}
+
                 ${
                   disabled
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "hover:bg-blue-100"
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600"
+                    : "hover:bg-blue-100 dark:hover:bg-blue-500/20"
                 }
-                ${inRange ? "bg-blue-50" : ""}
-                ${isStart || isEnd ? "bg-blue-500 text-white" : ""}
+
+                ${inRange ? "bg-blue-50 dark:bg-blue-500/10" : ""}
+
+                ${
+                  isStart || isEnd
+                    ? "bg-blue-500 text-white dark:bg-blue-600"
+                    : ""
+                }
               `}
             >
               {day.getDate()}

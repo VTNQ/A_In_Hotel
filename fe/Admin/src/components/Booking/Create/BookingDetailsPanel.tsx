@@ -12,13 +12,13 @@ const BookingDetailsPanel = ({ form, nights, onChange }: any) => {
     { label: t("bookingDateTime.packageOvernight"), value: "2" },
     { label: t("bookingDateTime.packageFullDay"), value: "3" },
   ];
-  
-const packageOptions = useMemo(() => {
-  return PACKAGE_OPTIONS.map((opt) => ({
-    ...opt,
-    disabled: opt.value === "2" && nights > 1, // ✅ chỉ overnight
-  }));
-}, [nights, t]);
+
+  const packageOptions = useMemo(() => {
+    return PACKAGE_OPTIONS.map((opt) => ({
+      ...opt,
+      disabled: opt.value === "2" && nights > 1, // ✅ chỉ overnight
+    }));
+  }, [nights, t]);
   useEffect(() => {
     if (!form.checkInDate || !form.checkOutDate) return;
 
@@ -47,8 +47,11 @@ const packageOptions = useMemo(() => {
   }, [form.package]);
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
-      <h3 className="font-semibold text-gray-800">
+    <div
+      className="bg-white rounded-xl p-4 shadow-sm space-y-4
+      dark:bg-gray-800 dark:border dark:border-gray-700"
+    >
+      <h3 className="font-semibold text-gray-800 dark:text-gray-100">
         {t("bookingDateTime.bookingDetails")}
       </h3>
 
@@ -113,10 +116,14 @@ const packageOptions = useMemo(() => {
         />
       </div>
 
-      <div className="border-t border-gray-200 pt-4 text-sm">
+      <div
+        className="border-t border-gray-200 pt-4 text-sm
+        dark:border-gray-700 dark:text-gray-300"
+      >
         <div className="flex justify-between">
           <span>{t("bookingDateTime.duration")}</span>
-          <span className="font-medium">
+
+          <span className="font-medium text-gray-800 dark:text-gray-100">
             {nights}{" "}
             {nights > 1
               ? t("bookingDateTime.nights")

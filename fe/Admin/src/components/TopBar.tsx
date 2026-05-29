@@ -1,9 +1,10 @@
-import { Bell, ChevronDown, Globe, Menu, User } from "lucide-react";
+import { Bell, ChevronDown, Globe, Menu, Moon, Sun, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getProfile } from "../service/api/Authenticate";
 import { File_URL } from "../setting/constant/app";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 
 const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   const { i18n } = useTranslation();
@@ -20,7 +21,7 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
     const nextLang = i18n.language === "vi" ? "en" : "vi";
     i18n.changeLanguage(nextLang);
   };
-
+const { theme, setTheme } = useTheme();
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -51,7 +52,8 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   const avatarUrl = profile?.image?.url ? File_URL + profile.image.url : null;
   const displayName = profile?.fullName || profile?.email || "User";
   return (
-    <header className="flex items-center justify-between h-14 bg-white border-b border-gray-200 px-4 sm:px-6">
+    <header className="flex items-center justify-between h-14 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-4 sm:px-6
+    transition">
       <button
         onClick={onMenuClick}
         className="lg:hidden p-2 rounded hover:bg-gray-100"
@@ -70,7 +72,16 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
             {i18n.language}
           </span>
         </button>
-
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+        >
+          {theme === "dark" ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+          )}
+        </button>
         <Bell className="w-5 h-5 text-gray-600" />
         <div ref={menuRef} className="relative">
           <button

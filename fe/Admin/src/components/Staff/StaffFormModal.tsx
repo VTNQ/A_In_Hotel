@@ -103,7 +103,7 @@ const StaffFormModal = ({
     onClose();
   };
 
-  return (
+   return (
     <CommonModal
       isOpen={isOpen}
       onClose={handleCancel}
@@ -115,36 +115,63 @@ const StaffFormModal = ({
       diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* FULL NAME */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             {t("staff.fullName")} <span className="text-red-500">*</span>
           </label>
+
           <input
             type="text"
             {...register("fullName")}
             placeholder={t("staff.create.enterFullName")}
-            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+            className="
+              w-full rounded-lg px-3 py-2.5 sm:py-2 outline-none
+              border border-[#4B62A0]
+              bg-white text-gray-800 placeholder:text-gray-400
+              dark:bg-[#111827] dark:text-gray-100 dark:placeholder:text-gray-500
+              dark:border-gray-600
+              focus:ring-2 focus:ring-blue-400
+            "
           />
+
           {errors.fullName && (
-            <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.fullName.message}
+            </p>
           )}
         </div>
+
+        {/* EMAIL */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             Email <span className="text-red-500">*</span>
           </label>
+
           <input
             type="text"
             {...register("email")}
             placeholder="Enter Email"
-            className="w-full border border-[#4B62A0] rounded-lg px-3 py-2.5 sm:py-2 outline-none"
+            className="
+              w-full rounded-lg px-3 py-2.5 sm:py-2 outline-none
+              border border-[#4B62A0]
+              bg-white text-gray-800 placeholder:text-gray-400
+              dark:bg-[#111827] dark:text-gray-100 dark:placeholder:text-gray-500
+              dark:border-gray-600
+              focus:ring-2 focus:ring-blue-400
+            "
           />
+
           {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.email.message}
+            </p>
           )}
         </div>
+
+        {/* GENDER */}
         <div>
-          <label className="block text-[15px] font-semibold text-gray-700 mb-1">
+          <label className="block text-[15px] font-semibold text-gray-700 dark:text-gray-200 mb-1">
             {t("staff.gender")} <span className="text-red-500">*</span>
           </label>
 
@@ -159,23 +186,17 @@ const StaffFormModal = ({
                 className="hidden peer"
               />
 
-              {/* Custom radio */}
               <span
                 className="
-          h-4 w-4 rounded-full border
-          border-gray-400 
-          peer-checked:border-[#42578E]
-          peer-checked:bg-[#42578E]
-          transition
-        "
-              ></span>
+                  h-4 w-4 rounded-full border
+                  border-gray-400 dark:border-gray-500
+                  peer-checked:border-[#42578E]
+                  peer-checked:bg-[#42578E]
+                  transition
+                "
+              />
 
-              <span
-                className="
-          text-gray-700 
-          peer-checked:text-[#42578E]
-        "
-              >
+              <span className="text-gray-700 dark:text-gray-300">
                 {t("staff.create.male")}
               </span>
             </label>
@@ -190,47 +211,56 @@ const StaffFormModal = ({
                 className="hidden peer"
               />
 
-              {/* Custom radio */}
               <span
                 className="
-          h-4 w-4 rounded-full border
-          border-gray-400 
-          peer-checked:border-[#42578E]
-          peer-checked:bg-[rgb(66,87,142)]
-          transition
-        "
-              ></span>
+                  h-4 w-4 rounded-full border
+                  border-gray-400 dark:border-gray-500
+                  peer-checked:border-[#42578E]
+                  peer-checked:bg-[#42578E]
+                  transition
+                "
+              />
 
-              <span
-                className="
-          text-gray-700 
-          peer-checked:text-[#42578E]
-        "
-              >
+              <span className="text-gray-700 dark:text-gray-300">
                 {t("staff.create.female")}
               </span>
             </label>
           </div>
         </div>
 
+        {/* PHONE */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             {t("staff.phone")}
           </label>
+
           <input
             type="text"
             {...register("phone")}
             placeholder={t("staff.create.enterphone")}
-            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="
+              w-full rounded-lg p-2 outline-none
+              border border-gray-300
+              bg-white text-gray-800 placeholder:text-gray-400
+              dark:bg-[#111827] dark:text-gray-100 dark:placeholder:text-gray-500
+              dark:border-gray-600
+              focus:ring-2 focus:ring-blue-400
+            "
           />
+
           {errors.phone && (
-            <p className="text-red-500 text-sm">{errors.phone.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.phone.message}
+            </p>
           )}
         </div>
+
+        {/* DOB */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             {t("staff.dob")} <span className="text-red-500">*</span>
           </label>
+
           <Controller
             name="birthday"
             control={control}
@@ -242,17 +272,30 @@ const StaffFormModal = ({
               />
             )}
           />
+
           {errors.birthday && (
-            <p className="text-red-500 text-sm">{errors.birthday.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.birthday.message}
+            </p>
           )}
         </div>
+
+        {/* ROLE */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             {t("staff.role")} <span className="text-red-500">*</span>
           </label>
+
           <select
             {...register("role")}
-            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="
+              w-full rounded-lg p-2 outline-none
+              border border-gray-300
+              bg-white text-gray-800
+              dark:bg-[#111827] dark:text-gray-100
+              dark:border-gray-600
+              focus:ring-2 focus:ring-blue-400
+            "
             required
           >
             <option value="3">{t("staff.create.receiption")}</option>

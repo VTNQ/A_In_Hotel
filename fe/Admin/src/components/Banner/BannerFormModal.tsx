@@ -5,7 +5,10 @@ import QuillEditor, { Quill } from "react-quill-new";
 import DateTimePicker from "../ui/DateTimePicker";
 import { createBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
-import type {  BannerFormModalProp, BannerFormModalProps } from "../../type/banner.types";
+import type {
+  BannerFormModalProp,
+  BannerFormModalProps,
+} from "../../type/banner.types";
 
 import BlotFormatter from "quill-blot-formatter";
 import z from "zod";
@@ -140,7 +143,7 @@ const BannerFormModal = ({
           key,
           value?.toString().trim() === "" ? null : value,
         ]),
-      )as BannerFormModalProp;
+      ) as BannerFormModalProp;
       await createBanner(cleanedData);
       showAlert({
         title: t("banner.createOrUpdate.createSucess"),
@@ -189,24 +192,37 @@ const BannerFormModal = ({
       diabled={!isValid || isSubmitting}
     >
       <div className="grid grid-cols-1 gap-4">
+        {/* NAME */}
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.name")} *
           </label>
+
           <input
             type="text"
             placeholder={t("banner.createOrUpdate.enterName")}
             {...register("name")}
-            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+            className="
+            w-full border border-[#4B62A0]
+            dark:border-gray-600
+            rounded-lg p-2 outline-none
+            bg-white dark:bg-gray-800
+            text-gray-800 dark:text-gray-100
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+          "
           />
+
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
           )}
         </div>
+
+        {/* START DATE */}
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.startAt")} *
           </label>
+
           <DateTimePicker
             value={watch("startDate")}
             onChange={(date: any) => {
@@ -225,10 +241,13 @@ const BannerFormModal = ({
             <p className="text-red-500 text-sm">{errors.startDate.message}</p>
           )}
         </div>
+
+        {/* END DATE */}
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.endAt")} *
           </label>
+
           <DateTimePicker
             value={watch("endDate")}
             onChange={(date: any) => {
@@ -246,48 +265,81 @@ const BannerFormModal = ({
             }
             placeholder={t("banner.createOrUpdate.selectEndAt")}
           />
+
           {errors.endDate && (
             <p className="text-red-500 text-sm">{errors.endDate.message}</p>
           )}
         </div>
+
+        {/* CTA LABEL */}
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.createOrUpdate.ctaLabel")}
           </label>
+
           <input
             type="text"
             placeholder={t("banner.createOrUpdate.enterCtaLabel")}
             {...register("ctaLabel")}
-            className="w-full border border-[#4B62A0] rounded-lg p-2 outline-none"
+            className="
+            w-full border border-[#4B62A0]
+            dark:border-gray-600
+            rounded-lg p-2 outline-none
+            bg-white dark:bg-gray-800
+            text-gray-800 dark:text-gray-100
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+          "
           />
         </div>
+
+        {/* DESCRIPTION */}
         <div>
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.createOrUpdate.description")}
           </label>
-          <QuillEditor
-            theme="snow"
-            value={watch("description")}
-            onChange={(value) => {
-              setValue("description", value, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-            }}
-            onBlur={() => {
-              trigger("description");
-            }}
-            modules={fullToolbar}
-          />
+
+          <div
+            className="
+            rounded-xl overflow-hidden
+            dark:bg-gray-900
+            dark:text-gray-100
+          "
+          >
+            <QuillEditor
+              theme="snow"
+              value={watch("description")}
+              onChange={(value) => {
+                setValue("description", value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              }}
+              onBlur={() => {
+                trigger("description");
+              }}
+              modules={fullToolbar}
+            />
+          </div>
         </div>
+
+        {/* IMAGE */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium text-[#253150]">
+          <label className="block mb-1 font-medium text-[#253150] dark:text-gray-200">
             {t("banner.thumbnail")}
           </label>
 
           <div
-            className="border-2 border-dashed border-[#AFC0E2] hover:border-[#4B62A0] 
-                        transition rounded-xl bg-[#F6F8FC] cursor-pointer flex flex-col items-center justify-center py-10 text-center"
+            className="
+            border-2 border-dashed border-[#AFC0E2]
+            dark:border-gray-600
+            hover:border-[#4B62A0]
+            dark:hover:border-blue-400
+            transition rounded-xl
+            bg-[#F6F8FC] dark:bg-gray-800
+            cursor-pointer
+            flex flex-col items-center justify-center
+            py-10 text-center
+          "
             onClick={() => document.getElementById("thumbnailInput")?.click()}
           >
             {preview ? (
@@ -297,18 +349,17 @@ const BannerFormModal = ({
                 className="w-40 h-40 object-cover rounded-lg shadow"
               />
             ) : (
-              <>
-                <div className="text-gray-400 flex flex-col items-center">
-                  <img
-                    src="/defaultImage.png"
-                    className="w-[167px] h-[117px] opacity-60"
-                    alt=""
-                  />
-                  <p className="text-gray-500 text-sm">
-                    {t("banner.clickSelectImage")}
-                  </p>
-                </div>
-              </>
+              <div className="text-gray-400 dark:text-gray-500 flex flex-col items-center">
+                <img
+                  src="/defaultImage.png"
+                  className="w-[167px] h-[117px] opacity-60"
+                  alt=""
+                />
+
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  {t("banner.clickSelectImage")}
+                </p>
+              </div>
             )}
           </div>
 
@@ -319,6 +370,7 @@ const BannerFormModal = ({
             className="hidden"
             onChange={handleImageChange}
           />
+
           {errors.bannerImage && (
             <p className="text-red-500 text-sm mt-1">
               {String(errors.bannerImage.message)}

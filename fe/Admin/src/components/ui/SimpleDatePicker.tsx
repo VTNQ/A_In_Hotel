@@ -44,118 +44,137 @@ export default function SimpleDatePicker({
     setOpen(false);
   };
 
-  return (
-    <div className="relative" ref={ref}>
-      {/* INPUT */}
+return (
+  <div className="relative" ref={ref}>
+    {/* INPUT */}
+    <div
+      onClick={() => setOpen(!open)}
+      className="
+        h-[46px]
+        flex items-center justify-between
+        px-3
+        border border-[#C2C4C5]
+        dark:border-gray-600
+        rounded-lg
+        bg-white dark:bg-[#111827]
+        cursor-pointer
+        hover:border-blue-500
+        dark:hover:border-blue-400
+        transition
+      "
+    >
+      <span
+        className={`
+          text-sm truncate
+          ${
+            value
+              ? "text-gray-800 dark:text-gray-100"
+              : "text-gray-400 dark:text-gray-500"
+          }
+        `}
+      >
+        {value || t("booking.selectDate")}
+      </span>
+
+      <CalendarIcon className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 ml-2" />
+    </div>
+
+    {/* CALENDAR */}
+    {open && (
       <div
-        onClick={() => setOpen(!open)}
         className="
-          h-[46px]
-          flex items-center justify-between
-          px-3
-          border border-[#C2C4C5]
-          rounded-lg
-          bg-white
-          cursor-pointer
-          hover:border-blue-500
-          transition
+          absolute top-[110%] left-0 z-50 w-64
+          bg-white dark:bg-[#1F2937]
+          border border-gray-200 dark:border-gray-700
+          rounded-xl shadow-xl p-4
+          text-gray-800 dark:text-gray-100
         "
       >
-        <span
-          className={`
-            text-sm truncate
-            ${value ? "text-gray-800" : "text-gray-400"}
-          `}
-        >
-          {value || t("booking.selectDate")}
-        </span>
+        {/* HEADER */}
+        <div className="flex items-center justify-between mb-3">
+          <button
+            onClick={() => setCurrent(new Date(year, month - 1, 1))}
+            className="px-2 hover:text-blue-500 dark:hover:text-blue-400"
+          >
+            ‹
+          </button>
 
-        <CalendarIcon className="w-4 h-4 text-blue-500 shrink-0 ml-2" />
-      </div>
-
-      {/* CALENDAR */}
-      {open && (
-        <div className="absolute top-[110%] left-0 z-50 w-64 bg-white rounded-xl shadow-xl p-4">
-          {/* HEADER */}
-          <div className="flex items-center justify-between mb-3">
-            <button
-              onClick={() => setCurrent(new Date(year, month - 1, 1))}
-              className="px-2"
-            >
-              ‹
-            </button>
-
-            <span className="text-sm font-medium">
-              {current.toLocaleString(i18n.language, {
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-
-            <button
-              onClick={() => setCurrent(new Date(year, month + 1, 1))}
-              className="px-2"
-            >
-              ›
-            </button>
-          </div>
-
-          {/* WEEK DAYS */}
-          <div className="grid grid-cols-7 text-center text-xs text-gray-500 mb-2">
-            {weekDays.map((d) => (
-              <div key={d}>{d}</div>
-            ))}
-          </div>
-
-          {/* DAYS */}
-          <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: firstDay }).map((_, i) => (
-              <div key={i} />
-            ))}
-
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1;
-              const selected =
-                value ===
-                format(new Date(year, month, day), "yyyy-MM-dd");
-
-              return (
-                <div
-                  key={day}
-                  onClick={() => selectDay(day)}
-                  className={`
-                    h-8 flex items-center justify-center rounded cursor-pointer text-sm
-                    ${
-                      selected
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-100"
-                    }
-                  `}
-                >
-                  {day}
-                </div>
-              );
+          <span className="text-sm font-medium">
+            {current.toLocaleString(i18n.language, {
+              month: "long",
+              year: "numeric",
             })}
-          </div>
+          </span>
 
-          {/* FOOTER */}
-          <div className="flex justify-between mt-3 text-sm">
-            <button
-              onClick={() => onChange("")}
-              className="text-blue-600 hover:underline"
-            >
-              {t("booking.clear")}
-            </button>
-
-            <button
-              onClick={() => onChange(format(new Date(), "yyyy-MM-dd"))}
-              className="text-blue-600 hover:underline"
-            >
-              {t("booking.today")}
-            </button>
-          </div>
+          <button
+            onClick={() => setCurrent(new Date(year, month + 1, 1))}
+            className="px-2 hover:text-blue-500 dark:hover:text-blue-400"
+          >
+            ›
+          </button>
         </div>
-      )}
-    </div>
-  );
+
+        {/* WEEK DAYS */}
+        <div
+          className="
+            grid grid-cols-7 text-center text-xs
+            text-gray-500 dark:text-gray-400 mb-2
+          "
+        >
+          {weekDays.map((d) => (
+            <div key={d}>{d}</div>
+          ))}
+        </div>
+
+        {/* DAYS */}
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: firstDay }).map((_, i) => (
+            <div key={i} />
+          ))}
+
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day = i + 1;
+
+            const selected =
+              value === format(new Date(year, month, day), "yyyy-MM-dd");
+
+            return (
+              <div
+                key={day}
+                onClick={() => selectDay(day)}
+                className={`
+                  h-8 flex items-center justify-center rounded cursor-pointer text-sm transition
+                  ${
+                    selected
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-200"
+                  }
+                `}
+              >
+                {day}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* FOOTER */}
+        <div className="flex justify-between mt-3 text-sm">
+          <button
+            onClick={() => onChange("")}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {t("booking.clear")}
+          </button>
+
+          <button
+            onClick={() => onChange(format(new Date(), "yyyy-MM-dd"))}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {t("booking.today")}
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }

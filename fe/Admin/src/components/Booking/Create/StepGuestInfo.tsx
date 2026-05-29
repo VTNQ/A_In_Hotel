@@ -14,26 +14,16 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
 
   const schema = z.object({
     firstName: z.string().min(1, t("validation.firstNameRequired")).max(100),
-
     lastName: z.string().min(1, t("validation.lastNameRequired")).max(100),
-
     idNumber: z.string().min(6, t("validation.idNumberMin")).max(20).max(20),
-
     guestType: z.string().min(1, t("validation.guestTypeRequired")),
-
-    email: z
-      .string()
-      .min(1, t("validation.emailRequired"))
-      .email(t("validation.emailInvalid")),
-
-    phone: z
-      .string()
-      .regex(/^[0-9+\-\s()]{8,15}$/, t("validation.phoneInvalid")),
-
+    email: z.string().min(1, t("validation.emailRequired")).email(t("validation.emailInvalid")),
+    phone: z.string().regex(/^[0-9+\-\s()]{8,15}$/, t("validation.phoneInvalid")),
     note: z.string().optional(),
   });
 
   type FormValues = z.infer<typeof schema>;
+
   const {
     register,
     handleSubmit,
@@ -54,24 +44,28 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
     },
   });
 
-  const submit = (values: FormValues) => {
-    onNext(values);
-  };
+  const submit = (values: FormValues) => onNext(values);
 
   return (
-    <div>
-      <h2 className="text-lg sm:text-xl font-semibold mb-2">
+    <div className="dark:text-gray-100">
+
+      {/* TITLE */}
+      <h2 className="text-lg sm:text-xl font-semibold mb-2 dark:text-gray-100">
         {t("bookingGuest.title")}
       </h2>
-      <p className="text-sm text-gray-500 mb-6">{t("bookingGuest.step")}</p>
+
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        {t("bookingGuest.step")}
+      </p>
 
       {/* Identity */}
       <SectionHeader
         title={t("bookingGuest.identity")}
-        icon={<User className="w-5 h-5 text-[#4B62A0]" />}
+        icon={<User className="w-5 h-5 text-[#4B62A0] dark:text-blue-400" />}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
         <Input
           label={t("bookingGuest.firstName")}
           placeholder="e.g. Jonathan"
@@ -106,8 +100,9 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
             />
           )}
         />
+
         {errors.guestType?.message && (
-          <p className="mt-1 text-sm text-red-500">
+          <p className="mt-1 text-sm text-red-500 dark:text-red-400">
             {errors.guestType.message.toString()}
           </p>
         )}
@@ -116,10 +111,11 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       {/* Contact */}
       <SectionHeader
         title={t("bookingGuest.contact")}
-        icon={<Mail className="w-5 h-5 text-[#4B62A0]" />}
+        icon={<Mail className="w-5 h-5 text-[#4B62A0] dark:text-blue-400" />}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
         <Input
           type="email"
           label={t("bookingGuest.email")}
@@ -140,7 +136,7 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
       {/* Specifics */}
       <SectionHeader
         title={t("bookingGuest.specifics")}
-        icon={<ClipboardList className="w-5 h-5 text-[#4B62A0]" />}
+        icon={<ClipboardList className="w-5 h-5 text-[#4B62A0] dark:text-blue-400" />}
       />
 
       <TextArea
@@ -148,19 +144,22 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
         placeholder={t("bookingGuest.notePlaceholder")}
         {...register("note")}
       />
+
       {errors.note?.message && (
-        <p className="mt-1 text-sm text-red-500">
+        <p className="mt-1 text-sm text-red-500 dark:text-red-400">
           {errors.note.message.toString()}
         </p>
       )}
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-8">
+
         <button
           onClick={onCancel}
           className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium
           text-red-600 border border-red-200 bg-red-50
-          hover:bg-red-100 hover:border-red-300 transition"
+          hover:bg-red-100 hover:border-red-300 transition
+          dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30 dark:hover:bg-red-500/20"
         >
           {t("bookingGuest.cancel")}
         </button>
@@ -171,16 +170,19 @@ const StepGuestInfo = ({ data, onNext, onCancel }: any) => {
           className={`w-full sm:w-auto 
             flex items-center justify-center
             gap-2 px-6 py-3 text-sm sm:text-base font-medium rounded-xl 
-            transition-all duration-200 ${
+            transition-all duration-200
+            ${
               isValid
-                ? "bg-[#42578E] text-white hover:bg-[#536DB2] active:scale-[0.98]"
-                : "bg-gray-300 text-gray-400 cursor-not-allowed"
+                ? "bg-[#42578E] text-white hover:bg-[#536DB2] active:scale-[0.98] dark:bg-blue-600 dark:hover:bg-blue-700"
+                : "bg-gray-300 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
             }`}
         >
           {t("bookingGuest.next")}
         </button>
+
       </div>
     </div>
   );
 };
+
 export default StepGuestInfo;

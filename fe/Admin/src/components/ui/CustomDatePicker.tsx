@@ -53,7 +53,9 @@ export default function CustomDatePicker({
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClick);
+
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
@@ -86,6 +88,7 @@ export default function CustomDatePicker({
     if (min && d < min) return;
 
     d.setHours(12, 0, 0, 0);
+
     onChange(d);
     setIsOpen(false);
   };
@@ -94,31 +97,44 @@ export default function CustomDatePicker({
     if (month === 0) {
       setMonth(11);
       setYear((y) => y - 1);
-    } else setMonth((m) => m - 1);
+    } else {
+      setMonth((m) => m - 1);
+    }
   };
 
   const nextMonth = () => {
     if (month === 11) {
       setMonth(0);
       setYear((y) => y + 1);
-    } else setMonth((m) => m + 1);
+    } else {
+      setMonth((m) => m + 1);
+    }
   };
 
   return (
     <>
-      {/* Input field */}
+      {/* INPUT FIELD */}
       <div
         ref={inputRef}
         onClick={() => {
           computePosition();
           setIsOpen(!isOpen);
         }}
-        className="border border-gray-300 p-2 rounded-xl bg-white cursor-pointer text-[15px]"
+        className="
+          border border-gray-300 dark:border-gray-600
+          p-2 rounded-xl
+          bg-white dark:bg-[#111827]
+          text-gray-800 dark:text-gray-100
+          cursor-pointer text-[15px]
+          transition
+        "
       >
         {value ? (
           value.toISOString().split("T")[0]
         ) : (
-          <span className="text-gray-400">{placeholder}</span>
+          <span className="text-gray-400 dark:text-gray-500">
+            {placeholder}
+          </span>
         )}
       </div>
 
@@ -128,21 +144,33 @@ export default function CustomDatePicker({
             ref={popupRef}
             className="
               fixed z-[999999]
-              bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.12)]
               w-[320px] h-[360px] p-5
+              rounded-3xl
+              bg-white dark:bg-[#111827]
+              border border-gray-200 dark:border-gray-700
+              shadow-[0_8px_30px_rgba(0,0,0,0.12)]
             "
             style={{ top: popupPos.top, left: popupPos.left }}
           >
-            {/* Header */}
+            {/* HEADER */}
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-3">
                 <select
                   value={month}
                   onChange={(e) => setMonth(Number(e.target.value))}
-                  className="text-[16px] bg-transparent outline-none"
+                  className="
+                    text-[16px]
+                    bg-transparent
+                    text-gray-800 dark:text-gray-100
+                    outline-none
+                  "
                 >
                   {monthNames.map((m, i) => (
-                    <option key={i} value={i}>
+                    <option
+                      key={i}
+                      value={i}
+                      className="dark:bg-[#111827]"
+                    >
                       {m}
                     </option>
                   ))}
@@ -151,13 +179,22 @@ export default function CustomDatePicker({
                 <select
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="text-[16px] bg-transparent outline-none"
+                  className="
+                    text-[16px]
+                    bg-transparent
+                    text-gray-800 dark:text-gray-100
+                    outline-none
+                  "
                 >
                   {Array.from(
                     { length: 70 },
-                    (_, i) => today.getFullYear() - i
+                    (_, i) => today.getFullYear() - i,
                   ).map((y) => (
-                    <option key={y} value={y}>
+                    <option
+                      key={y}
+                      value={y}
+                      className="dark:bg-[#111827]"
+                    >
                       {y}
                     </option>
                   ))}
@@ -167,27 +204,47 @@ export default function CustomDatePicker({
               <div className="flex gap-2">
                 <button
                   onClick={prevMonth}
-                  className="w-7 h-7 rounded hover:bg-gray-200 flex items-center justify-center"
+                  className="
+                    w-7 h-7 rounded
+                    flex items-center justify-center
+                    text-gray-700 dark:text-gray-200
+                    hover:bg-gray-200 dark:hover:bg-gray-700
+                    transition
+                  "
                 >
                   ❮
                 </button>
+
                 <button
                   onClick={nextMonth}
-                  className="w-7 h-7 rounded hover:bg-gray-200 flex items-center justify-center"
+                  className="
+                    w-7 h-7 rounded
+                    flex items-center justify-center
+                    text-gray-700 dark:text-gray-200
+                    hover:bg-gray-200 dark:hover:bg-gray-700
+                    transition
+                  "
                 >
                   ❯
                 </button>
               </div>
             </div>
 
-            {/* Weekdays */}
-            <div className="grid grid-cols-7 text-center text-gray-500 text-[14px] mb-2">
+            {/* WEEKDAYS */}
+            <div
+              className="
+                grid grid-cols-7 text-center
+                text-[14px]
+                text-gray-500 dark:text-gray-400
+                mb-2
+              "
+            >
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
                 <div key={d}>{d}</div>
               ))}
             </div>
 
-            {/* Days */}
+            {/* DAYS */}
             <div className="grid grid-cols-7 gap-1">
               {Array.from({ length: firstDay }).map((_, i) => (
                 <div key={i}></div>
@@ -195,22 +252,30 @@ export default function CustomDatePicker({
 
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
+
                 const d = normalizeDate(new Date(year, month, day));
+
                 const disabled = min ? d < min : false;
+
+                const selected =
+                  value &&
+                  normalizeDate(value).getTime() === d.getTime();
 
                 return (
                   <div
                     key={day}
                     onClick={() => !disabled && selectDay(day)}
                     className={`
-        h-10 w-10 flex items-center justify-center rounded-lg
-        text-[15px] transition
-        ${
-          disabled
-            ? "text-gray-300 cursor-not-allowed"
-            : "text-gray-700 cursor-pointer hover:bg-purple-100"
-        }
-      `}
+                      h-10 w-10 flex items-center justify-center rounded-lg
+                      text-[15px] transition
+                      ${
+                        selected
+                          ? "bg-[#42578E] text-white"
+                          : disabled
+                            ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                            : "text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-purple-100 dark:hover:bg-[#1F2937]"
+                      }
+                    `}
                   >
                     {day}
                   </div>

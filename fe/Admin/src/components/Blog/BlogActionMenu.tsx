@@ -36,7 +36,7 @@ const BlogActionMenu:React.FC<BlogActionMenuProps>=({
             ]
             break;
         case 3:
-            statusLabel=t("blog.Archived");
+            statusLabel=t("blog.archive");
             actions=[
                 { label: t("blog.viewBlog"), icon: <Eye size={16} />, onClick: () => onView?.(blog) },
                 {label:t("blog.restore"),icon:<RotateCcw size={16} className="text-green-600" />,onClick:()=>onRestore?.(blog)}

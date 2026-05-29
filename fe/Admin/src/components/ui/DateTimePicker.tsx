@@ -151,7 +151,7 @@ export default function DateTimePicker({
 
   /* ---------- popup position ---------- */
 
- const POPUP_HEIGHT = 420;
+  const POPUP_HEIGHT = 420;
   const rect = inputRef.current?.getBoundingClientRect();
   let top = 0;
 
@@ -167,12 +167,24 @@ export default function DateTimePicker({
       <div
         ref={inputRef}
         onClick={() => setOpen(true)}
-        className="border border-gray-300 rounded-xl px-3 py-2 bg-white cursor-pointer text-sm hover:border-[#4B62A0]"
+        className="
+        border border-gray-300 dark:border-gray-600
+        rounded-xl px-3 py-2
+        bg-white dark:bg-gray-800
+        cursor-pointer text-sm
+        hover:border-[#4B62A0]
+        dark:hover:border-blue-400
+        transition
+      "
       >
         {value ? (
-          <span className="text-gray-700">{formatDateTime(value)}</span>
+          <span className="text-gray-700 dark:text-gray-100">
+            {formatDateTime(value)}
+          </span>
         ) : (
-          <span className="text-gray-400">{placeholder}</span>
+          <span className="text-gray-400 dark:text-gray-500">
+            {placeholder}
+          </span>
         )}
       </div>
 
@@ -180,7 +192,14 @@ export default function DateTimePicker({
         <Portal>
           <div
             ref={popupRef}
-            className="fixed z-[99999] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-[320px] p-4"
+            className="
+            fixed z-[99999]
+            bg-white dark:bg-gray-900
+            rounded-2xl
+            shadow-[0_10px_40px_rgba(0,0,0,0.15)]
+            border border-gray-200 dark:border-gray-700
+            w-[320px] p-4
+          "
             style={{ top, left: rect.left }}
           >
             {/* HEADER */}
@@ -189,10 +208,18 @@ export default function DateTimePicker({
                 <select
                   value={month}
                   onChange={(e) => setMonth(Number(e.target.value))}
-                  className="outline-none text-sm"
+                  className="
+                  outline-none text-sm
+                  bg-transparent
+                  text-gray-700 dark:text-gray-100
+                "
                 >
                   {MONTHS.map((m, i) => (
-                    <option key={i} value={i}>
+                    <option
+                      key={i}
+                      value={i}
+                      className="bg-white dark:bg-gray-900"
+                    >
                       {m}
                     </option>
                   ))}
@@ -201,21 +228,36 @@ export default function DateTimePicker({
                 <select
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="outline-none text-sm"
+                  className="
+                  outline-none text-sm
+                  bg-transparent
+                  text-gray-700 dark:text-gray-100
+                "
                 >
-                  {Array.from({ length: 50 }, (_, i) => now.getFullYear()+i).map(
-                    (y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ),
-                  )}
+                  {Array.from(
+                    { length: 50 },
+                    (_, i) => now.getFullYear() + i,
+                  ).map((y) => (
+                    <option
+                      key={y}
+                      value={y}
+                      className="bg-white dark:bg-gray-900"
+                    >
+                      {y}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
             {/* WEEK */}
-            <div className="grid grid-cols-7 text-xs text-gray-500 mb-1 text-center">
+            <div
+              className="
+              grid grid-cols-7
+              text-xs text-gray-500 dark:text-gray-400
+              mb-1 text-center
+            "
+            >
               {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
                 <div key={d}>{d}</div>
               ))}
@@ -240,10 +282,15 @@ export default function DateTimePicker({
                       setDay(dNum);
                     }}
                     className={`
-                      h-9 w-9 flex items-center justify-center rounded-lg text-sm
-                      ${disabled ? "text-gray-300 cursor-not-allowed" : "cursor-pointer hover:bg-gray-100"}
-                      ${active && !disabled ? "bg-[#4B62A0] text-white" : ""}
-                    `}
+                    h-9 w-9 flex items-center justify-center
+                    rounded-lg text-sm transition
+                    ${
+                      disabled
+                        ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                        : "cursor-pointer text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }
+                    ${active && !disabled ? "bg-[#4B62A0] text-white" : ""}
+                  `}
                   >
                     {dNum}
                   </div>
@@ -257,7 +304,11 @@ export default function DateTimePicker({
               <div className="flex flex-col items-center">
                 <button
                   onClick={() => setHour((h) => clamp(h + 1, minHour, 23))}
-                  className="w-8 h-6 rounded hover:bg-gray-100"
+                  className="
+                  w-8 h-6 rounded
+                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                "
                 >
                   ▲
                 </button>
@@ -270,24 +321,41 @@ export default function DateTimePicker({
                     const n = raw === "" ? minHour : Number(raw);
                     setHour(clamp(n, minHour, 23));
                   }}
-                  className="w-12 h-10 text-center font-semibold border rounded-lg outline-none focus:ring-2 focus:ring-[#4B62A0]"
+                  className="
+                  w-12 h-10 text-center font-semibold
+                  border border-gray-300 dark:border-gray-600
+                  rounded-lg outline-none
+                  bg-white dark:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                  focus:ring-2 focus:ring-[#4B62A0]
+                "
                 />
 
                 <button
                   onClick={() => setHour((h) => clamp(h - 1, minHour, 23))}
-                  className="w-8 h-6 rounded hover:bg-gray-100"
+                  className="
+                  w-8 h-6 rounded
+                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                "
                 >
                   ▼
                 </button>
               </div>
 
-              <span className="text-xl font-semibold">:</span>
+              <span className="text-xl font-semibold text-gray-700 dark:text-gray-100">
+                :
+              </span>
 
               {/* MINUTE */}
               <div className="flex flex-col items-center">
                 <button
                   onClick={() => setMinute((m) => clamp(m + 1, minMinute, 59))}
-                  className="w-8 h-6 rounded hover:bg-gray-100"
+                  className="
+                  w-8 h-6 rounded
+                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                "
                 >
                   ▲
                 </button>
@@ -300,12 +368,23 @@ export default function DateTimePicker({
                     const n = raw === "" ? minMinute : Number(raw);
                     setMinute(clamp(n, minMinute, 59));
                   }}
-                  className="w-12 h-10 text-center font-semibold border rounded-lg outline-none focus:ring-2 focus:ring-[#4B62A0]"
+                  className="
+                  w-12 h-10 text-center font-semibold
+                  border border-gray-300 dark:border-gray-600
+                  rounded-lg outline-none
+                  bg-white dark:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                  focus:ring-2 focus:ring-[#4B62A0]
+                "
                 />
 
                 <button
                   onClick={() => setMinute((m) => clamp(m - 1, minMinute, 59))}
-                  className="w-8 h-6 rounded hover:bg-gray-100"
+                  className="
+                  w-8 h-6 rounded
+                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  text-gray-700 dark:text-gray-100
+                "
                 >
                   ▼
                 </button>
@@ -316,13 +395,22 @@ export default function DateTimePicker({
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setOpen(false)}
-                className="px-3 py-1 text-sm rounded-lg hover:bg-gray-100"
+                className="
+                px-3 py-1 text-sm rounded-lg
+                text-gray-700 dark:text-gray-200
+                hover:bg-gray-100 dark:hover:bg-gray-800
+              "
               >
                 Cancel
               </button>
+
               <button
                 onClick={confirm}
-                className="px-4 py-1.5 text-sm rounded-lg bg-[#4B62A0] text-white"
+                className="
+                px-4 py-1.5 text-sm rounded-lg
+                bg-[#4B62A0] hover:bg-[#3d528a]
+                text-white transition
+              "
               >
                 OK
               </button>

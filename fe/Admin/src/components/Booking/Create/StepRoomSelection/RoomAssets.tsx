@@ -1,13 +1,18 @@
 import type { RoomAsset } from "../../../../type/room.types";
 import { File_URL } from "../../../../setting/constant/app";
-const RoomAssets = ({ assets=[] }: { assets?: RoomAsset[] }) => {
+
+const RoomAssets = ({ assets = [] }: { assets?: RoomAsset[] }) => {
   return (
-    <div className="flex gap-4 text-xs text-gray-600 mt-2">
+    <div className="flex flex-wrap gap-3 text-xs text-gray-600 mt-2">
+
       {assets.map((a) => (
         <div
           key={a.id}
-          className="flex items-center gap-2 px-3 py-1
-                     bg-gray-100 rounded-full text-xs text-gray-700"
+          className="
+            flex items-center gap-2 px-3 py-1 rounded-full text-xs
+            bg-gray-100 text-gray-700
+            dark:bg-gray-700 dark:text-gray-200
+          "
         >
           {a.thumbnail && (
             <img
@@ -16,13 +21,17 @@ const RoomAssets = ({ assets=[] }: { assets?: RoomAsset[] }) => {
               className="w-4 h-4"
             />
           )}
-          <span className="font-medium">
 
+          <span className="font-medium text-gray-800 dark:text-gray-100">
             {a.quantity}
           </span>
-          <span>{a.assetName}</span>
+
+          <span className="text-gray-700 dark:text-gray-300">
+            {a.assetName}
+          </span>
         </div>
       ))}
+
     </div>
   );
 };

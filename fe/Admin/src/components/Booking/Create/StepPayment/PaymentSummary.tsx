@@ -49,7 +49,7 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
   const finalTotal = Math.max(0, originalTotal - discount);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm sticky top-6 overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm sticky top-6 overflow-hidden">
       {/* ================= HOTEL HEADER ================= */}
       <div className="relative h-40">
         <img
@@ -73,33 +73,30 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
 
       {/* ================= CHECK-IN / CHECK-OUT ================= */}
       <div className="flex items-start px-5 py-4 text-sm">
-        {/* CHECK-IN */}
         <div className="flex-[3] pr-4">
-          <p className="text-gray-400 text-xs">
+          <p className="text-gray-400 dark:text-gray-500 text-xs">
             {t("payment.summary.checkIn")}
           </p>
-          <p className="font-medium text-gray-800">
+          <p className="font-medium text-gray-800 dark:text-gray-100">
             {booking.selectDate?.checkInLabel ||
               booking.selectDate?.checkInDate}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {booking.selectDate?.checkInTime || "14:00"}
           </p>
         </div>
 
-        {/* Divider */}
-        <div className="self-stretch w-px bg-gray-300" />
+        <div className="self-stretch w-px bg-gray-300 dark:bg-gray-700" />
 
-        {/* CHECK-OUT */}
         <div className="flex-[2] pl-4">
-          <p className="text-gray-400 text-xs">
+          <p className="text-gray-400 dark:text-gray-500 text-xs">
             {t("payment.summary.checkOut")}
           </p>
-          <p className="font-medium text-gray-800">
+          <p className="font-medium text-gray-800 dark:text-gray-100">
             {booking.selectDate?.checkOutLabel ||
               booking.selectDate?.checkOutDate}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {booking.selectDate?.checkOutTime || "12:00"}
           </p>
         </div>
@@ -114,12 +111,14 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
               className="w-14 h-14 rounded-lg object-cover"
             />
             <div className="flex-1">
-              <p className="font-medium text-gray-900">{room.roomName}</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {room.roomName}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {t("payment.summary.guests", {
                   count: booking.guest?.adults || 2,
                 })}
-                ·{t("payment.summary.nights", { count: nights })}
+                · {t("payment.summary.nights", { count: nights })}
               </p>
             </div>
           </div>
@@ -127,47 +126,46 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
       </div>
 
       {/* ================= PRICE BREAKDOWN ================= */}
-      <div className="border-t border-gray-200 px-5 py-4 text-sm space-y-2">
-        {/* ROOMS PRICE */}
+      <div className="border-t border-gray-200 dark:border-gray-800 px-5 py-4 text-sm space-y-2">
         {rooms.map((room: any) => (
           <div key={room.id} className="flex justify-between">
-            <span className="text-gray-600">
+            <span className="text-gray-600 dark:text-gray-400">
               {room.roomName} ({nights} nights)
             </span>
-            <span className="font-medium">
+            <span className="font-medium text-gray-900 dark:text-gray-100">
               ${(Number(room.price) * nights).toFixed(2)}
             </span>
           </div>
         ))}
 
-        {/* SERVICES */}
         {services.length > 0 && (
           <>
-            <div className="h-px bg-gray-100 my-2" />
+            <div className="h-px bg-gray-100 dark:bg-gray-800 my-2" />
             {services.map((s: any) => (
               <div
                 key={s.extraServiceId || s.id}
                 className="flex justify-between"
               >
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-400">
                   {s.serviceName}
                   {s.extraCharge && (
-                    <span className="text-gray-400 ml-1">
+                    <span className="text-gray-400 dark:text-gray-500 ml-1">
                       ({s.extraCharge}%)
                     </span>
                   )}
                 </span>
 
-                <span className="font-medium">
+                <span className="font-medium text-gray-900 dark:text-gray-100">
                   ${Number(s.price).toFixed(2)}
                 </span>
               </div>
             ))}
           </>
         )}
+
         {discount > 0 && (
           <>
-            <div className="h-px bg-gray-100 my-2" />
+            <div className="h-px bg-gray-100 dark:bg-gray-800 my-2" />
             <div className="flex justify-between text-green-600">
               <span>Voucher Discount</span>
               <span>- ${Number(discount).toFixed(2)}</span>
@@ -177,8 +175,8 @@ const PaymentSummary = ({ booking, discount = 0 }: any) => {
       </div>
 
       {/* ================= TOTAL ================= */}
-      <div className="border-t border-gray-200 px-5 py-4 flex justify-between items-center">
-        <span className="font-semibold text-gray-900">
+      <div className="border-t border-gray-200 dark:border-gray-800 px-5 py-4 flex justify-between items-center">
+        <span className="font-semibold text-gray-900 dark:text-gray-100">
           {t("payment.summary.total")}
         </span>
         <span className="text-xl font-bold text-[#42578E]">

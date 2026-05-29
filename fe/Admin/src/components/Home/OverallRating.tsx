@@ -8,7 +8,7 @@ const OverallRating = ({ data }: { data: RatingData }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimate(true);
-    }, 200); // delay nhẹ cho đẹp
+    }, 200);
 
     return () => clearTimeout(timer);
   }, []);
@@ -22,23 +22,47 @@ const OverallRating = ({ data }: { data: RatingData }) => {
   ];
 
   return (
-    <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+    <div
+      className="
+        bg-white dark:bg-slate-800
+        p-6 rounded-3xl
+        shadow-sm dark:shadow-none
+        border border-gray-100 dark:border-slate-700
+        transition-colors
+      "
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-100">
           Overall rating
         </h3>
-        <MoreHorizontal className="text-gray-400" size={18} />
+
+        <MoreHorizontal
+          className="text-gray-400 dark:text-slate-500"
+          size={18}
+        />
       </div>
 
       {/* Average */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-[#CAD2E7] text-black px-4 py-2 rounded-xl text-2xl font-semibold">
+        <div
+          className="
+            bg-slate-100 dark:bg-slate-800
+            text-slate-900 dark:text-white
+            px-4 py-2 rounded-2xl
+            text-2xl font-semibold
+            border border-slate-200 dark:border-slate-700
+            transition-colors
+          "
+        >
           {data.average}
-          <span className="text-gray-500 text-base font-medium">/5</span>
+
+          <span className="text-slate-500 dark:text-slate-400 text-base font-medium">
+            /5
+          </span>
         </div>
 
-        <span className="text-[#707070] text-sm font-semibold">
+        <span className="text-slate-500 dark:text-slate-400 text-sm font-semibold">
           {data.totalReviews} reviewer
         </span>
       </div>
@@ -48,18 +72,23 @@ const OverallRating = ({ data }: { data: RatingData }) => {
         {categories.map((item, index) => (
           <div key={index}>
             <div className="flex justify-between mb-2">
-              <span className="text-[#707070] text-sm font-semibold">
+              <span className="text-slate-500 dark:text-slate-400 text-sm font-semibold">
                 {item.label}
               </span>
-              <span className="text-[#707070] text-sm font-semibold">
+
+              <span className="text-slate-700 dark:text-slate-300 text-sm font-semibold">
                 {item.value}
               </span>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-[#32416B] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-[#EEF0F7] h-2 rounded-full transition-all duration-1000 ease-out"
+                className="
+                  bg-slate-700 dark:bg-blue-500
+                  h-2 rounded-full
+                  transition-all duration-1000 ease-out
+                "
                 style={{
                   width: animate
                     ? `${(item.value / 5) * 100}%`
