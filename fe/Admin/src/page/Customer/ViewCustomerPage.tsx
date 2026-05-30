@@ -18,7 +18,7 @@ const ViewCustomerPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [page, setPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   const fetchData = async (pageNumber = page) => {

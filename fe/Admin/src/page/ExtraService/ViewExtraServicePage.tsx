@@ -28,7 +28,7 @@ const ViewExtraServicePage = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [sortKey, setSortKey] = useState<string>("id");
   const { t } = useTranslation();
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   // 🔹 Fetch data
   const fetchData = async (
     pageNumber = 1,

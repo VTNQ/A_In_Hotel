@@ -17,7 +17,7 @@ const ViewVoucherPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sortKey, setSortKey] = useState<string>("id");
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showViewModal,setShowViewModal] = useState(false);

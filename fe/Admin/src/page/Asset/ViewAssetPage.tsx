@@ -29,7 +29,7 @@ const ViewAssetPage = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [sortKey, setSortKey] = useState<string>("id");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [showViewModal, setShowViewModal] = useState(false);
   const handleEdit = (row: any) => {
     setSelectedAsset(row.id);
