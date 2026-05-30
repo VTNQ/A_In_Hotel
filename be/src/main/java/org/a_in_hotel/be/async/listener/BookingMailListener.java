@@ -8,6 +8,7 @@ import org.a_in_hotel.be.repository.BookingRepository;
 import org.a_in_hotel.be.util.EmailService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -25,17 +26,20 @@ public class BookingMailListener {
             BookingCreatedEvent event
     ){
         try {
-            Booking booking = bookingRepository.findById(
-                    event.getBookingId()
-            ).orElseThrow();
-            String email = booking.getCustomer()
-                    .getAccount()
-                    .getEmail();
+            Booking booking = bookingRepository
+                    .findByIdWithCustomer(event.getBookingId())
+                    .orElseThrow();
+            String email = booking.getEmail();
             if(email == null || email.isBlank()){
                 return;
             }
+            String fullName =
+                    booking.getCustomer().getFirstName()
+                            + " "
+                            + booking.getCustomer().getLastName();
             emailService.sendBookingConfirmationEmail(
                     email,
+                    fullName,
                     booking
             );
             log.info("Booking email sent {}",
