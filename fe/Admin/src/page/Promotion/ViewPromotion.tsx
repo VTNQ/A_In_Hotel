@@ -17,7 +17,7 @@ const ViewPromotion = () => {
   const [data, setData] = useState<PromotionResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sortKey, setSortKey] = useState<string>("id");
   const { showAlert } = useAlert();
   const [statusFilter, setStatusFilter] = useState("");

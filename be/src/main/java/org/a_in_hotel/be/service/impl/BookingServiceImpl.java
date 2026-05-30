@@ -257,9 +257,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if(filter !=null && !filter.isBlank()){
-            spec = spec.and(
-                    SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS)
-            );
+            spec =RSQLJPASupport.toSpecification(filter);
+        }
+        if(searchField!=null || searchValue !=null || SEARCH_FIELDS.isEmpty()){
+            spec =SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
         }
         if(mine){
             Long currentAccountId = securityUtils.getCurrentUserId();

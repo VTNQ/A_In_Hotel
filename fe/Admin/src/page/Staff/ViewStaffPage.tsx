@@ -14,7 +14,7 @@ const ViewStaffPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<string>("account.id");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [totalResults, setTotalResults] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [showModal, setShowModal] = useState(false);

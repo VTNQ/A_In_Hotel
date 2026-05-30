@@ -29,7 +29,7 @@ const ViewRoomPage = () => {
   const [totalResults, setTotalResults] = useState(0);
   const { showAlert } = useAlert();
   const [sortKey, setSortKey] = useState<string>("id");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [categories, setCategories] = useState<any[]>([]);
   const fetchCategories = async () => {
     try {

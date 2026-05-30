@@ -26,7 +26,7 @@ const ViewBooking = () => {
   const [openSwitchRoom, setOpenSwitchRoom] = useState(false);
   const [sortKey, setSortKey] = useState<string>("id");
   const { t } = useTranslation();
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);

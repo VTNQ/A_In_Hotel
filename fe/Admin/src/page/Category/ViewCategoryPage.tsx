@@ -17,7 +17,7 @@ const ViewCategoryPage = () => {
   const { showAlert } = useAlert();
   const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<string>("id");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);

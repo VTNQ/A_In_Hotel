@@ -19,7 +19,7 @@ const ViewBanner = () => {
   const [showModal, setShowModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedBanner, setSelectedBanner] = useState<any | null>(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [sortKey, setSortKey] = useState<string>("id");
