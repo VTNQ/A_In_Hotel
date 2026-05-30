@@ -131,7 +131,7 @@ const PaymentForm = ({
       checkOutTime: booking.selectDate?.checkOutTime,
 
       // ===== PACKAGE =====
-      BookingPackage: booking.selectDate?.package,
+      BookingPackage: Number(booking.selectDate?.package),
 
       // ===== TOTAL =====
       totalPrice: Math.max(0, originalTotal - discount),
