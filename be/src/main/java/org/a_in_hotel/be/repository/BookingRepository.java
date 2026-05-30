@@ -71,7 +71,13 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
             @Param("customerId") Long customerId,
             @Param("completedStatus") Integer completedStatus
     );
-
+    @Query("""
+    SELECT b
+    FROM Booking b
+    LEFT JOIN FETCH b.customer
+    WHERE b.id = :id
+""")
+    Optional<Booking> findByIdWithCustomer(Long id);
     @Query("SELECT COUNT(b) from Booking b where b.createdAt BETWEEN :start and :end" +
             " and (:hotelId IS NULL OR b.hotelId = :hotelId)")
     Long countBookingBetween(OffsetDateTime start,OffsetDateTime end,Long hotelId);

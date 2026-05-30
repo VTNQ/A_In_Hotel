@@ -71,7 +71,7 @@ export interface bookingRequest{
   checkInTime:string;
   checkOutDate:string;
   checkOutTime:string;
-  BookingPackage:number;
+  bookingPackage:number;
   originalAmount:number;
   discountAmount:number;
   voucherCode?:string;

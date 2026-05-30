@@ -83,11 +83,11 @@ public class EmailService {
     }
     public void sendBookingConfirmationEmail(
             String to,
+            String fullName,
             Booking booking
     ) throws MessagingException {
         Context context = new Context();
-        context.setVariable("fullName",booking.getCustomer().getFirstName()
-        + " "+booking.getCustomer().getLastName());
+        context.setVariable("fullName",fullName);
         context.setVariable(
                 "bookingCode",
                 booking.getCode()
@@ -114,7 +114,7 @@ public class EmailService {
 
         context.setVariable(
                 "bookingUrl",
-                "https://ainhotelvn.com/my-bookings"
+                "https://ainhotelvn.com/my-booking"
         );
         String htmlContent =
                 templateEngine.process(
