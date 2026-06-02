@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { RoomDetailProps, RoomResponse } from "../../type/room.types";
+import type { RoomDetailProps } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
 import {
   BedDouble,
