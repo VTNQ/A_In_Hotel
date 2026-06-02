@@ -658,7 +658,7 @@ const RoomDetailPage = () => {
                         image={room.images?.[0]?.url}
                         size={room.area}
                         guests={room.capacity}
-                      
+                        promotion={promotion}
                         bed={t("roomDetail.booking.doubleBed")}
                         description={room.note}
                       />

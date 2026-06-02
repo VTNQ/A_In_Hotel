@@ -175,7 +175,13 @@ const RoomPage = () => {
 
           {/* ROOM DETAIL */}
           <div className="lg:col-span-3 lg:sticky lg:top-24 self-start">
-            <RoomDetail room={selectedRoom} />
+            <RoomDetail room={selectedRoom}
+              promotion={
+                selectedRoom?.idRoomType
+                ? promotionMap.get(selectedRoom.idRoomType)
+                : undefined
+              }
+            />
           </div>
         </div>
       </div>

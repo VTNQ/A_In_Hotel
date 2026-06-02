@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { RoomResponse } from "../../type/room.types";
+import { useEffect, useMemo, useState } from "react";
+import type { RoomDetailProps, RoomResponse } from "../../type/room.types";
 import { File_URL } from "../../setting/constant/app";
 import {
   BedDouble,
@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 const AUTO_SLIDE_DELAY = 4000;
 
-const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
+const RoomDetail = ({ room, promotion }: RoomDetailProps) => {
   const { t } = useTranslation();
   const [active, setActive] = useState(0);
   const navigate = useNavigate();
@@ -37,10 +37,24 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
     if (!room) return;
     setActive(0);
   }, [room]);
+  const discountedPrice = useMemo(() => {
+    if (!room?.defaultRate) return 0;
+    if (!promotion || promotion.type === 1) {
+      if (!promotion || promotion.value == null) {
+        return room.defaultRate;
+      }
 
+      return room.defaultRate - (room.defaultRate * promotion.value) / 100;
+    }
+    if (!promotion || promotion.type === 2) {
+      return Math.max(0, room.defaultRate - promotion.value);
+    }
+    return room.defaultRate;
+  }, [room, promotion]);
   if (!room) {
     return <></>;
   }
+
 
   return (
     <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#f0ece6] overflow-hidden w-full relative group">
@@ -114,6 +128,15 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
               </span>
             )}
           </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {promotion && (
+              <span className="px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold border border-red-200">
+                {promotion.type === 1
+                  ? `-${promotion.value}%`
+                  : `-${promotion.value.toLocaleString()}đ`}
+              </span>
+            )}
+          </div>
           <div className="flex items-start gap-2 text-sm text-gray-500">
             <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-[#9C7A55]" />
             <span className="line-clamp-2 leading-snug">
@@ -165,9 +188,17 @@ const RoomDetail = ({ room }: { room: RoomResponse | null }) => {
               {t("room.detail.extraHour") || "Extra hour rate"}
             </span>
           </div>
-          <span className="text-[#9C7A55] font-bold text-base">
-            +{room.defaultRate?.toLocaleString() || "70.000"}đ
-          </span>
+          <div className="flex flex-col items-end">
+            {promotion && (
+              <span className="text-xs text-gray-400 line-through">
+                +{room.defaultRate?.toLocaleString()}đ
+              </span>
+            )}
+
+            <span className="text-[#9C7A55] font-bold text-base">
+              +{discountedPrice.toLocaleString()}đ
+            </span>
+          </div>
         </div>
 
         {/* CTA Button */}

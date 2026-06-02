@@ -1,6 +1,10 @@
 import type { ImageResponse } from "./common";
 import type { PromotionResponse } from "./promotion.type";
 
+export interface RoomDetailProps{
+  room: RoomResponse | null;
+  promotion?:PromotionResponse | null;
+}
 export interface RoomResponse {
   id: number;
   roomTypeName: string;
