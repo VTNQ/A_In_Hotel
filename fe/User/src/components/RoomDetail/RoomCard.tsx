@@ -12,11 +12,26 @@ const RoomCard = ({
   size = 20,
   bed = "Double bed",
   roomTypeName,
+  promotion,
   guests = 2,
   description = "Modern room with full amenities, suitable for short stays.",
 }: any) => {
   const navigate = useNavigate();
+  const calculatePromotionPrice = (price: number) => {
+    if (!promotion) return price;
 
+    if (promotion.type === 1) {
+      return price - (price * (promotion.value ?? 0)) / 100;
+    }
+
+    if (promotion.type === 2) {
+      return Math.max(0, price - (promotion.value ?? 0));
+    }
+
+    return price;
+  };
+
+  const finalPrice = calculatePromotionPrice(price);
   return (
     <div
       onClick={() => navigate(`/room/${id}`)}
@@ -52,7 +67,15 @@ const RoomCard = ({
             via-black/10
             to-transparent"
         />
-
+        {promotion && (
+          <div className="absolute top-4 left-4">
+            <span className="px-3 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow">
+              {promotion.type === 1
+                ? `-${promotion.value}%`
+                : `-${promotion.value?.toLocaleString()}đ`}
+            </span>
+          </div>
+        )}
         {/* VIEW BUTTON */}
         <div
           className="
@@ -85,9 +108,7 @@ const RoomCard = ({
             {title}
           </h3>
 
-          <p className="text-white/80 text-sm mt-1">
-           {roomTypeName}
-          </p>
+          <p className="text-white/80 text-sm mt-1">{roomTypeName}</p>
         </div>
       </div>
 
@@ -157,9 +178,17 @@ const RoomCard = ({
               Starting from
             </p>
 
-            <h4 className="text-2xl font-black text-[#b38a58] mt-1">
-              {price.toLocaleString()}đ
-            </h4>
+            <div className="flex flex-col">
+              <h4 className="text-2xl font-black text-[#b38a58] mt-1">
+                {finalPrice.toLocaleString()}đ
+              </h4>
+
+              {promotion && (
+                <span className="text-sm text-gray-400 line-through">
+                  {price.toLocaleString()}đ
+                </span>
+              )}
+            </div>
 
             <p className="text-xs text-gray-400 mt-1">Price includes VAT</p>
           </div>
