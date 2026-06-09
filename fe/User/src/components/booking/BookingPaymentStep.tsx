@@ -1,4 +1,4 @@
-import { Calendar, CreditCard, HandCoins, Info, Landmark, ShieldCheck } from "lucide-react";
+import { Calendar, Info, ShieldCheck } from "lucide-react";
 import { MdKingBed } from "react-icons/md";
 import BookingPaymentSummary from "./BookingPaymentSummary";
 import { useEffect, useMemo, useState } from "react";
@@ -231,7 +231,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               )}
             </div>
           </div>
-          <div className="space-y-7">
+          {/* <div className="space-y-7">
             <label className="block relative cursor-pointer group">
               <input
                 className="sr-only peer"
@@ -323,7 +323,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                 </div>
               </div>
             </label>
-          </div>
+          </div> */}
           {data.method === "CASH" && (
             <div className="mt-[24px] pt-[24px] border-t border-outline-variant space-y-6">
               {/* Deposit */}

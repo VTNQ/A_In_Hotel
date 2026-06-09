@@ -37,64 +37,67 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
     setCheckIn(value?.checkIn ?? null);
     setCheckOut(value?.checkOut ?? null);
   }, [value?.checkIn, value?.checkOut]);
-
   const onSelectDate = (date: string) => {
+    // Chọn ngày bắt đầu hoặc chọn lại từ đầu
     if (!checkIn || (checkIn && checkOut)) {
       setCheckIn(date);
       setCheckOut(null);
       return;
     }
 
+    // Chọn ngày kết thúc
     if (date >= checkIn) {
       setCheckOut(date);
+
+      // Tự động apply
+      onChange?.({
+        checkIn,
+        checkOut: date,
+      });
+
+      setOpen(false);
     }
   };
 
-  const apply = () => {
-    if (!checkIn || !checkOut) {
-      alert(t("search.alerts.selectBothDates"));
-      return;
-    }
-    onChange?.({ checkIn, checkOut });
-    setOpen(false);
-  };
+ 
 
   /* Position dropdown */
- const getDropdownStyle = () => {
-  if (!wrapperRef.current) return {};
+  const getDropdownStyle = () => {
+    if (!wrapperRef.current) return {};
 
-  const rect = wrapperRef.current.getBoundingClientRect();
-  const isDesktop = window.innerWidth >= 1024;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const isDesktop = window.innerWidth >= 1024;
 
-  const DESKTOP_WIDTH = 660; // chỉnh theo ý bạn (700–800 đẹp nhất)
+    const DESKTOP_WIDTH = 660; // chỉnh theo ý bạn (700–800 đẹp nhất)
 
-  const width = isDesktop ? DESKTOP_WIDTH : rect.width;
+    const width = isDesktop ? DESKTOP_WIDTH : rect.width;
 
-  let left = rect.left + window.scrollX;
+    let left = rect.left + window.scrollX;
 
-  // Nếu desktop → căn giữa theo input
-  if (isDesktop) {
-    left = rect.left + window.scrollX - (DESKTOP_WIDTH - rect.width) / 2;
-  }
+    // Nếu desktop → căn giữa theo input
+    if (isDesktop) {
+      left = rect.left + window.scrollX - (DESKTOP_WIDTH - rect.width) / 2;
+    }
 
-  const maxLeft =
-    window.innerWidth - width - 16; // 16px padding an toàn
+    const maxLeft = window.innerWidth - width - 16; // 16px padding an toàn
 
-  left = Math.min(left, maxLeft);
-  left = Math.max(left, 16); // chống tràn trái
+    left = Math.min(left, maxLeft);
+    left = Math.max(left, 16); // chống tràn trái
 
-  return {
-    position: "absolute" as const,
-    top: rect.bottom + window.scrollY + 8,
-    left,
-    width,
-    zIndex: 999999,
+    return {
+      position: "absolute" as const,
+      top: rect.bottom + window.scrollY + 8,
+      left,
+      width,
+      zIndex: 999999,
+    };
   };
-};
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
-      <label className="text-xs text-gray-500 mb-1 block">{t("search.selectDate")}</label>
+      <label className="text-xs text-gray-500 mb-1 block">
+        {t("search.selectDate")}
+      </label>
 
       <button
         type="button"
@@ -137,21 +140,6 @@ export default function DateSelect({ value, onChange }: DateRangeProps) {
               selectedDates={[checkIn, checkOut].filter(Boolean) as string[]}
               onSelect={onSelectDate}
             />
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setOpen(false)}
-                className="text-sm text-gray-500"
-              >
-                {t("search.cancel")}
-              </button>
-              <button
-                onClick={apply}
-                className="px-4 py-2 bg-[#b38a58] text-white rounded-lg text-sm font-medium hover:bg-[#9a7748]"
-              >
-                {t("search.apply")}
-              </button>
-            </div>
           </div>,
           document.body,
         )}

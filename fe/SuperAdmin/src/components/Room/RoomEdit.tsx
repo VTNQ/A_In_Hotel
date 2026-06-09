@@ -137,7 +137,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
         all: true,
         filter: "isActive==1 and type==1",
       });
-      setCategories(res.content);
+      setCategories(res?.data?.content);
     } catch (err: any) {
       console.error(err);
     }
@@ -153,6 +153,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
       console.log(err);
     }
   };
+  console.log(errors);
   const onSubmitForm = async (data: FormData) => {
     try {
       const cleanOldImages = (data.oldImages || []).map((img) =>
@@ -245,14 +246,15 @@ const RoomEdit: React.FC<RoomEditProps> = ({
           hotelId: response?.data?.data?.hotelId
             ? String(response.data.data.hotelId)
             : undefined,
-          capacity: response?.data?.data?.capacity || "",
-          defaultRate: response?.data?.data?.defaultRate || "",
-          floor: response?.data?.data?.floor || "",
-          area: response?.data?.data?.area || "",
-          hourlyBasePrice: response?.data?.data?.hourlyBasePrice || "",
-          hourlyAdditionalPrice:
-            response?.data?.data?.hourlyAdditionalPrice || "",
-          overnightPrice: response?.data?.data?.overnightPrice || "",
+          capacity: String(response?.data?.data?.capacity || ""),
+          defaultRate: String(response?.data?.data?.defaultRate || ""),
+          floor: String(response?.data?.data?.floor || ""),
+          area: String(response?.data?.data?.area || ""),
+          hourlyBasePrice: String(response?.data?.data?.hourlyBasePrice ?? ""),
+          hourlyAdditionalPrice: String(
+            response?.data?.data?.hourlyAdditionalPrice ?? "",
+          ),
+         overnightPrice: String(response?.data?.data?.overnightPrice ?? ""),
           note: response?.data?.data?.note || "",
           image: [],
           oldImages: oldImages,
