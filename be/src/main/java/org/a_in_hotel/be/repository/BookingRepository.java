@@ -104,5 +104,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
             "ORDER BY function('DATE',b.createdAt) ")
     List<Object[]> getReservation(OffsetDateTime startDate,Long hotelId);
 
+    Optional<Booking> findBookingByIdAndStatus(Long id, Integer status);
+
 
 }

@@ -23,6 +23,7 @@ const ScheduleTab = ({ data, onChange }: any) => {
       Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)),
     );
   }, [form.checkInDate, form.checkOutDate]);
+
   useEffect(() => {
     const isAutoTimePackage = ["2", "3"].includes(form.package);
     if (!isAutoTimePackage) return;

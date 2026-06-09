@@ -1,6 +1,6 @@
 import type { BookingActionMenuProps } from "@/type/booking.types";
 import type { ActionItem } from "@/type/common";
-import { CircleX, Edit, Eye, ScanBarcode, TicketsPlane } from "lucide-react";
+import { CheckCircle, CircleX, Edit, Eye, ScanBarcode, TicketsPlane } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../ui/ActionMenu";
 
@@ -9,6 +9,8 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
   onView,
   onCheckIn,
   onCheckOut,
+  onApprove,
+  onReject,
   onCancel,
   onSwitchRoom,
 }) => {
@@ -17,6 +19,26 @@ const BookingActionMenu: React.FC<BookingActionMenuProps> = ({
   const { t } = useTranslation();
   let statusLabel = "";
   switch (statusCode) {
+    case 0:
+      statusLabel = t("booking.unpaid");
+      actions = [
+        {
+          label: t("booking.viewBooking"),
+          icon: <Eye size={16} />,
+          onClick: () => onView?.(booking),
+        },
+        {
+          label: t("booking.approve"),
+          icon: <CheckCircle size={16} />,
+          onClick: () => onApprove?.(booking),
+        },
+        {
+          label: t("booking.reject"),
+          icon: <CircleX size={16} />,
+          onClick: () => onReject?.(booking),
+        },
+      ];
+      break;
     case 1:
       statusLabel = t("booking.booked");
       actions = [

@@ -63,3 +63,11 @@ export const handleSwitchRoom = async (id: number, data: SwitchRoomRequest) =>{
 export const cancelBooking = async (id:number)=>{
     return await Http.patch<ApiResponse<void>>(`/api/bookings/${id}/cancel`)
 }
+
+export const approveBooking = async(id:number)=>{
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/approve/${id}`);
+}
+
+export const rejectBooking = async(id:number)=>{
+    return await Http.patch<ApiResponse<void>>(`/api/bookings/reject/${id}`);
+}

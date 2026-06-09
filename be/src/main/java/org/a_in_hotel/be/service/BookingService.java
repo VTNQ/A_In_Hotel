@@ -41,5 +41,8 @@ public interface BookingService {
             String searchValue,
             boolean all
     );
+    void approveBooking(Long id);
+
+    void rejectBooking(Long id);
 
 }

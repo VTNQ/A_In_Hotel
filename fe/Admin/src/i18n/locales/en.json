@@ -570,6 +570,11 @@
   "booking": {
     "title": "Booking Management",
     "new": "+ New Booking",
+    "approve": "Approve Booking",
+    "reject": "Reject Booking",
+    "approveSuccess": "Booking approved successfully",
+    "rejectSuccess": "Booking rejected successfully",
+    "unpaid": "Unpaid",
     "searchPlaceholder": "Search by room number, name",
     "booked": "Booked",
     "cancelConfirm": {

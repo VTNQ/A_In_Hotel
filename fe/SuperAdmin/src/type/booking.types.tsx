@@ -159,6 +159,8 @@ export interface BookingTableProps {
   onView?: (row: BookingResponse) => void;
   onCancel?: (row: BookingResponse) => void;
   onCheckIn?: (row: BookingResponse) => void;
+  onApprove?: (row: BookingResponse) => void;
+  onReject?: (row: BookingResponse) => void;
   onCheckOut?: (row: BookingResponse) => void;
   onSwitchRoom?: (row: BookingResponse) => void;
   pageSize: number;
@@ -169,6 +171,8 @@ export interface BookingActionMenuProps {
   booking: BookingResponse;
   onView?: (booking: any) => void;
   onCancel?: (booking: any) => void;
+  onApprove?: (booking: any) => void;
+  onReject?: (booking: any) => void;
   onCheckIn?: (booking: any) => void;
   onCheckOut?: (booking: any) => void;
   onSwitchRoom?: (booking: any) => void;

@@ -10,6 +10,7 @@ const BookingServiceStep = ({ data, onChange,booking }: any) => {
   const { t } = useTranslation();
   const { search } = useBookingSearch();
   const [services, setServices] = useState<any[]>([]);
+  
     const nights = useMemo(() => {
       if (!booking.checkInDate || !booking.checkOutDate) return 0;
       const start = new Date(booking.checkInDate);

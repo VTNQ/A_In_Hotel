@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import {
+  approveBooking,
   cancelBooking,
   GetAllBookings,
   handleCheckIn,
+  rejectBooking,
 } from "../../service/api/Booking";
 import { Search } from "lucide-react";
 import CommonTable from "../../components/ui/CommonTable";
@@ -49,6 +51,40 @@ const ViewBooking = () => {
   const handleOpenCheckout = (booking: any) => {
     setSelectedBooking(booking);
     setOpenCheckout(true);
+  };
+  const handleRejectBooking = async (booking: any) => {
+    try {
+      const response = await rejectBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.rejectSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
+  const handleApproveBooking = async (booking: any) => {
+    try {
+      const response = await approveBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.approveSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
   };
   const handleCancelBooking = async (booking: any) => {
     try {
@@ -220,6 +256,11 @@ const ViewBooking = () => {
           number,
           { label: string; color: string; dot: string }
         > = {
+          0: {
+            label: t("booking.unpaid"),
+            color: "bg-[#FFF8E6] text-[#D97706]",
+            dot: "bg-[#D97706]",
+          },
           1: {
             label: t("booking.booked"),
             color: "bg-[#FFDAFB80] text-[#BC00A9]",
@@ -267,6 +308,8 @@ const ViewBooking = () => {
           booking={row}
           onCancel={() => handleCancelBooking(row)}
           onCheckOut={() => handleOpenCheckout(row)}
+          onApprove={() => handleApproveBooking(row)}
+          onReject={() => handleRejectBooking(row)}
           onCheckIn={() => handleConfirmCheckIn(row)}
           onView={() => handleOpenViewBooking(row)}
           onSwitchRoom={() => handleSwitchRoom(row)}

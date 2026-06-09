@@ -111,7 +111,7 @@ const BookingPage = () => {
 
       secondaryAction: {
         label: t("booking.cancelAlert.keep"),
-        onClick: () => { },
+        onClick: () => {},
       },
     });
   };
@@ -191,6 +191,20 @@ const BookingPage = () => {
       setLoading(false);
     }
   };
+  const calcNights = (checkIn?: string, checkOut?: string): number => {
+    if (!checkIn || !checkOut) return 0;
+
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+
+    const diff = end.getTime() - start.getTime();
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+  const checkIn = search?.checkIn || schedule?.checkInDate;
+  const checkOut = search?.checkOut || schedule?.checkOutDate;
+
+  const nights = checkIn && checkOut ? calcNights(checkIn, checkOut) : 1;
+
   const buildBookingPayload = () => {
     // ===== NIGHTS =====
 
@@ -200,17 +214,17 @@ const BookingPage = () => {
     // ===== ROOM DETAILS =====
     const roomDetails = search?.roomId
       ? [
-        {
-          roomId: search.roomId,
-          price: basePrice,
-        },
-      ]
+          {
+            roomId: search.roomId,
+            price: basePrice * nights,
+          },
+        ]
       : [];
 
     // ===== SERVICE DETAILS =====
     const serviceDetails = (services || []).map((s: any) => {
       const percent = Number(s.extraCharge || 0);
-      const price = (basePrice * percent) / 100;
+      const price = (basePrice * percent * nights) / 100;
 
       return {
         extraServiceId: s.id,
@@ -225,10 +239,11 @@ const BookingPage = () => {
     );
 
     // ===== TOTAL =====
-    const originalTotal = Number((basePrice + servicesTotal).toFixed(2));
+    const originalTotal = Number(
+      (basePrice * nights + servicesTotal).toFixed(2),
+    );
 
     // ===== PAID AMOUNT (50%) =====
-
 
     // ===== RETURN PAYLOAD =====
     return {
@@ -248,8 +263,6 @@ const BookingPage = () => {
       voucherCode: payment?.voucherCode || "",
       discountAmount: payment?.discountAmount || 0,
       totalPrice: Math.max(0, originalTotal - (payment?.discountAmount || 0)),
-
-    
 
       // ===== DATE =====
       checkInDate: schedule?.checkInDate,
@@ -337,12 +350,13 @@ const BookingPage = () => {
                         return (
                           <div
                             className={`w-9 h-9 flex items-center justify-center rounded-full border-2 font-bold shadow transition
-        ${status === "active"
-                                ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
-                                : status === "done"
-                                  ? "bg-[rgb(24,28,32)] text-white border-white"
-                                  : "text-gray-400 border-outline-variant"
-                              }`}
+        ${
+          status === "active"
+            ? "bg-[#f9f6f2] text-[#181c20] border-[#717786]"
+            : status === "done"
+              ? "bg-[rgb(24,28,32)] text-white border-white"
+              : "text-gray-400 border-outline-variant"
+        }`}
                           >
                             {status === "done" ? "✓" : i + 1}
                           </div>
@@ -351,20 +365,22 @@ const BookingPage = () => {
 
                       <span
                         className={`mt-2 text-[12px] uppercase leading-none tracking-[0.02em] font-medium text-center whitespace-nowrap
-    ${i < currentStep
-                            ? "text-on-surface  font-semibold"
-                            : i === currentStep
-                              ? "text-on-surface font-semibold"
-                              : "text-gray-400"
-                          }`}
+    ${
+      i < currentStep
+        ? "text-on-surface  font-semibold"
+        : i === currentStep
+          ? "text-on-surface font-semibold"
+          : "text-gray-400"
+    }`}
                       >
                         {translatedStep}
                       </span>
                     </div>
                     {i !== BookingSteps.length - 1 && (
                       <div
-                        className={`relative ${i === BookingSteps.length - 2 ? "flex-[2]" : "flex-1"
-                          }`}
+                        className={`relative ${
+                          i === BookingSteps.length - 2 ? "flex-[2]" : "flex-1"
+                        }`}
                       >
                         <div
                           className={`absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-gray-300 ${i === BookingSteps.length - 2 ? "w-[150%]" : ""}`}
@@ -451,10 +467,11 @@ const BookingPage = () => {
             onClick={nextStep}
             disabled={isNextDisabled() || loading}
             className={`flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition
-    ${isNextDisabled() || loading
-                ? "opacity-50 cursor-not-allowed bg-gray-200"
-                : "bg-[#f9f6f2] border border-[#717786] active:scale-90 shadow-md"
-              }`}
+    ${
+      isNextDisabled() || loading
+        ? "opacity-50 cursor-not-allowed bg-gray-200"
+        : "bg-[#f9f6f2] border border-[#717786] active:scale-90 shadow-md"
+    }`}
           >
             {loading
               ? t("booking.actions.processing")

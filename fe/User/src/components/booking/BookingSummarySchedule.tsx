@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getRoomById } from "../../service/api/Room";
 import { formatBookingDateRange } from "../../util/formatDate";
 import { useTranslation } from "react-i18next";
-const BookingSummarySchedule = ({ data,nights }: any) => {
+const BookingSummarySchedule = ({ data, nights }: any) => {
   const { t } = useTranslation();
   const { search } = useBookingSearch();
   const [room, setRoom] = useState<any>(null);
@@ -39,13 +39,27 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
       </aside>
     );
   }
+  const basePrice = Number(search?.totalPrice || 0);
+  const calcNights = (checkIn?: string, checkOut?: string): number => {
+    if (!checkIn || !checkOut) return 0;
 
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+
+    const diff = end.getTime() - start.getTime();
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+  const displayPrice =
+    search?.checkIn && search?.checkOut
+      ? basePrice
+      : basePrice * calcNights(data?.checkInDate, data?.checkOutDate);
   return (
     <aside className="lg:col-span-5">
       <div className=" top-24 space-y-6">
         <div className="bg-white border border-outline-variant rounded-xl overflow-hidden">
           <div className="h-48 w-full relative">
-            <img loading="lazy"
+            <img
+              loading="lazy"
               src={`${room?.images[0]?.url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD2iBSVkCjjNe6zg2pIvfZ5bhBQxGR6uTNnExcDlgnb5P1gv7xNQgYHBX87pZTHPLdAVBfisRCLCKbCnoskRQRGbbqhtBKImJdgq-UJA3YUVQmzhxqRGYakQFewUdjDqpE_NiOTK33ZnBINAAnBDgRNRn3UeFAK-CNe6Zg77uU5uUWMIxNNF37UiVAgLPIamIr5l6Vm3uyaCMAgGxAE0HKrvZUp6AF32JKZfOuONBdHjphPX19yqc6E7gnCn99CxPuQFH5sXV4Vl7FV"}`}
               alt="Room"
               className="w-full h-full object-cover"
@@ -57,7 +71,7 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
           <div className="p-6 space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-on-surface">
-                     {room?.roomName || t("booking.staySummary.loading")}
+                {room?.roomName || t("booking.staySummary.loading")}
               </h3>
               <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
                 <MapPin size={16} />
@@ -99,14 +113,15 @@ const BookingSummarySchedule = ({ data,nights }: any) => {
                     {t("booking.staySummary.roomRate")}
                   </span>
                   <span className="font-sans font-semibold text-[rgb(24,28,32)] text-[14px] line-clamp-1">
-                    {search?.totalPrice?.toLocaleString()} {t("common.vnd")}
+                    {displayPrice.toLocaleString()} {t("common.vnd")}
                   </span>
                 </div>
 
                 <div className="border-t pt-2 flex justify-between font-semibold">
                   <span>{t("booking.staySummary.total")}</span>
                   <span className="text-lg">
-                    {((search?.totalPrice || 0) * nights).toLocaleString()} {t("common.vnd")}
+                    {((search?.totalPrice || 0) * nights).toLocaleString()}{" "}
+                    {t("common.vnd")}
                   </span>
                 </div>
               </div>

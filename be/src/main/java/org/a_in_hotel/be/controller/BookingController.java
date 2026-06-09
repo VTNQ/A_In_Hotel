@@ -56,6 +56,16 @@ public class BookingController {
 
 
     }
+    @PatchMapping("/approve/{id}")
+    public ResponseEntity<RequestResponse<Void>> approveBooking(@PathVariable Long id){
+        service.approveBooking(id);
+        return ResponseEntity.ok(RequestResponse.success("Approve booking successfully"));
+    }
+    @PatchMapping("/reject/{id}")
+    public ResponseEntity<RequestResponse<Void>> rejectBooking(@PathVariable Long id){
+        service.rejectBooking(id);
+        return ResponseEntity.ok(RequestResponse.success("Reject Booking Successfully"));
+    }
     @GetMapping
     public  ResponseEntity<RequestResponse<PageResponse<BookingResponse>>> getBookings
             (

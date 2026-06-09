@@ -413,7 +413,7 @@
             "enterName": "Nhập tên danh mục",
             "description": "Mô tả",
             "titleEdit": "Sửa danh mục",
-            "descriptionLimit":"Tối đa 255 ký tự",
+            "descriptionLimit": "Tối đa 255 ký tự",
             "nameLimit": "Tối đa 120 ký tự",
             "enterDescription": "Nhập mô tả ngắn",
             "createSucess": "Tạo danh mục thành công!",
@@ -472,7 +472,6 @@
         "viewTitle": "Xem bài viết",
         "blogCode": "Mã bài viết",
         "status": "Trạng thái",
-
         "loading": "Đang tải...",
         "validate": {
             "titleRequired": "Vui lòng nhập tiêu đề",
@@ -577,6 +576,11 @@
     },
     "booking": {
         "title": "Quản lý đặt chỗ",
+        "unpaid": "Chưa thanh toán",
+        "approve": "Duyệt đặt lịch",
+        "reject": "Từ chối đặt lịch",
+        "approveSuccess": "Duyệt đặt lịch thành công",
+        "rejectSuccess": "Từ chối đặt lịch thành công",
         "new": "+ Thêm đặt chỗ",
         "searchPlaceholder": "Tìm kiếm theo số phòng, tên khách",
         "booked": "Đã đặt",
