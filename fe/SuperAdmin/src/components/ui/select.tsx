@@ -39,10 +39,8 @@ function SelectTrigger({
         "dark:hover:bg-neutral-900",
 
         size === "sm" && "h-9 px-3 text-sm min-w-[100px] sm:min-w-[120px]",
-        size === "md" &&
-          "h-10 px-3.5 text-sm min-w-[120px] sm:min-w-[160px]",
-        size === "lg" &&
-          "h-11 px-4 text-base min-w-[140px] sm:min-w-[200px]",
+        size === "md" && "h-10 px-3.5 text-sm min-w-[120px] sm:min-w-[160px]",
+        size === "lg" && "h-11 px-4 text-base min-w-[140px] sm:min-w-[200px]",
 
         fullWidth ? "w-full" : "w-auto",
 
@@ -178,10 +176,9 @@ function SelectField<T>({
   emptyText = "Không có dữ liệu",
 }: SelectFieldProps<T>) {
   const selected = React.useMemo(
-    () => items.find((i) => getValue(i) === (value ?? "")),
+    () => (items ?? []).find((i) => getValue(i) === (value ?? "")),
     [items, value, getValue],
   );
-
   const rightAdornment =
     clearable && value ? (
       <span
@@ -228,7 +225,7 @@ function SelectField<T>({
         </SelectTrigger>
 
         <SelectContent>
-          {items.length === 0 ? (
+          {(items?.length ?? 0) === 0 ? (
             <SelectItem value="__empty" disabled>
               {emptyText}
             </SelectItem>
@@ -261,10 +258,4 @@ function SelectField<T>({
   );
 }
 
-export {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectField,
-};
+export { Select, SelectTrigger, SelectContent, SelectItem, SelectField };

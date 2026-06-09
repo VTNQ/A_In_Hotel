@@ -228,7 +228,7 @@ const BookingPage = () => {
     const originalTotal = Number((basePrice + servicesTotal).toFixed(2));
 
     // ===== PAID AMOUNT (50%) =====
-    const paidAmount = Number((originalTotal * 0.5).toFixed(2));
+
 
     // ===== RETURN PAYLOAD =====
     return {
@@ -249,13 +249,7 @@ const BookingPage = () => {
       discountAmount: payment?.discountAmount || 0,
       totalPrice: Math.max(0, originalTotal - (payment?.discountAmount || 0)),
 
-      // ===== PAYMENT =====
-      payment: {
-        paidAmount,
-        paymentMethod: payment?.method || "card",
-        paymentType: 1,
-        notes: payment?.note || "",
-      },
+    
 
       // ===== DATE =====
       checkInDate: schedule?.checkInDate,

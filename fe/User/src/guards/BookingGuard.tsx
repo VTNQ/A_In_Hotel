@@ -4,15 +4,13 @@ import { useBookingSearch } from "../context/booking/BookingSearchContext";
 const BookingGuard = ({ children }: any) => {
     const { search } = useBookingSearch();
 
-    console.log(search);
+    
 
     if (search === undefined) return null;
 
     if (
         !search?.hotelId ||
-        !search?.roomId ||
-        !search?.checkIn ||
-        !search?.checkOut
+        !search?.roomId 
     ) {
         return <Navigate to="/" replace />;
     }

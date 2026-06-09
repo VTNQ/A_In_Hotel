@@ -64,8 +64,6 @@ public class BookingRequest {
     @NotEmpty(message = "Booking detail is required")
     @Valid
     private List<BookingDetailRequest> bookingDetail;
-    @Valid
-    @NotNull(message = "Payment information is required")
     private PaymentRequest payment;
 
 }

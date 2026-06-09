@@ -1,6 +1,7 @@
 package org.a_in_hotel.be.Enum;
 
 public enum BookingStatus {
+    UNPAID(0),
     BOOKED(1),
     CHECKIN(2),
     CHECKOUT(3),

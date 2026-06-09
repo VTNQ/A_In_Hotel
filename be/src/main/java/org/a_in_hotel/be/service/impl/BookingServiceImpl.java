@@ -103,6 +103,11 @@ public class BookingServiceImpl implements BookingService {
                         securityUtils.getCurrentUserId(),
                         securityUtils.getHotelId()!=null ? securityUtils.getHotelId() : request.getHotelId());
         booking.setCustomer(customer);
+        booking.setStatus(
+                request.getPayment() == null
+                        ? BookingStatus.UNPAID.getCode()
+                        : BookingStatus.BOOKED.getCode()
+        );
         repository.save(booking);
         createBookingUsingVoucher(booking, request);
         if(request.getPayment()!=null){
@@ -119,6 +124,9 @@ public class BookingServiceImpl implements BookingService {
         log.info("Booking created {} details",
                 booking.getDetails() != null ? booking.getDetails().size() : 0);
     }
+
+
+
     private void createBookingUsingVoucher(Booking booking,BookingRequest request) {
         Voucher voucher = voucherRepository.findByVoucherCodeAndIsActiveTrue(request.getVoucherCode())
                 .orElse(null);
