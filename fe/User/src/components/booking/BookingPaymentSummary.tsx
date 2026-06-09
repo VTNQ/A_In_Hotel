@@ -10,6 +10,11 @@ const BookingPaymentSummary = ({
   discountAmount = 0,
 }: any) => {
   const { t } = useTranslation();
+  const basePrice = Number(search?.totalPrice || 0);
+  const displayPrice =
+    search?.checkIn && search?.checkOut ? basePrice : basePrice * nights;
+  const displayTotal =
+    Number(total || 0) * (search?.checkIn && search?.checkOut ? 1 : nights);
   return (
     <div className="lg:col-span-5">
       <div className="bg-white border border-outline-variant rounded-xl p-[24px] top-24 shadow-sm">
@@ -23,12 +28,14 @@ const BookingPaymentSummary = ({
             </span>
 
             <span className="font-semibold">
-              {search.totalPrice.toLocaleString()} {t("common.vnd")}
+              {displayPrice.toLocaleString()} {t("common.vnd")}
             </span>
           </div>
           {discountAmount > 0 && (
             <div className="flex justify-between items-center text-[14px]">
-              <span className="text-green-600">{t("booking.staySummary.voucherDiscount")}</span>
+              <span className="text-green-600">
+                {t("booking.staySummary.voucherDiscount")}
+              </span>
 
               <span className="font-semibold text-green-600">
                 -{Number(discountAmount).toLocaleString()} {t("common.vnd")}
@@ -52,7 +59,7 @@ const BookingPaymentSummary = ({
                 {t("booking.staySummary.totalCost")}
               </p>
               <p className="text-[28px] font-extrabold text-on-surface leading-tight">
-                {Number(total).toLocaleString()} {t("common.vnd")}
+                {displayTotal.toLocaleString()} {t("common.vnd")}
               </p>
             </div>
           </div>

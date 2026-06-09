@@ -430,6 +430,34 @@ public class BookingServiceImpl implements BookingService {
                 pageable).map(detailMapper::toResponseTop);
     }
 
+    @Override
+    public void approveBooking(Long id) {
+        Booking booking = repository.findBookingByIdAndStatus(id,BookingStatus.UNPAID.getCode())
+                .orElseThrow(() ->
+                        new RuntimeException("Booking not found or already processed"));
+        booking.setStatus(BookingStatus.BOOKED.getCode());
+        repository.save(booking);
+        makePayment(booking);
+    }
+
+    @Override
+    public void rejectBooking(Long id) {
+        Booking booking = repository.findBookingByIdAndStatus(id,BookingStatus.UNPAID.getCode())
+                .orElseThrow(() ->
+                        new RuntimeException("Booking not found or already processed"));
+        booking.setStatus(BookingStatus.CANCELLED.getCode());
+        repository.save(booking);
+    }
+
+    private void makePayment(Booking booking){
+        Payment payment = new Payment();
+        payment.setBooking(booking);
+        payment.setPaymentMethod("OCD");
+        payment.setPaidAmount(booking.getTotalPrice());
+        payment.setPaymentType(PaymentType.FULL.getValue());
+        paymentRepository.save(payment);
+    }
+
     private void validateSwitchRoomItems(
             Booking booking,
             List<RoomSwitchItem> items

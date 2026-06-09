@@ -29,16 +29,26 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
       fetchData();
     }
   }, [search?.roomId]);
+
+  const roomPrice =
+    search?.checkIn && search?.checkOut
+      ? Number(search?.totalPrice || 0)
+      : Number(search?.totalPrice || 0) * nights;
   const servicesWithPrice = (services || []).map((s: any) => ({
     ...s,
-    estimated: estimateServicePrice(s, search?.totalPrice || 0),
+    estimated: estimateServicePrice(s, roomPrice),
   }));
 
   const servicesTotal = servicesWithPrice.reduce(
     (sum: number, s: any) => sum + s.estimated,
     0,
   );
-  const total = (search?.totalPrice || 0) + servicesTotal;
+  const total = roomPrice + servicesTotal;
+  const basePrice = Number(search?.totalPrice || 0);
+  const displayPrice =
+    search?.checkIn && search?.checkOut
+      ? basePrice
+      : basePrice * nights;
   if (loading) {
     return (
       <div className="lg:col-span-5 sticky top-24">
@@ -62,11 +72,15 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
         </h2>
         <div className="space-y-4 border-b border-outline-variant pb-6 mb-6">
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.roomType")}</span>
+            <span className="text-[rgb(87,95,103)]">
+              {t("booking.staySummary.roomType")}
+            </span>
             <span className="font-bold">{room?.roomTypeName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.stayDates")}</span>
+            <span className="text-[rgb(87,95,103)]">
+              {t("booking.staySummary.stayDates")}
+            </span>
             <span className="font-bold">
               {" "}
               {formatBookingDateRange(
@@ -77,18 +91,24 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[rgb(87,95,103)]">{t("booking.staySummary.guests")}</span>
+            <span className="text-[rgb(87,95,103)]">
+              {t("booking.staySummary.guests")}
+            </span>
             <span className="font-bold">
-              {search?.adults} {t("booking.staySummary.adults")}, {search?.children} {t("booking.staySummary.children")}
+              {search?.adults} {t("booking.staySummary.adults")},{" "}
+              {search?.children} {t("booking.staySummary.children")}
             </span>
           </div>
         </div>
         <div className="space-y-3 mb-6">
           <div className="flex justify-between items-center text-[14px] line-clamp-1 font-normal">
             <span className="text-[rgb(87,95,103)]">
-              {t("booking.staySummary.roomPrice")} ({nights} {t("booking.staySummary.nights")})
+              {t("booking.staySummary.roomPrice")} ({nights}{" "}
+              {t("booking.staySummary.nights")})
             </span>
-            <span>{search?.totalPrice?.toLocaleString()} {t("common.vnd")}</span>
+            <span>
+              {displayPrice.toLocaleString()} {t("common.vnd")}
+            </span>
           </div>
           {services.map((service: any) => (
             <div
@@ -103,7 +123,9 @@ const BookingSummaryService = ({ data, nights, services }: any) => {
           ))}
         </div>
         <div className="flex justify-between items-center pt-6 border-t border-[rgb(193,198,215)]">
-          <span className="font-sans text-on-surface">{t("booking.staySummary.total")}</span>
+          <span className="font-sans text-on-surface">
+            {t("booking.staySummary.total")}
+          </span>
           <span className="text-[28px] line-clamp-1 font-semibold text-primary">
             {total.toLocaleString()} {t("common.vnd")}
           </span>

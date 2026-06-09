@@ -36,7 +36,8 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
       setIsCheckingVoucher(true);
       setVoucherError("");
       setVoucherSuccess("");
-      const subtotal = Number(search?.totalPrice || 0) + Number(servicesTotal || 0);
+      const subtotal =
+        Number(search?.totalPrice || 0) + Number(servicesTotal || 0);
       const res = await validateVoucher({
         voucherCode: data.voucherCode,
         totalAmount: subtotal,
@@ -95,6 +96,7 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
     0,
   );
   const subtotal = Number(search?.totalPrice || 0) + Number(servicesTotal || 0);
+ 
   const total = Math.max(0, subtotal - Number(data?.discountAmount || 0));
   const paidAmount = Number(total * 0.5);
   const outstanding = Math.max(0, Number(total) - paidAmount);
@@ -142,7 +144,8 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                   className="text-[12px] line-clamp-1 tracking-[0.02em] font-medium font-sans text-[rgb(65,71,84)]
                                 uppercase"
                 >
-                  {nights} {t("booking.payment.nights")}, {search?.adults} {t("booking.payment.adults")}, {search?.children}{" "}
+                  {nights} {t("booking.payment.nights")}, {search?.adults}{" "}
+                  {t("booking.payment.adults")}, {search?.children}{" "}
                   {t("booking.payment.children")}
                 </p>
               </div>
@@ -207,7 +210,9 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
                         : "bg-on-surface text-white hover:opacity-90"
                     }`}
                 >
-                  {isCheckVoucher ? t("booking.payment.voucher.checking") : t("booking.payment.voucher.apply")}
+                  {isCheckVoucher
+                    ? t("booking.payment.voucher.checking")
+                    : t("booking.payment.voucher.apply")}
                 </button>
               </div>
 
@@ -328,13 +333,17 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
             <div className="mt-[24px] pt-[24px] border-t border-outline-variant space-y-6">
               {/* Deposit */}
               <div className="flex justify-between text-[14px]">
-                <span className="text-gray-500">{t("booking.payment.summary.prepaid")}</span>
+                <span className="text-gray-500">
+                  {t("booking.payment.summary.prepaid")}
+                </span>
                 <span className="font-medium">
                   {paidAmount?.toLocaleString()}₫
                 </span>
               </div>
               <div className="flex justify-between items-center text-[14px]">
-                <span className="text-gray-500">{t("booking.payment.summary.outstanding")}</span>
+                <span className="text-gray-500">
+                  {t("booking.payment.summary.outstanding")}
+                </span>
                 <span className="font-medium text-red-500">
                   {outstanding?.toLocaleString()}₫
                 </span>
@@ -342,7 +351,9 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
 
               {/* Note */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-on-surface">{t("booking.payment.summary.note")}</label>
+                <label className="text-sm text-on-surface">
+                  {t("booking.payment.summary.note")}
+                </label>
                 <textarea
                   className="border border-outline-variant rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-primary"
                   placeholder={t("booking.payment.summary.notePlaceholder")}
@@ -406,12 +417,14 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               {t("booking.payment.cancellation.title")}
             </h2>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
               <Info size={18} className="text-green-600 shrink-0 mt-0.5" />
               <div className="text-sm text-green-800">
-                <p className="font-semibold mb-1">{t("booking.payment.cancellation.free")}</p>
+                <p className="font-semibold mb-1">
+                  {t("booking.payment.cancellation.free")}
+                </p>
                 <p>{t("booking.payment.cancellation.freeDesc")}</p>
               </div>
             </div>
@@ -420,15 +433,23 @@ const BookingPaymentStep = ({ data, onChange, schedule, services }: any) => {
               <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
                 <div className="w-2 h-2 rounded-full bg-orange-400 mt-1.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="font-medium text-on-surface">{t("booking.payment.cancellation.within48")}</span>
-                  <span className="ml-2 text-secondary">{t("booking.payment.cancellation.within48Desc")}</span>
+                  <span className="font-medium text-on-surface">
+                    {t("booking.payment.cancellation.within48")}
+                  </span>
+                  <span className="ml-2 text-secondary">
+                    {t("booking.payment.cancellation.within48Desc")}
+                  </span>
                 </div>
               </div>
               <div className="flex items-start gap-3 text-sm py-2 border-b border-outline-variant/50">
                 <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="font-medium text-on-surface">{t("booking.payment.cancellation.under24")}</span>
-                  <span className="ml-2 text-secondary">{t("booking.payment.cancellation.under24Desc")}</span>
+                  <span className="font-medium text-on-surface">
+                    {t("booking.payment.cancellation.under24")}
+                  </span>
+                  <span className="ml-2 text-secondary">
+                    {t("booking.payment.cancellation.under24Desc")}
+                  </span>
                 </div>
               </div>
             </div>
