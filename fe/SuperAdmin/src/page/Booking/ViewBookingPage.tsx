@@ -7,9 +7,11 @@ import SwitchRoomModal from "@/components/Booking/SwitchRoom/SwitchRoomModal";
 import ViewBookingModal from "@/components/Booking/View/ViewBookingModal";
 
 import {
+  approveBooking,
   cancelBooking,
   GetAllBookings,
   handleCheckIn,
+  rejectBooking,
 } from "@/service/api/Booking";
 import type {
   BookingResponse,
@@ -42,6 +44,40 @@ const ViewBookingPage = () => {
   );
   const { showAlert } = useAlert();
   const [hotelFilter, setHotelFilter] = useState("");
+   const handleRejectBooking = async (booking: any) => {
+    try {
+      const response = await rejectBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.rejectSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
+  const handleApproveBooking = async (booking: any) => {
+    try {
+      const response = await approveBooking(booking.id);
+      showAlert({
+        title: response?.data?.message || t("booking.approveSuccess"),
+        type: "success",
+        autoClose: 3000,
+      });
+      fetchData();
+    } catch (err: any) {
+      showAlert({
+        title: err?.response?.data?.message || t("booking.cancelError"),
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
   const handleCheckInConfirm = async (id: number) => {
     try {
       const response = await handleCheckIn(id);
@@ -173,6 +209,8 @@ const ViewBookingPage = () => {
           onSwitchRoom={(row) => setSwithRoomModal(row)}
           onView={(row) => setViewModal(row)}
           sortDir={sortDir}
+          onApprove={handleApproveBooking}
+          onReject={handleRejectBooking}
           onSortChange={handleSort}
         />
         <ConfirmCheckIn

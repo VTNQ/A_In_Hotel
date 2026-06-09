@@ -6,7 +6,7 @@
         "view": "Xem chi tiết",
         "cancel": "Hủy",
         "noData": "Không có dữ liệu",
-        "noImage":"Không có ảnh",
+        "noImage": "Không có ảnh",
         "saving": "Đang lưu...",
         "createdAt": "Ngày tạo",
         "updatedAt": "Ngày cập nhật",
@@ -40,11 +40,11 @@
         "upload": "Nhấn để tải ảnh hoặc kéo thả",
         "uploadHint": "SVG, PNG, JPG (tối đa 800×400px)"
     },
-     "table": {
-    "page": "Trang",
-    "previous": "Trang trước",
-    "next": "Trang sau"
-  },
+    "table": {
+        "page": "Trang",
+        "previous": "Trang trước",
+        "next": "Trang sau"
+    },
     "status": {
         "active": "Hoạt động",
         "inactive": "Không hoạt động"
@@ -66,9 +66,9 @@
         "table": {
             "serviceId": "Mã dịch vụ",
             "icon": "Biểu tượng",
-            "page":"Trang",
-            "previous":"Trang trước",
-            "next":"Trang sau",
+            "page": "Trang",
+            "previous": "Trang trước",
+            "next": "Trang sau",
             "serviceName": "Tên dịch vụ",
             "category": "Danh mục",
             "description": "Mô tả",
@@ -932,8 +932,11 @@
     "booking": {
         "guestInfo": "Thông tin khách",
         "bookingDateTime": "Ngày & Giờ",
+        "unpaid": "Chưa thanh toán",
         "title": "Quản lý đặt chỗ",
         "bookingFilterDate": "Chọn ngày",
+        "approveSuccess": "Duyệt đặt lịch thành công",
+        "rejectSuccess": "Từ chối đặt lịch thành công",
         "booked": "Đã đặt",
         "checkIn": "Nhận phòng",
         "checkOut": "Trả phòng",

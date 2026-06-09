@@ -76,8 +76,16 @@ public class Room {
 
     @Column(name = "updated_by")
     private String updatedBy;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @Builder.Default
+    @OneToMany(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(
+            name = "entity_id",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false
+    )
     private List<Image> images = new ArrayList<>();
     @PrePersist
     public void prePersist() {

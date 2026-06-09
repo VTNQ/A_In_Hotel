@@ -48,3 +48,10 @@ export const handleSwitchRoom = async (id: number, data: any) =>{
 export const cancelBooking = async (id:number)=>{
     return await Http.patch(`/api/bookings/${id}/cancel`)
 }
+
+export const approveBooking =async(id:number)=>{
+    return await Http.patch(`/api/bookings/approve/${id}`)
+}
+export const rejectBooking = async(id:number)=>{
+    return await Http.patch(`/api/bookings/reject/${id}`)
+}
