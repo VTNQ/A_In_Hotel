@@ -6,7 +6,10 @@ import CommonModal from "../ui/CommonModal";
 import QuillEditor from "react-quill-new";
 import { findById, updateBanner } from "../../service/api/Banner";
 import { useTranslation } from "react-i18next";
-import type { BannerEditFormModalProps, BannerFormModalProp } from "../../type/banner.types";
+import type {
+  BannerEditFormModalProps,
+  BannerFormModalProp,
+} from "../../type/banner.types";
 import z from "zod";
 import { createImageBannerSchema } from "../../validation/image.validation";
 import { useForm } from "react-hook-form";
@@ -237,7 +240,7 @@ const BannerEditFormModal = ({
       onClose={handleCancel}
       onSave={handleSubmit(handleSave)}
       title={t("banner.createOrUpdate.titleEdit")}
-      saveLabel={isValid ? t("common.saving") : t("common.save")}
+      saveLabel={isValid ? t("common.save") : t("common.saving")}
       cancelLabel={t("common.cancelButton")}
       diabled={!isValid || isSubmitting}
     >
@@ -270,7 +273,7 @@ const BannerEditFormModal = ({
 
               trigger("startDate");
             }}
-            minDate={new Date()}
+            minDate={watch("startDate") ? undefined : new Date()}
             placeholder={t("banner.createOrUpdate.selectStartAt")}
           />
           {errors.startDate && (
