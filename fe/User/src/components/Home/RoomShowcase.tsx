@@ -7,6 +7,7 @@ import type { RoomResponse } from "../../type/room.types";
 import { getRoom } from "../../service/api/Room";
 import { useNavigate } from "react-router-dom";
 import { useBookingSearch } from "../../context/booking/BookingSearchContext";
+import { File_URL } from "../../setting/constant/app";
 
 export default function RoomShowcase() {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export default function RoomShowcase() {
             <div className="relative">
               <img
                 loading="lazy"
-                src={room.images[0]?.url}
+                src={File_URL+room.images[0]?.url}
                 alt={room.roomName}
                 className="w-full h-48 sm:h-56 lg:h-64 object-cover"
               />
