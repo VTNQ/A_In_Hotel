@@ -250,6 +250,7 @@ const BookingPage = () => {
       // ===== GUEST =====
       guestName: guest?.firstName,
       surname: guest?.lastName,
+      hotelId: search?.hotelId,
       email: guest?.email,
       phoneNumber: guest?.phone,
 
