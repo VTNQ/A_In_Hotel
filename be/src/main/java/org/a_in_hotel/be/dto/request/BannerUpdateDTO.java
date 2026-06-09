@@ -21,6 +21,5 @@ public class BannerUpdateDTO {
     private String ctaLabel;
     @Size(max = 500, message = "Description must be at most 500 characters / Mô tả chỉ được nhập tối đa 500 ký tự")
     private String description;
-    @ImageFile(message = "Invalid image file / File ảnh không hợp lệ")
     private MultipartFile image;
 }
