@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class RoomServiceImpl implements RoomService {
     private final GeneralService generalService;
     private final ImageRepository roomImageRepository;
     private final SecurityUtils securityUtils;
+    private final ImageRepository imageRepository;
     private ImageMapper roomImageMapper;
     private static final List<String> SEARCH_FIELDS = List.of("roomCode","roomNumber","roomName");
     @Autowired
@@ -50,13 +52,14 @@ public class RoomServiceImpl implements RoomService {
                            GeneralService generalService,
                            ImageRepository roomImageRepository,
                            ImageMapper roomImageMapper,
-                           SecurityUtils securityUtils) {
+                           SecurityUtils securityUtils, ImageRepository imageRepository) {
         this.roomMapper = roomMapper;
         this.roomRepository = roomRepository;
         this.generalService=generalService;
         this.roomImageRepository=roomImageRepository;
         this.roomImageMapper=roomImageMapper;
         this.securityUtils=securityUtils;
+        this.imageRepository = imageRepository;
     }
     @Override
     @Transactional
@@ -110,7 +113,9 @@ public class RoomServiceImpl implements RoomService {
                                     securityUtils.getHotelId());
 
             List<Image> currentImages = existing.getImages();     // ảnh đang có trong DB
-            List<String> keepUrls = request.getOldImages();       // ảnh cũ FE muốn giữ
+            List<String> keepUrls = request.getOldImages() ==null
+                                ? Collections.emptyList()
+                                : request.getOldImages();
 
             // 2) XÓA ẢNH CŨ NẾU KHÔNG CÓ TRONG oldImages GỬI LÊN
             List<Image> imagesToDelete = currentImages.stream()
@@ -124,32 +129,48 @@ public class RoomServiceImpl implements RoomService {
                     log.warn("⚠️ Không thể xóa file {}", img.getUrl());
                 }
             }
-
+            if(!imagesToDelete.isEmpty()){
+                imageRepository.deleteAll(imagesToDelete);
+            }
             // Giữ lại ảnh cũ còn dùng
             List<Image> updatedImageList = currentImages.stream()
                     .filter(img -> keepUrls.contains(img.getUrl()))
                     .collect(Collectors.toList());
 
             // 3) LƯU ẢNH MỚI
-            if (newImages != null) {
+            if (newImages != null && !newImages.isEmpty()) {
+
+                List<Image> imagesNeedSave = new ArrayList<>();
+
                 for (MultipartFile file : newImages) {
-                    if (file != null && !file.isEmpty()) {
-                        FileUploadMeta meta = generalService.saveFile(file, "room");
 
-                        Image newImg = roomImageMapper.toBannerImage(meta);
-                        newImg.setEntityId(existing.getId());
-                        newImg.setEntityType("Room");
-
-                        updatedImageList.add(newImg);
+                    if (file == null || file.isEmpty()) {
+                        continue;
                     }
+
+                    FileUploadMeta meta =
+                            generalService.saveFile(file, "room");
+
+                    Image image = roomImageMapper.toBannerImage(meta);
+
+                    image.setEntityId(existing.getId());
+                    image.setEntityType("Room");
+
+                    imagesNeedSave.add(image);
+                }
+
+                if (!imagesNeedSave.isEmpty()) {
+                    List<Image> savedImages =
+                            imageRepository.saveAll(imagesNeedSave);
+
+                    updatedImageList.addAll(savedImages);
                 }
             }
 
-            // 4) GÁN DANH SÁCH ẢNH MỚI
-            existing.getImages().clear();
-            existing.getImages().addAll(updatedImageList);
+            existing.setImages(updatedImageList);
 
             roomRepository.save(existing);
+
         }catch (Exception e) {
             log.error("Error updating room: {}", e.getMessage(), e);
             throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật phòng: " + e.getMessage());

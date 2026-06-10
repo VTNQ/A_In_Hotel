@@ -26,7 +26,7 @@ export const createRoom = async (roomData: any) => {
       }
     }
   });
-  roomData.images?.forEach((img: File) => formData.append("image", img));
+  roomData.images?.forEach((img: File) => formData.append("images", img));
   return await Http.post("/api/rooms/create", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
