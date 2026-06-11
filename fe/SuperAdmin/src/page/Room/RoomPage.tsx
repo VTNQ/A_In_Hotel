@@ -53,7 +53,7 @@ const RoomPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, sortKey, sortDir, searchValue, statusFilter]);
+  }, [page, sortKey, sortDir, searchValue, statusFilter,hotelFilter]);
   useEffect(() => {
     fetchRoom();
   }, [fetchRoom]);

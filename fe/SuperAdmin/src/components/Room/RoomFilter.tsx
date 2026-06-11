@@ -35,7 +35,7 @@ const RoomFilter = ({
         all: true,
         filter: "type==1 and isActive==1",
       });
-      setCategories(response?.content || []);
+      setCategories(response?.data?.content || []);
     } catch (err) {
       console.error(err);
     }
