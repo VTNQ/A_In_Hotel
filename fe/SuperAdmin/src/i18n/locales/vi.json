@@ -794,6 +794,9 @@
     "room": {
         "code": "Mã phòng",
         "title": "Phòng",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        
         "validation": {
             "roomNumberRequired": "Vui lòng nhập số phòng",
             "roomNameRequired": "Vui lòng nhập tên phòng",

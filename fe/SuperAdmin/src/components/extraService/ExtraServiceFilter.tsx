@@ -42,7 +42,7 @@ const ExtraServiceFilter = ({
           filter: "type==2 and isActive==1",
         };
         const response = await getAllCategories(param);
-        setCategory(response?.content || []);
+        setCategory(response?.data?.content || []);
       } catch (err) {
         console.log(err);
       }
