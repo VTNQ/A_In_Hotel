@@ -34,8 +34,7 @@ public class BookingDetail {
     @Column(name = "room_name")
     private String roomName;
 
-    @Column(name = "roomNumber")
-    private String roomNumber;
+
 
     @Column(name = "roomType")
     private String roomType;

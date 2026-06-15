@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -258,28 +259,61 @@ public class BookingServiceImpl implements BookingService {
             String searchValue,boolean mine, boolean all
     ) {
         log.info("start get bookings");
+
         Specification<Booking> spec = Specification.where(null);
 
-        if(sort !=null && !sort.isBlank()){
-            spec = spec.and(RSQLJPASupport.toSort(sort));
+        // filter
+        if (filter != null && !filter.isBlank()) {
+            spec = spec.and(RSQLJPASupport.toSpecification(filter));
         }
 
-        if(filter !=null && !filter.isBlank()){
-            spec =RSQLJPASupport.toSpecification(filter);
+        // search
+        if (searchField != null
+                && searchValue != null
+                && !searchValue.isBlank()
+                && !SEARCH_FIELDS.isEmpty()) {
+
+            spec = spec.and(
+                    SearchHelper.buildSearchSpec(
+                            searchField,
+                            searchValue,
+                            SEARCH_FIELDS
+                    )
+            );
         }
-        if(searchField!=null || searchValue !=null || SEARCH_FIELDS.isEmpty()){
-            spec =SearchHelper.buildSearchSpec(searchField, searchValue, SEARCH_FIELDS);
-        }
-        if(mine){
+
+        // mine
+        if (mine) {
             Long currentAccountId = securityUtils.getCurrentUserId();
 
             spec = spec.and((root, query, cb) ->
-                    cb.equal(root.get("customer").get("account").get("id"), currentAccountId)
+                    cb.equal(
+                            root.get("customer")
+                                    .get("account")
+                                    .get("id"),
+                            currentAccountId
+                    )
             );
         }
+
+        Sort sortObj = Sort.unsorted();
+
+        if (sort != null && !sort.isBlank()) {
+            String[] parts = sort.split(",");
+
+            if (parts.length == 2) {
+                sortObj = Sort.by(
+                        Sort.Direction.fromString(parts[1]),
+                        parts[0]
+                );
+            } else {
+                sortObj = Sort.by(parts[0]);
+            }
+        }
+
         Pageable pageable = all
                 ? Pageable.unpaged()
-                :PageRequest.of(page-1, size);
+                : PageRequest.of(page - 1, size, sortObj);
 
         return repository.findAll(spec, pageable)
                 .map(mapper::toResponse);
@@ -530,7 +564,6 @@ public class BookingServiceImpl implements BookingService {
         newDetail.setBooking(booking);
         newDetail.setRoom(newRoom);
         newDetail.setRoomName(newRoom.getRoomName());
-        newDetail.setRoomNumber(newRoom.getRoomNumber());
         newDetail.setRoomType(newRoom.getRoomType().getName());
         newDetail.setRoomType(newRoom.getRoomType().getName());
         newDetail.setPrice(newPrice);
@@ -550,11 +583,8 @@ public class BookingServiceImpl implements BookingService {
         history.setBooking(booking);
 
         history.setFromRoomId(oldRoom);
-        history.setFromRoomNumber(oldRoom.getRoomNumber());
         history.setFromRoomName(oldRoom.getRoomName());
-
         history.setToRoomId(newRoom);
-        history.setToRoomNumber(newRoom.getRoomNumber());
         history.setToRoomName(newRoom.getRoomName());
         history.setOldPrice(oldPrice);
         history.setNewPrice(newPrice);

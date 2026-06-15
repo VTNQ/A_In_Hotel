@@ -101,7 +101,7 @@ const SwitchRoomModal = ({
         if (!newRoom) {
           return {
             id: d.id,
-            from: d.roomNumber,
+            from: d.roomName,
             selected: false,
           };
         }
@@ -114,8 +114,8 @@ const SwitchRoomModal = ({
         total += diff;
         return {
           id: d.id,
-          from: d.roomNumber,
-          to: newRoom.roomNumber,
+          from: d.roomName,
+          to: newRoom?.roomName,
           toType: newRoom.roomTypeName,
           diff,
           reason,
@@ -162,7 +162,7 @@ const SwitchRoomModal = ({
     () =>
       availableRooms.map((r) => ({
         value: r.id,
-        label: `[${r.roomNumber}] - ${r.roomTypeName}`,
+        label: `[${r.roomName}] - ${r.roomTypeName}`,
       })),
     [availableRooms],
   );
@@ -256,7 +256,7 @@ const SwitchRoomModal = ({
                             className="grid grid-cols-12 items-center px-6 py-4 border-b dark:border-gray-700 border-gray-200"
                           >
                             <div className="col-span-2 font-bold">
-                              {d.roomNumber}
+                              {d.roomName}
                             </div>
 
                             <div className="col-span-2">{d.roomType}</div>

@@ -14,7 +14,6 @@ public class BookingListTopResponse {
     private String guestName;
     private String roomType;
     private LocalDate checkInDate;
-    private String roomNumber;
 
     private LocalTime checkInTime;
 

@@ -8,7 +8,7 @@ export interface Asset {
   categoryName: string;
   hotelId: string;
   roomId: string;
-  roomNumber: string;
+  roomName: string;
   price: string;
   quantity: string;
   status: number;

@@ -25,7 +25,7 @@ public class AssetResponse {
 
     private Long hotelId;
     private Long roomId;
-    private String roomNumber;
+    private String roomName;
     private BigDecimal price;
     private Integer quantity;
 

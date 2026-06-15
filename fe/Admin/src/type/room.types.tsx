@@ -8,7 +8,7 @@ export interface RoomAsset {
 }
 export interface Room {
   id:number;
-  roomNumber: string;
+  roomName: string;
   roomTypeName:string;
   price:number;
 }

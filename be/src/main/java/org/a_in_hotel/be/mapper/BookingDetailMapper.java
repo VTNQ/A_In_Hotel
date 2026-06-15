@@ -50,7 +50,7 @@ public interface BookingDetailMapper {
             Room room = roomRepo.getReferenceById(req.getRoomId());
             detail.setRoomName(room.getRoomName());
             detail.setActive(true);
-            detail.setRoomNumber(room.getRoomNumber());
+
             detail.setRoomType(room.getRoomType().getName());
         }
 
@@ -72,7 +72,6 @@ public interface BookingDetailMapper {
     @Mapping(target = "checkInTime",source = "booking.checkInTime")
     @Mapping(target = "checkOutDate",source = "booking.checkOutDate")
     @Mapping(target = "checkOutTime",source = "booking.checkOutTime")
-    @Mapping(target = "roomNumber",source = "roomNumber")
     @Mapping(target = "status",source = "booking.status")
     BookingListTopResponse toResponseTop(BookingDetail bookingDetail);
 }

@@ -30,7 +30,7 @@ const RoomLocationRow = ({ data }: any) => {
 
         <div>
           <div className="font-medium text-slate-800 dark:text-neutral-200">
-            {t("bookingView.roomNumber")} {data?.roomNumber}
+            {t("bookingView.roomName")} {data?.roomName}
           </div>
           <div className="text-xs text-slate-500 dark:text-neutral-400">
             ID: #{data?.roomCode}

@@ -164,8 +164,8 @@ const ViewRoomInformation: React.FC<ViewRoomProps> = ({
                   />
 
                   <Info
-                    label={t("room.roomNumber")}
-                    value={room?.roomNumber}
+                    label={t("room.roomName")}
+                    value={room?.roomName}
                   />
 
                   <Info
@@ -178,11 +178,7 @@ const ViewRoomInformation: React.FC<ViewRoomProps> = ({
                     value={room?.roomTypeName}
                   />
 
-                  <Info
-                    label={t("room.createOrUpdate.floor")}
-                    value={room?.floor}
-                  />
-
+               
                   <Info
                     label={t("room.view.area")}
                     value={`${room?.area} m²`}

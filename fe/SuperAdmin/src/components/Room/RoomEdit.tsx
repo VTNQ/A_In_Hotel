@@ -33,18 +33,12 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const roomSchema = z.object({
     status: z.string().optional(),
-    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
+
 
     roomName: z.string().min(1, t("room.validation.roomNameRequired")),
 
     idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
 
-    floor: z
-      .string()
-      .min(1, t("room.validation.floorRequired"))
-      .refine((value) => Number(value) > 0, {
-        message: t("room.validation.floorInvalid"),
-      }),
     area: z
       .string()
       .min(1, t("room.validation.areaRequired"))
@@ -110,13 +104,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
     resolver: zodResolver(roomSchema),
     mode: "onChange",
     defaultValues: {
-      roomNumber: "",
       roomName: "",
       idRoomType: "",
       hotelId: "",
       capacity: "",
       defaultRate: "",
-      floor: "",
       area: "",
       hourlyBasePrice: "",
       hourlyAdditionalPrice: "",
@@ -153,7 +145,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
       console.log(err);
     }
   };
-  console.log(errors);
   const onSubmitForm = async (data: FormData) => {
     try {
       const cleanOldImages = (data.oldImages || []).map((img) =>
@@ -161,12 +152,10 @@ const RoomEdit: React.FC<RoomEditProps> = ({
       );
 
       const payload = {
-        roomNumber: data.roomNumber,
         roomName: data.roomName,
         idRoomType: data.idRoomType,
         capacity: data.capacity,
         defaultRate: data.defaultRate,
-        floor: data.floor,
         area: data.area,
         note: data.note,
         hourlyBasePrice: data.hourlyBasePrice,
@@ -183,13 +172,12 @@ const RoomEdit: React.FC<RoomEditProps> = ({
         autoClose: 4000,
       });
       reset({
-        roomNumber: "",
+  
         roomName: "",
         idRoomType: "",
         hotelId: "",
         capacity: "",
         defaultRate: "",
-        floor: "",
         area: "",
         hourlyBasePrice: "",
         hourlyAdditionalPrice: "",
@@ -211,13 +199,12 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   };
   const handleClose = () => {
     reset({
-      roomNumber: "",
+
       roomName: "",
       idRoomType: "",
       hotelId: "",
       capacity: "",
       defaultRate: "",
-      floor: "",
       area: "",
       hourlyBasePrice: "",
       hourlyAdditionalPrice: "",
@@ -238,7 +225,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
           response?.data?.data?.images?.map((img: any) => File_URL + img.url) ||
           [];
         reset({
-          roomNumber: response?.data?.data?.roomNumber || "",
           roomName: response?.data?.data?.roomName || "",
           idRoomType: response?.data?.data?.idRoomType
             ? String(response.data.data.idRoomType)
@@ -248,7 +234,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
             : undefined,
           capacity: String(response?.data?.data?.capacity || ""),
           defaultRate: String(response?.data?.data?.defaultRate || ""),
-          floor: String(response?.data?.data?.floor || ""),
           area: String(response?.data?.data?.area || ""),
           hourlyBasePrice: String(response?.data?.data?.hourlyBasePrice ?? ""),
           hourlyAdditionalPrice: String(
@@ -302,23 +287,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
           ) : (
             <div className="space-y-5 py-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("room.createOrUpdate.roomNumber")}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    {...register("roomNumber")}
-                    name="roomNumber"
-                    placeholder={t("room.createOrUpdate.enterRoomNumber")}
-                    className="mt-1"
-                  />
-                  {errors.roomNumber && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.roomNumber.message}
-                    </p>
-                  )}
-                </div>
+               
                 <div>
                   <label className="text-sm font-medium">
                     {t("room.createOrUpdate.roomName")}
@@ -387,23 +356,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     </p>
                   )}
                 </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    {t("room.createOrUpdate.floor")}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder={t("room.createOrUpdate.enterFloor")}
-                    {...register("floor")}
-                    className="mt-1"
-                  />
-                  {errors.floor && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.floor.message}
-                    </p>
-                  )}
-                </div>
+             
                 <div>
                   <label className="text-sm font-medium">
                     {t("room.createOrUpdate.area")}

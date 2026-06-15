@@ -2,7 +2,7 @@ import type { ImageResponse } from "./common";
 
 export interface Room {
   id: number;
-  roomNumber: string;
+
   roomName: string;
   roomCode: string;
   capacity: number;
@@ -12,7 +12,6 @@ export interface Room {
   roomTypeName: string;
   status: number;
   defaultRate: number;
-  floor: number;
   area: number;
   note: string;
   images: ImageResponse[];
@@ -57,12 +56,10 @@ export interface RoomTableProps {
   onPageChange: (page: number) => void;
 }
 export interface RoomForm{
-  roomNumber:string;
   roomName:string;
   idRoomType:string | null;
   capacity:string;
   defaultRate:string;
-  floor:string;
   hotelId:string | null;
   area:string;
   hourlyBasePrice:string;

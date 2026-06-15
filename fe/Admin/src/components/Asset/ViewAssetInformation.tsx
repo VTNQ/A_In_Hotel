@@ -173,7 +173,7 @@ const ViewAssetInformation: React.FC<ViewAssetProps> = ({
                 className="dark:text-gray-200"
                 style={{ fontWeight: "400" }}
               >
-                {asset.roomNumber}
+                {asset.roomName}
               </span>
 
               <span

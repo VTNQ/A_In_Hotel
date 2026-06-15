@@ -15,13 +15,9 @@ public class RoomSwitchHistoryResponse {
 
     private Long id;
 
-    private String fromRoomNumber;
-
     private String fromRoomName;
 
     private String fromRoomTypeName;
-
-    private String toRoomNumber;
 
     private String toRoomTypeName;
 

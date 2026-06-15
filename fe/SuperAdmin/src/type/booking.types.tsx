@@ -82,7 +82,7 @@ export interface BookingDetailResponse {
   roomId: number;
   roomCode: string;
   roomName: string;
-  roomNumber: string;
+
   roomType: string;
   extraServiceName: string;
   specialRequests: string;

@@ -29,8 +29,6 @@ public class RoomSwitchHistory {
     @JoinColumn(name = "from_room_id",nullable = false)
     private Room fromRoomId;
 
-    @Column(name = "from_room_number",nullable = false)
-    private String fromRoomNumber;
 
     @Column(name = "from_room_name")
     private String fromRoomName;
@@ -39,8 +37,7 @@ public class RoomSwitchHistory {
     @JoinColumn(name = "to_room_id",nullable = false)
     private Room toRoomId;
 
-    @Column(name = "to_room_number",nullable = false)
-    private String toRoomNumber;
+
 
     @Column(name = "to_room_name")
     private String toRoomName;

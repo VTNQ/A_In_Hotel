@@ -90,10 +90,7 @@ const RoomTable = ({
             {t("room.code")}
           </TableHead>
 
-          <TableHead sortable sortKey="roomNumber" width={120}>
-            {t("room.roomNumber")}
-          </TableHead>
-
+        
           <TableHead width={180}>{t("room.image")}</TableHead>
 
           <TableHead sortable sortKey="roomName" width={220}>
@@ -141,7 +138,6 @@ const RoomTable = ({
           rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.roomCode}</TableCell>
-              <TableCell>{row.roomNumber}</TableCell>
               <TableCell style={{ width: 180 }}>
                 <img
                   src={

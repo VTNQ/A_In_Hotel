@@ -30,8 +30,6 @@ public class Room {
     private Long id;
     @Column(name = "room_code", nullable = false, unique = true, length = 50)
     private String roomCode;
-    @Column(name = "room_number",nullable = false)
-    private String roomNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
@@ -52,8 +50,6 @@ public class Room {
     private Integer status;
     @Column(name = "default_rate")
     private BigDecimal defaultRate;
-    @Column(name = "floor")
-    private Integer floor;
     @Column(name = "capacity")
     private Integer capacity;
     @Column(name = "area")

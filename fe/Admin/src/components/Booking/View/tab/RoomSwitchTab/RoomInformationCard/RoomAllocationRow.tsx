@@ -31,7 +31,7 @@ const RoomLocationRow = ({ data }: any) => {
 
         <div>
           <div className="font-semibold text-[#1D263E] dark:text-gray-100">
-            {t("bookingView.roomNumber")} {data?.roomNumber}
+             {t("bookingView.roomName")} {data?.roomName}
           </div>
 
           <div className="text-xs text-slate-500 dark:text-gray-400">

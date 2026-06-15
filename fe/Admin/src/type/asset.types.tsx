@@ -22,7 +22,6 @@ export interface Asset {
   categoryName: string;
   hotelId:number;
   roomId:number;
-  roomNumber:string;
   price:number;
   quantity:number;
   status:number;
