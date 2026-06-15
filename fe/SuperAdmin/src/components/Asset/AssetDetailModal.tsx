@@ -220,7 +220,7 @@ const AssetDetailModal: React.FC<ViewAssetProps> = ({
                   dark:text-slate-100
                 "
               >
-                {asset?.roomNumber || "-"}
+                {asset?.roomName || "-"}
               </span>
             </div>
 

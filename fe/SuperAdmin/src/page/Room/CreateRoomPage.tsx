@@ -19,7 +19,6 @@ const CreateRoomPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const roomSchema = z.object({
-    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
 
     roomName: z.string().min(1, t("room.validation.roomNameRequired")),
 
@@ -27,12 +26,7 @@ const CreateRoomPage = () => {
 
     hotelId: z.string().min(1, t("room.validation.hotelRequired")),
 
-    floor: z
-      .string()
-      .min(1, t("room.validation.floorRequired"))
-      .refine((value) => Number(value) > 0, {
-        message: t("room.validation.floorInvalid"),
-      }),
+   
 
     area: z
       .string()
@@ -98,13 +92,11 @@ const CreateRoomPage = () => {
     resolver: zodResolver(roomSchema),
     mode: "onChange",
     defaultValues: {
-      roomNumber: "",
       roomName: "",
       idRoomType: "",
       hotelId: "",
       capacity: "",
       defaultRate: "",
-      floor: "",
       area: "",
       hourlyBasePrice: "",
       hourlyAdditionalPrice: "",
@@ -124,12 +116,10 @@ const CreateRoomPage = () => {
   const onSubmit = async (data: FormData) => {
     try {
       const payload = {
-        roomNumber: data.roomNumber,
         roomName: data.roomName,
         idRoomType: data.idRoomType,
         capacity: data.capacity,
         defaultRate: data.defaultRate,
-        floor: data.floor,
         area: data.area,
         note: data.note,
         hourlyBasePrice: data.hourlyBasePrice,
@@ -146,13 +136,11 @@ const CreateRoomPage = () => {
         autoClose: 4000,
       });
       reset({
-        roomNumber: "",
         roomName: "",
         idRoomType: "",
         hotelId: "",
         capacity: "",
         defaultRate: "",
-        floor: "",
         area: "",
         hourlyBasePrice: "",
         hourlyAdditionalPrice: "",
@@ -211,23 +199,8 @@ const CreateRoomPage = () => {
         />
       </div>
       <div className="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
-              {t("room.createOrUpdate.roomNumber")}
-              <span className="text-red-500">*</span>
-            </label>
-            <Input
-              placeholder={t("room.createOrUpdate.enterRoomNumber")}
-              {...register("roomNumber")}
-              className="mt-1"
-            />
-            {errors.roomNumber && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.roomNumber.message}
-              </p>
-            )}
-          </div>
+        <div >
+          
           <div>
             <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.roomName")}
@@ -296,23 +269,7 @@ const CreateRoomPage = () => {
               </p>
             )}
           </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
-              {t("room.createOrUpdate.floor")}
-              <span className="text-red-500">*</span>
-            </label>
-            <Input
-              type="number"
-              placeholder={t("room.createOrUpdate.enterFloor")}
-              {...register("floor")}
-              className="mt-1"
-            />
-            {errors.floor && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.floor.message}
-              </p>
-            )}
-          </div>
+      
           <div>
             <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.area")}

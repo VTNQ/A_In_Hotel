@@ -128,7 +128,7 @@ const BookingList = () => {
                   </td>
 
                   <td className="py-4 text-gray-700 dark:text-gray-300">
-                    {item.roomNumber}
+                    {item.roomName}
                   </td>
 
                   <td className="py-4 text-gray-700 dark:text-gray-300">

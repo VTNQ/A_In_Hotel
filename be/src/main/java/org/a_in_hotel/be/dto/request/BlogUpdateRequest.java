@@ -25,6 +25,5 @@ public class BlogUpdateRequest {
     private String content;
     @NotNull(message = "Status is required")
     private Integer status;
-    @ImageFile(message = "Invalid image file / File ảnh không hợp lệ")
     private MultipartFile image;
 }

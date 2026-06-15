@@ -126,12 +126,6 @@ const ViewAssetPage = () => {
       ),
     },
     { key: "assetName", label: t("asset.name") },
-    {
-      key: "roomNumber",
-      label: t("asset.room"),
-      sortable: true,
-      sortKey: "room.roomNumber",
-    },
     { key: "categoryName", label: t("asset.category"), sortable: true },
     {
       key: "price",

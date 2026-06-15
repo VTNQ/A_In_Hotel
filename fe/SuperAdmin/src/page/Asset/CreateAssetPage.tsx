@@ -277,7 +277,7 @@ const CreateAssetPage = () => {
             isRequired={true}
             placeholder={t("asset.createOrUpdate.roomPlaceHolder")}
             getValue={(i) => String(i.id)}
-            getLabel={(i) => i.roomNumber}
+            getLabel={(i) => i.roomName}
           />
 
           {errors.roomId && (

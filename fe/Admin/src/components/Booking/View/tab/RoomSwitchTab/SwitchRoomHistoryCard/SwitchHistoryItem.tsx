@@ -56,7 +56,7 @@ const SwitchHistoryItem = ({ data }: any) => {
             text-slate-400 dark:text-gray-500
           "
           >
-            {t("bookingView.fromRoom")} {data?.fromRoomNumber}
+            {t("bookingView.fromRoom")} {data?.fromRoomName}
           </div>
 
           <div className="text-xs text-slate-400 dark:text-gray-500">
@@ -70,7 +70,7 @@ const SwitchHistoryItem = ({ data }: any) => {
         {/* TO */}
         <div className="min-w-[140px]">
           <div className="font-semibold text-[#1D263E] dark:text-gray-100">
-            {t("bookingView.toRoom")} {data?.toRoomNumber}
+            {t("bookingView.toRoom")} {data?.toRoomName}
           </div>
 
           <div className="text-xs font-medium text-green-600 dark:text-green-400">

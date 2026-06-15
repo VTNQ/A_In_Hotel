@@ -47,7 +47,7 @@ const RoomInformationCard = ({ data }: any) => {
       </div>
 
       <div className="grid grid-cols-2 px-6 py-2.5 text-xs font-semibold text-slate-500 dark:text-neutral-400 bg-slate-50 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800 uppercase tracking-wide">
-        <div>{t("bookingView.roomNumber")}</div>
+        <div>{t("bookingView.roomName")}</div>
         <div className="text-center">{t("bookingView.roomType")}</div>
       </div>
 

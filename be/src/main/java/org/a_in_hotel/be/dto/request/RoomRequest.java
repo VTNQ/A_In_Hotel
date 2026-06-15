@@ -10,9 +10,7 @@ import java.util.List;
 
 @Data
 public class RoomRequest {
-    @NotBlank(message = "Room number is required / Số phòng không được để trống")
-    @Size(max = 50, message = "Room number must not exceed 50 characters / Số phòng không được vượt quá 50 ký tự")
-    private String roomNumber;
+
     @NotBlank(message = "Room name is required / Tên phòng không được để trống")
     @Size(max = 255, message = "Room name must not exceed 255 characters / Tên phòng không được vượt quá 255 ký tự")
     private String roomName;
@@ -27,8 +25,6 @@ public class RoomRequest {
     @DecimalMin(value = "0.0", inclusive = true,
             message = "Price per full day must be greater than or equal to 0 / Giá theo ngày phải lớn hơn hoặc bằng 0")
     private BigDecimal defaultRate;
-    @Min(value = 0, message = "Floor must be greater than or equal to 0 / Tầng phải lớn hơn hoặc bằng 0")
-    private Integer floor;
     @NotNull(message = "Area is required / Diện tích không được để trống")
     @Min(value = 1, message = "Area must be greater than 1 / Diện tích phải lớn hơn 1")
     private Double area;

@@ -12,7 +12,6 @@ export interface bookingListTopResponse{
   guestName:string;
   roomType:string;
   checkInDate:string;
-  roomNumber:string;
   checkInTime:string;
   checkOutDate:string;
   checkOutTime:string;
@@ -47,10 +46,8 @@ export interface bookingResponse {
 }
 export interface RoomSwitchHistory{
   id:number;
-  fromRoomNumber:string;
   fromRoomName:string;
   fromRoomTypeName:string;
-  toRoomNumber:string;
   toRoomName:string;
   toRoomTypeName:string;
   reason:string;
@@ -91,7 +88,6 @@ export interface BookingDetailResponse {
   roomId:number;
   roomCode:string;
   roomName:string;
-  roomNumber:string;
   roomType:string;
   extraServiceName:string;
   specialRequests:string;

@@ -835,12 +835,11 @@
         "code": "Room Code",
         "title": "Room",
         "validation": {
-            "roomNumberRequired": "Please enter room number",
+
             "roomNameRequired": "Please enter room name",
             "roomTypeRequired": "Please select room type",
             "hotelRequired": "Please select hotel",
-            "floorRequired": "Please enter floor",
-            "floorInvalid": "Floor must be greater than 0",
+
             "areaRequired": "Please enter area",
             "areaInvalid": "Area must be greater than 0",
             "capacityRequired": "Please enter capacity",
@@ -856,7 +855,6 @@
             "imageRequired": "Please select at least 1 image",
             "maxImages": "Maximum 5 images can be uploaded"
         },
-        "roomNumber": "Room Number",
         "new": "+ New Room",
         "price": "Price",
         "searchPlaceholder": "Search by room code, room name",
@@ -889,12 +887,9 @@
             "roomType": "Room Type",
             "selectRoomType": "Select Room Type",
             "selectHotel": "Select Hotel",
-            "roomNumber": "Room Number",
-            "enterRoomNumber": "Enter room number",
             "roomName": "Room Name",
             "enterRoomName": "Enter room name",
-            "floor": "Floor",
-            "enterFloor": "Enter floor",
+
             "area": "Area (m²)",
             "enterArea": "Enter area",
             "capacity": "Capacity",
@@ -1103,7 +1098,7 @@
         "awaitCheckIn": "Awaiting check-in",
         "roomInformation": "Room Information",
         "currentRoomAllocations": "Current active room allocations",
-        "roomNumber": "Room Number",
+        "roomName":"Room Name",
         "roomType": "Room Type",
         "recordRoomChanges": "Record of all room changes during stay",
         "fromRoom": "From",

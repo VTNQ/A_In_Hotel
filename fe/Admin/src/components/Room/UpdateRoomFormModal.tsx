@@ -22,18 +22,10 @@ const UpdateRoomFormModal = ({
   const roomSchema = z.object({
     id: z.string().optional(),
     status: z.string().optional(),
-    roomNumber: z.string().min(1, t("room.validation.roomNumberRequired")),
 
     roomName: z.string().min(1, t("room.validation.roomNameRequired")),
 
     idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
-
-    floor: z
-      .string()
-      .min(1, t("room.validation.floorRequired"))
-      .refine((value) => Number(value) > 0, {
-        message: t("room.validation.floorInvalid"),
-      }),
     area: z
       .string()
       .min(1, t("room.validation.areaRequired"))
@@ -113,10 +105,8 @@ const UpdateRoomFormModal = ({
     resolver: zodResolver(roomSchema),
     mode: "onChange",
     defaultValues: {
-      roomNumber: "",
       roomName: "",
       idRoomType: "",
-      floor: "",
       area: "",
       capacity: "",
       status: "",
@@ -158,7 +148,6 @@ const UpdateRoomFormModal = ({
         setTempImages(oldImgs);
 
         const form = {
-          roomNumber: room?.roomNumber || "",
           roomName: room?.roomName || "",
           idRoomType: room?.idRoomType || "",
           floor: String(room?.floor || ""),
@@ -274,10 +263,8 @@ const UpdateRoomFormModal = ({
     );
   }
   const isFormValid =
-    !!watch("roomNumber") &&
     !!watch("roomName") &&
     !!watch("idRoomType") &&
-    !!watch("floor") &&
     !!watch("area") &&
     !!watch("capacity") &&
     !!watch("hourlyBasePrice") &&
@@ -324,22 +311,7 @@ const UpdateRoomFormModal = ({
               )}
             </div>
 
-            <div>
-              <label className="block mb-1 font-medium">
-                {t("room.createOrUpdate.roomNumber")} *
-              </label>
-              <input
-                {...register("roomNumber")}
-                placeholder={t("room.createOrUpdate.enterRoomNumber")}
-                className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
-              />
-              {errors.roomNumber && (
-                <p className="text-red-500 dark:text-red-400 text-xs">
-                  {errors.roomNumber.message}
-                </p>
-              )}
-            </div>
-
+          
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 font-medium">
@@ -356,22 +328,7 @@ const UpdateRoomFormModal = ({
                   </p>
                 )}
               </div>
-              <div>
-                <label className="block mb-1 font-medium">
-                  {t("room.createOrUpdate.floor")} *
-                </label>
-                <input
-                  type="number"
-                  placeholder={t("room.createOrUpdate.enterFloor")}
-                  {...register("floor")}
-                  className="w-full border dark:bg-[#1F2937] dark:border-gray-600 dark:placeholder:text-gray-500 border-[#4B62A0] rounded-lg p-2 outline-none"
-                />
-                {errors.floor && (
-                  <p className="text-red-500 dark:text-red-400 text-xs">
-                    {errors.floor.message}
-                  </p>
-                )}
-              </div>
+            
             </div>
 
             <div>

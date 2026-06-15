@@ -64,7 +64,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public void save(RoomRequest request, List<MultipartFile>image) {
-        if(roomRepository.existsByRoomNumberAndHotelId(request.getRoomNumber(),securityUtils.getHotelId())){
+        if(roomRepository.existsByRoomNameAndHotelId(request.getRoomName(),securityUtils.getHotelId())){
             throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Room number already exists");
         }
         try {

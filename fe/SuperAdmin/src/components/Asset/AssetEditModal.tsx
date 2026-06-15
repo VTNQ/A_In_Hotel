@@ -364,7 +364,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
                   isRequired
                   placeholder={t("asset.createOrUpdate.roomPlaceHolder")}
                   getValue={(i) => String(i.id)}
-                  getLabel={(i) => i.roomNumber}
+                  getLabel={(i) => i.roomName}
                 />
                 {errors.roomId && (
                   <p className="text-red-600">{errors.roomId.message}</p>

@@ -151,7 +151,6 @@ const ViewRoomPage = () => {
 
   const columns = [
     { key: "roomCode", label: t("room.code"), sortable: true },
-    { key: "roomNumber", label: t("room.roomNumber") },
     {
       key: "image",
       label: t("room.image"),
@@ -162,7 +161,7 @@ const ViewRoomPage = () => {
               ? File_URL + row.images[0].url
               : "/default.webp"
           }
-          alt={row.roomNumber}
+          alt={row.roomName}
           className="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded-lg"
         />
       ),

@@ -34,7 +34,7 @@ const SwitchHistoryItem = ({ data }: any) => {
                 {/* FROM ROOM */}
                 <div className="text-right min-w-[120px]">
                     <div className="font-medium text-slate-400 dark:text-neutral-500 line-through decoration-red-500">
-                        {t("bookingView.fromRoom")} {data?.fromRoomNumber}
+                        {t("bookingView.fromRoom")} {data?.fromRoomName}
                     </div>
                     <div className="text-xs text-slate-400 dark:text-neutral-500">
                         {data?.fromRoomTypeName}
@@ -47,7 +47,7 @@ const SwitchHistoryItem = ({ data }: any) => {
                 {/* TO ROOM */}
                 <div className="min-w-[140px]">
                     <div className="font-semibold text-[#1D263E] dark:text-neutral-200">
-                        {t("bookingView.toRoom")} {data?.toRoomNumber}
+                        {t("bookingView.toRoom")} {data?.toRoomName}
                     </div>
                     <div className="text-xs text-green-600 dark:text-green-400 font-medium">
                         {data?.toRoomTypeName}

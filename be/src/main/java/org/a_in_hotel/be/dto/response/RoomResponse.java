@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RoomResponse {
     private Long id;
-    private String roomNumber;
     private String roomName;
     private String roomCode;
     private Integer capacity;
@@ -26,7 +25,6 @@ public class RoomResponse {
     private Integer status;
     private Long hotelId;
     private BigDecimal defaultRate;
-    private Integer floor;
     private Double area;
     private List<AssetResponse> assets;
     private String note;

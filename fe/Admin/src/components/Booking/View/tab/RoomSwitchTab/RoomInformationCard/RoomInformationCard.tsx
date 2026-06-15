@@ -73,7 +73,7 @@ const RoomInformationCard = ({ data }: any) => {
         border-t border-slate-200 dark:border-slate-700
         text-slate-500 dark:text-gray-400
       ">
-        <div>{t("bookingView.roomNumber")}</div>
+        <div>{t("bookingView.roomName")}</div>
         <div className="text-center">
           {t("bookingView.roomType")}
         </div>

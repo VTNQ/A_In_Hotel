@@ -78,7 +78,7 @@ const AssetTable = ({
           <TableHead sortable sortKey="assetName" width={220}>
             {t("asset.name")}
           </TableHead>
-          <TableHead sortable sortKey="roomNumber" width={220}>
+          <TableHead sortable sortKey="roomName" width={220}>
             {t("asset.room")}
           </TableHead>
           <TableHead sortable sortKey="category.id" width={220}>
@@ -133,7 +133,7 @@ const AssetTable = ({
                 />
               </TableCell>
               <TableCell>{row.assetName}</TableCell>
-              <TableCell>{row.roomNumber}</TableCell>
+              <TableCell>{row.roomName}</TableCell>
               <TableCell>{row.categoryName}</TableCell>
               <TableCell>{row.price}</TableCell>
               <TableCell>{row.quantity}</TableCell>

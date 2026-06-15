@@ -305,7 +305,7 @@ const UpdateAssetFormModal = ({
             {room.length > 0 ? (
               room.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.roomNumber}
+                  {item.roomName}
                 </option>
               ))
             ) : (
