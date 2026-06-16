@@ -51,6 +51,7 @@ export interface RoomTableProps {
   onView: (row: Room) => void;
   onEdit: (row: Room) => void;
   onActivate: (row: Room) => void;
+  onDelete: (row: Room) => void;
   onDeactivate: (row: Room) => void;
   onMaintenance: (row: Room) => void;
   onPageChange: (page: number) => void;

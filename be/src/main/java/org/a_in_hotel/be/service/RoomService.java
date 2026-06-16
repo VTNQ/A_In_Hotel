@@ -21,4 +21,6 @@ public interface RoomService {
     void updateStatus(Long id, Integer status);
 
     List<RoomResponse> getRepresentativeRoomsOfHotels();
+
+    void deleteRoomById(Long id);
 }

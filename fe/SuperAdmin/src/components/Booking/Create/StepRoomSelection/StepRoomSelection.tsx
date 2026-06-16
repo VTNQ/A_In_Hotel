@@ -46,7 +46,7 @@ const StepRoomSection = ({ booking, onBack, onNext, onCancel }: any) => {
         const [roomResp, extraResp, typeResp] = await Promise.all([
           getRoom({
             all: true,
-            filter: `hotel.id==${hotelId} and status==3`,
+            filter: `hotel.id==${hotelId} and status==3 and isDeleted==false`,
           }),
           getAllFicilities({
             all: true,

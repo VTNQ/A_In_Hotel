@@ -35,7 +35,7 @@ export default function ExploreOtherRooms({ roomGrid }: Props) {
     const fetchRooms = async () => {
       const res = await getRoom({
         all: true,
-        filter: "status==3",
+        filter: "status==3 and isDeleted==false",
       });
 
       const allRooms: RoomResponse[] = res.data?.content || [];

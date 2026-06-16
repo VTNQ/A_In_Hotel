@@ -54,7 +54,6 @@ public class BlogController {
             PageResponse<BlogResponse> pageResponse =
                     new PageResponse<>(blogService.getAll(page, size, sort, filter, searchField, searchValue, all));
             return ResponseEntity.ok(RequestResponse.success(pageResponse));
-
     }
     @GetMapping("/{id}")
     @Operation(summary = "Get Blog By Id")

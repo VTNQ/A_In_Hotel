@@ -105,7 +105,7 @@ const CreateAssetPage = () => {
     try {
       const response = await getRoom({
         all: true,
-        filter: `hotel.id==${hotelId}`,
+        filter: `hotel.id==${hotelId},isDeleted==false`,
       });
       setRooms(response.data.content);
     } catch (err: any) {

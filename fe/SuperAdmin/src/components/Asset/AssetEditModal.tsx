@@ -132,7 +132,7 @@ const AssetEditModal: React.FC<AssetEditProps> = ({
     try {
       const response = await getRoom({
         all: true,
-        filter: `hotel.id==${hotelId}`,
+        filter: `hotel.id==${hotelId} and isDeleted==false`,
       });
       setRooms(response.data.content);
     } catch (err: any) {

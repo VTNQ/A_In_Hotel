@@ -10,6 +10,7 @@ import {
 } from "../ui/table";
 import { File_URL } from "@/setting/constant/app";
 import RoomActionMenu from "./RoomActionMenu";
+import { Trash2 } from "lucide-react";
 
 const RoomTable = ({
   rows,
@@ -26,6 +27,7 @@ const RoomTable = ({
   onActivate,
   onDeactivate,
   onMaintenance,
+  onDelete,
 }: RoomTableProps) => {
   const { t } = useTranslation();
   const statusMap: Record<
@@ -90,7 +92,6 @@ const RoomTable = ({
             {t("room.code")}
           </TableHead>
 
-        
           <TableHead width={180}>{t("room.image")}</TableHead>
 
           <TableHead sortable sortKey="roomName" width={220}>
@@ -105,7 +106,7 @@ const RoomTable = ({
             {t("room.priceFullDay")}
           </TableHead>
 
-          <TableHead sortable sortKey="hotel.name"  width={140}>
+          <TableHead sortable sortKey="hotel.name" width={140}>
             {t("room.hotel")}
           </TableHead>
 
@@ -121,6 +122,7 @@ const RoomTable = ({
             {t("common.status")}
           </TableHead>
           <TableHead width={160}>{t("common.action")}</TableHead>
+          <TableHead width={100}>{t("common.delete")}</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -184,6 +186,21 @@ const RoomTable = ({
                   onDeactivate={onDeactivate}
                   onMaintenance={onMaintenance}
                 />
+              </TableCell>
+              <TableCell>
+                <button
+                  type="button"
+                  onClick={() => onDelete?.(row)}
+                  className="
+      inline-flex items-center justify-center
+      w-9 h-9 rounded-lg
+      bg-red-50 text-red-600
+      hover:bg-red-100
+      transition-colors
+    "
+                >
+                  <Trash2 size={18} />
+                </button>
               </TableCell>
             </TableRow>
           ))

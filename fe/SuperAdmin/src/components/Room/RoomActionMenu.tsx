@@ -1,4 +1,4 @@
-import { Eye, Edit, Wrench, Power } from "lucide-react";
+import { Eye, Edit, Wrench, Power, Trash2 } from "lucide-react";
 
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
   const statusCode = room.status; // now numeric
   let actions: ActionItem[] = [];
   let statusLabel = "";
+ 
 
   // Map status code → name
   switch (statusCode) {
@@ -38,6 +39,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
           icon: <Wrench size={16} />,
           onClick: () => onMaintenance?.(room),
         },
+       
       ];
       break;
     case 2:
@@ -143,7 +145,7 @@ const RoomActionMenu: React.FC<RoomActionMenuProps> = ({
           label: t("room.viewRoom"),
           icon: <Eye size={16} />,
           onClick: () => onView?.(room),
-        },
+        }
       ];
       break;
     default:

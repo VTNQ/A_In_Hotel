@@ -17,6 +17,9 @@ export const getRoom = async (options: GetAllOptions = {}) => {
   });
   return resp.data;
 };
+export const deleteRoom = async (id: number) => {
+  return await Http.delete(`/api/rooms/${id}`);
+}
 export const createRoom = async (roomData: any) => {
   const formData = new FormData();
   Object.entries(roomData).forEach(([key, value]) => {

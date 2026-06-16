@@ -52,6 +52,9 @@ public class Room {
     private BigDecimal defaultRate;
     @Column(name = "capacity")
     private Integer capacity;
+    @Column(name = "is_deleted",nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false;
     @Column(name = "area")
     private Double area;
     @Column(name = "note")
@@ -70,6 +73,8 @@ public class Room {
     @Column(name = "created_by")
     private String createdBy;
 
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
     @Column(name = "updated_by")
     private String updatedBy;
     @Builder.Default

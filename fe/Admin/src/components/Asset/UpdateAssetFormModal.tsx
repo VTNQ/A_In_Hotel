@@ -147,7 +147,7 @@ const UpdateAssetFormModal = ({
     try {
     
       let filters: string[] = [];
-      filters.push(`hotel.id==${getTokens()?.hotelId}`);
+      filters.push(`hotel.id==${getTokens()?.hotelId} and isDeleted==false`);
       const filterQuery = filters.join(" and ");
 
       const res = await getAllRoom({

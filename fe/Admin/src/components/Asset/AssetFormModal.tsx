@@ -93,7 +93,7 @@ const AssetFormModal = ({
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      let filters: string[] = [];
+      let filters: string[] = ["isDeleted==false"];
       filters.push(`hotel.id==${getTokens()?.hotelId}`);
       const filterQuery = filters.join(" and ");
 
