@@ -1,4 +1,4 @@
-import { Eye, Edit, Wrench, Power, Trash2 } from "lucide-react";
+import { Eye, Edit, Wrench, Power } from "lucide-react";
 
 import ActionMenu from "../ui/ActionMenu";
 import { useTranslation } from "react-i18next";
