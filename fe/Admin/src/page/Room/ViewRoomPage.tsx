@@ -60,7 +60,7 @@ const ViewRoomPage = () => {
       if (categoryFilter) {
         filters.push(`roomType.id==${categoryFilter}`);
       }
-      filters.push(`hotel.id==${getTokens()?.hotelId}`);
+      filters.push(`hotel.id==${getTokens()?.hotelId} and isDeleted==false`);
       const filterQuery = filters.join(" and ");
       const params = {
         page: pageNumber,

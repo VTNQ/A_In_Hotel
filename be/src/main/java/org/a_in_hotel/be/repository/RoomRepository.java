@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificationExecutor<Room> {
     @Query("""
@@ -23,7 +24,7 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
            + " where r.createdAt = ("
            + " select min(r2.createdAt)"
            + " from Room  r2 "
-           + "where r.hotel.id = r2.hotel.id and r.status =3 and r.hotel.status=1)")
+           + "where r.hotel.id = r2.hotel.id and r.status =3 and r.hotel.status=1 and r.isDeleted=false)")
     List<Room> findFirstRoomOfEachHotel();
 
     @Query("SELECT  count(r) from Room r where (:hotelId IS NULL OR r.hotel.id = :hotelId)")
@@ -31,4 +32,6 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
 
     @Query("SELECT count(r) from Room r where r.status = :status and (:hotelId IS NULL OR r.hotel.id = :hotelId)")
     Long countByStatus(Long hotelId,Integer status);
+
+    Optional<Room> findByIdAndIsDeletedFalse(Long id);
 }

@@ -141,7 +141,7 @@ const RoomDetailPage = () => {
     try {
       setLoadingRooms(true);
       const res = await getRoom({
-        filter: `hotel.id==${hotelId} and id!=${currentRoomId} and status==3`,
+        filter: `hotel.id==${hotelId} and id!=${currentRoomId} and status==3 and isDeleted==false`,
       });
       const rooms = res.data.content || [];
       setOtherRooms(rooms.filter((r: any) => r.id !== currentRoomId));

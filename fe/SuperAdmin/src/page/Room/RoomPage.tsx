@@ -3,7 +3,7 @@ import RoomEdit from "@/components/Room/RoomEdit";
 import RoomFilter from "@/components/Room/RoomFilter";
 import RoomTable from "@/components/Room/RoomTable";
 import ViewRoomInformation from "@/components/Room/View/ViewRoomInformation";
-import { getRoom, updateStatus } from "@/service/api/Room";
+import { deleteRoom, getRoom, updateStatus } from "@/service/api/Room";
 import type { SortDir } from "@/type/common";
 import type { Room, RoomStatusFilter } from "@/type/Room.type";
 import { useCallback, useEffect, useState } from "react";
@@ -29,7 +29,7 @@ const RoomPage = () => {
   const fetchRoom = useCallback(async () => {
     try {
       setLoading(true);
-      let filters: string[] = [];
+      let filters: string[] = ["isDeleted==false"];
       if (statusFilter !== "ALL") {
         filters.push(`status==${statusFilter}`);
       }
@@ -53,7 +53,7 @@ const RoomPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, sortKey, sortDir, searchValue, statusFilter,hotelFilter]);
+  }, [page, sortKey, sortDir, searchValue, statusFilter, hotelFilter]);
   useEffect(() => {
     fetchRoom();
   }, [fetchRoom]);
@@ -72,6 +72,27 @@ const RoomPage = () => {
   const handleView = (row: Room) => {
     setSelectedRow(row);
     setShowViewModal(true);
+  };
+  const handleDelete = async (id: number) => {
+    try {
+      setLoading(true);
+
+      await deleteRoom(id);
+
+      await fetchRoom();
+
+      showAlert({
+        title: t("room.deleteSuccess"),
+        type: "success",
+      });
+    } catch (err: any) {
+      showAlert({
+        title: t("room.deleteError"),
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   const handleUpdateStatus = async (id: number, next: any) => {
     try {
@@ -95,9 +116,8 @@ const RoomPage = () => {
   };
   return (
     <div className="space-y-4">
-       <h2 className="text-xl font-semibold">{t("room.title")}</h2>
+      <h2 className="text-xl font-semibold">{t("room.title")}</h2>
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-start">
-       
         <RoomFilter
           search={searchValue}
           onSearchChange={setSearchValue}
@@ -121,6 +141,7 @@ const RoomPage = () => {
         sortKey={sortKey}
         sortDir={sortDir}
         onSortChange={handleSort}
+        onDelete={(row) => handleDelete(row.id)}
         page={page}
         pageSize={10}
         total={total}

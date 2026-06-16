@@ -18,7 +18,7 @@ export default function RoomShowcase() {
       const res = await getRoom({
         page: 1,
         size: 3,
-        filter: "status==3",
+        filter: "status==3 and isDeleted==false",
       });
 
       setRooms(res.data?.content || []);

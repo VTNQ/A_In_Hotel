@@ -40,7 +40,7 @@ const SwitchRoomModal = ({
     setBooking(resp.data.data);
   };
   const fetchRoom = async () => {
-    const filterParts = ["status==3", `hotelId==${getTokens()?.hotelId}`];
+    const filterParts = ["status==3", `hotelId==${getTokens()?.hotelId}`,"isDeleted==false"];
     if (usedRoomIds.length > 0) {
       filterParts.push(`id=out=(${usedRoomIds.join(",")})`);
     }

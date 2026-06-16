@@ -51,6 +51,7 @@ const SwitchRoomModal = ({
        if (bookingData?.hotelId) {
         const filterParts = [
           "status==3",
+          "isDeleted==false",
           `hotelId==${bookingData.hotelId}`,
         ];
 

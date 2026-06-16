@@ -76,4 +76,9 @@ public class RoomController {
     public ResponseEntity<RequestResponse<List<RoomResponse>>> getRepresentativeByHotel() {
             return ResponseEntity.ok(RequestResponse.success(roomService.getRepresentativeRoomsOfHotels()));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<RequestResponse<Void>> deleteById(@PathVariable Long id){
+        roomService.deleteRoomById(id);
+        return ResponseEntity.ok(RequestResponse.success("Delete room successfully"));
+    }
 }

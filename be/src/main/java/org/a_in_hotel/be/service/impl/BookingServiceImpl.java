@@ -2,6 +2,8 @@ package org.a_in_hotel.be.service.impl;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -261,6 +263,21 @@ public class BookingServiceImpl implements BookingService {
         log.info("start get bookings");
 
         Specification<Booking> spec = Specification.where(null);
+
+        spec = spec.and((root, query, cb) -> {
+            query.distinct(true);
+
+            Join<Booking, BookingDetail> detailJoin =
+                    root.join("details", JoinType.LEFT);
+
+            Join<BookingDetail, Room> roomJoin =
+                    detailJoin.join("room", JoinType.LEFT);
+
+            return cb.or(
+                    cb.isNull(roomJoin.get("id")),
+                    cb.equal(roomJoin.get("isDeleted"), false)
+            );
+        });
 
         // filter
         if (filter != null && !filter.isBlank()) {

@@ -55,7 +55,7 @@ const RoomGrid = ({
         setRooms([]);
 
         const totalGuests = (search?.adults ?? 0) + (search?.children ?? 0);
-        let filter = `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests}`;
+        let filter = `hotel.id==${search.hotelId};status==3;capacity>=${totalGuests};isDeleted==false`;
 
         const priceFilter = buildPriceFilter(priceRange);
         if (priceFilter) {

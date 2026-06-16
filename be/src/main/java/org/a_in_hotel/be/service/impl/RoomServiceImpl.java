@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -266,5 +267,14 @@ public class RoomServiceImpl implements RoomService {
     public List<RoomResponse> getRepresentativeRoomsOfHotels() {
         return roomRepository.findFirstRoomOfEachHotel()
                 .stream().map(roomMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteRoomById(Long id) {
+        Room  room = roomRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(()->new ErrorHandler(HttpStatus.NOT_FOUND, "Phòng không tồn tại"));
+        room.setIsDeleted(true);
+        room.setDeletedAt(OffsetDateTime.now());
+        roomRepository.save(room);
     }
 }
