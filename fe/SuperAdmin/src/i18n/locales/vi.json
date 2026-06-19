@@ -1,4 +1,7 @@
 {
+    "validation": {
+        "required": "{{field}} không được để trống"
+    },
     "common": {
         "action": "Thao tác",
         "edit": "Sửa",
@@ -667,6 +670,48 @@
             }
         }
     },
+    "franchiseSection": {
+        "title": "Khu vực nhượng quyền",
+        "createTitle": "Tạo khu vực nhượng quyền",
+        "editTitle": "Cập nhật khu vực nhượng quyền",
+        "breadcrumb": "Quản lý nội dung / Khu vực nhượng quyền",
+        "information": "Thông tin khu vực nhượng quyền",
+        "description": "Điền thông tin bên dưới để tạo khu vực nhượng quyền mới.",
+        "searchPlaceholder": "Tìm kiếm theo tiêu đề",
+        "new": "+ Thêm mới Nhượng quyền thương mại",
+        "actions": {
+            "manageItems": "Quản lý nội dung"
+        },
+        "fields": {
+            "code": "Mã",
+            "title": "Tiêu đề",
+            "subTitle": "Tiêu đề phụ",
+            "description": "Mô tả",
+            "sortOrder": "Thứ tự hiển thị",
+            "active": "Hoạt động",
+            "status": "Trạng thái"
+        },
+        "placeholder": {
+            "code": "Nhập mã",
+            "title": "Nhập tiêu đề",
+            "subTitle": "Nhập tiêu đề phụ",
+            "description": "Nhập mô tả...",
+            "sortOrder": "Nhập thứ tự hiển thị"
+        },
+        "status": {
+            "active": "Đang hoạt động",
+            "updateSuccess": "Cập nhật khu vực nhượng quyền thành công",
+            "updateFailed": "Cập nhật khu vực nhượng quyền thất bại",
+            "inactive": "Ngừng hoạt động"
+        },
+        "messages": {
+            "createSuccess": "Tạo khu vực nhượng quyền thành công",
+            "createFailed": "Tạo khu vực nhượng quyền thất bại",
+            "updateSuccess": "Cập nhật khu vực nhượng quyền thành công",
+            "updateFailed": "Cập nhật khu vực nhượng quyền thất bại"
+        },
+        "activeDescription": "Cho phép hiển thị khu vực nhượng quyền này."
+    },
     "extraService": {
         "title": "Dịch vụ bổ sung",
         "new": "+ Thêm dịch vụ",
@@ -796,12 +841,10 @@
         "title": "Phòng",
         "createdAt": "Ngày tạo",
         "updatedAt": "Ngày cập nhật",
-        
         "validation": {
             "roomNameRequired": "Vui lòng nhập tên phòng",
             "roomTypeRequired": "Vui lòng chọn loại phòng",
             "hotelRequired": "Vui lòng chọn khách sạn",
-         
             "areaRequired": "Vui lòng nhập diện tích",
             "areaInvalid": "Diện tích phải lớn hơn 0",
             "capacityRequired": "Vui lòng nhập sức chứa",
@@ -984,7 +1027,7 @@
         "servicesPayments": "Dịch vụ & Thanh toán",
         "actual": "Thực tế",
         "pending": "Đang chờ",
-        "roomName":"Tên Phòng",
+        "roomName": "Tên Phòng",
         "awaitCheckIn": "Đang chờ làm thủ tục nhận phòng",
         "roomInformation": "Thông tin phòng",
         "currentRoomAllocations": "Phòng đang được sử dụng",

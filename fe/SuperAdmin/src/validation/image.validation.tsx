@@ -17,6 +17,23 @@ export const createImageExtraServiceSchema = (t: (key: string) => string) => {
       },
     );
 };
+export const createImageFranchiseSectionItemPage = (t:(key:string)=>string)=>{
+   return z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: t("franchiseSectionItem.validate.imageRequired"),
+    })
+    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+      message: t("franchiseSectionItem.validate.imageTooLarge"),
+    })
+    .refine(
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      {
+        message: t("franchiseSectionItem.validate.imageInvalidType"),
+      },
+    );
+}
 
 export const createImageAssetSchema = (t: (key: string) => string) => {
   return z
