@@ -4,6 +4,9 @@
         "previous": "Previous page",
         "next": "Next page"
     },
+    "validation": {
+        "required": "{{field}} is required"
+    },
     "common": {
         "action": "Action",
         "edit": "Edit",
@@ -706,6 +709,48 @@
             }
         }
     },
+    "franchiseSection": {
+        "title": "Franchise Section",
+        "createTitle": "Create Franchise Section",
+        "editTitle": "Edit Franchise Section",
+        "breadcrumb": "Content Management / Franchise Sections",
+        "information": "Franchise Section Information",
+        "description": "Fill in the information below to create a new franchise section.",
+        "searchPlaceholder": "Search by title",
+        "new": "+ New Franchise Section",
+        "fields": {
+            "code": "Code",
+            "title": "Title",
+            "subTitle": "Sub Title",
+            "description": "Description",
+            "sortOrder": "Sort Order",
+            "active": "Active",
+            "status": "Status"
+        },
+        "actions": {
+            "manageItems": "Manage Section Items"
+        },
+        "placeholder": {
+            "code": "Enter code",
+            "title": "Enter title",
+            "subTitle": "Enter subtitle",
+            "description": "Enter description...",
+            "sortOrder": "Enter sort order"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "updateSuccess": "Update franchise section successfully",
+            "updateFailed": "Update franchise section failed"
+        },
+        "messages": {
+            "createSuccess": "Create franchise section successfully",
+            "createFailed": "Create franchise section failed",
+            "updateSuccess": "Update franchise section successfully",
+            "updateFailed": "Update franchise section failed"
+        },
+        "activeDescription": "Enable this franchise section for display."
+    },
     "extraService": {
         "title": "Extra Service",
         "new": "+ New Extra Service",
@@ -835,11 +880,9 @@
         "code": "Room Code",
         "title": "Room",
         "validation": {
-
             "roomNameRequired": "Please enter room name",
             "roomTypeRequired": "Please select room type",
             "hotelRequired": "Please select hotel",
-
             "areaRequired": "Please enter area",
             "areaInvalid": "Area must be greater than 0",
             "capacityRequired": "Please enter capacity",
@@ -889,7 +932,6 @@
             "selectHotel": "Select Hotel",
             "roomName": "Room Name",
             "enterRoomName": "Enter room name",
-
             "area": "Area (m²)",
             "enterArea": "Enter area",
             "capacity": "Capacity",
@@ -1098,7 +1140,7 @@
         "awaitCheckIn": "Awaiting check-in",
         "roomInformation": "Room Information",
         "currentRoomAllocations": "Current active room allocations",
-        "roomName":"Room Name",
+        "roomName": "Room Name",
         "roomType": "Room Type",
         "recordRoomChanges": "Record of all room changes during stay",
         "fromRoom": "From",

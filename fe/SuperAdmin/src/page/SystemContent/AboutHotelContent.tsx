@@ -137,7 +137,6 @@ const AboutHotelContent = () => {
       });
     }
   };
-  console.log(errors)
   return (
     <div className="p-6 bg-gray-50 dark:bg-neutral-950 min-h-screen">
       {/* Header */}

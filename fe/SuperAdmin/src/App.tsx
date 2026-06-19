@@ -35,6 +35,11 @@ import CreateVoucherPage from './page/Voucher/CreateVoucherPage'
 import ViewCustomerPage from './page/Customer/ViewCustomerPage'
 import CustomerDetailPage from './page/Customer/CustomerDetailPage'
 import EditProfilePage from './page/EditProfilePage'
+import FranchisePage from './page/FranchisePage'
+import FranchiseSectionPage from './page/FranchiseSectionPage'
+import CreateFranchiseSectionPage from './page/CreateFranchiseSectionPage'
+import FranchiseSectionItemPage from './page/FranchiseSectionItemPage'
+import CreateFranchiseSectionItemPage from './page/CreateFranchiseSectionItemPage'
 
 function App() {
 
@@ -78,6 +83,11 @@ function App() {
           <Route path='post/blog/create' element={<CreateBlogPage/>}/>
           <Route path='hotel/create' element={<AddHotelPage />} />
           <Route path='Hotel' element={<HotelPage />} />
+          <Route path='franchise' element={<FranchisePage/>}/>
+          <Route path='franchise-section' element={<FranchiseSectionPage/>}/>
+          <Route path='franchise-section/create' element={<CreateFranchiseSectionPage/>}/>
+          <Route  path="franchise-section/:sectionId/items" element={<FranchiseSectionItemPage/>}/>
+          <Route path='franchise-section/:sectionId/items/create' element={<CreateFranchiseSectionItemPage/>}/>
         </Route>
       </Routes>
     </>
