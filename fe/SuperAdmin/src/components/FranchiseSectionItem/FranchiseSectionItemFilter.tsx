@@ -1,6 +1,5 @@
 import type { FranchiseSectionItemFilterProps } from "@/type/franchiseSectionItem.types";
 import { Search } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
