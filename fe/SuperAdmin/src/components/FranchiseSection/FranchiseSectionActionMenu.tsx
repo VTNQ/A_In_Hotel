@@ -40,7 +40,7 @@ const FranchiseSectionActionMenu: React.FC<FranchiseSectionMenuProps> = ({
           onClick: () => onEdit?.(franchiseSection),
         },
         {
-          label: t("common.deActivate"),
+          label: t("common.active"),
           icon: <Power size={16} />,
           onClick: () => onActive?.(franchiseSection),
         },

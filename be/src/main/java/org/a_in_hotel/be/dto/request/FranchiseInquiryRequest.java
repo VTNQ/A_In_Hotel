@@ -12,6 +12,9 @@ public class FranchiseInquiryRequest {
     private String phone;
     private String email;
     private String province;
+    private String propertyLocation;
+    private String landArea;
+    private String roomCount;
     private String investmentBudget;
     private String message;
 }

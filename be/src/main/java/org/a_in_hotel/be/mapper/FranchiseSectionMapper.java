@@ -4,7 +4,10 @@ import org.a_in_hotel.be.dto.response.FranchiseSectionResponse;
 import org.a_in_hotel.be.entity.FranchiseSection;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        uses = FranchiseSectionItemMapper.class
+)
 public interface FranchiseSectionMapper {
     @Mapping(target = "createdBy",source = "userId")
     @Mapping(target = "updatedBy",source = "userId")
@@ -12,6 +15,8 @@ public interface FranchiseSectionMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "updatedBy", source = "userId")
     @Mapping(target = "active", source = "request.active")
+
     void updateEntity(FranchiseSectionRequest request, @MappingTarget FranchiseSection franchise,Long userId);
+    @Mapping(target = "items",source ="items" )
     FranchiseSectionResponse toResponse(FranchiseSection franchise);
 }

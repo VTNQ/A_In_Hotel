@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
 
@@ -28,7 +27,11 @@ public class FranchiseInquiry {
 
     private String province;
 
+    private String propertyLocation;
 
+    private String landArea;
+
+    private String roomCount;
     @Column(columnDefinition = "TEXT")
     private String message;
 

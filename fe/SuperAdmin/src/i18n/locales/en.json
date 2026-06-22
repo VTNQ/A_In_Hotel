@@ -255,6 +255,10 @@
         "voucher": "Voucher Management",
         "promotion": "Promotion Management",
         "hotelManagement": "Hotel Management",
+        "franchiseManagement":"Franchise Management",
+        "franchise":"Franchise",
+        "franchiseInfo":"Franchise Information",
+        "franchiseSection":"Franchise Sections",
         "hotel": "Hotels",
         "booking": "Booking Management",
         "post": "Post",
@@ -750,6 +754,41 @@
             "updateFailed": "Update franchise section failed"
         },
         "activeDescription": "Enable this franchise section for display."
+    },
+    "franchiseSectionItem": {
+        "title": "Franchise Section Item",
+        "createTitle": "Create Franchise Section Item",
+        "breadcrumb": "Franchise / Section Item",
+        "editTitle": "Edit Franchise Section Item",
+        "fields": {
+            "title": "Title",
+            "description": "Description",
+            "icon": "Icon",
+            "sortOrder": "Sort Order",
+            "active": "Active"
+        },
+        "placeholder": {
+            "title": "Enter title",
+            "description": "Enter Description",
+            "sortOrder": "Enter Sort Order",
+            "search": "Search by Title"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "updateSuccess": "Update franchise section item status successfully",
+            "updateFailed": "Update franchise section item status failed"
+        },
+        "button": {
+            "create": "New Franchise Section Item"
+        },
+        "message": {
+            "createSuccess": "Franchise section item created successfully",
+            "createFailed": "Failed to create franchise section item",
+            "updateSuccess": "Franchise section item updated successfully",
+            "updateFailed": "Failed to update franchise section item"
+        },
+        "activeDescription": "Display this item on the website"
     },
     "extraService": {
         "title": "Extra Service",

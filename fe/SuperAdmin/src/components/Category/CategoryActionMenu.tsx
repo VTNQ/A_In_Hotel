@@ -42,7 +42,7 @@ const CategoryActionMenu: React.FC<CategoryActionMenuProps> = ({
           onClick: () => onEdit?.(category),
         },
         {
-          label: t("common.deActivate"),
+          label: t("common.active"),
           icon: <Power size={16} />,
           onClick: () => onActivate?.(category),
         },

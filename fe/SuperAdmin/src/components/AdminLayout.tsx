@@ -8,7 +8,6 @@ import {
   Boxes,
   ChevronRight,
   ChevronLeft,
-
   Moon,
   SunMedium,
   Settings,
@@ -180,6 +179,25 @@ export default function AdminLayout() {
         },
       ],
     },
+    {
+      title: t("sidebar.franchiseManagement"),
+      items: [
+        {
+          label: t("sidebar.franchise"),
+          icon: Building2,
+          children: [
+            {
+              label: t("sidebar.franchiseInfo"),
+              path: "/Home/franchise",
+            },
+            {
+              label: t("sidebar.franchiseSection"),
+              path: "/Home/franchise-section",
+            },
+          ],
+        },
+      ],
+    },
   ];
 
   const [showModal, setShowModal] = useState(false);
@@ -189,10 +207,9 @@ export default function AdminLayout() {
 
   useAuthWatcher(setAuthChecking, setShowModal);
 
-
   if (authChecking) return null;
 
-   return (
+  return (
     <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-100">
       {/* ================= HEADER ================= */}
       <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur dark:bg-neutral-950/70">
@@ -222,8 +239,8 @@ export default function AdminLayout() {
 
           {/* RIGHT */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <IconBtn 
-              label="Theme" 
+            <IconBtn
+              label="Theme"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               {theme === "dark" ? <SunMedium size={18} /> : <Moon size={18} />}
@@ -234,7 +251,7 @@ export default function AdminLayout() {
             <UserDropdown
               name="Admin"
               email="admin@email.com"
-              onProfile={()=>navigate("/Home/profile")}
+              onProfile={() => navigate("/Home/profile")}
               avatarUrl="https://i.pravatar.cc/40?img=5"
               onLogout={() => {
                 clearTokens();
@@ -265,8 +282,6 @@ export default function AdminLayout() {
       <SessionExpiredModal open={showModal} />
     </div>
   );
-
-
 }
 
 function IconBtn({

@@ -17,12 +17,17 @@ const CreateFranchiseSectionItemPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const schema = z.object({
-    title: z.string().min(1, "Title is required"),
+    title: z.string().min(
+      1,
+      t("validation.required", {
+        field: t("franchiseSectionItem.fields.title"),
+      }),
+    ),
     description: z.string().optional(),
     sectionId: z.string().optional(),
     sortOrder: z.coerce.number().default(0),
     active: z.boolean().default(true),
-    icon: createImageFranchiseSectionItemPage(t),
+    image: createImageFranchiseSectionItemPage(t),
   });
   const { sectionId } = useParams();
   type franchiseSectionItemData = z.input<typeof schema>;
@@ -43,7 +48,7 @@ const CreateFranchiseSectionItemPage = () => {
       sectionId: sectionId,
       sortOrder: 0,
       active: true,
-      icon: null,
+      image: null,
     },
   });
   const { showAlert } = useAlert();
@@ -51,21 +56,21 @@ const CreateFranchiseSectionItemPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const handleRemoveImage = () => {
     setImagePreview(null);
-    setValue("icon", null);
+    setValue("image", null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   const onSubmit = async (data: franchiseSectionItemData) => {
     try {
       await createFranchiseSectionItem(data);
       showAlert({
-        title: t("franchiseSection.messages.createSuccess"),
+        title: t("franchiseSectionItem.messages.createSuccess"),
         type: "success",
         autoClose: 3000,
       });
       reset();
     } catch (err) {
       showAlert({
-        title: t("franchiseSection.messages.createFailed"),
+        title: t("franchiseSectionItem.messages.createFailed"),
         type: "error",
         autoClose: 3000,
       });
@@ -74,7 +79,9 @@ const CreateFranchiseSectionItemPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create Franchise Section Item</h1>
+        <h1 className="text-3xl font-bold">
+          {t("franchiseSectionItem.createTitle")}
+        </h1>
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -87,14 +94,18 @@ const CreateFranchiseSectionItemPage = () => {
         "
       >
         <div className="px-6 py-5 border-b border-slate-200 dark:border-neutral-800">
-          <h1 className="text-2xl font-semibold">Franchise Section Item</h1>
+          <h1 className="text-2xl font-semibold">
+            {t("franchiseSectionItem.title")}
+          </h1>
 
-          <p className="text-sm text-gray-500 mt-1">Franchise / Section Item</p>
+          <p className="text-sm text-gray-500 mt-1">
+            {t("franchiseSectionItem.breadcrumb")}
+          </p>
         </div>
         <div className="p-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
-              Icon
+              {t("franchiseSectionItem.fields.icon")}
             </label>
             <input
               ref={fileInputRef}
@@ -105,12 +116,12 @@ const CreateFranchiseSectionItemPage = () => {
                 const file = e.target.files?.[0];
                 if (!file) return;
 
-                setValue("icon", file, {
+                setValue("image", file, {
                   shouldValidate: true,
                   shouldDirty: true,
                 });
 
-                trigger("icon");
+                trigger("image");
 
                 setImagePreview(URL.createObjectURL(file));
               }}
@@ -185,7 +196,8 @@ const CreateFranchiseSectionItemPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Title <span className="text-red-500">*</span>
+                {t("franchiseSectionItem.fields.title")}{" "}
+                <span className="text-red-500">*</span>
               </label>
 
               <Input placeholder="Enter Title" {...register("title")} />
@@ -198,7 +210,7 @@ const CreateFranchiseSectionItemPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
-                Sort Order
+                {t("franchiseSectionItem.fields.sortOrder")}
               </label>
 
               <Input
@@ -209,7 +221,7 @@ const CreateFranchiseSectionItemPage = () => {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-2">
-                Description
+                {t("franchiseSectionItem.fields.description")}
               </label>
 
               <Textarea
@@ -241,9 +253,12 @@ const CreateFranchiseSectionItemPage = () => {
                   )}
                 />
                 <div>
-                  <p className="font-medium">Active</p>
+                  <p className="font-medium">
+                    {" "}
+                    {t("franchiseSectionItem.fields.active")}
+                  </p>
                   <p className="text-xs text-slate-500">
-                    {t("franchiseSection.activeDescription")}
+                    {t("franchiseSectionItem.activeDescription")}
                   </p>
                 </div>
               </label>
@@ -261,7 +276,7 @@ const CreateFranchiseSectionItemPage = () => {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate("/Home/franchise-section")}
+            onClick={() => navigate(`/Home/franchise-section/${sectionId}/items`)}
           >
             {t("common.cancel")}
           </Button>
