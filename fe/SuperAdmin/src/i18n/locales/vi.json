@@ -185,6 +185,10 @@
         "hotel": "Khách sạn",
         "facilities": "Cơ sở khách sạn",
         "staff": "Quản lý nhân viên",
+        "franchiseManagement": "Quản lý nhượng quyền",
+        "franchise": "Nhượng quyền",
+        "franchiseInfo": "Thông tin nhượng quyền",
+        "franchiseSection": "Khu vực nhượng quyền",
         "facilityManagement": "Quản lý cơ sở vật chất",
         "facility": "Cơ sở vật chất",
         "room": "Phòng",
@@ -711,6 +715,41 @@
             "updateFailed": "Cập nhật khu vực nhượng quyền thất bại"
         },
         "activeDescription": "Cho phép hiển thị khu vực nhượng quyền này."
+    },
+    "franchiseSectionItem": {
+        "title": "Nội dung Section Nhượng quyền",
+        "createTitle": "Tạo Nội dung Section Nhượng quyền",
+        "editTitle": "Chỉnh sửa nội dung section nhượng quyền",
+        "breadcrumb": "Nhượng quyền / Nội dung Section",
+        "fields": {
+            "title": "Tiêu đề",
+            "description": "Mô tả",
+            "icon": "Biểu tượng",
+            "sortOrder": "Thứ tự hiển thị",
+            "active": "Kích hoạt"
+        },
+        "placeholder": {
+            "title": "Nhập tiêu đề",
+            "description": "Nhập mô tả",
+            "sortOrder": "Nhập thứ tự hiển thị",
+            "search": "Tìm kiếm theo tiêu đề"
+        },
+        "button": {
+            "create": "Thêm nội dung section"
+        },
+        "status": {
+            "active": "Đang hoạt động",
+            "updateSuccess": "Cập nhật Nội dung Section Nhượng quyền thành công",
+            "updateFailed": "Cập nhật Nội dung Section Nhượng quyền thất bại",
+            "inactive": "Ngừng hoạt động"
+        },
+        "messages": {
+            "createSuccess": "Tạo nội dung section thành công",
+            "createFailed": "Tạo nội dung section thất bại",
+            "updateSuccess": "Cập nhật nội dung section thành công",
+            "updateFailed": "Cập nhật nội dung section thất bại"
+        },
+        "activeDescription": "Hiển thị nội dung này trên website"
     },
     "extraService": {
         "title": "Dịch vụ bổ sung",

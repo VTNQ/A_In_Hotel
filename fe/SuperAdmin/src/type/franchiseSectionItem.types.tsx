@@ -17,12 +17,16 @@ export interface FranchiseSectionItemTableProps {
   page: number;
   pageSize: number;
   total: number;
-  onEdit?: (franchiseSection: FranchiseSectionItem) => void;
+  onEdit?: (franchiseSectionItem: FranchiseSectionItem) => void;
+  onActive?:(franchiseSectionItem:FranchiseSectionItem)=>void;
+  onDeActive?:(franchiseSectionItem:FranchiseSectionItem)=>void;
   onPageChange: (page: number) => void;
 }
 export interface FranchiseSectionItemMenuProps {
   franchiseSectionItem: FranchiseSectionItem;
-  onEdit?: (franchiseSection: FranchiseSectionItem) => void;
+  onEdit?: (franchiseSectionItem: FranchiseSectionItem) => void;
+  onActive?:(franchiseSectionItem:FranchiseSectionItem)=>void;
+  onDeActive?:(franchiseSectionItem:FranchiseSectionItem)=>void;
 }
 export interface FranchiseSectionItemFilterProps {
   search: string;

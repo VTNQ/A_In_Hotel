@@ -16,4 +16,6 @@ public interface FranchiseSectionItemService {
                                               String searchValue, boolean all);
 
     FranchiseSectionItemResponse findById(Long id);
+
+    void updateStatus(Long id,Boolean status);
 }

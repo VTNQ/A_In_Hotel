@@ -2,12 +2,14 @@ import type { FranchiseSectionItemFilterProps } from "@/type/franchiseSectionIte
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useTranslation } from "react-i18next";
 
 const FranchiseSectionItemFilter = ({
   search,
   onSearchChange,
   SectionId,
 }: FranchiseSectionItemFilterProps) => {
+  const {t} = useTranslation();
   return (
     <div className="w-full min-w-0">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -17,13 +19,13 @@ const FranchiseSectionItemFilter = ({
             <Input
               className="pl-9 w-full"
               value={search}
-              placeholder="Search by title"
+              placeholder={t("franchiseSectionItem.placeholder.search")}
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
           <Button asChild className="whitespace-nowrap w-full sm:w-auto">
             <a href={`/Home/franchise-section/${SectionId}/items/create`}>
-              + New Franchise Section Item
+             + {t("franchiseSectionItem.button.create")}
             </a>
           </Button>
         </div>

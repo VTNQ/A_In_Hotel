@@ -1,11 +1,91 @@
+import { useEffect, useState } from "react";
+import type { FranchiseResponse } from "../type/franchise.type";
+import { getFranchise } from "../service/api/Franchise";
+import { getFranchiseSections } from "../service/api/FrachiseSection";
+import type {
+  franchiseSectionItemResponse,
+  franchiseSectionResponse,
+} from "../type/franchiseSection.type";
+import { File_URL } from "../setting/constant/app";
+import { useForm } from "react-hook-form";
+import type { franchiseInquiryFrom } from "../type/franchiseInquiry.type";
+import { useAlert } from "../components/alert-context";
+import { createFranchiseInquiry } from "../service/api/FranchiseInquiry";
+
 const FranchiseLandingPage = () => {
+  const [franchise, setFranchise] = useState<FranchiseResponse | null>(null);
+  const [sections, setSections] = useState<franchiseSectionResponse[]>([]);
+  const { showAlert } = useAlert();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<franchiseInquiryFrom>({
+    defaultValues: {
+      fullName: "",
+      phone: "",
+      email: "",
+      province: "",
+      investmentBudget: "",
+      propertyLocation: "",
+      landArea: "",
+      roomCount: "",
+      message: "",
+    },
+  });
+  const onSubmit = async (data: franchiseInquiryFrom) => {
+    try {
+      await createFranchiseInquiry(data);
+
+      showAlert({
+        type: "success",
+        title: "Gửi yêu cầu thành công",
+        description: "Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.",
+      });
+
+      reset();
+    } catch (error: any) {
+      console.error(error);
+
+      showAlert({
+        type: "error",
+        title: "Gửi yêu cầu thất bại",
+        description:
+          error?.response?.data?.message ||
+          "Đã có lỗi xảy ra, vui lòng thử lại.",
+      });
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const [franchiseRes, sectionRes] = await Promise.all([
+        getFranchise(),
+        getFranchiseSections({
+          page: 1,
+          size: 100,
+          filter: "active==true",
+          sort: "sortOrder,asc",
+        }),
+      ]);
+      setFranchise(franchiseRes?.data?.data ?? null);
+      setSections(sectionRes.data?.content || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <section className="relative min-h-[921px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img loading="lazy"
+          <img
+            loading="lazy"
             className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD19rfihsALINjEI7D6yjY24iIuJt_kqWaCgtFQArlaPkGxGIqe1aXYsWxpKz0bynRrjWUrJBTPPXxd6qxnCwd-IqCbyQzzKdHryMr8GpAoBVKi-n1bSEwxE-MHJY3FJbsV7COOmqiAPwfQqkj3P1kVUzkDDGyj99mNxslcUDDCWyOEa9RhhUXBhH5cmUoYsYgRqt_fOb6x_CXavMOGCiBeyWKg0n5FtBOwNW34eUI9lcuqcr5NPFLyQKtjP3czl01YCOhccC4tc1Y"
+            src={`${File_URL}${franchise?.bannerImage?.url}`}
+            alt={franchise?.bannerImage?.altText}
           />
           <div className="absolute inset-0 bg-[rgb(1,38,31)]/20 mix-blend-multiply" />
         </div>
@@ -22,33 +102,119 @@ const FranchiseLandingPage = () => {
             font-normal"
               style={{ letterSpacing: "-0.02em" }}
             >
-              Living, Managed
+              {franchise?.title}
             </h1>
             <p className="font-serif text-[18px] font-normal text-on-surface mb-10 leading-relaxed">
-              Experience a curated lifestyle where community and architectural
-              intentionality meet. We provide high-end, flexible living spaces
-              designed for the modern global citizen.
+              {franchise?.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
-              <button
-                className="bg-[rgb(149,72,36)] text-white px-10 py-5 font-serif
-                text-[12px] line-clamp-1 font-semibold tracking-widest uppercase 
-                hover:bg-[rgb(117,48,13)] transition-all"
-              >
-                Explore Spaces
-              </button>
-              <button
-                className="border border-[rgb(149,72,36)] text-[rgb(149,72,36)] px-10 py-5 
-            font-serif text-[12px] line-clamp-1 font-semibold uppercase hover:bg-[rgb(149,72,36)]
-            hover:text-white transition-all"
-              >
-                Our Story
-              </button>
+              {franchise?.primaryButtonText && (
+                <a
+                  href={franchise.primaryButtonUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+        inline-flex items-center justify-center
+        bg-[rgb(149,72,36)]
+        text-white
+        px-10 py-5
+        font-serif
+        text-[12px]
+        font-semibold
+        tracking-widest
+        uppercase
+        hover:bg-[rgb(117,48,13)]
+        transition-all
+      "
+                >
+                  {franchise.primaryButtonText}
+                </a>
+              )}
+
+              {franchise?.secondaryButtonText && (
+                <a
+                  href={franchise.secondaryButtonUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+        inline-flex items-center justify-center
+        border border-[rgb(149,72,36)]
+        text-[rgb(149,72,36)]
+        px-10 py-5
+        font-serif
+        text-[12px]
+        font-semibold
+        tracking-widest
+        uppercase
+        hover:bg-[rgb(149,72,36)]
+        hover:text-white
+        transition-all
+      "
+                >
+                  {franchise.secondaryButtonText}
+                </a>
+              )}
             </div>
           </div>
         </div>
       </section>
-      <section className="py-[120px] px-[48px] max-w-[1280px] mx-auto">
+      {sections.map((section) => (
+        <section key={section.id} className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              {section.subTitle && (
+                <p className="uppercase tracking-[0.25em] text-[#954824] text-sm mb-4">
+                  {section.subTitle}
+                </p>
+              )}
+
+              <h2 className="text-4xl font-semibold text-[#01261f] mb-5">
+                {section.title}
+              </h2>
+
+              {section.description && (
+                <p className="max-w-3xl mx-auto text-gray-600 leading-8">
+                  {section.description}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {section.items
+                ?.sort((a, b) => a.sortOrder - b.sortOrder)
+                .map((item: franchiseSectionItemResponse) => (
+                  <div
+                    key={item.id}
+                    className="
+                      p-8
+                      border
+                      rounded-xl
+                      bg-white
+                      hover:border-[#954824]
+                      hover:shadow-lg
+                      transition
+                    "
+                  >
+                    {item.icon && (
+                      <img
+                        src={`${File_URL}${item.icon.url}`}
+                        alt={item.icon.altText}
+                        className="w-16 h-16 object-contain mb-6"
+                      />
+                    )}
+
+                    <h3 className="text-xl font-semibold mb-4">{item.title}</h3>
+
+                    <p className="text-gray-600 leading-7">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </section>
+      ))}
+      {/* <section className="py-[120px] px-[48px] max-w-[1280px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div className="max-w-xl">
             <h2
@@ -74,20 +240,23 @@ const FranchiseLandingPage = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-[24px]">
           <div className="md:col-span-7 h-[600px] overflow-hidden">
-            <img loading="lazy"
+            <img
+              loading="lazy"
               className="w-full h-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2zHkJSZD9zsRxjOXasGl9dUy9gCckrMRCwsVHel0OfXh4vqr-4acQY61UAS_d8NkbkQmTNhnK5Yu_iccrb-Ab8VWwp6AI9E2zA0-7Ac4vemhHLJrLZYod0GE9CD-r-fycx1fRztb3tSN00iRV1eXppINcLDZ-M1b56tswJLJzYfQWzcRYDXBABnfRliYQafNqHTchA0_cKafLzKKnW9cBewVIJY-Yxhk42HDKWQbxDmtNrU5UU5K0hLGQxoB36S-imFLBzsO6MT4"
             />
           </div>
           <div className="md:col-span-5 flex flex-col gap-[24px]">
             <div className="h-[288px] overflow-hidden">
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3jfdb8DuGTgDDlcmuVhc1w53IPjIw-8_HklWyKleQZAo1_WSTAIWhAwfI76YLqceXWI-kNuYxO-V37bTFjhBwCJ9TNZF_YK6oilhsLXwGNbbqYAJVhgz2drJeRcCfKqY2-JwPl2m70FdM7Weo0wb6J5g9nschSJ-SiLRGl10FqI8S_wNUCgQsSCtATOuRN1_K9AI0Hu4C2KcivFxFiC_zzJqUuOUmYlMFWyTO3Nc-WNXnhOr5tUUlLaohk2KCypadLkzf7TZkuWk"
               />
             </div>
             <div className="h-[288px] overflow-hidden">
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHbQnl4L4GlftqgiVoN6cSbdYrTwlxwbL1ziYKkx_VjAwhSMiEBI2X_PigrGoey0E10_woSb0Yuk98Td9v26z-PQNFTMW9WUU6q3-lGNDoGghTNz3JYw35iR2qMMoEy9fKvL2-4IfTOdsD0DtBRry_Kj4kq69cIaGjSRhAN29GeRJqoh2ZzvASaHinNZ_zXhMArsmtsOjOBMrhCXhDg_9dAzTmuk8dLQw1JW2qWYBQgctQEu4bv9bGQC5oqbkZ3UjdNiewYTcWJLI"
               />
@@ -106,7 +275,8 @@ const FranchiseLandingPage = () => {
                 absolute top-8 left-8 opacity-10"
               style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
             ></div>
-            <img loading="lazy"
+            <img
+              loading="lazy"
               className="relative z-10 w-full h-auto object-cover border border-[rgb(193,200,196)] "
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDudmWEeaFvJtAhZU4DOVu7vcmXwvqFlzkxLndWHQKPJhSg36Esfb9hCKd-Ehnv5VH0Kl5c7Ef-Z6PZbPE2hLWZ50t0atLIeCzOIm2LN9crIR8myYwyccPpr7qQxC8PIsg6cxMCjNVfxbD_GXhjzEe4j7R3YQpf-_f7pkZ0SnC-8AUP1kzM1woc7Svpy9Qpanao1Nr6NHu6Y9fK9qCg1FdK18lDOjwwCKm_eZ3FwdORlZ3h7_bOCgKumLVXiREb30-DFWciWnocEcM"
             />
@@ -155,8 +325,8 @@ const FranchiseLandingPage = () => {
             </div>
           </div>
         </div>
-      </section>
-      <div className="bg-[rgb(255,248,245)]">
+      </section> */}
+      {/* <div className="bg-[rgb(255,248,245)]">
         <section className="py-[120px] px-[48px] max-w-[1280px] mx-auto text-center">
           <h2
             className="font-headline text-[32px] leading-3 font-normal 
@@ -251,7 +421,7 @@ const FranchiseLandingPage = () => {
             </div>
           </div>
         </section>
-      </div>
+      </div> */}
       <section className="bg-[rgb(1,38,31)] text-white py-[120px]">
         <div className="px-[48px] max-w-3xl mx-auto text-center">
           <h2
@@ -267,7 +437,10 @@ const FranchiseLandingPage = () => {
             Whether you are an investor, a partner, or a future resident, we
             invite you to be part of our urban sanctuary.
           </p>
-          <form className="space-y-8 text-left bg-[rgb(255,248,245)] p-12 shadow-sm">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 text-left bg-[rgb(255,248,245)] p-12 shadow-sm"
+          >
             <div className="border-b border-[rgb(1,38,31)] py-2">
               <label
                 className="block  font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
@@ -279,8 +452,16 @@ const FranchiseLandingPage = () => {
                 className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                         placeholder:text-outline-variant font-serif"
                 placeholder="Họ tên Quý khách"
+                {...register("fullName", {
+                  required: "Vui lòng nhập họ tên",
+                })}
                 type="text"
               />
+              {errors.fullName && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.fullName.message}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -295,8 +476,16 @@ const FranchiseLandingPage = () => {
                   className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="abc@gmail.com"
+                  {...register("email", {
+                    required: "Vui lòng nhập email",
+                  })}
                   type="email"
                 />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
               <div className="border-b border-[rgb(1,38,31)] py-2">
                 <label
@@ -306,11 +495,19 @@ const FranchiseLandingPage = () => {
                   Số điện thoại
                 </label>
                 <input
+                  {...register("phone", {
+                    required: "Vui lòng nhập số điện thoại",
+                  })}
                   className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="+84 123 456 789"
                   type="tel"
                 />
+                {errors.phone && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.phone.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -321,9 +518,15 @@ const FranchiseLandingPage = () => {
               >
                 Khu vực
               </label>
-              <select className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface font-serif">
-                <option value="">Tỉnh/thành phố (trước sát nhập)</option>
+              <select
+                {...register("province")}
+                className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface font-serif"
+              >
+                <option value="">Tỉnh/thành phố</option>
+                <option value="HCM">TP.HCM</option>
+                <option value="Ha Noi">Hà Nội</option>
               </select>
+              
             </div>
 
             <div className="border-b border-[rgb(1,38,31)] py-2">
@@ -334,11 +537,19 @@ const FranchiseLandingPage = () => {
                 Vị trí bất động sản
               </label>
               <input
+                {...register("propertyLocation", {
+                  required: "Vui lòng nhập vị trí bất động sản",
+                })}
                 className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                         placeholder:text-outline-variant font-serif"
                 placeholder="Vui lòng nhập địa chỉ cụ thể bất động sản"
                 type="text"
               />
+              {errors.propertyLocation && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.propertyLocation.message}
+                  </p>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -350,11 +561,19 @@ const FranchiseLandingPage = () => {
                   Tổng diện tích đất (m²)
                 </label>
                 <input
+                  {...register("landArea", {
+                    required: "Vui lòng nhập diện tích đất",
+                  })}
                   className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="Tối thiểu 250 m²"
                   type="text"
                 />
+                {errors.landArea && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.landArea.message}
+                  </p>
+                )}
               </div>
               <div className="border-b border-[rgb(1,38,31)] py-2">
                 <label
@@ -364,14 +583,42 @@ const FranchiseLandingPage = () => {
                   Số phòng
                 </label>
                 <input
+                  {...register("roomCount", {
+                    required: "Vui lòng nhập số phòng",
+                  })}
                   className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
                           placeholder:text-outline-variant font-serif"
                   placeholder="Tối thiểu 30 phòng"
                   type="text"
                 />
+                {errors.roomCount && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.roomCount.message}
+                  </p>
+                )}
               </div>
             </div>
+            <div className="border-b border-[rgb(1,38,31)] py-2">
+              <label
+                className="block font-sans text-[rgb(1,38,31)] text-[12px] leading-5 font-semibold"
+                style={{ letterSpacing: "0.08em" }}
+              >
+                Ngân sách đầu tư
+              </label>
 
+              <input
+                {...register("investmentBudget")}
+                className="w-full outline-none bg-transparent border-none focus:ring-0 text-on-surface
+    placeholder:text-outline-variant font-serif"
+                placeholder="Ví dụ: 10 tỷ VNĐ"
+                type="text"
+              />
+                {errors.investmentBudget && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.investmentBudget.message}
+                  </p>
+                )}
+            </div>
             <div className="border-b border-[rgb(1,38,31)] py-2">
               <label
                 className="block font-sans text-[12px] leading-3 font-semibold text-[rgb(1,38,31)] uppercase mb-1"

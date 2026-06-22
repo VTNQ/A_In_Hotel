@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -42,6 +44,13 @@ public class FranchiseSection {
     @UpdateTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
     private OffsetDateTime updatedAt;
+    @OneToMany(
+            mappedBy = "section",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("sortOrder ASC")
+    private List<FranchiseSectionItem> items = new ArrayList<>();
 
     @Column(name = "created_by")
     private Long createdBy;

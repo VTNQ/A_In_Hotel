@@ -24,6 +24,8 @@ const FranchiseSectionItemTable = ({
   pageSize,
   onEdit,
   total,
+  onActive,
+  onDeActive,
   onPageChange,
 }: FranchiseSectionItemTableProps) => {
   const { t } = useTranslation();
@@ -45,11 +47,11 @@ const FranchiseSectionItemTable = ({
       <TableHeader>
         <TableRow>
           <TableHead sortable sortKey="title" width={220}>
-            Title
+            {t("franchiseSectionItem.fields.title")}
           </TableHead>
           <TableHead width={220}>Icon</TableHead>
           <TableHead sortable sortKey="sortOrder">
-            Sort Order
+            {t("franchiseSectionItem.fields.sortOrder")}
           </TableHead>
           <TableHead sortable sortKey="status" width={220}>
             {t("common.status")}
@@ -93,14 +95,16 @@ const FranchiseSectionItemTable = ({
                   }`}
                 >
                   {row.active
-                    ? t("franchiseSection.status.active")
-                    : t("franchiseSection.status.inactive")}
+                    ? t("franchiseSectionItem.status.active")
+                    : t("franchiseSectionItem.status.inactive")}
                 </span>
               </TableCell>
               <TableCell>
                 <FranchiseSectionItemActionMenu
                   franchiseSectionItem={row}
                   onEdit={onEdit}
+                  onActive={onActive}
+                  onDeActive={onDeActive}
                 />
               </TableCell>
             </TableRow>

@@ -154,4 +154,11 @@ public class FranchiseSectionItemServiceImpl implements FranchiseSectionItemServ
                 .map(franchiseSectionItem -> mapper.toResponse(franchiseSectionItem,imageRepository))
                 .orElseThrow(()->new EntityNotFoundException("Franchise section item not found with id"));
     }
+
+    @Override
+    public void updateStatus(Long id, Boolean status) {
+        FranchiseSectionItem franchiseSectionItem = repository.getReferenceById(id);
+        franchiseSectionItem.setActive(status);
+        repository.save(franchiseSectionItem);
+    }
 }

@@ -59,4 +59,12 @@ public class FranchiseSectionItemController {
     ) {
         return ResponseEntity.ok(RequestResponse.success(service.findById(id)));
     }
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<RequestResponse<Void>> updateStatus(
+            @PathVariable Long id,
+            @RequestParam Boolean status
+    ){
+        service.updateStatus(id,status);
+        return ResponseEntity.ok(RequestResponse.success("Franchise Section Item Update status Successfully"));
+    }
 }
