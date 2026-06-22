@@ -4,7 +4,6 @@ import {
 } from "@/service/api/FranchiseSectionItem";
 import { File_URL } from "@/setting/constant/app";
 import type { FranchiseSectionItemEditProps } from "@/type/franchiseSectionItem.types";
-import { createImageFranchiseSectionItemPage } from "@/validation/image.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
