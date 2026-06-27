@@ -627,6 +627,7 @@ const FranchiseLandingPage = () => {
                 Message
               </label>
               <textarea
+              {...register("message")}
                 className="w-full bg-transparent outline-none border-none focus:ring-0 text-on-surface placeholder:text-outline-variant font-serif resize-none"
                 rows={4}
                 placeholder="Tell us how you'd like to collaborate..."
