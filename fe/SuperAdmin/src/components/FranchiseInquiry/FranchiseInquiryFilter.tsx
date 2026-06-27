@@ -1,6 +1,5 @@
 import type { franchiseInquiryFilterProps } from "@/type/franchiseInquiry.types";
 import { Search } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
@@ -8,7 +7,6 @@ const FranchiseInquiryFilter = ({
   search,
   onSearchChange,
 }: franchiseInquiryFilterProps) => {
-  const { t } = useTranslation();
   return (
     <div className="w-full min-w-0">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

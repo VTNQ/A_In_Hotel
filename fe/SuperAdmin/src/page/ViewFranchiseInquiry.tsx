@@ -1,4 +1,4 @@
-import { useAlert } from "@/components/alert-context";
+
 import FranchiseInquiryFilter from "@/components/FranchiseInquiry/FranchiseInquiryFilter";
 import FranchiseInquiryTable from "@/components/FranchiseInquiry/FranchiseInquiryTable";
 import { getFranchiseInquiry } from "@/service/api/FranchiseInquiry";
