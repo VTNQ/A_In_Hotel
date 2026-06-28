@@ -6,6 +6,8 @@
         "action": "Thao tác",
         "edit": "Sửa",
         "save": "Lưu",
+        "yes": "Có",
+        "no": "Không",
         "view": "Xem chi tiết",
         "cancel": "Hủy",
         "noData": "Không có dữ liệu",
@@ -177,6 +179,7 @@
         "dashboards": "Tổng quan",
         "home": "Trang chủ",
         "user": "Quản lý người dùng",
+        "franchiseInquiry": "Yêu cầu nhượng quyền",
         "coupon": "Quản lý khuyến mãi",
         "promotion": "Quản lý chương trình khuyến mãi",
         "voucher": "Quản lý voucher",
@@ -335,6 +338,26 @@
             "packageOvernight": "Qua đêm",
             "packageFullDay": "Theo tháng"
         }
+    },
+    "franchiseInquiry": {
+        "title": "Yêu cầu nhượng quyền",
+        "description": "Xem và quản lý các yêu cầu nhượng quyền từ các đối tác tiềm năng.",
+        "searchPlaceholder": "Tìm theo tên, email hoặc số điện thoại...",
+        "empty": "Không có yêu cầu nhượng quyền.",
+        "loading": "Đang tải dữ liệu...",
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "province": "Tỉnh/Thành phố",
+        "propertyLocation": "Địa điểm dự án",
+        "landArea": "Diện tích",
+        "roomCount": "Số phòng",
+        "contacted": "Đã liên hệ",
+        "createdAt": "Ngày tạo",
+        "noMessage": "Không có lời nhắn",
+        "notContacted": "Chưa liên hệ",
+        "markAsContacted": "Đánh dấu đã liên hệ",
+        "detail": "Xem chi tiết"
     },
     "customer": {
         "errorLoad": "Không thể tải dữ liệu",
