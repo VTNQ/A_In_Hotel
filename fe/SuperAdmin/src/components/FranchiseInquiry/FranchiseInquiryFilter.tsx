@@ -1,12 +1,13 @@
 import type { franchiseInquiryFilterProps } from "@/type/franchiseInquiry.types";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { useTranslation } from "react-i18next";
 
 const FranchiseInquiryFilter = ({
   search,
   onSearchChange,
 }: franchiseInquiryFilterProps) => {
+  const { t } = useTranslation();
   return (
     <div className="w-full min-w-0">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -16,13 +17,11 @@ const FranchiseInquiryFilter = ({
             <Input
               className="pl-9 w-full"
               value={search}
-              placeholder="Search by franchise inquiry"
+              placeholder={t("franchiseInquiry.searchPlaceholder")}
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
-          <Button asChild className="whitespace-nowrap w-full sm:w-auto">
-            <a>+ Create Franchise Inquiry</a>
-          </Button>
+         
         </div>
       </div>
     </div>

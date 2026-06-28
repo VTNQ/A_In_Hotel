@@ -40,6 +40,7 @@ import FranchiseSectionPage from './page/FranchiseSectionPage'
 import CreateFranchiseSectionPage from './page/CreateFranchiseSectionPage'
 import FranchiseSectionItemPage from './page/FranchiseSectionItemPage'
 import CreateFranchiseSectionItemPage from './page/CreateFranchiseSectionItemPage'
+import ViewFranchiseInquiry from './page/ViewFranchiseInquiry'
 
 function App() {
 
@@ -88,6 +89,7 @@ function App() {
           <Route path='franchise-section/create' element={<CreateFranchiseSectionPage/>}/>
           <Route  path="franchise-section/:sectionId/items" element={<FranchiseSectionItemPage/>}/>
           <Route path='franchise-section/:sectionId/items/create' element={<CreateFranchiseSectionItemPage/>}/>
+          <Route path='franchise-inquiry' element={<ViewFranchiseInquiry/>}/>
         </Route>
       </Routes>
     </>

@@ -56,12 +56,11 @@ const ViewFranchiseInquiry = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-semibold dark:text-white">
-              Franchise Inquiry
+              {t("franchiseInquiry.title")}
             </h1>
 
             <p className="text-sm text-gray-500">
-              View and manage franchise inquiries submitted by potential
-              partners.
+              {t("franchiseInquiry.description")}
             </p>
           </div>
         </div>

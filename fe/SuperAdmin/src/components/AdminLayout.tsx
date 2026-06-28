@@ -194,6 +194,10 @@ export default function AdminLayout() {
               label: t("sidebar.franchiseSection"),
               path: "/Home/franchise-section",
             },
+            {
+              label: t("sidebar.franchiseInquiry"),
+              path: "/Home/franchise-inquiry",
+            },
           ],
         },
       ],

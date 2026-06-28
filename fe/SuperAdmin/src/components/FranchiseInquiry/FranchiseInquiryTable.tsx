@@ -48,29 +48,29 @@ const FranchiseInquiryTable = ({
       <TableHeader>
         <TableRow>
           <TableHead sortable sortKey="fullName">
-            Full Name
+            {t("franchiseInquiry.fullName")}
           </TableHead>
           <TableHead sortable sortKey="phone">
-            Phone
+            {t("franchiseInquiry.phone")}
           </TableHead>
           <TableHead sortable sortKey="email">
-            Email
+            {t("franchiseInquiry.email")}
           </TableHead>
           <TableHead sortable sortKey="province">
-            Province
+            {t("franchiseInquiry.province")}
           </TableHead>
           <TableHead sortable sortKey="propertyLocation">
-            Property Location
+            {t("franchiseInquiry.propertyLocation")}
           </TableHead>
           <TableHead sortable sortKey="landArea">
-            Land Area
+            {t("franchiseInquiry.landArea")}
           </TableHead>
           <TableHead sortable sortKey="roomCount">
-            Room Count
+            {t("franchiseInquiry.roomCount")}
           </TableHead>
-          <TableHead>Contacted</TableHead>
+          <TableHead>{t("franchiseInquiry.contacted")}</TableHead>
           <TableHead sortable sortKey="createdAt">
-            Created At
+            {t("franchiseInquiry.createdAt")}
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -99,12 +99,12 @@ const FranchiseInquiryTable = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-pointer">
-                        {row.contacted ? "Yes" : "No"}
+                        {row.contacted ? t("common.yes") : t("common.no")}
                       </span>
                     </TooltipTrigger>
 
                     <TooltipContent>
-                      <p>{row.message || "No message"}</p>
+                      <p>{row.message || t("franchiseInquiry.noMessage")}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
