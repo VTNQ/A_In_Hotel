@@ -1,4 +1,3 @@
-
 import FranchiseInquiryFilter from "@/components/FranchiseInquiry/FranchiseInquiryFilter";
 import FranchiseInquiryTable from "@/components/FranchiseInquiry/FranchiseInquiryTable";
 import { getFranchiseInquiry } from "@/service/api/FranchiseInquiry";
@@ -18,6 +17,7 @@ const ViewFranchiseInquiry = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
   const fetchFranchiseInquiry = useCallback(async () => {
     try {
       setLoading(true);
@@ -25,6 +25,7 @@ const ViewFranchiseInquiry = () => {
         page: page,
         size: 5,
         sort: sortKey ? `${sortKey},${sortDir}` : "id,desc",
+        searchValue:searchValue,
       });
       setData(response?.data?.content);
       setTotalPages(response.data.totalElements);
@@ -33,7 +34,7 @@ const ViewFranchiseInquiry = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, sortKey, sortDir]);
+  }, [page, sortKey, sortDir, searchValue]);
   useEffect(() => {
     fetchFranchiseInquiry();
   }, [fetchFranchiseInquiry]);
@@ -49,7 +50,7 @@ const ViewFranchiseInquiry = () => {
 
     setSortKey(key);
   };
-  const [searchValue, setSearchValue] = useState("");
+
   return (
     <div className="p-6 bg-gray-50 dark:bg-neutral-950 min-h-screen">
       <div className="mx-auto w-full max-w-[1400px] px-4 lg:px-6 py-4 space-y-4">

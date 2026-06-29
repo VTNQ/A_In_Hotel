@@ -13,7 +13,7 @@ const FranchiseInquiryFilter = ({
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center min-w-0">
           <div className="relative w-full sm:w-[260px]">
-            <Search className="absolute left-3 top-1/2 translate-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-1 top-2 translate-1/2 h-4 w-4 text-gray-400" />
             <Input
               className="pl-9 w-full"
               value={search}
