@@ -64,14 +64,14 @@ const BookingPaymentSummary = ({
             </div>
           </div>
         </div>
-        <button
+        {/* <button
           className="w-full bg-[rgb(251,247,242)] text-[rgb(24,28,32)] py-[16px] px-[24px] rounded-lg font-sans text-[14px] line-clamp-1 font-semibold 
          shadow-lg shadow-black/5 border 
          border-outline-variant hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-[16px]"
         >
           {t("booking.staySummary.confirmBooking")}
           <ArrowRight size={20} />
-        </button>
+        </button> */}
         <p className="text-center font-sans text-on-surface mt-[16px] flex items-center justify-center gap-[4px]">
           <Verified size={20} className="text-[14px]" />
           {t("booking.staySummary.securePayment")}
