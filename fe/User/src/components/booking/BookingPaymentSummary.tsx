@@ -1,4 +1,4 @@
-import { ArrowRight, Verified } from "lucide-react";
+import { Verified } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const BookingPaymentSummary = ({
