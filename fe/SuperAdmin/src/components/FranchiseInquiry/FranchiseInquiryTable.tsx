@@ -47,29 +47,29 @@ const FranchiseInquiryTable = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead sortable sortKey="fullName">
+          <TableHead sortable sortKey="fullName" width={220}>
             {t("franchiseInquiry.fullName")}
           </TableHead>
-          <TableHead sortable sortKey="phone">
+          <TableHead sortable sortKey="phone" width={220}>
             {t("franchiseInquiry.phone")}
           </TableHead>
-          <TableHead sortable sortKey="email">
+          <TableHead sortable sortKey="email" width={220}>
             {t("franchiseInquiry.email")}
           </TableHead>
-          <TableHead sortable sortKey="province">
+          <TableHead sortable sortKey="province" width={220}>
             {t("franchiseInquiry.province")}
           </TableHead>
-          <TableHead sortable sortKey="propertyLocation">
+          <TableHead sortable sortKey="propertyLocation" width={220}>
             {t("franchiseInquiry.propertyLocation")}
           </TableHead>
-          <TableHead sortable sortKey="landArea">
+          <TableHead sortable sortKey="landArea" width={220}>
             {t("franchiseInquiry.landArea")}
           </TableHead>
-          <TableHead sortable sortKey="roomCount">
+          <TableHead sortable sortKey="roomCount" width={220}>
             {t("franchiseInquiry.roomCount")}
           </TableHead>
-          <TableHead>{t("franchiseInquiry.contacted")}</TableHead>
-          <TableHead sortable sortKey="createdAt">
+          <TableHead width={220}>{t("franchiseInquiry.contacted")}</TableHead>
+          <TableHead sortable sortKey="createdAt" width={220}>
             {t("franchiseInquiry.createdAt")}
           </TableHead>
         </TableRow>

@@ -15,6 +15,9 @@ public class FranchiseInquiryResponse {
     private String phone;
     private String email;
     private String province;
+    private String propertyLocation;
+    private String landArea;
+    private String roomCount;
     private String message;
     private Boolean contacted;
     private OffsetDateTime createdAt;
