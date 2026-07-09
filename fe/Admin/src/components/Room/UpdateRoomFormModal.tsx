@@ -82,7 +82,7 @@ const UpdateRoomFormModal = ({
 
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [tempImages, setTempImages] = useState<(File | string)[]>([]);
-  const [oldImages, setOldImages] = useState<string[]>([]);
+  
 
   const [initialSnapshot, setInitialSnapshot] = useState<string>("");
 
@@ -143,7 +143,7 @@ const UpdateRoomFormModal = ({
     
 
         setTempImages(oldImgs);
-
+        
         const form = {
           roomName: room?.roomName || "",
           idRoomType: String(room?.idRoomType || ""),
@@ -186,7 +186,6 @@ const UpdateRoomFormModal = ({
   const hasChanges = () => {
     const current = {
       ...watch(),
-      oldImages,
       images,
     };
 
@@ -312,7 +311,7 @@ const UpdateRoomFormModal = ({
               )}
             </div>
 
-            <div className="grid grid-cols-1  gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 font-medium">
                   {t("room.createOrUpdate.roomName")} *
