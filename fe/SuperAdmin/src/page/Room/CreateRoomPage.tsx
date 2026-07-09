@@ -19,14 +19,11 @@ const CreateRoomPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const roomSchema = z.object({
-
     roomName: z.string().min(1, t("room.validation.roomNameRequired")),
 
     idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
 
     hotelId: z.string().min(1, t("room.validation.hotelRequired")),
-
-   
 
     area: z
       .string()
@@ -156,7 +153,7 @@ const CreateRoomPage = () => {
         type: "error",
         autoClose: 4000,
       });
-    } 
+    }
   };
   const fetchCategories = async () => {
     try {
@@ -184,6 +181,48 @@ const CreateRoomPage = () => {
     fetchCategories();
     fetchHotels();
   }, []);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) return;
+
+    const currentImages = watch("image") ?? [];
+
+    const newImages = [...currentImages, ...files];
+
+    setValue("image", newImages, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setPreviewReview((prev) => [
+      ...prev,
+      ...files.map((file) => URL.createObjectURL(file)),
+    ]);
+
+    trigger("image");
+
+    // Cho phép chọn lại cùng một file
+    e.target.value = "";
+  };
+  const handleRemoveImage = (index: number) => {
+    setPreviewReview((prev) => prev.filter((_, i) => i !== index));
+
+    const currentImages = watch("image") ?? [];
+
+    setValue(
+      "image",
+      Array.isArray(currentImages)
+        ? currentImages.filter((_, i) => i !== index)
+        : [],
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+
+    trigger("image");
+  };
   return (
     <div className="space-y-8">
       <div>
@@ -199,8 +238,7 @@ const CreateRoomPage = () => {
         />
       </div>
       <div className="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 space-y-6">
-        <div >
-          
+        <div>
           <div>
             <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.roomName")}
@@ -269,7 +307,7 @@ const CreateRoomPage = () => {
               </p>
             )}
           </div>
-      
+
           <div>
             <label className="text-sm font-medium text-gray-700 dark:text-neutral-300">
               {t("room.createOrUpdate.area")}
@@ -392,44 +430,34 @@ const CreateRoomPage = () => {
                 type="file"
                 accept="image/*"
                 multiple
-                className="absolute inset-0 z-10 cursor-pointer opacity-0"
-                onChange={(e) => {
-                  const files = Array.from(e.target.files || []);
-                  if (!files.length) return;
-                  setValue("image", files, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                  trigger("image")
-                  setPreviewReview(
-                    files.map((file) => URL.createObjectURL(file)),
-                  );
-                }}
+                hidden
+                onChange={handleImageChange}
               />
-              {errors.image && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.image.message}
-                </p>
-              )}
-              <div className="rounded-xl border-2 border-dashed border-slate-300 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800 p-4 hover:border-[#42578E] transition">
+
+              <div className="rounded-xl border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-slate-50 dark:bg-background p-4">
                 {imagePreview.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-10 text-center">
-                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-neutral-700">
-                      <PictureInPicture className="dark:text-neutral-400" />
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex cursor-pointer flex-col items-center justify-center py-10 text-center"
+                  >
+                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-background">
+                      <PictureInPicture className="text-slate-700 dark:text-slate-200" />
                     </div>
-                    <p className="text-sm font-medium text-slate-600 dark:text-neutral-300">
+
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
                       {t("room.createOrUpdate.clickSelectImages")}
                     </p>
-                    <p className="text-xs text-slate-400 dark:text-neutral-500">
+
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
                       {t("room.createOrUpdate.selectFiles")}
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                     {imagePreview.map((src, idx) => (
                       <div
                         key={idx}
-                        className="group relative overflow-hidden rounded-xl border bg-white shadow-sm"
+                        className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
                       >
                         <img
                           src={src}
@@ -437,36 +465,29 @@ const CreateRoomPage = () => {
                           className="h-32 w-full object-cover transition-transform group-hover:scale-105"
                         />
 
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition" />
+                        <div className="absolute inset-0 bg-black/30 opacity-0 transition group-hover:opacity-100" />
 
-                        {/* Remove button */}
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-
-                            setPreviewReview((prev) =>
-                              prev.filter((_, i) => i !== idx),
-                            );
-
-                            setValue(
-                              "image",
-                              Array.isArray(watch("image"))
-                                ? watch("image").filter((_, i) => i !== idx)
-                                : [],
-                              {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              },
-                            );
+                            handleRemoveImage(idx);
                           }}
-                          className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100"
+                          className="absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition hover:bg-red-600 group-hover:opacity-100"
                         >
                           ✕
                         </button>
                       </div>
                     ))}
+
+                    {/* Ô thêm ảnh */}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 text-3xl font-bold text-slate-400 transition hover:border-[#42578E] hover:text-[#42578E]"
+                    >
+                      +
+                    </button>
                   </div>
                 )}
               </div>
