@@ -34,7 +34,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   const roomSchema = z.object({
     status: z.string().optional(),
 
-
     roomName: z.string().min(1, t("room.validation.roomNameRequired")),
 
     idRoomType: z.string().min(1, t("room.validation.roomTypeRequired")),
@@ -83,11 +82,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
 
     note: z.string().optional(),
 
-    image: z
-      .array(z.instanceof(File))
-      .min(1, t("common.required"))
-      .max(5, t("room.createOrUpdate.maxImages"))
-      .optional(),
+    image: z.any().optional(),
     oldImages: z.array(z.string()).optional(),
   });
   type FormData = z.infer<typeof roomSchema>;
@@ -147,7 +142,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   };
   const onSubmitForm = async (data: FormData) => {
     try {
-      const cleanOldImages = (data.oldImages || []).map((img) =>
+      const cleanOldImages = (watch("oldImages") || []).map((img) =>
         img.replace(File_URL, ""),
       );
 
@@ -172,7 +167,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
         autoClose: 4000,
       });
       reset({
-  
         roomName: "",
         idRoomType: "",
         hotelId: "",
@@ -199,7 +193,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
   };
   const handleClose = () => {
     reset({
-
       roomName: "",
       idRoomType: "",
       hotelId: "",
@@ -239,7 +232,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
           hourlyAdditionalPrice: String(
             response?.data?.data?.hourlyAdditionalPrice ?? "",
           ),
-         overnightPrice: String(response?.data?.data?.overnightPrice ?? ""),
+          overnightPrice: String(response?.data?.data?.overnightPrice ?? ""),
           note: response?.data?.data?.note || "",
           image: [],
           oldImages: oldImages,
@@ -255,6 +248,68 @@ const RoomEdit: React.FC<RoomEditProps> = ({
     fetchCategories();
     fetchHotels();
   }, [open, roomId]);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) return;
+
+    const currentImages = watch("image") ?? [];
+
+    const newImages = [...currentImages, ...files];
+
+    setValue("image", newImages, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setPreviewReview((prev) => [
+      ...prev,
+      ...files.map((file) => URL.createObjectURL(file)),
+    ]);
+
+    trigger("image");
+
+    // Cho phép chọn lại cùng một file
+    e.target.value = "";
+  };
+  const handleRemoveImage = (index: number) => {
+  const oldImages = watch("oldImages") ?? [];
+  const newImages = watch("image") ?? [];
+
+  // Xóa preview
+  const removedPreview = imagePreview[index];
+  if (removedPreview.startsWith("blob:")) {
+    URL.revokeObjectURL(removedPreview);
+  }
+
+  setPreviewReview((prev) => prev.filter((_, i) => i !== index));
+
+  if (index < oldImages.length) {
+    // Xóa ảnh cũ
+    setValue(
+      "oldImages",
+      oldImages.filter((_, i) => i !== index),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+  } else {
+    // Xóa ảnh mới
+    const newIndex = index - oldImages.length;
+
+    setValue(
+      "image",
+      newImages.filter(( i:any) => i !== newIndex),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+  }
+
+  trigger(["oldImages", "image"]);
+};
   if (!open || !roomId) return null;
   return (
     <Dialog open={!!open} onOpenChange={(o) => !o && onClose()}>
@@ -287,7 +342,6 @@ const RoomEdit: React.FC<RoomEditProps> = ({
           ) : (
             <div className="space-y-5 py-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-               
                 <div>
                   <label className="text-sm font-medium">
                     {t("room.createOrUpdate.roomName")}
@@ -356,7 +410,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                     </p>
                   )}
                 </div>
-             
+
                 <div>
                   <label className="text-sm font-medium">
                     {t("room.createOrUpdate.area")}
@@ -481,38 +535,17 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                       type="file"
                       accept="image/*"
                       multiple
-                      className="absolute inset-0 z-10 cursor-pointer opacity-0"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        if (!files.length) return;
-                        setValue("image", files, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        });
-                        trigger("image");
-                        setPreviewReview(
-                          files.map((file) => URL.createObjectURL(file)),
-                        );
-                      }}
+                      hidden
+                      onChange={handleImageChange}
                     />
 
-                    <div
-                      className="rounded-xl border-2 border-dashed
-    border-slate-300 dark:border-neutral-800
-    bg-slate-50 dark:bg-background
-    p-4
-    hover:border-[#42578E] dark:hover:border-slate-500
-    transition"
-                    >
+                    <div className="rounded-xl border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-slate-50 dark:bg-background p-4">
                       {imagePreview.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-10 text-center">
-                          <div
-                            className="
-        mb-3 flex h-12 w-12 items-center justify-center
-        rounded-full
-        bg-slate-200 dark:bg-background
-      "
-                          >
+                        <div
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex cursor-pointer flex-col items-center justify-center py-10 text-center"
+                        >
+                          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-background">
                             <PictureInPicture className="text-slate-700 dark:text-slate-200" />
                           </div>
 
@@ -525,16 +558,11 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                           </p>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                           {imagePreview.map((src, idx) => (
                             <div
                               key={idx}
-                              className="
-          group relative overflow-hidden rounded-xl
-          border border-slate-200 dark:border-slate-700
-          bg-white dark:bg-slate-800
-          shadow-sm
-        "
+                              className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
                             >
                               <img
                                 src={src}
@@ -542,46 +570,29 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                                 className="h-32 w-full object-cover transition-transform group-hover:scale-105"
                               />
 
-                              {/* Overlay */}
-                              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition" />
+                              <div className="absolute inset-0 bg-black/30 opacity-0 transition group-hover:opacity-100" />
 
-                              {/* Remove button */}
                               <button
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-
-                                  setPreviewReview((prev) =>
-                                    prev.filter((_, i) => i !== idx),
-                                  );
-
-                                  const currentImages = watch("image") ?? [];
-
-                                  setValue(
-                                    "image",
-                                    Array.isArray(currentImages)
-                                      ? currentImages.filter(
-                                          (_, i) => i !== idx,
-                                        )
-                                      : [],
-                                    {
-                                      shouldValidate: true,
-                                      shouldDirty: true,
-                                    },
-                                  );
+                                  handleRemoveImage(idx);
                                 }}
-                                className="
-            absolute right-2 top-2
-            rounded-full bg-black/60
-            px-2 py-1 text-xs text-white
-            opacity-0 group-hover:opacity-100
-            transition
-          "
+                                className="absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition hover:bg-red-600 group-hover:opacity-100"
                               >
                                 ✕
                               </button>
                             </div>
                           ))}
+
+                          {/* Ô thêm ảnh */}
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 text-3xl font-bold text-slate-400 transition hover:border-[#42578E] hover:text-[#42578E]"
+                          >
+                            +
+                          </button>
                         </div>
                       )}
                     </div>
@@ -589,7 +600,7 @@ const RoomEdit: React.FC<RoomEditProps> = ({
                 </div>
                 {errors.image && (
                   <p className="text-sm text-red-500 mt-1">
-                    {errors.image.message}
+                    {String(errors?.image?.message)}
                   </p>
                 )}
               </div>

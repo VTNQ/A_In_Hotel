@@ -68,11 +68,7 @@ const UpdateRoomFormModal = ({
 
     note: z.string().optional(),
 
-    images: z
-      .array(z.instanceof(File))
-      .min(1, t("common.required"))
-      .max(5, t("room.createOrUpdate.maxImages"))
-      .optional(),
+    images: z.any().optional(),
     oldImages: z.array(z.string()).optional(),
   });
 
@@ -144,12 +140,13 @@ const UpdateRoomFormModal = ({
           room?.images?.map((i: any) =>
             i.url?.startsWith("http") ? i.url : `${File_URL}${i.url}`,
           ) || [];
-        setOldImages(oldImgs);
+    
+
         setTempImages(oldImgs);
 
         const form = {
           roomName: room?.roomName || "",
-          idRoomType: room?.idRoomType || "",
+          idRoomType: String(room?.idRoomType || ""),
           floor: String(room?.floor || ""),
           area: String(room?.area || ""),
           capacity: String(room?.capacity || ""),
@@ -160,9 +157,14 @@ const UpdateRoomFormModal = ({
           defaultRate: String(room?.defaultRate || ""),
           note: room?.note || "",
           images: [],
+          oldImages:oldImgs
         };
 
-        reset(form);
+        reset({
+          ...form,
+          oldImages: oldImgs,
+          images: [],
+        });
 
         setInitialSnapshot(JSON.stringify({ ...form, oldImages: oldImgs }));
       } catch {
@@ -205,8 +207,8 @@ const UpdateRoomFormModal = ({
 
     setLoading(true);
     try {
-      const finalOld = tempImages.filter((i) => typeof i === "string");
-      const finalNew = tempImages.filter((i) => i instanceof File);
+      const finalOld = data.oldImages ?? [];
+      const finalNew = data.images ?? [];
 
       const payload = {
         ...data,
@@ -245,7 +247,7 @@ const UpdateRoomFormModal = ({
       </CommonModal>
     );
   }
-
+  console.log(errors)
   if (isOpen && fetching) {
     return (
       <CommonModal
@@ -270,8 +272,7 @@ const UpdateRoomFormModal = ({
     !!watch("hourlyBasePrice") &&
     !!watch("hourlyAdditionalPrice") &&
     !!watch("overnightPrice") &&
-    !!watch("defaultRate") &&
-    tempImages.length > 0;
+    !!watch("defaultRate");
   return (
     <>
       <CommonModal
@@ -311,8 +312,7 @@ const UpdateRoomFormModal = ({
               )}
             </div>
 
-          
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1  gap-4">
               <div>
                 <label className="block mb-1 font-medium">
                   {t("room.createOrUpdate.roomName")} *
@@ -328,7 +328,6 @@ const UpdateRoomFormModal = ({
                   </p>
                 )}
               </div>
-            
             </div>
 
             <div>
@@ -525,15 +524,15 @@ const UpdateRoomFormModal = ({
       {/* POPUP SELECT IMAGES (giữ nguyên logic cũ) */}
       {/* IMAGE SELECT MODAL */}
       <AnimatePresence>
-  {imageModalOpen && (
-    <motion.div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="
+        {imageModalOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="
         bg-white dark:bg-[#111827]
         text-black dark:text-white
         w-[95vw] sm:w-[90vw] lg:w-[900px]
@@ -543,14 +542,14 @@ const UpdateRoomFormModal = ({
         shadow-xl relative overflow-hidden
         transition-colors duration-200
         "
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.9 }}
-      >
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-          <button
-            className="
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+            >
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+                <button
+                  className="
             px-5 py-1.5 rounded-full border
             border-gray-300 dark:border-gray-600
             bg-white dark:bg-[#1F2937]
@@ -558,47 +557,55 @@ const UpdateRoomFormModal = ({
             hover:bg-gray-100 dark:hover:bg-[#374151]
             transition-colors duration-200
             "
-            onClick={() => {
-              setTempImages(watchedValues.images || []);
-              setImageModalOpen(false);
-            }}
-          >
-            {t("common.cancelButton")}
-          </button>
+                  onClick={() => {
+                    setTempImages(watchedValues.images || []);
+                    setImageModalOpen(false);
+                  }}
+                >
+                  {t("common.cancelButton")}
+                </button>
 
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            {t("room.createOrUpdate.selectImages")}
-          </h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {t("room.createOrUpdate.selectImages")}
+                </h2>
 
-          <button
-            className="
+                <button
+                  className="
             px-5 py-1.5 rounded-full
             bg-black dark:bg-blue-600
             text-white
             hover:bg-gray-800 dark:hover:bg-blue-700
             transition-colors duration-200
             "
-            onClick={() => {
-              const files = tempImages.filter(
-                (x): x is File => x instanceof File,
-              );
+                  onClick={() => {
+                    const files = tempImages.filter(
+                      (x): x is File => x instanceof File,
+                    );
 
-              setValue("images", files, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
+                    const olds = tempImages.filter(
+                      (x): x is string => typeof x === "string",
+                    );
 
-              trigger("images");
-              setImageModalOpen(false);
-            }}
-          >
-            {t("common.save")}
-          </button>
-        </div>
+                    setValue("images", files, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
 
-        {/* DROP ZONE */}
-        <div
-          className="
+                    setValue("oldImages", olds, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                    trigger("images");
+                    setImageModalOpen(false);
+                  }}
+                >
+                  {t("common.save")}
+                </button>
+              </div>
+
+              {/* DROP ZONE */}
+              <div
+                className="
           border-2 border-dashed
           border-[#D4D4E3] dark:border-gray-700
           rounded-xl
@@ -608,42 +615,42 @@ const UpdateRoomFormModal = ({
           overflow-auto custom-scroll
           transition-colors duration-200
           "
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.currentTarget.classList.add("border-blue-500");
-          }}
-          onDragLeave={(e) =>
-            e.currentTarget.classList.remove("border-blue-500")
-          }
-          onDrop={(e) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove("border-blue-500");
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add("border-blue-500");
+                }}
+                onDragLeave={(e) =>
+                  e.currentTarget.classList.remove("border-blue-500")
+                }
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove("border-blue-500");
 
-            const dropped = Array.from(e.dataTransfer.files).filter((f) =>
-              f.type.startsWith("image/"),
-            ) as File[];
+                  const dropped = Array.from(e.dataTransfer.files).filter((f) =>
+                    f.type.startsWith("image/"),
+                  ) as File[];
 
-            if (dropped.length > 0) {
-              setTempImages((prev) => [...prev, ...dropped]);
-            }
-          }}
-        >
-          {/* NO IMAGES */}
-          {tempImages.length === 0 && (
-            <div className="flex flex-col items-center py-16">
-              <img src="/defaultImage.png" className="w-20 opacity-70" />
+                  if (dropped.length > 0) {
+                    setTempImages((prev) => [...prev, ...dropped]);
+                  }
+                }}
+              >
+                {/* NO IMAGES */}
+                {tempImages.length === 0 && (
+                  <div className="flex flex-col items-center py-16">
+                    <img src="/defaultImage.png" className="w-20 opacity-70" />
 
-              <p className="mt-4 font-medium text-gray-800 dark:text-gray-100">
-                {t("room.createOrUpdate.dragDrop")}
-              </p>
+                    <p className="mt-4 font-medium text-gray-800 dark:text-gray-100">
+                      {t("room.createOrUpdate.dragDrop")}
+                    </p>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {t("room.createOrUpdate.supportedFormat")}
-              </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {t("room.createOrUpdate.supportedFormat")}
+                    </p>
 
-              <label
-                htmlFor="pickImg"
-                className="
+                    <label
+                      htmlFor="pickImg"
+                      className="
                 mt-3 px-6 py-2 border rounded-full
                 bg-white dark:bg-[#1F2937]
                 border-gray-300 dark:border-gray-600
@@ -652,49 +659,49 @@ const UpdateRoomFormModal = ({
                 hover:bg-gray-50 dark:hover:bg-[#374151]
                 transition-colors duration-200
                 "
-              >
-                {t("room.createOrUpdate.browseFiles")}
-              </label>
+                    >
+                      {t("room.createOrUpdate.browseFiles")}
+                    </label>
 
-              <input
-                id="pickImg"
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const files = Array.from(
-                    e.target.files ?? [],
-                  ) as File[];
+                    <input
+                      id="pickImg"
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(
+                          e.target.files ?? [],
+                        ) as File[];
 
-                  if (files.length > 0) setTempImages(files);
-                }}
-              />
-            </div>
-          )}
+                        if (files.length > 0) setTempImages(files);
+                      }}
+                    />
+                  </div>
+                )}
 
-          {/* HAS IMAGES */}
-          {tempImages.length > 0 && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* MAIN IMAGE */}
-                <div className="col-span-2 relative">
-                  <img
-                    src={
-                      typeof tempImages[0] === "string"
-                        ? tempImages[0]
-                        : URL.createObjectURL(tempImages[0])
-                    }
-                    className="
+                {/* HAS IMAGES */}
+                {tempImages.length > 0 && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* MAIN IMAGE */}
+                      <div className="col-span-2 relative">
+                        <img
+                          src={
+                            typeof tempImages[0] === "string"
+                              ? tempImages[0]
+                              : URL.createObjectURL(tempImages[0])
+                          }
+                          className="
                     w-full h-[220px] sm:h-[350px]
                     object-cover rounded-xl
                     border border-transparent
                     dark:border-gray-700
                     "
-                  />
+                        />
 
-                  <button
-                    className="
+                        <button
+                          className="
                     absolute top-3 right-3
                     bg-black/60 dark:bg-black/70
                     p-1.5 rounded-full
@@ -702,36 +709,49 @@ const UpdateRoomFormModal = ({
                     hover:bg-black/80
                     transition-colors
                     "
-                    onClick={() => {
-                      const clone = [...tempImages];
-                      clone.splice(0, 1);
-                      setTempImages(clone);
-                    }}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
+                          onClick={() => {
+                            const clone = [...tempImages];
+                            clone.splice(0, 1);
 
-                {/* SMALL IMAGES */}
-                <div className="flex flex-col gap-4">
-                  {tempImages.slice(1).map((img, idx) => (
-                    <div key={idx} className="relative group">
-                      <img
-                        src={
-                          typeof img === "string"
-                            ? img
-                            : URL.createObjectURL(img)
-                        }
-                        className="
+                            setTempImages(clone);
+
+                            setValue(
+                              "oldImages",
+                              clone.filter(
+                                (x): x is string => typeof x === "string",
+                              ),
+                            );
+
+                            setValue(
+                              "images",
+                              clone.filter((x): x is File => x instanceof File),
+                            );
+                          }}
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+
+                      {/* SMALL IMAGES */}
+                      <div className="flex flex-col gap-4">
+                        {tempImages.slice(1).map((img, idx) => (
+                          <div key={idx} className="relative group">
+                            <img
+                              src={
+                                typeof img === "string"
+                                  ? img
+                                  : URL.createObjectURL(img)
+                              }
+                              className="
                         w-full h-[120px] sm:h-[165px]
                         object-cover rounded-xl
                         border border-transparent
                         dark:border-gray-700
                         "
-                      />
+                            />
 
-                      <button
-                        className="
+                            <button
+                              className="
                         absolute top-2 right-2
                         bg-black/60 dark:bg-black/70
                         text-white
@@ -740,24 +760,39 @@ const UpdateRoomFormModal = ({
                         hover:bg-black/80
                         transition
                         "
-                        onClick={() => {
-                          const clone = [...tempImages];
-                          clone.splice(idx + 1, 1);
-                          setTempImages(clone);
-                        }}
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                              onClick={() => {
+                                const clone = [...tempImages];
+                                clone.splice(idx + 1, 1);
 
-              {/* ADD MORE */}
-              <div className="flex justify-center mt-8">
-                <label
-                  htmlFor="addMoreImg"
-                  className="
+                                setTempImages(clone);
+
+                                setValue(
+                                  "oldImages",
+                                  clone.filter(
+                                    (x): x is string => typeof x === "string",
+                                  ),
+                                );
+
+                                setValue(
+                                  "images",
+                                  clone.filter(
+                                    (x): x is File => x instanceof File,
+                                  ),
+                                );
+                              }}
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* ADD MORE */}
+                    <div className="flex justify-center mt-8">
+                      <label
+                        htmlFor="addMoreImg"
+                        className="
                   px-6 py-2 border rounded-full
                   bg-white dark:bg-[#1F2937]
                   border-gray-300 dark:border-gray-600
@@ -766,34 +801,34 @@ const UpdateRoomFormModal = ({
                   hover:bg-gray-50 dark:hover:bg-[#374151]
                   transition-colors duration-200
                   "
-                >
-                  {t("room.createOrUpdate.browseFiles")}
-                </label>
+                      >
+                        {t("room.createOrUpdate.browseFiles")}
+                      </label>
 
-                <input
-                  id="addMoreImg"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const files = Array.from(
-                      e.target.files ?? [],
-                    ) as File[];
+                      <input
+                        id="addMoreImg"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(
+                            e.target.files ?? [],
+                          ) as File[];
 
-                    if (files.length > 0) {
-                      setTempImages((prev) => [...prev, ...files]);
-                    }
-                  }}
-                />
+                          if (files.length > 0) {
+                            setTempImages((prev) => [...prev, ...files]);
+                          }
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
-            </>
-          )}
-        </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
