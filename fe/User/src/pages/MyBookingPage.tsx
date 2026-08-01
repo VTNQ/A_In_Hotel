@@ -13,7 +13,6 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import {
   BookingStatus,
-  statusLabel,
   statusStyle,
   type TabKey,
 } from "../type/booking.types";
