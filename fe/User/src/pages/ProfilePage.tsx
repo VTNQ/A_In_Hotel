@@ -203,7 +203,7 @@ const ProfilePage = () => {
                 </span>
               </div>
               <nav className="flex flex-col border-l border-[rgb(113,121,118)]/10">
-                <a
+                {/* <a
                   className="px-6 py-4 border-l-2 border-[rgb(1,38,31)] text-[rgb(1,38,31)]
                 font-bold bg-[rgb(251,242,237)] transition-all"
                 >
@@ -226,7 +226,7 @@ const ProfilePage = () => {
                   hover:text-[rgb(1,38,31)] hover:bg-[rgb(251,242,237)] transition-all"
                 >
                   Settings
-                </a>
+                </a> */}
                 <div className="pt-8 mt-8 border-t border-[rgb(113,121,118)]/10">
                   <button
                     onClick={()=>{
