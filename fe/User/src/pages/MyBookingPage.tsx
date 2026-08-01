@@ -1,4 +1,15 @@
-import { BedDouble, Calendar, DoorOpen, User, Users, ChevronRight, Inbox, Clock, CheckCircle2, XCircle } from "lucide-react";
+import {
+  BedDouble,
+  Calendar,
+  DoorOpen,
+  User,
+  Users,
+  ChevronRight,
+  Inbox,
+  Clock,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   BookingStatus,
@@ -48,7 +59,11 @@ const MyBookingsPage = () => {
 
   const TABS = [
     { key: "UPCOMING", label: t("booking.tabs.upcoming"), icon: Clock },
-    { key: "COMPLETED", label: t("booking.tabs.completed"), icon: CheckCircle2 },
+    {
+      key: "COMPLETED",
+      label: t("booking.tabs.completed"),
+      icon: CheckCircle2,
+    },
     { key: "CANCELLED", label: t("booking.tabs.cancelled"), icon: XCircle },
   ] as const;
 
@@ -79,7 +94,9 @@ const MyBookingsPage = () => {
     switch (activeTab) {
       case "UPCOMING":
         return bookings.filter(
-          (b) => b.status === BookingStatus.BOOKED || b.status === BookingStatus.CHECKIN
+          (b) =>
+            b.status === BookingStatus.BOOKED ||
+            b.status === BookingStatus.CHECKIN,
         );
       case "COMPLETED":
         return bookings.filter((b) => b.status === BookingStatus.CHECKOUT);
@@ -160,7 +177,9 @@ const MyBookingsPage = () => {
                     <div className="bg-slate-100 dark:bg-slate-800 size-20 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
                       <Inbox size={40} />
                     </div>
-                    <p className="text-xl font-bold mb-2">{t("booking.empty.title")}</p>
+                    <p className="text-xl font-bold mb-2">
+                      {t("booking.empty.title")}
+                    </p>
                     <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto">
                       {t("booking.empty.description")}
                     </p>
@@ -198,17 +217,21 @@ const MyBookingsPage = () => {
                               <span className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">
                                 {t("booking.card.code")}
                               </span>
-                              <span className="text-lg font-black font-mono">#{b.code}</span>
+                              <span className="text-lg font-black font-mono">
+                                #{b.code}
+                              </span>
                             </div>
-                            
+
                             <div className="h-8 w-px bg-slate-200 dark:bg-white/10 hidden sm:block mx-2" />
 
                             <span
                               className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${statusStyle(
-                                b.status
+                                b.status,
                               )}`}
                             >
-                              {t(`booking.status.${statusLabel(b.status).toLowerCase().replace(/\s/g, '')}`)}
+                              {t(
+                                `booking.status.${b.status?.toLowerCase() ?? "unknown"}`,
+                              )}
                             </span>
                           </div>
 
@@ -217,7 +240,10 @@ const MyBookingsPage = () => {
                               {t("booking.card.total")}
                             </span>
                             <span className="text-2xl font-black text-primary">
-                              {formatPrice(b.totalPrice)} <span className="text-sm font-normal">{t("common.vnd")}</span>
+                              {formatPrice(b.totalPrice)}{" "}
+                              <span className="text-sm font-normal">
+                                {t("common.vnd")}
+                              </span>
                             </span>
                           </div>
                         </div>
@@ -226,13 +252,17 @@ const MyBookingsPage = () => {
                         <div className="p-6 grid lg:grid-cols-12 gap-8">
                           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <InfoBooking
-                              icon={<Calendar className="text-primary" size={16} />}
+                              icon={
+                                <Calendar className="text-primary" size={16} />
+                              }
                               label={t("booking.card.checkin")}
                               value={`${b.checkInDate} • ${b.checkInTime?.slice(0, 5)}`}
                             />
 
                             <InfoBooking
-                              icon={<Calendar className="text-primary" size={16} />}
+                              icon={
+                                <Calendar className="text-primary" size={16} />
+                              }
                               label={t("booking.card.checkout")}
                               value={`${b.checkOutDate} • ${b.checkOutTime?.slice(0, 5)}`}
                             />
@@ -244,7 +274,9 @@ const MyBookingsPage = () => {
                             />
 
                             <InfoBooking
-                              icon={<Users className="text-primary" size={16} />}
+                              icon={
+                                <Users className="text-primary" size={16} />
+                              }
                               label={t("booking.card.guests")}
                               value={`${b.numberOfGuests} ${t("booking.card.person")}`}
                             />
@@ -260,7 +292,10 @@ const MyBookingsPage = () => {
                                 {b.details
                                   ?.filter((d: any) => d.roomId != null)
                                   .map((room: any, i: number) => (
-                                    <div key={i} className="flex items-center gap-4">
+                                    <div
+                                      key={i}
+                                      className="flex items-center gap-4"
+                                    >
                                       <div className="size-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary border border-slate-100 dark:border-white/5">
                                         {i === 0 ? (
                                           <BedDouble size={20} />
@@ -274,7 +309,8 @@ const MyBookingsPage = () => {
                                           {room.roomName}
                                         </p>
                                         <p className="text-xs text-slate-500 font-medium">
-                                          {t("booking.card.room")}: {room.roomNumber}
+                                          {t("booking.card.room")}:{" "}
+                                          {room.roomNumber}
                                         </p>
                                       </div>
                                     </div>
