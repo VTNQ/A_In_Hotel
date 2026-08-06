@@ -19,8 +19,12 @@ const AboutOurHotel = () => {
     fetchData();
   }, []);
   if (!settingContent) return null;
-  const description = settingContent.description || "";
-  const paragraphs = description.split("\r");
+  let description = settingContent.description || "";
+  // Fix missing space after period followed by an uppercase letter (e.g., "Riverside.Với" -> "Riverside. Với")
+  description = description.replace(/\.(?=\p{Lu})/gu, ". ");
+  
+  // Split by any newline character (\n or \r\n or \r) and filter out empty paragraphs
+  const paragraphs = description.split(/\r?\n|\r/).filter((p) => p.trim() !== "");
 
   const firstParagraph = paragraphs[0] || "";
   const firstChar = firstParagraph.charAt(0);
@@ -81,7 +85,7 @@ const AboutOurHotel = () => {
         text-2xl
         sm:text-3xl
         lg:text-[42px]
-        font-dmserif
+        font-display
         text-[#253150]
         mb-4
       "
@@ -104,7 +108,7 @@ const AboutOurHotel = () => {
           float-left
           text-4xl
           sm:text-5xl
-          font-dmserif
+          font-display
           text-[#2E3A59]
           mr-2
           leading-none

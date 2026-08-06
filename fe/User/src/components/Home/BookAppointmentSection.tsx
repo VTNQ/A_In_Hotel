@@ -8,7 +8,7 @@ const BookAppointmentSection = () => {
         {/* LEFT IMAGE */}
         <div className="w-full">
           <img loading="lazy"
-            src="/image/9d73a69d98ce7e6a1df54437f26aa08426192c09.jpg"
+            src="https://images.unsplash.com/photo-1542314831-c6a4d27ce6a2?q=80&w=1200"
             alt="Luxury Room"
             className="
               w-full 
@@ -28,7 +28,7 @@ const BookAppointmentSection = () => {
             {t("home.bookAppointment.subtitle")}
           </span>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-dmserif leading-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display leading-tight mb-4">
             {t("home.bookAppointment.titleLine1")}
             <br className="hidden sm:block" />
             {t("home.bookAppointment.titleLine2")}

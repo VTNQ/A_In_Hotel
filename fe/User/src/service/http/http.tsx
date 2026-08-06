@@ -16,9 +16,11 @@ const Http = axios.create({
 Http.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         const token = getTokens()?.accessToken;
+        const lang = localStorage.getItem('i18nextLng') || 'vi';
 
-        if (!config.skipAuth && token && token !== 'undefined') {
-            if (config.headers && typeof config.headers.set === 'function') {
+        if (config.headers && typeof config.headers.set === 'function') {
+            config.headers.set('Accept-Language', lang);
+            if (!config.skipAuth && token && token !== 'undefined') {
                 config.headers.set('Authorization', `Bearer ${token}`);
             }
         }
