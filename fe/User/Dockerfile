@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Giai đoạn 2: chạy Nginx để phục vụ file build
-FROM nginx:alpine
+FROM nginx:1.27.5-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 
