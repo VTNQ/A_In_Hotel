@@ -8,7 +8,7 @@ const BookAppointmentSection = () => {
         {/* LEFT IMAGE */}
         <div className="w-full">
           <img loading="lazy"
-            src="https://images.unsplash.com/photo-1542314831-c6a4d27ce6a2?q=80&w=1200"
+            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200"
             alt="Luxury Room"
             className="
               w-full 
