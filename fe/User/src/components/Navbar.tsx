@@ -36,9 +36,7 @@ export default function Navbar() {
     { label: t("navbar.promotion"), path: "/promotion" },
   ];
 
-  const rightItems = [
-    { label: t("navbar.airbnb"), path: "/airbnb" },
-    { label: t("navbar.camping"), path: "/camping" },
+    const rightItems = [
     { label: t("navbar.franchise"), path: "/franchise" },
   ];
 
@@ -94,23 +92,33 @@ export default function Navbar() {
 
           {/* LOGO */}
           <button
-            onClick={() => navigate("/")}
-            className="flex flex-col items-center"
-          >
-            <img loading="lazy"
-              src="/image/Vector.png"
-              className={`transition-all ${
-                isScrolled ? "h-8 brightness-0" : "h-10 brightness-200"
-              }`}
-            />
-            <span
-              className={`font-bold tracking-wide ${
-                isHome && !isScrolled ? "text-white" : "text-[#3A3125]"
-              }`}
-            >
-              A-IN HOTEL
-            </span>
-          </button>
+  onClick={() => navigate("/")}
+  className="flex flex-col items-center"
+>
+  <img
+    loading="lazy"
+    src="/image/Vector.png"
+    className={`transition-all ${
+      isScrolled ? "h-8 brightness-0" : "h-10 brightness-200"
+    }`}
+  />
+
+  <span
+    className={`mt-1 font-bold tracking-wide leading-none ${
+      isHome && !isScrolled ? "text-white" : "text-[#3A3125]"
+    }`}
+  >
+    A-IN HOTEL
+  </span>
+
+  <span
+    className={`text-[10px] tracking-[0.3em] uppercase leading-none mt-1 ${
+      isHome && !isScrolled ? "text-white/80" : "text-[#3A3125]/70"
+    }`}
+  >
+    VIETNAM
+  </span>
+</button>
 
           {/* RIGHT DESKTOP */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -128,13 +136,13 @@ export default function Navbar() {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className={`${navColor} hover:text-[#B38A58]`}
+                  className={`${navColor} hover:text-[#B38A58] uppercase`}
                 >
                   {t("navbar.login")}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="px-5 py-2 bg-[#B38A58] text-white rounded-full"
+                  className="px-5 py-2 bg-[#B38A58] text-white rounded-full uppercase"
                 >
                   {t("navbar.signup")}
                 </button>
@@ -152,7 +160,7 @@ export default function Navbar() {
                         navigate("/profile");
                         setIsUserOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 uppercase text-xs font-bold"
                     >
                       {t("navbar.profile")}
                     </button>
@@ -161,7 +169,7 @@ export default function Navbar() {
                         navigate("/my-booking");
                         setIsUserOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 uppercase text-xs font-bold"
                     >
                       {t("navbar.myBooking")}
                     </button>
@@ -171,7 +179,7 @@ export default function Navbar() {
                         navigate("/login");
                         setIsUserOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 border-t"
+                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 border-t uppercase text-xs font-bold"
                     >
                       {t("navbar.logout")}
                     </button>
@@ -254,7 +262,7 @@ export default function Navbar() {
                   navigate(item.path);
                   setIsMenuOpen(false);
                 }}
-                className="block w-full text-left py-3 border-b text-sm font-medium"
+                className="block w-full text-left py-3 border-b text-sm font-medium uppercase"
               >
                 {item.label}
               </button>
@@ -266,13 +274,13 @@ export default function Navbar() {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full py-2.5 border rounded-xl text-sm font-bold"
+                  className="w-full py-2.5 border rounded-xl text-sm font-bold uppercase"
                 >
                   {t("navbar.login")}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="w-full py-2.5 bg-[#B38A58] text-white rounded-xl text-sm font-bold"
+                  className="w-full py-2.5 bg-[#B38A58] text-white rounded-xl text-sm font-bold uppercase"
                 >
                   {t("navbar.signup")}
                 </button>
@@ -284,7 +292,7 @@ export default function Navbar() {
                     navigate("/profile");
                     setIsMenuOpen(false);
                   }}
-                  className="block py-2 text-sm font-medium"
+                  className="block py-2 text-sm font-bold uppercase"
                 >
                   {t("navbar.profile")}
                 </button>
@@ -293,7 +301,7 @@ export default function Navbar() {
                     navigate("/my-booking");
                     setIsMenuOpen(false);
                   }}
-                  className="block py-2 text-sm font-medium"
+                  className="block py-2 text-sm font-bold uppercase"
                 >
                   {t("navbar.myBooking")}
                 </button>
@@ -303,7 +311,7 @@ export default function Navbar() {
                     navigate("/login");
                     setIsMenuOpen(false);
                   }}
-                  className="block py-2 text-red-500 text-sm font-medium"
+                  className="block py-2 text-red-500 text-sm font-bold uppercase"
                 >
                   {t("navbar.logout")}
                 </button>

@@ -3,11 +3,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const images = [
-  "/image/681c2aef645b1d29de59b460ef0aab4e841d4b59.png",
-  "/image/adebce12c8df31ba5195866575485f5477394655.jpg",
-  "/image/adebce12c8df31ba5195866575485f5477394655.jpg",
-  "/image/adebce12c8df31ba5195866575485f5477394655.jpg",
-  "/image/adebce12c8df31ba5195866575485f5477394655.jpg",
+  "https://images.unsplash.com/photo-1542314831-c6a4d27ce6a2?q=80&w=1200",
+  "https://images.unsplash.com/photo-1590490359683-658d3d23f972?q=80&w=1200",
+  "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1200",
+  "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1200",
+  "https://images.unsplash.com/photo-1582719478250-c8940026e641?q=80&w=1200",
 ];
 
 // 👉 clone 3 lần để tạo buffer

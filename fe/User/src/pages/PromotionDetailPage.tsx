@@ -60,7 +60,7 @@ const PromotionDetailPage = () => {
 
   if (loading) {
     return (
-      <main className="flex-1 animate-pulse" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <main className="flex-1 animate-pulse" style={{ fontFamily: "" }}>
         <section className="relative w-full h-[70vh] min-h-[520px] bg-slate-200 dark:bg-slate-800">
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 px-6 text-center">
              <div className="w-20 h-6 bg-slate-300 dark:bg-slate-700 rounded mb-4 mx-auto" />
@@ -87,7 +87,7 @@ const PromotionDetailPage = () => {
   return (
     <main
       className="flex-1 "
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      style={{ fontFamily: "" }}
     >
       <section className="relative w-full h-[70vh] min-h-[520px] overflow-hidden">
         <div
@@ -113,7 +113,7 @@ const PromotionDetailPage = () => {
           <h1
             className="text-white text-4xl md:text-6xl font-display font-bold max-w-4xl leading-tight mb-6"
             style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontFamily: "",
             }}
           >
             {blog.title}

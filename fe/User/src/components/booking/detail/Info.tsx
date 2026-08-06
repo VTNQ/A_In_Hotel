@@ -1,4 +1,6 @@
-export default function Info({ title, main, sub }: any) {
+import { ReactNode } from "react";
+
+export default function Info({ title, main, sub }: { title: string; main: string; sub?: string }) {
   return (
     <div>
       <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">{title}</p>

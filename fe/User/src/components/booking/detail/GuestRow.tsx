@@ -1,4 +1,6 @@
-export default function GuestRow({ icon, label, value }: any) {
+import { ReactNode } from "react";
+
+export default function GuestRow({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-start gap-4">
       <div className="bg-primary/10 text-primary p-2.5 rounded-xl">{icon}</div>
