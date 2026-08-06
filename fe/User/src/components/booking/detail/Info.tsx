@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 
 export default function Info({ title, main, sub }: { title: string; main: string; sub?: string }) {
   return (
