@@ -88,25 +88,35 @@ export default function Footer() {
              {t("footer.contact")}
             </p>
 
-            <div className="flex gap-4">
-              {["fb", "ig", "in"].map((item) => (
-                <span
-                  key={item}
-                  className="
-                    w-9 h-9 
-                    border border-[#d8cec4]
-                    rounded-full 
-                    flex items-center justify-center 
-                    text-xs
-                    hover:bg-[#3A3125]
-                    hover:text-white
-                    transition-all duration-300
-                    cursor-pointer
-                  "
-                >
-                  {item}
-                </span>
-              ))}
+            <div className="flex flex-col gap-5 w-full">
+              {/* FACEBOOK */}
+              <div>
+                <p className="text-[10px] uppercase font-bold mb-2 tracking-wider">Facebook</p>
+                <div className="flex flex-wrap gap-2 text-xs text-[#6b5f4f]">
+                  <a href="https://www.facebook.com/ainhotelriverside" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Riverside</a>
+                  <a href="https://www.facebook.com/ainhotelglamour" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Glamour</a>
+                  <a href="https://www.facebook.com/ainhoteldelluna" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Delluna</a>
+                  <a href="https://www.facebook.com/ainhotelatistar" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Atistar</a>
+                </div>
+              </div>
+
+              {/* TIKTOK */}
+              <div>
+                <p className="text-[10px] uppercase font-bold mb-2 tracking-wider">TikTok</p>
+                <div className="flex flex-wrap gap-2 text-xs text-[#6b5f4f]">
+                  <a href="https://www.tiktok.com/@ainhotelvietnam?_r=1&_t=ZS-98eL8LRSxYy" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">@ainhotelvietnam</a>
+                </div>
+              </div>
+
+              {/* ZALO */}
+              <div>
+                <p className="text-[10px] uppercase font-bold mb-2 tracking-wider">Zalo OA</p>
+                <div className="flex flex-wrap gap-2 text-xs text-[#6b5f4f]">
+                  <a href="https://zalo.me/2995290453484355017" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Glamour</a>
+                  <a href="https://zalo.me/3321323852420568562" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Atistar</a>
+                  <a href="https://zalo.me/2064698245345781686" target="_blank" rel="noreferrer" className="hover:text-[#B38A58] border border-[#d8cec4] hover:border-[#B38A58] px-3 py-1.5 rounded-full transition-all">Riverside</a>
+                </div>
+              </div>
             </div>
 
          
